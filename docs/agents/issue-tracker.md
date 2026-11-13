@@ -9,7 +9,7 @@ Git remote: `https://github.com/Kercy-kim/tripsketch-ai.git`.
 
 Use the connected GitHub tools when they support the operation. Pass `Kercy-kim/tripsketch-ai` as the repository explicitly.
 
-The GitHub CLI (`gh`) is not installed in the setup environment. If it becomes available and authenticated, it can serve as a fallback. Include `--repo Kercy-kim/tripsketch-ai` on issue commands.
+The GitHub CLI (`gh`) is installed and authenticated as `Kercy-kim` in the setup environment. Use it for operations the connected GitHub tools do not support. Include `--repo Kercy-kim/tripsketch-ai` on issue commands.
 
 Before the first issue write in a session, verify the target repository through the connected GitHub repository tool or `gh repo view Kercy-kim/tripsketch-ai --json nameWithOwner`. If the configured repository and `origin` disagree, resolve that discrepancy with the user.
 
