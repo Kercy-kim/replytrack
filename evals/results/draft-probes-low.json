@@ -1,0 +1,103 @@
+{
+  "mode": "live draft review negative probes",
+  "startedAt": "2026-11-14T05:28:28.207Z",
+  "requestedModel": "gpt-5-mini",
+  "hashes": {
+    "evals/support-cases.mjs": "ab86201457d670ffd62d4844fa66e72711bb4be91ea677260946b3c98a904b8d",
+    "evals/grade.mjs": "ed6a5defa0212d1e473f9235dd8cd877fe046e8d017f80835c4ab9eaecd9145d",
+    "src/prompts.mjs": "c9691e4461d921a3e3af81a076e616c45bac6c4561800699069068fd431cbe41",
+    "src/schema.mjs": "c8a6b1e3c2e58526295a361062313b8b19db069e5ee0d599c849c84fa79573d1",
+    "src/domain.mjs": "d1eef27d03b5f5ce82595a1996c1f3fdb46bc347450fe5f3774e8f411a5a74e6",
+    "src/service.mjs": "511432b8110930b6df74cfb2ad79b8660365f6cd5c0b6ce4a4638b3c9c850770",
+    "src/openai.mjs": "849548b229d833ad0166e83ba8ed513b0f81a6f51f80b924e1a27e6a7ca45506",
+    "src/analysis-changes.mjs": "36d13aaab3b180d7a2081dc22127a79e394ddb1e006136090a10945c88d94d73",
+    "scripts/evaluate-ai.mjs": "d4484407f9026409a124ea69f33c0d1648556422a1bbb59e02505e119a30200f"
+  },
+  "results": [
+    {
+      "source": "iteration-3/S02",
+      "expectedFailure": "선택한 배송비 질문 누락",
+      "expectedValid": false,
+      "pass": true,
+      "ms": 3425,
+      "data": {
+        "valid": false,
+        "feedback": "초안이 소비자 입장인 점과 운송장 번호 인용은 적절합니다. 다만 '배송비 금액 문의' 항목을 빠뜨렸습니다. 미해결 질문들(도착일과 배송비) 중 배송비에 대한 요청 문구(예: 해당 주문 또는 운송장 1234567890에 적용된 배송비 금액을 알려 달라는 문장)를 추가하도록 수정하세요."
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1094,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 251,
+        "output_tokens_details": {
+          "reasoning_tokens": 128
+        },
+        "total_tokens": 1345
+      }
+    },
+    {
+      "source": "iteration-3/S06",
+      "expectedFailure": "원문에 없는 동일 상담원 추정",
+      "expectedValid": false,
+      "pass": true,
+      "ms": 5959,
+      "data": {
+        "valid": false,
+        "feedback": "초안에서 '동일 상담원이 해당 안내를 정정하여'라고 단정하고 있는데, 원문에서는 상담원이 동일한지 여부를 알 수 없으므로 이를 추정해선 안 됩니다. '상담원이' 또는 '이전 안내를 정정하여' 등으로 수정해 담당자 동일성 표현을 제거하십시오. 그 외 항목(배송비 무료화, 운송 중 상태, 남은 문의 없음 등)은 원문 근거와 일치합니다."
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1505,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 418,
+        "output_tokens_details": {
+          "reasoning_tokens": 256
+        },
+        "total_tokens": 1923
+      }
+    },
+    {
+      "source": "baseline/R02",
+      "expectedFailure": "상담원 입장으로 고객 정보 요구",
+      "expectedValid": false,
+      "pass": false,
+      "ms": 3242,
+      "data": {
+        "valid": true,
+        "feedback": ""
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 866,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 231,
+        "output_tokens_details": {
+          "reasoning_tokens": 192
+        },
+        "total_tokens": 1097
+      }
+    }
+  ],
+  "completedAt": "2026-11-14T05:28:40.841Z"
+}

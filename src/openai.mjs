@@ -15,7 +15,7 @@ export class OpenAIClient {
       this.model = model;
     }
   }
-  async structured({ name, schema, instructions, data, image }) {
+  async structured({ name, schema, instructions, data, image, reasoningEffort = 'low' }) {
     if (!this.configured) throw new AppError(503, 'AI 연결 설정에서 OpenAI API 키를 등록해 주세요. 예제 상담은 키 없이 체험할 수 있습니다.', 'API_KEY_REQUIRED');
     const content = [{ type: 'input_text', text: JSON.stringify(data) }];
     if (image) content.push({ type: 'input_image', image_url: image, detail: 'high' });
@@ -25,7 +25,7 @@ export class OpenAIClient {
       text: { format: { type: 'json_schema', name, strict: true, schema } },
       max_output_tokens: 6500,
     };
-    if (/^gpt-5/.test(this.model)) payload.reasoning = { effort: 'low' };
+    if (/^gpt-5/.test(this.model)) payload.reasoning = { effort: reasoningEffort };
     let res;
     try {
       res = await this.fetch('https://api.openai.com/v1/responses', {

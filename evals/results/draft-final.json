@@ -1,0 +1,3014 @@
+{
+  "formatVersion": 1,
+  "startedAt": "2026-11-14T05:30:57.395Z",
+  "mode": "live OpenAI Responses API",
+  "requestedModel": "gpt-5-mini",
+  "baseCommit": "aafe7b8ab49aa58ac0db352fab419421e63f94d8",
+  "hashes": {
+    "evals/support-cases.mjs": "ab86201457d670ffd62d4844fa66e72711bb4be91ea677260946b3c98a904b8d",
+    "evals/grade.mjs": "ed6a5defa0212d1e473f9235dd8cd877fe046e8d017f80835c4ab9eaecd9145d",
+    "src/prompts.mjs": "a6d86839079c532a9f55f69971b1f71733b02e5000375e8313c063dd12926851",
+    "src/schema.mjs": "c8a6b1e3c2e58526295a361062313b8b19db069e5ee0d599c849c84fa79573d1",
+    "src/domain.mjs": "3c43f9ce64239f6167620dc86fe7bb52e28ec93b005b6e66746f1135ac21d01d",
+    "src/service.mjs": "245ae63882075739db95ea489cea3a1501647917a11ba9e72378d66da79a605d",
+    "src/openai.mjs": "b53726163300241f486299965e0567f1391c6bb8c714d041431659a54d05beac",
+    "src/analysis-changes.mjs": "36d13aaab3b180d7a2081dc22127a79e394ddb1e006136090a10945c88d94d73",
+    "scripts/evaluate-ai.mjs": "7d3f24f95335193d2d4689faad2d9212f7a20cd1d3c4e3a551f70ebde44ef5cc"
+  },
+  "results": [
+    {
+      "id": "S02",
+      "category": "배송",
+      "title": "세 질문 중 운송장만 답변",
+      "stages": [
+        {
+          "record": {
+            "id": "1d4028c2-2dd0-4f30-b099-2171b7894fc5",
+            "title": "세 질문 중 운송장만 답변",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T05:30:57.454Z",
+            "updatedAt": "2026-11-14T05:31:05.394Z",
+            "messages": [
+              {
+                "id": "5ced14cb-c0ba-4608-a22f-c74c921d4562",
+                "role": "customer",
+                "text": "운송장 번호를 알려 주세요. 도착일은 언제인가요? 배송비는 얼마인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "6e799bbc-a7eb-4898-8cbe-b2e50397cc23",
+                "role": "agent",
+                "text": "운송장 번호는 1234567890입니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "1d3c39a1-c303-417a-8433-624cc6546a6d",
+                "title": "운송장 번호 요청",
+                "source": {
+                  "messageId": "5ced14cb-c0ba-4608-a22f-c74c921d4562",
+                  "quote": "운송장 번호를 알려 주세요."
+                },
+                "status": "answered",
+                "reason": "상담원이 운송장 번호(1234567890)를 명확히 제시했으므로 질문에 필요한 정보가 모두 제공됨.",
+                "evidence": [
+                  {
+                    "messageId": "6e799bbc-a7eb-4898-8cbe-b2e50397cc23",
+                    "quote": "운송장 번호는 1234567890입니다."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "answered",
+                "aiReason": "상담원이 운송장 번호(1234567890)를 명확히 제시했으므로 질문에 필요한 정보가 모두 제공됨.",
+                "manualStatus": null,
+                "manualTitle": null
+              },
+              {
+                "id": "9ed8aa37-8b59-4324-9b9c-311271713ac7",
+                "title": "도착일 문의",
+                "source": {
+                  "messageId": "5ced14cb-c0ba-4608-a22f-c74c921d4562",
+                  "quote": "도착일은 언제인가요?"
+                },
+                "status": "unanswered",
+                "reason": "상담원이 도착일에 대해 아무런 정보나 향후 안내 약속을 제공하지 않았음.",
+                "evidence": [],
+                "followUp": "예상 도착일을 알려 주세요.",
+                "aiStatus": "unanswered",
+                "aiReason": "상담원이 도착일에 대해 아무런 정보나 향후 안내 약속을 제공하지 않았음.",
+                "manualStatus": null,
+                "manualTitle": null
+              },
+              {
+                "id": "0b66522f-765d-484a-883c-acce543eb310",
+                "title": "배송비 문의",
+                "source": {
+                  "messageId": "5ced14cb-c0ba-4608-a22f-c74c921d4562",
+                  "quote": "배송비는 얼마인가요?"
+                },
+                "status": "unanswered",
+                "reason": "상담원이 배송비에 대해 아무런 정보나 향후 안내 약속을 제공하지 않았음.",
+                "evidence": [],
+                "followUp": "이번 배송의 배송비 금액을 알려 주세요.",
+                "aiStatus": "unanswered",
+                "aiReason": "상담원이 배송비에 대해 아무런 정보나 향후 안내 약속을 제공하지 않았음.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [],
+            "history": [
+              {
+                "id": "906fe495-9024-4506-9cde-a074523de6f8",
+                "at": "2026-11-14T05:31:05.394Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "3개 질문 · 0개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T05:31:05.394Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "0c5ce0c6-8596-4bf7-9cce-ead350ab76c5",
+                "at": "2026-11-14T05:30:57.454Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객은 운송장 번호, 도착일, 배송비를 각각 문의했습니다. 상담원은 운송장 번호만 답변했고(1234567890), 도착일과 배송비에 대해서는 답변이나 안내 약속이 없습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 2,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 1582,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cache_write_tokens_details": {
+                    "ttl_12h_tokens": 0,
+                    "ttl_30m_tokens": 0
+                  },
+                  "cached_tokens": 0
+                },
+                "output_tokens": 754,
+                "output_tokens_details": {
+                  "reasoning_tokens": 192
+                },
+                "total_tokens": 2336
+              },
+              "at": "2026-11-14T05:31:05.394Z",
+              "comparison": {
+                "at": "2026-11-14T05:31:05.394Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 2,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "운송장",
+                  "status": "answered",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "actual": {
+                  "id": "1d3c39a1-c303-417a-8433-624cc6546a6d",
+                  "title": "운송장 번호 요청",
+                  "status": "answered",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "evidenceOK": true
+              },
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "도착",
+                  "status": "unanswered",
+                  "evidence": []
+                },
+                "actual": {
+                  "id": "9ed8aa37-8b59-4324-9b9c-311271713ac7",
+                  "title": "도착일 문의",
+                  "status": "unanswered",
+                  "evidence": []
+                },
+                "evidenceOK": true
+              },
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "배송비",
+                  "status": "unanswered",
+                  "evidence": []
+                },
+                "actual": {
+                  "id": "0b66522f-765d-484a-883c-acce543eb310",
+                  "title": "배송비 문의",
+                  "status": "unanswered",
+                  "evidence": []
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [],
+            "metrics": {
+              "expectedQuestions": 3,
+              "found": 3,
+              "correct": 3,
+              "falseAnswered": 0,
+              "expectedUnresolved": 2,
+              "evidenceCorrect": 3,
+              "expectedPromises": 0,
+              "correctPromises": 0,
+              "references": 4,
+              "grounded": 4
+            }
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "low",
+          "ms": 7938,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1582,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 754,
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "total_tokens": 2336
+          },
+          "data": {
+            "summary": "고객은 운송장 번호, 도착일, 배송비를 각각 문의했습니다. 상담원은 운송장 번호만 답변했고(1234567890), 도착일과 배송비에 대해서는 답변이나 안내 약속이 없습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "운송장 번호 요청",
+                "source": {
+                  "messageId": "5ced14cb-c0ba-4608-a22f-c74c921d4562",
+                  "quote": "운송장 번호를 알려 주세요."
+                },
+                "reason": "상담원이 운송장 번호(1234567890)를 명확히 제시했으므로 질문에 필요한 정보가 모두 제공됨.",
+                "status": "answered",
+                "evidence": [
+                  {
+                    "messageId": "6e799bbc-a7eb-4898-8cbe-b2e50397cc23",
+                    "quote": "운송장 번호는 1234567890입니다."
+                  }
+                ],
+                "followUp": ""
+              },
+              {
+                "id": "new-q-2",
+                "title": "도착일 문의",
+                "source": {
+                  "messageId": "5ced14cb-c0ba-4608-a22f-c74c921d4562",
+                  "quote": "도착일은 언제인가요?"
+                },
+                "reason": "상담원이 도착일에 대해 아무런 정보나 향후 안내 약속을 제공하지 않았음.",
+                "status": "unanswered",
+                "evidence": [],
+                "followUp": "예상 도착일을 알려 주세요."
+              },
+              {
+                "id": "new-q-3",
+                "title": "배송비 문의",
+                "source": {
+                  "messageId": "5ced14cb-c0ba-4608-a22f-c74c921d4562",
+                  "quote": "배송비는 얼마인가요?"
+                },
+                "reason": "상담원이 배송비에 대해 아무런 정보나 향후 안내 약속을 제공하지 않았음.",
+                "status": "unanswered",
+                "evidence": [],
+                "followUp": "이번 배송의 배송비 금액을 알려 주세요."
+              }
+            ],
+            "promises": []
+          }
+        },
+        {
+          "name": "replytrack_draft",
+          "reasoningEffort": "low",
+          "ms": 5826,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1047,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 438,
+            "output_tokens_details": {
+              "reasoning_tokens": 320
+            },
+            "total_tokens": 1485
+          },
+          "data": {
+            "body": "안내해 주신 운송장 번호는 확인했습니다. 다름이 아니라 이번 배송의 예상 도착일을 알려 주세요. 또한 이번 주문의 배송비 금액이 얼마인지도 정확한 금액을 알려 주시면 감사하겠습니다.",
+            "sourceMessageIds": [
+              "5ced14cb-c0ba-4608-a22f-c74c921d4562",
+              "6e799bbc-a7eb-4898-8cbe-b2e50397cc23"
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "reasoningEffort": "medium",
+          "ms": 8028,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 984,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 492,
+            "output_tokens_details": {
+              "reasoning_tokens": 448
+            },
+            "total_tokens": 1476
+          },
+          "data": {
+            "valid": true,
+            "feedback": ""
+          }
+        }
+      ],
+      "draft": {
+        "kind": "followup",
+        "body": "안내해 주신 운송장 번호는 확인했습니다. 다름이 아니라 이번 배송의 예상 도착일을 알려 주세요. 또한 이번 주문의 배송비 금액이 얼마인지도 정확한 금액을 알려 주시면 감사하겠습니다.",
+        "sourceMessageIds": [
+          "5ced14cb-c0ba-4608-a22f-c74c921d4562",
+          "6e799bbc-a7eb-4898-8cbe-b2e50397cc23"
+        ],
+        "at": "2026-11-14T05:31:19.249Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 1
+        },
+        "semanticReview": "pending independent semantic review"
+      }
+    },
+    {
+      "id": "S04",
+      "category": "배송",
+      "title": "조건표는 있지만 내 주문의 조건 미확인",
+      "stages": [
+        {
+          "record": {
+            "id": "1b246843-c611-422b-9321-3af7e6c1f71e",
+            "title": "조건표는 있지만 내 주문의 조건 미확인",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T05:30:57.475Z",
+            "updatedAt": "2026-11-14T05:31:05.580Z",
+            "messages": [
+              {
+                "id": "f84cf14b-25d5-4b79-b8b7-6ed5f86a0131",
+                "role": "customer",
+                "text": "제 주문의 추가 배송비는 얼마인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "c7bf65ca-12a6-4273-9001-33afcd53071a",
+                "role": "agent",
+                "text": "제주도는 추가 배송비 3,000원이고 다른 지역은 무료입니다. 고객님의 배송 지역은 아직 확인하지 못했습니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "e2d6c145-1fe9-4e0a-9143-70425adeb96a",
+                "title": "내 주문에 적용되는 추가 배송비 금액 문의",
+                "source": {
+                  "messageId": "f84cf14b-25d5-4b79-b8b7-6ed5f86a0131",
+                  "quote": "제 주문의 추가 배송비는 얼마인가요?"
+                },
+                "status": "partial",
+                "reason": "상담원은 제주도는 3,000원이고 다른 지역은 무료라는 일반 요금 정보를 제공했으나 고객님의 배송 지역을 확인하지 못했다고 밝혀 주문별 적용 금액은 제시되지 않음.",
+                "evidence": [
+                  {
+                    "messageId": "c7bf65ca-12a6-4273-9001-33afcd53071a",
+                    "quote": "제주도는 추가 배송비 3,000원이고 다른 지역은 무료입니다. 고객님의 배송 지역은 아직 확인하지 못했습니다."
+                  }
+                ],
+                "followUp": "제 주문의 배송지역을 확인하여 적용되는 추가 배송비 금액을 알려주시겠습니까?",
+                "aiStatus": "partial",
+                "aiReason": "상담원은 제주도는 3,000원이고 다른 지역은 무료라는 일반 요금 정보를 제공했으나 고객님의 배송 지역을 확인하지 못했다고 밝혀 주문별 적용 금액은 제시되지 않음.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [],
+            "history": [
+              {
+                "id": "fb6e0f4f-7301-45ce-aa49-d5d956bbdcdf",
+                "at": "2026-11-14T05:31:05.580Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 0개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T05:31:05.580Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "7db0695e-6899-460f-9fdb-0fea3e152e0f",
+                "at": "2026-11-14T05:30:57.475Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객은 자신의 주문에 적용되는 추가 배송비 금액을 물었고, 상담원은 제주도·기본 요금 정보를 제시했으나 고객 주문의 배송지역을 확인하지 못해 금액을 확정하지 못함.",
+            "warnings": [],
+            "analyzedMessageCount": 2,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 1595,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cache_write_tokens_details": {
+                    "ttl_12h_tokens": 0,
+                    "ttl_30m_tokens": 0
+                  },
+                  "cached_tokens": 1408
+                },
+                "output_tokens": 753,
+                "output_tokens_details": {
+                  "reasoning_tokens": 448
+                },
+                "total_tokens": 2348
+              },
+              "at": "2026-11-14T05:31:05.580Z",
+              "comparison": {
+                "at": "2026-11-14T05:31:05.580Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 2,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "배송비",
+                  "status": "partial",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "actual": {
+                  "id": "e2d6c145-1fe9-4e0a-9143-70425adeb96a",
+                  "title": "내 주문에 적용되는 추가 배송비 금액 문의",
+                  "status": "partial",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 1,
+              "expectedPromises": 0,
+              "correctPromises": 0,
+              "references": 2,
+              "grounded": 2
+            }
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "low",
+          "ms": 8105,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1595,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 1408
+            },
+            "output_tokens": 753,
+            "output_tokens_details": {
+              "reasoning_tokens": 448
+            },
+            "total_tokens": 2348
+          },
+          "data": {
+            "summary": "고객은 자신의 주문에 적용되는 추가 배송비 금액을 물었고, 상담원은 제주도·기본 요금 정보를 제시했으나 고객 주문의 배송지역을 확인하지 못해 금액을 확정하지 못함.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "내 주문에 적용되는 추가 배송비 금액 문의",
+                "source": {
+                  "messageId": "f84cf14b-25d5-4b79-b8b7-6ed5f86a0131",
+                  "quote": "제 주문의 추가 배송비는 얼마인가요?"
+                },
+                "reason": "상담원은 제주도는 3,000원이고 다른 지역은 무료라는 일반 요금 정보를 제공했으나 고객님의 배송 지역을 확인하지 못했다고 밝혀 주문별 적용 금액은 제시되지 않음.",
+                "status": "partial",
+                "evidence": [
+                  {
+                    "messageId": "c7bf65ca-12a6-4273-9001-33afcd53071a",
+                    "quote": "제주도는 추가 배송비 3,000원이고 다른 지역은 무료입니다. 고객님의 배송 지역은 아직 확인하지 못했습니다."
+                  }
+                ],
+                "followUp": "제 주문의 배송지역을 확인하여 적용되는 추가 배송비 금액을 알려주시겠습니까?"
+              }
+            ],
+            "promises": []
+          }
+        },
+        {
+          "name": "replytrack_draft",
+          "reasoningEffort": "low",
+          "ms": 5035,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1049,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 409,
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "total_tokens": 1458
+          },
+          "data": {
+            "body": "이전 답변에서 제주도는 추가 배송비 3,000원이고 다른 지역은 무료라고 안내받았습니다만, 제 주문에 적용되는 추가 배송비 금액을 확인해 알려주시겠습니까? 상담원님께서 제 배송지역을 아직 확인하지 못하셨다고 하셨으니, 제 주문의 배송지역을 확인하신 뒤 적용되는 추가 배송비 금액만 알려주시면 됩니다.",
+            "sourceMessageIds": [
+              "f84cf14b-25d5-4b79-b8b7-6ed5f86a0131",
+              "c7bf65ca-12a6-4273-9001-33afcd53071a"
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "reasoningEffort": "medium",
+          "ms": 10425,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1030,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 693,
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            },
+            "total_tokens": 1723
+          },
+          "data": {
+            "valid": true,
+            "feedback": ""
+          }
+        }
+      ],
+      "draft": {
+        "kind": "followup",
+        "body": "이전 답변에서 제주도는 추가 배송비 3,000원이고 다른 지역은 무료라고 안내받았습니다만, 제 주문에 적용되는 추가 배송비 금액을 확인해 알려주시겠습니까? 상담원님께서 제 배송지역을 아직 확인하지 못하셨다고 하셨으니, 제 주문의 배송지역을 확인하신 뒤 적용되는 추가 배송비 금액만 알려주시면 됩니다.",
+        "sourceMessageIds": [
+          "f84cf14b-25d5-4b79-b8b7-6ed5f86a0131",
+          "c7bf65ca-12a6-4273-9001-33afcd53071a"
+        ],
+        "at": "2026-11-14T05:31:21.042Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 1
+        },
+        "semanticReview": "pending independent semantic review"
+      }
+    },
+    {
+      "id": "S06",
+      "category": "배송",
+      "title": "명시적 정정과 발송 완료 통보",
+      "stages": [
+        {
+          "record": {
+            "id": "beb994db-4815-412a-ae02-09fa527014bf",
+            "title": "명시적 정정과 발송 완료 통보",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T05:31:19.251Z",
+            "updatedAt": "2026-11-14T05:31:27.807Z",
+            "messages": [
+              {
+                "id": "668d62bd-83ec-4045-8fdd-b1f8a9db3d53",
+                "role": "customer",
+                "text": "배송비는 얼마인가요? 발송됐나요?",
+                "sentAt": null
+              },
+              {
+                "id": "32bed40c-8b8d-4b87-b4e4-0859342e29d4",
+                "role": "agent",
+                "text": "배송비는 3,000원입니다. 발송 여부는 확인해서 안내하겠습니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "39e1d9b2-16e0-45f6-b030-c8f2d545d396",
+                "title": "배송비 금액 문의",
+                "source": {
+                  "messageId": "668d62bd-83ec-4045-8fdd-b1f8a9db3d53",
+                  "quote": "배송비는 얼마인가요?"
+                },
+                "status": "answered",
+                "reason": "상담원이 '배송비는 3,000원입니다.'라고 명확히 제공했으므로 배송비 금액 정보는 제시되었고 추가 정보는 필요 없습니다.",
+                "evidence": [
+                  {
+                    "messageId": "32bed40c-8b8d-4b87-b4e4-0859342e29d4",
+                    "quote": "배송비는 3,000원입니다."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "answered",
+                "aiReason": "상담원이 '배송비는 3,000원입니다.'라고 명확히 제공했으므로 배송비 금액 정보는 제시되었고 추가 정보는 필요 없습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              },
+              {
+                "id": "490c0a44-eb7a-466f-810c-b581489fa11e",
+                "title": "발송 여부 확인 요청",
+                "source": {
+                  "messageId": "668d62bd-83ec-4045-8fdd-b1f8a9db3d53",
+                  "quote": "발송됐나요?"
+                },
+                "status": "waiting",
+                "reason": "상담원은 발송 여부에 대해 확인 후 안내하겠다고 약속했으나(확정된 발송일/상태는 제시되지 않음) 실제 발송 여부 정보는 제공되지 않았습니다. 따라서 추가 확인 후 안내 약속이 있어 waiting입니다.",
+                "evidence": [
+                  {
+                    "messageId": "32bed40c-8b8d-4b87-b4e4-0859342e29d4",
+                    "quote": "발송 여부는 확인해서 안내하겠습니다."
+                  }
+                ],
+                "followUp": "발송 여부를 확인해서 알려주시겠습니까?",
+                "aiStatus": "waiting",
+                "aiReason": "상담원은 발송 여부에 대해 확인 후 안내하겠다고 약속했으나(확정된 발송일/상태는 제시되지 않음) 실제 발송 여부 정보는 제공되지 않았습니다. 따라서 추가 확인 후 안내 약속이 있어 waiting입니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [
+              {
+                "id": "9280a0e9-0fe3-435a-941e-55daec4710b6",
+                "title": "발송 여부 확인 및 안내",
+                "questionIds": [
+                  "490c0a44-eb7a-466f-810c-b581489fa11e"
+                ],
+                "evidence": {
+                  "messageId": "32bed40c-8b8d-4b87-b4e4-0859342e29d4",
+                  "quote": "발송 여부는 확인해서 안내하겠습니다."
+                },
+                "dueText": "",
+                "dueAt": null,
+                "state": "promised",
+                "confirmedAt": null
+              }
+            ],
+            "history": [
+              {
+                "id": "240bef95-a792-4000-9f16-e685e194002a",
+                "at": "2026-11-14T05:31:27.807Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "2개 질문 · 1개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T05:31:27.807Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "fe60d6f6-eeec-4565-bc13-6435bb41e452",
+                "at": "2026-11-14T05:31:19.251Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객의 '배송비'와 '발송 여부' 문의를 분리하여 평가했습니다. 배송비 금액은 응답으로 충족되었고(answered), 발송 여부는 확인 후 안내 약속이 있어 대기 상태(waiting)로 처리했습니다. 발송 여부 확인에 대한 약속 항목을 생성했습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 2,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 1587,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cache_write_tokens_details": {
+                    "ttl_12h_tokens": 0,
+                    "ttl_30m_tokens": 0
+                  },
+                  "cached_tokens": 0
+                },
+                "output_tokens": 828,
+                "output_tokens_details": {
+                  "reasoning_tokens": 256
+                },
+                "total_tokens": 2415
+              },
+              "at": "2026-11-14T05:31:27.807Z",
+              "comparison": {
+                "at": "2026-11-14T05:31:27.807Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 2,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "배송비",
+                  "status": "answered",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "actual": {
+                  "id": "39e1d9b2-16e0-45f6-b030-c8f2d545d396",
+                  "title": "배송비 금액 문의",
+                  "status": "answered",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "evidenceOK": true
+              },
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "발송",
+                  "status": "waiting",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "actual": {
+                  "id": "490c0a44-eb7a-466f-810c-b581489fa11e",
+                  "title": "발송 여부 확인 요청",
+                  "status": "waiting",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [
+              {
+                "gold": {
+                  "message": 1,
+                  "topic": "발송|안내",
+                  "state": "promised",
+                  "dueAt": null,
+                  "deadline": ""
+                },
+                "actual": {
+                  "id": "9280a0e9-0fe3-435a-941e-55daec4710b6",
+                  "title": "발송 여부 확인 및 안내",
+                  "state": "promised",
+                  "dueAt": null,
+                  "dueText": "",
+                  "confirmedAt": null
+                },
+                "ok": true
+              }
+            ],
+            "metrics": {
+              "expectedQuestions": 2,
+              "found": 2,
+              "correct": 2,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 2,
+              "expectedPromises": 1,
+              "correctPromises": 1,
+              "references": 5,
+              "grounded": 5
+            }
+          }
+        },
+        {
+          "record": {
+            "id": "beb994db-4815-412a-ae02-09fa527014bf",
+            "title": "명시적 정정과 발송 완료 통보",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T05:31:19.251Z",
+            "updatedAt": "2026-11-14T05:31:37.362Z",
+            "messages": [
+              {
+                "id": "668d62bd-83ec-4045-8fdd-b1f8a9db3d53",
+                "role": "customer",
+                "text": "배송비는 얼마인가요? 발송됐나요?",
+                "sentAt": null
+              },
+              {
+                "id": "32bed40c-8b8d-4b87-b4e4-0859342e29d4",
+                "role": "agent",
+                "text": "배송비는 3,000원입니다. 발송 여부는 확인해서 안내하겠습니다.",
+                "sentAt": null
+              },
+              {
+                "id": "a41bdd14-b0d6-43ac-9578-34529fc987bf",
+                "role": "agent",
+                "text": "앞선 배송비 안내를 정정합니다. 배송비는 무료입니다. 요청하신 발송 여부 확인을 완료했습니다. 조회한 현재 상태는 운송 중입니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "39e1d9b2-16e0-45f6-b030-c8f2d545d396",
+                "title": "배송비 금액 문의",
+                "source": {
+                  "messageId": "668d62bd-83ec-4045-8fdd-b1f8a9db3d53",
+                  "quote": "배송비는 얼마인가요?"
+                },
+                "status": "answered",
+                "reason": "초기 응답에서 '배송비는 3,000원'이라고 안내했으나 이후 상담원이 이를 정정하여 '배송비는 무료입니다.'라고 명확히 제공했으므로 최종적으로 배송비 무료 정보가 제시되었습니다.",
+                "evidence": [
+                  {
+                    "messageId": "a41bdd14-b0d6-43ac-9578-34529fc987bf",
+                    "quote": "앞선 배송비 안내를 정정합니다. 배송비는 무료입니다."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "answered",
+                "aiReason": "초기 응답에서 '배송비는 3,000원'이라고 안내했으나 이후 상담원이 이를 정정하여 '배송비는 무료입니다.'라고 명확히 제공했으므로 최종적으로 배송비 무료 정보가 제시되었습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              },
+              {
+                "id": "490c0a44-eb7a-466f-810c-b581489fa11e",
+                "title": "발송 여부 확인 요청",
+                "source": {
+                  "messageId": "668d62bd-83ec-4045-8fdd-b1f8a9db3d53",
+                  "quote": "발송됐나요?"
+                },
+                "status": "answered",
+                "reason": "상담원이 처음에는 '발송 여부는 확인해서 안내하겠습니다.'라고 약속했으나 이후 발송 여부 확인을 완료했다고 통지하며 현재 상태를 '운송 중'이라고 구체적으로 제공했으므로 발송 여부 질문에 대한 정보가 제시되었습니다.",
+                "evidence": [
+                  {
+                    "messageId": "a41bdd14-b0d6-43ac-9578-34529fc987bf",
+                    "quote": "요청하신 발송 여부 확인을 완료했습니다. 조회한 현재 상태는 운송 중입니다."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "answered",
+                "aiReason": "상담원이 처음에는 '발송 여부는 확인해서 안내하겠습니다.'라고 약속했으나 이후 발송 여부 확인을 완료했다고 통지하며 현재 상태를 '운송 중'이라고 구체적으로 제공했으므로 발송 여부 질문에 대한 정보가 제시되었습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [
+              {
+                "id": "9280a0e9-0fe3-435a-941e-55daec4710b6",
+                "title": "발송 여부 확인 및 안내",
+                "questionIds": [
+                  "490c0a44-eb7a-466f-810c-b581489fa11e"
+                ],
+                "evidence": {
+                  "messageId": "a41bdd14-b0d6-43ac-9578-34529fc987bf",
+                  "quote": "요청하신 발송 여부 확인을 완료했습니다. 조회한 현재 상태는 운송 중입니다."
+                },
+                "dueText": "",
+                "dueAt": null,
+                "state": "reported",
+                "confirmedAt": null
+              }
+            ],
+            "history": [
+              {
+                "id": "b6e6a67a-4f42-45f7-9d91-b1cf9edb45f0",
+                "at": "2026-11-14T05:31:37.362Z",
+                "type": "analysis",
+                "label": "새 답변을 확인표에 반영했어요",
+                "details": "발송 여부 확인 요청: 답변 대기 → 답변 받음",
+                "comparison": {
+                  "at": "2026-11-14T05:31:37.362Z",
+                  "kind": "reply",
+                  "fromMessageCount": 2,
+                  "toMessageCount": 3,
+                  "messageIds": [
+                    "a41bdd14-b0d6-43ac-9578-34529fc987bf"
+                  ],
+                  "questions": [
+                    {
+                      "id": "490c0a44-eb7a-466f-810c-b581489fa11e",
+                      "title": "발송 여부 확인 요청",
+                      "before": {
+                        "status": "waiting",
+                        "aiStatus": "waiting",
+                        "manualStatus": null
+                      },
+                      "after": {
+                        "status": "answered",
+                        "aiStatus": "answered",
+                        "manualStatus": null
+                      },
+                      "evidenceMessageIds": [
+                        "a41bdd14-b0d6-43ac-9578-34529fc987bf"
+                      ]
+                    }
+                  ],
+                  "promises": [
+                    {
+                      "id": "9280a0e9-0fe3-435a-941e-55daec4710b6",
+                      "title": "발송 여부 확인 및 안내",
+                      "before": {
+                        "title": "발송 여부 확인 및 안내",
+                        "state": "promised",
+                        "dueAt": null,
+                        "dueText": "",
+                        "confirmedAt": null
+                      },
+                      "after": {
+                        "title": "발송 여부 확인 및 안내",
+                        "state": "reported",
+                        "dueAt": null,
+                        "dueText": "",
+                        "confirmedAt": null
+                      },
+                      "fields": [
+                        "state"
+                      ],
+                      "evidenceMessageIds": [
+                        "a41bdd14-b0d6-43ac-9578-34529fc987bf"
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "997d8ff4-c53f-473f-bbf0-cd8a8c804551",
+                "at": "2026-11-14T05:31:27.808Z",
+                "type": "message",
+                "label": "고객센터의 새 답변을 저장했어요",
+                "details": "분석 전에도 원문은 보존됩니다."
+              },
+              {
+                "id": "240bef95-a792-4000-9f16-e685e194002a",
+                "at": "2026-11-14T05:31:27.807Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "2개 질문 · 1개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T05:31:27.807Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "fe60d6f6-eeec-4565-bc13-6435bb41e452",
+                "at": "2026-11-14T05:31:19.251Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객의 '배송비'와 '발송 여부' 질문에 대해 상담원이 최초 응답을 정정하여 배송비는 무료임을 확정했고, 발송 여부 확인도 완료되어 현재 운송 중임을 안내함. 기존 질문과 약속을 최신 상태로 반영함.",
+            "warnings": [],
+            "analyzedMessageCount": 3,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 2287,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cache_write_tokens_details": {
+                    "ttl_12h_tokens": 0,
+                    "ttl_30m_tokens": 0
+                  },
+                  "cached_tokens": 0
+                },
+                "output_tokens": 884,
+                "output_tokens_details": {
+                  "reasoning_tokens": 256
+                },
+                "total_tokens": 3171
+              },
+              "at": "2026-11-14T05:31:37.362Z",
+              "comparison": {
+                "at": "2026-11-14T05:31:37.362Z",
+                "kind": "reply",
+                "fromMessageCount": 2,
+                "toMessageCount": 3,
+                "messageIds": [
+                  "a41bdd14-b0d6-43ac-9578-34529fc987bf"
+                ],
+                "questions": [
+                  {
+                    "id": "490c0a44-eb7a-466f-810c-b581489fa11e",
+                    "title": "발송 여부 확인 요청",
+                    "before": {
+                      "status": "waiting",
+                      "aiStatus": "waiting",
+                      "manualStatus": null
+                    },
+                    "after": {
+                      "status": "answered",
+                      "aiStatus": "answered",
+                      "manualStatus": null
+                    },
+                    "evidenceMessageIds": [
+                      "a41bdd14-b0d6-43ac-9578-34529fc987bf"
+                    ]
+                  }
+                ],
+                "promises": [
+                  {
+                    "id": "9280a0e9-0fe3-435a-941e-55daec4710b6",
+                    "title": "발송 여부 확인 및 안내",
+                    "before": {
+                      "title": "발송 여부 확인 및 안내",
+                      "state": "promised",
+                      "dueAt": null,
+                      "dueText": "",
+                      "confirmedAt": null
+                    },
+                    "after": {
+                      "title": "발송 여부 확인 및 안내",
+                      "state": "reported",
+                      "dueAt": null,
+                      "dueText": "",
+                      "confirmedAt": null
+                    },
+                    "fields": [
+                      "state"
+                    ],
+                    "evidenceMessageIds": [
+                      "a41bdd14-b0d6-43ac-9578-34529fc987bf"
+                    ]
+                  }
+                ]
+              }
+            },
+            "version": 4
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "배송비",
+                  "status": "answered",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "actual": {
+                  "id": "39e1d9b2-16e0-45f6-b030-c8f2d545d396",
+                  "title": "배송비 금액 문의",
+                  "status": "answered",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "evidenceOK": true
+              },
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "발송",
+                  "status": "answered",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "actual": {
+                  "id": "490c0a44-eb7a-466f-810c-b581489fa11e",
+                  "title": "발송 여부 확인 요청",
+                  "status": "answered",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [
+              {
+                "gold": {
+                  "message": 2,
+                  "topic": "발송|확인",
+                  "state": "reported",
+                  "dueAt": null,
+                  "deadline": ""
+                },
+                "actual": {
+                  "id": "9280a0e9-0fe3-435a-941e-55daec4710b6",
+                  "title": "발송 여부 확인 및 안내",
+                  "state": "reported",
+                  "dueAt": null,
+                  "dueText": "",
+                  "confirmedAt": null
+                },
+                "ok": true
+              }
+            ],
+            "metrics": {
+              "expectedQuestions": 2,
+              "found": 2,
+              "correct": 2,
+              "falseAnswered": 0,
+              "expectedUnresolved": 0,
+              "evidenceCorrect": 2,
+              "expectedPromises": 1,
+              "correctPromises": 1,
+              "references": 5,
+              "grounded": 5
+            }
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "low",
+          "ms": 8556,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1587,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 828,
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            },
+            "total_tokens": 2415
+          },
+          "data": {
+            "summary": "고객의 '배송비'와 '발송 여부' 문의를 분리하여 평가했습니다. 배송비 금액은 응답으로 충족되었고(answered), 발송 여부는 확인 후 안내 약속이 있어 대기 상태(waiting)로 처리했습니다. 발송 여부 확인에 대한 약속 항목을 생성했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "배송비 금액 문의",
+                "source": {
+                  "messageId": "668d62bd-83ec-4045-8fdd-b1f8a9db3d53",
+                  "quote": "배송비는 얼마인가요?"
+                },
+                "reason": "상담원이 '배송비는 3,000원입니다.'라고 명확히 제공했으므로 배송비 금액 정보는 제시되었고 추가 정보는 필요 없습니다.",
+                "status": "answered",
+                "evidence": [
+                  {
+                    "messageId": "32bed40c-8b8d-4b87-b4e4-0859342e29d4",
+                    "quote": "배송비는 3,000원입니다."
+                  }
+                ],
+                "followUp": ""
+              },
+              {
+                "id": "new-q-2",
+                "title": "발송 여부 확인 요청",
+                "source": {
+                  "messageId": "668d62bd-83ec-4045-8fdd-b1f8a9db3d53",
+                  "quote": "발송됐나요?"
+                },
+                "reason": "상담원은 발송 여부에 대해 확인 후 안내하겠다고 약속했으나(확정된 발송일/상태는 제시되지 않음) 실제 발송 여부 정보는 제공되지 않았습니다. 따라서 추가 확인 후 안내 약속이 있어 waiting입니다.",
+                "status": "waiting",
+                "evidence": [
+                  {
+                    "messageId": "32bed40c-8b8d-4b87-b4e4-0859342e29d4",
+                    "quote": "발송 여부는 확인해서 안내하겠습니다."
+                  }
+                ],
+                "followUp": "발송 여부를 확인해서 알려주시겠습니까?"
+              }
+            ],
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "발송 여부 확인 및 안내",
+                "questionIds": [
+                  "new-q-2"
+                ],
+                "evidence": {
+                  "messageId": "32bed40c-8b8d-4b87-b4e4-0859342e29d4",
+                  "quote": "발송 여부는 확인해서 안내하겠습니다."
+                },
+                "dueText": "",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          }
+        },
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "low",
+          "ms": 9554,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 2287,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 884,
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            },
+            "total_tokens": 3171
+          },
+          "data": {
+            "summary": "고객의 '배송비'와 '발송 여부' 질문에 대해 상담원이 최초 응답을 정정하여 배송비는 무료임을 확정했고, 발송 여부 확인도 완료되어 현재 운송 중임을 안내함. 기존 질문과 약속을 최신 상태로 반영함.",
+            "questions": [
+              {
+                "id": "39e1d9b2-16e0-45f6-b030-c8f2d545d396",
+                "title": "배송비 금액 문의",
+                "source": {
+                  "messageId": "668d62bd-83ec-4045-8fdd-b1f8a9db3d53",
+                  "quote": "배송비는 얼마인가요?"
+                },
+                "reason": "초기 응답에서 '배송비는 3,000원'이라고 안내했으나 이후 상담원이 이를 정정하여 '배송비는 무료입니다.'라고 명확히 제공했으므로 최종적으로 배송비 무료 정보가 제시되었습니다.",
+                "status": "answered",
+                "evidence": [
+                  {
+                    "messageId": "a41bdd14-b0d6-43ac-9578-34529fc987bf",
+                    "quote": "앞선 배송비 안내를 정정합니다. 배송비는 무료입니다."
+                  }
+                ],
+                "followUp": ""
+              },
+              {
+                "id": "490c0a44-eb7a-466f-810c-b581489fa11e",
+                "title": "발송 여부 확인 요청",
+                "source": {
+                  "messageId": "668d62bd-83ec-4045-8fdd-b1f8a9db3d53",
+                  "quote": "발송됐나요?"
+                },
+                "reason": "상담원이 처음에는 '발송 여부는 확인해서 안내하겠습니다.'라고 약속했으나 이후 발송 여부 확인을 완료했다고 통지하며 현재 상태를 '운송 중'이라고 구체적으로 제공했으므로 발송 여부 질문에 대한 정보가 제시되었습니다.",
+                "status": "answered",
+                "evidence": [
+                  {
+                    "messageId": "a41bdd14-b0d6-43ac-9578-34529fc987bf",
+                    "quote": "요청하신 발송 여부 확인을 완료했습니다. 조회한 현재 상태는 운송 중입니다."
+                  }
+                ],
+                "followUp": ""
+              }
+            ],
+            "promises": [
+              {
+                "id": "9280a0e9-0fe3-435a-941e-55daec4710b6",
+                "title": "발송 여부 확인 및 안내",
+                "questionIds": [
+                  "490c0a44-eb7a-466f-810c-b581489fa11e"
+                ],
+                "evidence": {
+                  "messageId": "a41bdd14-b0d6-43ac-9578-34529fc987bf",
+                  "quote": "요청하신 발송 여부 확인을 완료했습니다. 조회한 현재 상태는 운송 중입니다."
+                },
+                "dueText": "",
+                "deadlineCleared": false,
+                "state": "reported"
+              }
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft",
+          "reasoningEffort": "low",
+          "ms": 6276,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1475,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 460,
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            },
+            "total_tokens": 1935
+          },
+          "data": {
+            "body": "현재 상황 요약드립니다. 처음에는 배송비를 3,000원이라고 안내받았으나 이후 안내가 정정되어 배송비는 무료라고 안내받았습니다. 발송 여부는 확인 완료되었고, 조회 결과 현재 배송 상태는 ‘운송 중’이라고 안내받았습니다. 미해결 질문은 없습니다. 업체가 발송 여부 확인을 완료했다고 보고한 상태이며, 실제 수령 여부나 추가 조치는 제가 직접 확인하겠습니다.",
+            "sourceMessageIds": [
+              "668d62bd-83ec-4045-8fdd-b1f8a9db3d53",
+              "32bed40c-8b8d-4b87-b4e4-0859342e29d4",
+              "a41bdd14-b0d6-43ac-9578-34529fc987bf"
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "reasoningEffort": "medium",
+          "ms": 10439,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1487,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 855,
+            "output_tokens_details": {
+              "reasoning_tokens": 832
+            },
+            "total_tokens": 2342
+          },
+          "data": {
+            "valid": true,
+            "feedback": ""
+          }
+        }
+      ],
+      "draft": {
+        "kind": "handoff",
+        "body": "현재 상황 요약드립니다. 처음에는 배송비를 3,000원이라고 안내받았으나 이후 안내가 정정되어 배송비는 무료라고 안내받았습니다. 발송 여부는 확인 완료되었고, 조회 결과 현재 배송 상태는 ‘운송 중’이라고 안내받았습니다. 미해결 질문은 없습니다. 업체가 발송 여부 확인을 완료했다고 보고한 상태이며, 실제 수령 여부나 추가 조치는 제가 직접 확인하겠습니다.",
+        "sourceMessageIds": [
+          "668d62bd-83ec-4045-8fdd-b1f8a9db3d53",
+          "32bed40c-8b8d-4b87-b4e4-0859342e29d4",
+          "a41bdd14-b0d6-43ac-9578-34529fc987bf"
+        ],
+        "at": "2026-11-14T05:31:54.077Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 1
+        },
+        "semanticReview": "pending independent semantic review"
+      }
+    },
+    {
+      "id": "R02",
+      "category": "환불",
+      "title": "반품비만 안내하고 환불액 누락",
+      "stages": [
+        {
+          "record": {
+            "id": "ab502f0f-0a0d-45dc-9412-19f078d6d144",
+            "title": "반품비만 안내하고 환불액 누락",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T05:31:21.043Z",
+            "updatedAt": "2026-11-14T05:31:27.127Z",
+            "messages": [
+              {
+                "id": "b87ad0fd-c60f-460f-812f-82a9aca41c11",
+                "role": "customer",
+                "text": "반품비는 얼마인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "da4707e1-86d7-41df-8bb6-d753773a3b9f",
+                "role": "customer",
+                "text": "최종 환불액은 얼마인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "c5632a6e-e1bb-478a-b762-e68198b4a800",
+                "role": "agent",
+                "text": "반품비는 5,000원입니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "8267f3ba-1775-45ba-9d05-7312366e6669",
+                "title": "반품비 금액 문의",
+                "source": {
+                  "messageId": "b87ad0fd-c60f-460f-812f-82a9aca41c11",
+                  "quote": "반품비는 얼마인가요?"
+                },
+                "status": "answered",
+                "reason": "고객은 반품비의 금액을 묻고 있으며, 상담원이 '반품비는 5,000원입니다.'라고 구체적 금액을 제시했으므로 요청한 정보가 모두 제공됨.",
+                "evidence": [
+                  {
+                    "messageId": "c5632a6e-e1bb-478a-b762-e68198b4a800",
+                    "quote": "반품비는 5,000원입니다."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "answered",
+                "aiReason": "고객은 반품비의 금액을 묻고 있으며, 상담원이 '반품비는 5,000원입니다.'라고 구체적 금액을 제시했으므로 요청한 정보가 모두 제공됨.",
+                "manualStatus": null,
+                "manualTitle": null
+              },
+              {
+                "id": "18111982-0c0a-4e8c-a4ad-e092d6b6932d",
+                "title": "최종 환불액 문의",
+                "source": {
+                  "messageId": "da4707e1-86d7-41df-8bb6-d753773a3b9f",
+                  "quote": "최종 환불액은 얼마인가요?"
+                },
+                "status": "unanswered",
+                "reason": "고객은 최종 환불액(최종적으로 고객이 받게 될 환불 금액)을 묻고 있으나, 상담원 메시지에서 해당 금액이나 계산 근거에 대한 정보가 전혀 제공되지 않음.",
+                "evidence": [],
+                "followUp": "최종 환불액(고객이 실제로 돌려받게 될 금액)을 알려주시겠습니까?",
+                "aiStatus": "unanswered",
+                "aiReason": "고객은 최종 환불액(최종적으로 고객이 받게 될 환불 금액)을 묻고 있으나, 상담원 메시지에서 해당 금액이나 계산 근거에 대한 정보가 전혀 제공되지 않음.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [],
+            "history": [
+              {
+                "id": "f8ebf293-371f-4e26-815b-59884adc15d7",
+                "at": "2026-11-14T05:31:27.127Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "2개 질문 · 0개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T05:31:27.127Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 3,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "c2f43568-ab8d-4360-80a3-a8824b5f8504",
+                "at": "2026-11-14T05:31:21.043Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "3개 메시지 등록"
+              }
+            ],
+            "summary": "고객의 두 질문(반품비 금액, 최종 환불액)을 분리하고, 반품비에 대해서는 답변이 제시되어 answered로 처리하였고, 최종 환불액은 답변이 없어 unanswered로 처리했습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 3,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 1617,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cache_write_tokens_details": {
+                    "ttl_12h_tokens": 0,
+                    "ttl_30m_tokens": 0
+                  },
+                  "cached_tokens": 0
+                },
+                "output_tokens": 557,
+                "output_tokens_details": {
+                  "reasoning_tokens": 128
+                },
+                "total_tokens": 2174
+              },
+              "at": "2026-11-14T05:31:27.127Z",
+              "comparison": {
+                "at": "2026-11-14T05:31:27.127Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 3,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "반품비",
+                  "status": "answered",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "actual": {
+                  "id": "8267f3ba-1775-45ba-9d05-7312366e6669",
+                  "title": "반품비 금액 문의",
+                  "status": "answered",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "evidenceOK": true
+              },
+              {
+                "gold": {
+                  "message": 1,
+                  "topic": "환불",
+                  "status": "unanswered",
+                  "evidence": []
+                },
+                "actual": {
+                  "id": "18111982-0c0a-4e8c-a4ad-e092d6b6932d",
+                  "title": "최종 환불액 문의",
+                  "status": "unanswered",
+                  "evidence": []
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [],
+            "metrics": {
+              "expectedQuestions": 2,
+              "found": 2,
+              "correct": 2,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 2,
+              "expectedPromises": 0,
+              "correctPromises": 0,
+              "references": 3,
+              "grounded": 3
+            }
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "low",
+          "ms": 6084,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1617,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 557,
+            "output_tokens_details": {
+              "reasoning_tokens": 128
+            },
+            "total_tokens": 2174
+          },
+          "data": {
+            "summary": "고객의 두 질문(반품비 금액, 최종 환불액)을 분리하고, 반품비에 대해서는 답변이 제시되어 answered로 처리하였고, 최종 환불액은 답변이 없어 unanswered로 처리했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "반품비 금액 문의",
+                "source": {
+                  "messageId": "b87ad0fd-c60f-460f-812f-82a9aca41c11",
+                  "quote": "반품비는 얼마인가요?"
+                },
+                "reason": "고객은 반품비의 금액을 묻고 있으며, 상담원이 '반품비는 5,000원입니다.'라고 구체적 금액을 제시했으므로 요청한 정보가 모두 제공됨.",
+                "status": "answered",
+                "evidence": [
+                  {
+                    "messageId": "c5632a6e-e1bb-478a-b762-e68198b4a800",
+                    "quote": "반품비는 5,000원입니다."
+                  }
+                ],
+                "followUp": ""
+              },
+              {
+                "id": "new-q-2",
+                "title": "최종 환불액 문의",
+                "source": {
+                  "messageId": "da4707e1-86d7-41df-8bb6-d753773a3b9f",
+                  "quote": "최종 환불액은 얼마인가요?"
+                },
+                "reason": "고객은 최종 환불액(최종적으로 고객이 받게 될 환불 금액)을 묻고 있으나, 상담원 메시지에서 해당 금액이나 계산 근거에 대한 정보가 전혀 제공되지 않음.",
+                "status": "unanswered",
+                "evidence": [],
+                "followUp": "최종 환불액(고객이 실제로 돌려받게 될 금액)을 알려주시겠습니까?"
+              }
+            ],
+            "promises": []
+          }
+        },
+        {
+          "name": "replytrack_draft",
+          "reasoningEffort": "low",
+          "ms": 7345,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1011,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 602,
+            "output_tokens_details": {
+              "reasoning_tokens": 384
+            },
+            "total_tokens": 1613
+          },
+          "data": {
+            "body": "최종 환불액(고객이 실제로 돌려받게 될 금액)을 알려주시겠습니까? 이전에 반품비가 5,000원이라고 안내받았습니다만(c5632a6e-e1bb-478a-b762-e68198b4a800), 그 금액을 반영한 최종 환불액과 계산 내역을 제시해 주세요.",
+            "sourceMessageIds": [
+              "da4707e1-86d7-41df-8bb6-d753773a3b9f",
+              "c5632a6e-e1bb-478a-b762-e68198b4a800",
+              "b87ad0fd-c60f-460f-812f-82a9aca41c11"
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft",
+          "reasoningEffort": "low",
+          "ms": 7378,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1201,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 606,
+            "output_tokens_details": {
+              "reasoning_tokens": 320
+            },
+            "total_tokens": 1807
+          },
+          "data": {
+            "body": "안내 부탁드립니다. 이전에 반품비가 5,000원이라고 안내받았습니다만(c5632a6e-e1bb-478a-b762-e68198b4a800), 이를 반영한 최종 환불액(내가 실제로 받을 금액)과 그 계산 내역(상품금액, 할인·적립금·쿠폰·배송비·수수료 등 적용 항목별 차감·합산 근거)을 자세히 알려주시겠습니까? 반품비 문의는 처음에 제가 먼저 물어봤습니다(b87ad0fd-c60f-460f-812f-82a9aca41c11).",
+            "sourceMessageIds": [
+              "da4707e1-86d7-41df-8bb6-d753773a3b9f",
+              "c5632a6e-e1bb-478a-b762-e68198b4a800",
+              "b87ad0fd-c60f-460f-812f-82a9aca41c11"
+            ]
+          }
+        }
+      ],
+      "draft": {
+        "kind": "followup",
+        "error": {
+          "code": "DRAFT_FACT",
+          "message": "원문에 없는 숫자나 기한이 초안에 포함되어 제외했습니다. 다시 작성해 주세요."
+        }
+      }
+    },
+    {
+      "id": "R03",
+      "category": "환불",
+      "title": "확정했던 안내 기한을 철회",
+      "stages": [
+        {
+          "record": {
+            "id": "11afbf01-fbc7-4233-8247-58aacf3bb4e4",
+            "title": "확정했던 안내 기한을 철회",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T05:31:41.851Z",
+            "updatedAt": "2026-11-14T05:31:49.679Z",
+            "messages": [
+              {
+                "id": "432dee7d-2a3f-4dfb-84e6-8a006d6300dd",
+                "role": "customer",
+                "text": "환불 예정일이 언제인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "0dea2578-2dd8-4632-9031-93c933294b41",
+                "role": "agent",
+                "text": "환불 예정일을 확인해 2026년 11월 16일까지 안내하겠습니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "b26dbefb-f959-4056-b48b-95086db79144",
+                "title": "환불 예정일 문의",
+                "source": {
+                  "messageId": "432dee7d-2a3f-4dfb-84e6-8a006d6300dd",
+                  "quote": "환불 예정일이 언제인가요?"
+                },
+                "status": "waiting",
+                "reason": "고객은 환불이 예정된 '날짜(언제인지)'를 물었고, 상담원은 환불 예정일을 확인해 알려주겠다고 하며 '2026년 11월 16일까지 안내하겠습니다'라고 약속했으므로 정확한 예정일은 아직 미확정이며 이후 안내 약속이 있음.",
+                "evidence": [
+                  {
+                    "messageId": "0dea2578-2dd8-4632-9031-93c933294b41",
+                    "quote": "환불 예정일을 확인해 2026년 11월 16일까지 안내하겠습니다."
+                  }
+                ],
+                "followUp": "환불 예정일을 2026년 11월 16일까지 안내해 주실 수 있나요?",
+                "aiStatus": "waiting",
+                "aiReason": "고객은 환불이 예정된 '날짜(언제인지)'를 물었고, 상담원은 환불 예정일을 확인해 알려주겠다고 하며 '2026년 11월 16일까지 안내하겠습니다'라고 약속했으므로 정확한 예정일은 아직 미확정이며 이후 안내 약속이 있음.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [
+              {
+                "id": "40f1cefd-63ce-4598-b786-c809a1203bde",
+                "title": "환불 예정일 안내",
+                "questionIds": [
+                  "b26dbefb-f959-4056-b48b-95086db79144"
+                ],
+                "evidence": {
+                  "messageId": "0dea2578-2dd8-4632-9031-93c933294b41",
+                  "quote": "환불 예정일을 확인해 2026년 11월 16일까지 안내하겠습니다."
+                },
+                "dueText": "2026년 11월 16일까지 안내하겠습니다.",
+                "dueAt": "2026-11-16",
+                "state": "promised",
+                "confirmedAt": null
+              }
+            ],
+            "history": [
+              {
+                "id": "992e9df4-58fd-4e40-a6aa-4b26394e4ab0",
+                "at": "2026-11-14T05:31:49.679Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 1개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T05:31:49.679Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "0bdf959d-183c-405a-b233-6c6385f42654",
+                "at": "2026-11-14T05:31:41.851Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객의 '환불 예정일' 문의가 하나이며, 상담원이 '2026년 11월 16일까지 안내하겠다'고 약속한 상태입니다. 질문은 답변 대기 상태이며 해당 약속을 promises로 등록했습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 2,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 1582,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cache_write_tokens_details": {
+                    "ttl_12h_tokens": 0,
+                    "ttl_30m_tokens": 0
+                  },
+                  "cached_tokens": 0
+                },
+                "output_tokens": 782,
+                "output_tokens_details": {
+                  "reasoning_tokens": 320
+                },
+                "total_tokens": 2364
+              },
+              "at": "2026-11-14T05:31:49.679Z",
+              "comparison": {
+                "at": "2026-11-14T05:31:49.679Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 2,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "환불",
+                  "status": "waiting",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "actual": {
+                  "id": "b26dbefb-f959-4056-b48b-95086db79144",
+                  "title": "환불 예정일 문의",
+                  "status": "waiting",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [
+              {
+                "gold": {
+                  "message": 1,
+                  "topic": "안내|확인",
+                  "state": "promised",
+                  "dueAt": "2026-11-16",
+                  "deadline": "2026년 11월 16일"
+                },
+                "actual": {
+                  "id": "40f1cefd-63ce-4598-b786-c809a1203bde",
+                  "title": "환불 예정일 안내",
+                  "state": "promised",
+                  "dueAt": "2026-11-16",
+                  "dueText": "2026년 11월 16일까지 안내하겠습니다.",
+                  "confirmedAt": null
+                },
+                "ok": true
+              }
+            ],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 1,
+              "expectedPromises": 1,
+              "correctPromises": 1,
+              "references": 3,
+              "grounded": 3
+            }
+          }
+        },
+        {
+          "record": {
+            "id": "11afbf01-fbc7-4233-8247-58aacf3bb4e4",
+            "title": "확정했던 안내 기한을 철회",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T05:31:41.851Z",
+            "updatedAt": "2026-11-14T05:31:57.919Z",
+            "messages": [
+              {
+                "id": "432dee7d-2a3f-4dfb-84e6-8a006d6300dd",
+                "role": "customer",
+                "text": "환불 예정일이 언제인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "0dea2578-2dd8-4632-9031-93c933294b41",
+                "role": "agent",
+                "text": "환불 예정일을 확인해 2026년 11월 16일까지 안내하겠습니다.",
+                "sentAt": null
+              },
+              {
+                "id": "dcd9a9ce-56eb-4d1f-bbcd-e82abec6f388",
+                "role": "agent",
+                "text": "앞서 약속한 안내 기한은 취소합니다. 환불 예정일은 확인 중이며 안내는 드리겠지만, 언제 안내할지는 아직 정하지 못했습니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "b26dbefb-f959-4056-b48b-95086db79144",
+                "title": "환불 예정일 문의",
+                "source": {
+                  "messageId": "432dee7d-2a3f-4dfb-84e6-8a006d6300dd",
+                  "quote": "환불 예정일이 언제인가요?"
+                },
+                "status": "waiting",
+                "reason": "고객은 환불의 '예정일(언제인지)'을 물었고, 상담원은 최초에 '2026년 11월 16일까지 안내하겠다'고 약속했다가 그 약속을 취소하고 '환불 예정일은 확인 중이며 안내는 드리겠지만 언제 안내할지는 정하지 못했다'고 밝혀 정확한 예정일은 여전히 미확정이며 향후 안내 약속은 있으나 기한은 없음.",
+                "evidence": [
+                  {
+                    "messageId": "0dea2578-2dd8-4632-9031-93c933294b41",
+                    "quote": "환불 예정일을 확인해 2026년 11월 16일까지 안내하겠습니다."
+                  },
+                  {
+                    "messageId": "dcd9a9ce-56eb-4d1f-bbcd-e82abec6f388",
+                    "quote": "앞서 약속한 안내 기한은 취소합니다. 환불 예정일은 확인 중이며 안내는 드리겠지만, 언제 안내할지는 아직 정하지 못했습니다."
+                  }
+                ],
+                "followUp": "언제까지 환불 예정일을 안내해 주실 예정인지 알려주시겠습니까?",
+                "aiStatus": "waiting",
+                "aiReason": "고객은 환불의 '예정일(언제인지)'을 물었고, 상담원은 최초에 '2026년 11월 16일까지 안내하겠다'고 약속했다가 그 약속을 취소하고 '환불 예정일은 확인 중이며 안내는 드리겠지만 언제 안내할지는 정하지 못했다'고 밝혀 정확한 예정일은 여전히 미확정이며 향후 안내 약속은 있으나 기한은 없음.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [
+              {
+                "id": "40f1cefd-63ce-4598-b786-c809a1203bde",
+                "title": "환불 예정일 안내",
+                "questionIds": [
+                  "b26dbefb-f959-4056-b48b-95086db79144"
+                ],
+                "evidence": {
+                  "messageId": "dcd9a9ce-56eb-4d1f-bbcd-e82abec6f388",
+                  "quote": "앞서 약속한 안내 기한은 취소합니다. 환불 예정일은 확인 중이며 안내는 드리겠지만, 언제 안내할지는 아직 정하지 못했습니다."
+                },
+                "dueText": "",
+                "dueAt": null,
+                "state": "promised",
+                "confirmedAt": null
+              }
+            ],
+            "history": [
+              {
+                "id": "254069c0-0565-4542-a9e0-a63a3038e5a4",
+                "at": "2026-11-14T05:31:57.919Z",
+                "type": "analysis",
+                "label": "새 답변을 확인표에 반영했어요",
+                "details": "질문 변화 0건 · 약속 변화 1건",
+                "comparison": {
+                  "at": "2026-11-14T05:31:57.919Z",
+                  "kind": "reply",
+                  "fromMessageCount": 2,
+                  "toMessageCount": 3,
+                  "messageIds": [
+                    "dcd9a9ce-56eb-4d1f-bbcd-e82abec6f388"
+                  ],
+                  "questions": [],
+                  "promises": [
+                    {
+                      "id": "40f1cefd-63ce-4598-b786-c809a1203bde",
+                      "title": "환불 예정일 안내",
+                      "before": {
+                        "title": "환불 예정일 안내",
+                        "state": "promised",
+                        "dueAt": "2026-11-16",
+                        "dueText": "2026년 11월 16일까지 안내하겠습니다.",
+                        "confirmedAt": null
+                      },
+                      "after": {
+                        "title": "환불 예정일 안내",
+                        "state": "promised",
+                        "dueAt": null,
+                        "dueText": "",
+                        "confirmedAt": null
+                      },
+                      "fields": [
+                        "deadline"
+                      ],
+                      "evidenceMessageIds": [
+                        "dcd9a9ce-56eb-4d1f-bbcd-e82abec6f388"
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "15367b9d-f2d7-4fcc-bdbc-61274ab2c1ca",
+                "at": "2026-11-14T05:31:49.680Z",
+                "type": "message",
+                "label": "고객센터의 새 답변을 저장했어요",
+                "details": "분석 전에도 원문은 보존됩니다."
+              },
+              {
+                "id": "992e9df4-58fd-4e40-a6aa-4b26394e4ab0",
+                "at": "2026-11-14T05:31:49.679Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 1개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T05:31:49.679Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "0bdf959d-183c-405a-b233-6c6385f42654",
+                "at": "2026-11-14T05:31:41.851Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객의 '환불 예정일' 문의에 대해 상담원이 최초 기한을 제시했다가 취소하고 향후 안내 약속만 한 상태입니다. 질문은 여전히 안내를 기다리는 상태이며, 기존 약속은 같은 id로 기한 취소를 반영하여 업데이트합니다.",
+            "warnings": [],
+            "analyzedMessageCount": 3,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 2129,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cache_write_tokens_details": {
+                    "ttl_12h_tokens": 0,
+                    "ttl_30m_tokens": 0
+                  },
+                  "cached_tokens": 0
+                },
+                "output_tokens": 815,
+                "output_tokens_details": {
+                  "reasoning_tokens": 256
+                },
+                "total_tokens": 2944
+              },
+              "at": "2026-11-14T05:31:57.919Z",
+              "comparison": {
+                "at": "2026-11-14T05:31:57.919Z",
+                "kind": "reply",
+                "fromMessageCount": 2,
+                "toMessageCount": 3,
+                "messageIds": [
+                  "dcd9a9ce-56eb-4d1f-bbcd-e82abec6f388"
+                ],
+                "questions": [],
+                "promises": [
+                  {
+                    "id": "40f1cefd-63ce-4598-b786-c809a1203bde",
+                    "title": "환불 예정일 안내",
+                    "before": {
+                      "title": "환불 예정일 안내",
+                      "state": "promised",
+                      "dueAt": "2026-11-16",
+                      "dueText": "2026년 11월 16일까지 안내하겠습니다.",
+                      "confirmedAt": null
+                    },
+                    "after": {
+                      "title": "환불 예정일 안내",
+                      "state": "promised",
+                      "dueAt": null,
+                      "dueText": "",
+                      "confirmedAt": null
+                    },
+                    "fields": [
+                      "deadline"
+                    ],
+                    "evidenceMessageIds": [
+                      "dcd9a9ce-56eb-4d1f-bbcd-e82abec6f388"
+                    ]
+                  }
+                ]
+              }
+            },
+            "version": 4
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "환불",
+                  "status": "waiting",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "actual": {
+                  "id": "b26dbefb-f959-4056-b48b-95086db79144",
+                  "title": "환불 예정일 문의",
+                  "status": "waiting",
+                  "evidence": [
+                    1,
+                    2
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [
+              {
+                "gold": {
+                  "message": 2,
+                  "topic": "안내|확인",
+                  "state": "promised",
+                  "dueAt": null,
+                  "deadline": ""
+                },
+                "actual": {
+                  "id": "40f1cefd-63ce-4598-b786-c809a1203bde",
+                  "title": "환불 예정일 안내",
+                  "state": "promised",
+                  "dueAt": null,
+                  "dueText": "",
+                  "confirmedAt": null
+                },
+                "ok": true
+              }
+            ],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 1,
+              "expectedPromises": 1,
+              "correctPromises": 1,
+              "references": 4,
+              "grounded": 4
+            }
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "low",
+          "ms": 7828,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1582,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 782,
+            "output_tokens_details": {
+              "reasoning_tokens": 320
+            },
+            "total_tokens": 2364
+          },
+          "data": {
+            "summary": "고객의 '환불 예정일' 문의가 하나이며, 상담원이 '2026년 11월 16일까지 안내하겠다'고 약속한 상태입니다. 질문은 답변 대기 상태이며 해당 약속을 promises로 등록했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "환불 예정일 문의",
+                "source": {
+                  "messageId": "432dee7d-2a3f-4dfb-84e6-8a006d6300dd",
+                  "quote": "환불 예정일이 언제인가요?"
+                },
+                "reason": "고객은 환불이 예정된 '날짜(언제인지)'를 물었고, 상담원은 환불 예정일을 확인해 알려주겠다고 하며 '2026년 11월 16일까지 안내하겠습니다'라고 약속했으므로 정확한 예정일은 아직 미확정이며 이후 안내 약속이 있음.",
+                "status": "waiting",
+                "evidence": [
+                  {
+                    "messageId": "0dea2578-2dd8-4632-9031-93c933294b41",
+                    "quote": "환불 예정일을 확인해 2026년 11월 16일까지 안내하겠습니다."
+                  }
+                ],
+                "followUp": "환불 예정일을 2026년 11월 16일까지 안내해 주실 수 있나요?"
+              }
+            ],
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "환불 예정일 안내",
+                "questionIds": [
+                  "new-q-1"
+                ],
+                "evidence": {
+                  "messageId": "0dea2578-2dd8-4632-9031-93c933294b41",
+                  "quote": "환불 예정일을 확인해 2026년 11월 16일까지 안내하겠습니다."
+                },
+                "dueText": "2026년 11월 16일까지 안내하겠습니다.",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          }
+        },
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "low",
+          "ms": 8239,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 2129,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 815,
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            },
+            "total_tokens": 2944
+          },
+          "data": {
+            "summary": "고객의 '환불 예정일' 문의에 대해 상담원이 최초 기한을 제시했다가 취소하고 향후 안내 약속만 한 상태입니다. 질문은 여전히 안내를 기다리는 상태이며, 기존 약속은 같은 id로 기한 취소를 반영하여 업데이트합니다.",
+            "questions": [
+              {
+                "id": "b26dbefb-f959-4056-b48b-95086db79144",
+                "title": "환불 예정일 문의",
+                "source": {
+                  "messageId": "432dee7d-2a3f-4dfb-84e6-8a006d6300dd",
+                  "quote": "환불 예정일이 언제인가요?"
+                },
+                "reason": "고객은 환불의 '예정일(언제인지)'을 물었고, 상담원은 최초에 '2026년 11월 16일까지 안내하겠다'고 약속했다가 그 약속을 취소하고 '환불 예정일은 확인 중이며 안내는 드리겠지만 언제 안내할지는 정하지 못했다'고 밝혀 정확한 예정일은 여전히 미확정이며 향후 안내 약속은 있으나 기한은 없음.",
+                "status": "waiting",
+                "evidence": [
+                  {
+                    "messageId": "0dea2578-2dd8-4632-9031-93c933294b41",
+                    "quote": "환불 예정일을 확인해 2026년 11월 16일까지 안내하겠습니다."
+                  },
+                  {
+                    "messageId": "dcd9a9ce-56eb-4d1f-bbcd-e82abec6f388",
+                    "quote": "앞서 약속한 안내 기한은 취소합니다. 환불 예정일은 확인 중이며 안내는 드리겠지만, 언제 안내할지는 아직 정하지 못했습니다."
+                  }
+                ],
+                "followUp": "언제까지 환불 예정일을 안내해 주실 예정인지 알려주시겠습니까?"
+              }
+            ],
+            "promises": [
+              {
+                "id": "40f1cefd-63ce-4598-b786-c809a1203bde",
+                "title": "환불 예정일 안내",
+                "questionIds": [
+                  "b26dbefb-f959-4056-b48b-95086db79144"
+                ],
+                "evidence": {
+                  "messageId": "dcd9a9ce-56eb-4d1f-bbcd-e82abec6f388",
+                  "quote": "앞서 약속한 안내 기한은 취소합니다. 환불 예정일은 확인 중이며 안내는 드리겠지만, 언제 안내할지는 아직 정하지 못했습니다."
+                },
+                "dueText": "",
+                "deadlineCleared": true,
+                "state": "promised"
+              }
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft",
+          "reasoningEffort": "low",
+          "ms": 12789,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1406,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 546,
+            "output_tokens_details": {
+              "reasoning_tokens": 320
+            },
+            "total_tokens": 1952
+          },
+          "data": {
+            "body": "지난 대화 요약드립니다. 나는 환불 예정일을 문의했고, 처음 상담원은 ‘2026년 11월 16일까지 안내하겠다’고 안내했습니다. 이후 같은 상담원은 그 기한을 취소하고 환불 예정일은 확인 중이며 안내는 하겠지만 언제 안내할지는 정하지 못했다고 안내했습니다. 현재 환불의 정확한 예정일은 확인되지 않았고, 업체는 안내를 약속했으나 기한을 제시하지 않았습니다. 남은 질문은 언제까지 환불 예정일을 안내받을 수 있는지입니다.",
+            "sourceMessageIds": [
+              "432dee7d-2a3f-4dfb-84e6-8a006d6300dd",
+              "0dea2578-2dd8-4632-9031-93c933294b41",
+              "dcd9a9ce-56eb-4d1f-bbcd-e82abec6f388"
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft",
+          "reasoningEffort": "low",
+          "ms": 7288,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1654,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 1280
+            },
+            "output_tokens": 352,
+            "output_tokens_details": {
+              "reasoning_tokens": 64
+            },
+            "total_tokens": 2006
+          },
+          "data": {
+            "body": "상황 요약드립니다. 나는 환불 예정일을 문의했고, 상담원은 처음에 “환불 예정일을 확인해 2026년 11월 16일까지 안내하겠다”라고 안내했습니다. 이후 상담원은 그 약속된 안내 기한을 취소하고 환불 예정일은 “확인 중이며 안내는 드리겠지만 언제 안내할지는 정하지 못했다”라고 정정 안내했습니다. 현재 환불의 정확한 예정일은 확인되지 않았고 업체는 안내를 약속했으나 구체적인 안내 기한은 제시하지 않았습니다. 남은 질문은 환불 예정일을 언제까지 안내받을 수 있는지입니다.",
+            "sourceMessageIds": [
+              "432dee7d-2a3f-4dfb-84e6-8a006d6300dd",
+              "0dea2578-2dd8-4632-9031-93c933294b41",
+              "dcd9a9ce-56eb-4d1f-bbcd-e82abec6f388"
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "reasoningEffort": "medium",
+          "ms": 3947,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1467,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 291,
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            },
+            "total_tokens": 1758
+          },
+          "data": {
+            "valid": true,
+            "feedback": ""
+          }
+        }
+      ],
+      "draft": {
+        "kind": "handoff",
+        "body": "상황 요약드립니다. 나는 환불 예정일을 문의했고, 상담원은 처음에 “환불 예정일을 확인해 2026년 11월 16일까지 안내하겠다”라고 안내했습니다. 이후 상담원은 그 약속된 안내 기한을 취소하고 환불 예정일은 “확인 중이며 안내는 드리겠지만 언제 안내할지는 정하지 못했다”라고 정정 안내했습니다. 현재 환불의 정확한 예정일은 확인되지 않았고 업체는 안내를 약속했으나 구체적인 안내 기한은 제시하지 않았습니다. 남은 질문은 환불 예정일을 언제까지 안내받을 수 있는지입니다.",
+        "sourceMessageIds": [
+          "432dee7d-2a3f-4dfb-84e6-8a006d6300dd",
+          "0dea2578-2dd8-4632-9031-93c933294b41",
+          "dcd9a9ce-56eb-4d1f-bbcd-e82abec6f388"
+        ],
+        "at": "2026-11-14T05:32:21.944Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 2
+        },
+        "semanticReview": "pending independent semantic review"
+      }
+    },
+    {
+      "id": "U02",
+      "category": "구독",
+      "title": "해지 방법 안내가 해지 완료는 아님",
+      "stages": [
+        {
+          "record": {
+            "id": "8ec5a913-bc4c-45ac-808d-98c0e6c3de26",
+            "title": "해지 방법 안내가 해지 완료는 아님",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T05:31:54.079Z",
+            "updatedAt": "2026-11-14T05:31:59.908Z",
+            "messages": [
+              {
+                "id": "fe16e68b-004f-4078-bc80-9cc6c7b3c3ef",
+                "role": "customer",
+                "text": "제 구독이 이미 해지됐는지 알려 주세요.",
+                "sentAt": null
+              },
+              {
+                "id": "8c667baa-441b-499a-a836-38803b973866",
+                "role": "agent",
+                "text": "구독 해지는 설정 메뉴에서 해지 버튼을 누르면 됩니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "b67bf9f7-ed0b-474d-b4f9-4c85dd28e9cc",
+                "title": "구독이 이미 해지되었는지 여부 확인",
+                "source": {
+                  "messageId": "fe16e68b-004f-4078-bc80-9cc6c7b3c3ef",
+                  "quote": "제 구독이 이미 해지됐는지 알려 주세요."
+                },
+                "status": "unanswered",
+                "reason": "요구 대상은 '고객의 구독이 이미 해지되었는지' 여부인데, 상담원은 설정 메뉴에서 해지하는 방법만 안내했고 해당 고객의 구독 상태에 대해서는 언급하지 않았습니다.",
+                "evidence": [],
+                "followUp": "제 계정의 구독이 현재 활성화 상태인지 아니면 이미 해지되었는지 확인해 주세요.",
+                "aiStatus": "unanswered",
+                "aiReason": "요구 대상은 '고객의 구독이 이미 해지되었는지' 여부인데, 상담원은 설정 메뉴에서 해지하는 방법만 안내했고 해당 고객의 구독 상태에 대해서는 언급하지 않았습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [],
+            "history": [
+              {
+                "id": "932f4bbf-f29d-4a31-a49f-928715340d2b",
+                "at": "2026-11-14T05:31:59.908Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 0개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T05:31:59.908Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "45d48ada-2ad8-4a4a-8408-b651370dc0eb",
+                "at": "2026-11-14T05:31:54.079Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객은 본인 구독의 '이미 해지되었는지' 여부를 확인해 달라고 요청했습니다. 상담원 답변은 해지 방법 안내만 포함하고 있어 구독 상태 확인 요청에는 응답하지 않았습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 2,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 1576,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cache_write_tokens_details": {
+                    "ttl_12h_tokens": 0,
+                    "ttl_30m_tokens": 0
+                  },
+                  "cached_tokens": 0
+                },
+                "output_tokens": 495,
+                "output_tokens_details": {
+                  "reasoning_tokens": 256
+                },
+                "total_tokens": 2071
+              },
+              "at": "2026-11-14T05:31:59.908Z",
+              "comparison": {
+                "at": "2026-11-14T05:31:59.908Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 2,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": false,
+            "issues": [
+              "status:해지: expected partial, got unanswered",
+              "evidence:해지: expected messages 1, got "
+            ],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "해지",
+                  "status": "partial",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "actual": {
+                  "id": "b67bf9f7-ed0b-474d-b4f9-4c85dd28e9cc",
+                  "title": "구독이 이미 해지되었는지 여부 확인",
+                  "status": "unanswered",
+                  "evidence": []
+                },
+                "evidenceOK": false
+              }
+            ],
+            "promises": [],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 0,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 0,
+              "expectedPromises": 0,
+              "correctPromises": 0,
+              "references": 1,
+              "grounded": 1
+            }
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "low",
+          "ms": 5829,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1576,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 495,
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            },
+            "total_tokens": 2071
+          },
+          "data": {
+            "summary": "고객은 본인 구독의 '이미 해지되었는지' 여부를 확인해 달라고 요청했습니다. 상담원 답변은 해지 방법 안내만 포함하고 있어 구독 상태 확인 요청에는 응답하지 않았습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "구독이 이미 해지되었는지 여부 확인",
+                "source": {
+                  "messageId": "fe16e68b-004f-4078-bc80-9cc6c7b3c3ef",
+                  "quote": "제 구독이 이미 해지됐는지 알려 주세요."
+                },
+                "reason": "요구 대상은 '고객의 구독이 이미 해지되었는지' 여부인데, 상담원은 설정 메뉴에서 해지하는 방법만 안내했고 해당 고객의 구독 상태에 대해서는 언급하지 않았습니다.",
+                "status": "unanswered",
+                "evidence": [],
+                "followUp": "제 계정의 구독이 현재 활성화 상태인지 아니면 이미 해지되었는지 확인해 주세요."
+              }
+            ],
+            "promises": []
+          }
+        },
+        {
+          "name": "replytrack_draft",
+          "reasoningEffort": "low",
+          "ms": 10217,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 979,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 463,
+            "output_tokens_details": {
+              "reasoning_tokens": 320
+            },
+            "total_tokens": 1442
+          },
+          "data": {
+            "body": "앞서 안내해 주신 것은 설정 메뉴에서 해지하는 방법뿐이었는데, 제 계정의 구독이 현재 활성화 상태인지 아니면 이미 해지되었는지 확인해 주세요. 현재 상태(활성/해지)를 알려 주시고, 해지된 경우 언제 해지 처리되었는지도 알려 주시면 감사하겠습니다.",
+            "sourceMessageIds": [
+              "fe16e68b-004f-4078-bc80-9cc6c7b3c3ef",
+              "8c667baa-441b-499a-a836-38803b973866"
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "reasoningEffort": "medium",
+          "ms": 7828,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 943,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 601,
+            "output_tokens_details": {
+              "reasoning_tokens": 576
+            },
+            "total_tokens": 1544
+          },
+          "data": {
+            "valid": true,
+            "feedback": ""
+          }
+        }
+      ],
+      "draft": {
+        "kind": "followup",
+        "body": "앞서 안내해 주신 것은 설정 메뉴에서 해지하는 방법뿐이었는데, 제 계정의 구독이 현재 활성화 상태인지 아니면 이미 해지되었는지 확인해 주세요. 현재 상태(활성/해지)를 알려 주시고, 해지된 경우 언제 해지 처리되었는지도 알려 주시면 감사하겠습니다.",
+        "sourceMessageIds": [
+          "fe16e68b-004f-4078-bc80-9cc6c7b3c3ef",
+          "8c667baa-441b-499a-a836-38803b973866"
+        ],
+        "at": "2026-11-14T05:32:17.953Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 1
+        },
+        "semanticReview": "pending independent semantic review"
+      }
+    },
+    {
+      "id": "U06",
+      "category": "구독",
+      "title": "동일 조건의 상반된 청구 안내",
+      "stages": [
+        {
+          "record": {
+            "id": "229cf661-b741-43ff-a512-c2c10a5752be",
+            "title": "동일 조건의 상반된 청구 안내",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T05:32:17.955Z",
+            "updatedAt": "2026-11-14T05:32:24.423Z",
+            "messages": [
+              {
+                "id": "6f1230ef-91d2-44ba-9912-9074d47e9a6a",
+                "role": "customer",
+                "text": "해지한 제 계정은 다음 달 청구가 없나요?",
+                "sentAt": null
+              },
+              {
+                "id": "2886a8c9-d0f6-4cb9-a4c3-30426ef8cb26",
+                "role": "agent",
+                "text": "현재 해지 상태인 고객님 계정에는 다음 달 청구가 없습니다.",
+                "sentAt": null
+              },
+              {
+                "id": "cc555be5-5389-4062-ac52-26af8781d479",
+                "role": "agent",
+                "text": "현재 해지 상태인 고객님 계정에도 다음 달 요금은 청구됩니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "7e5758c4-f0f6-43e1-981c-f0aec3ad4513",
+                "title": "해지한 계정의 다음 달 청구 여부",
+                "source": {
+                  "messageId": "6f1230ef-91d2-44ba-9912-9074d47e9a6a",
+                  "quote": "해지한 제 계정은 다음 달 청구가 없나요?"
+                },
+                "status": "review",
+                "reason": "고객은 '다음 달 청구가 있는지'를 직접 문의했으나 상담원 답변이 서로 상반되어(한쪽은 '청구 없음', 다른 쪽은 '청구됨') 어떤 답변이 정확한지 확인이 필요하다.",
+                "evidence": [
+                  {
+                    "messageId": "2886a8c9-d0f6-4cb9-a4c3-30426ef8cb26",
+                    "quote": "현재 해지 상태인 고객님 계정에는 다음 달 청구가 없습니다."
+                  },
+                  {
+                    "messageId": "cc555be5-5389-4062-ac52-26af8781d479",
+                    "quote": "현재 해지 상태인 고객님 계정에도 다음 달 요금은 청구됩니다."
+                  }
+                ],
+                "followUp": "해지된 제 계정에 대해 다음 달 청구가 발생하는지 명확히 확인해 주세요.",
+                "aiStatus": "review",
+                "aiReason": "고객은 '다음 달 청구가 있는지'를 직접 문의했으나 상담원 답변이 서로 상반되어(한쪽은 '청구 없음', 다른 쪽은 '청구됨') 어떤 답변이 정확한지 확인이 필요하다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [],
+            "history": [
+              {
+                "id": "aeaf85a0-7338-4cce-bf92-801dbcba35d2",
+                "at": "2026-11-14T05:32:24.423Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 0개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T05:32:24.423Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 3,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "b45fd9c5-2077-411a-9841-c518121fedc2",
+                "at": "2026-11-14T05:32:17.955Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "3개 메시지 등록"
+              }
+            ],
+            "summary": "고객은 '해지한 계정의 다음 달 청구 여부'를 문의했고, 상담원 답변이 상반되어 확인이 필요하다.",
+            "warnings": [],
+            "analyzedMessageCount": 3,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 1640,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cache_write_tokens_details": {
+                    "ttl_12h_tokens": 0,
+                    "ttl_30m_tokens": 0
+                  },
+                  "cached_tokens": 1408
+                },
+                "output_tokens": 590,
+                "output_tokens_details": {
+                  "reasoning_tokens": 192
+                },
+                "total_tokens": 2230
+              },
+              "at": "2026-11-14T05:32:24.423Z",
+              "comparison": {
+                "at": "2026-11-14T05:32:24.423Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 3,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "청구|요금",
+                  "status": "review",
+                  "evidence": [
+                    1,
+                    2
+                  ]
+                },
+                "actual": {
+                  "id": "7e5758c4-f0f6-43e1-981c-f0aec3ad4513",
+                  "title": "해지한 계정의 다음 달 청구 여부",
+                  "status": "review",
+                  "evidence": [
+                    1,
+                    2
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 1,
+              "expectedPromises": 0,
+              "correctPromises": 0,
+              "references": 3,
+              "grounded": 3
+            }
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "low",
+          "ms": 6468,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1640,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 1408
+            },
+            "output_tokens": 590,
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "total_tokens": 2230
+          },
+          "data": {
+            "summary": "고객은 '해지한 계정의 다음 달 청구 여부'를 문의했고, 상담원 답변이 상반되어 확인이 필요하다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "해지한 계정의 다음 달 청구 여부",
+                "source": {
+                  "messageId": "6f1230ef-91d2-44ba-9912-9074d47e9a6a",
+                  "quote": "해지한 제 계정은 다음 달 청구가 없나요?"
+                },
+                "reason": "고객은 '다음 달 청구가 있는지'를 직접 문의했으나 상담원 답변이 서로 상반되어(한쪽은 '청구 없음', 다른 쪽은 '청구됨') 어떤 답변이 정확한지 확인이 필요하다.",
+                "status": "review",
+                "evidence": [
+                  {
+                    "messageId": "2886a8c9-d0f6-4cb9-a4c3-30426ef8cb26",
+                    "quote": "현재 해지 상태인 고객님 계정에는 다음 달 청구가 없습니다."
+                  },
+                  {
+                    "messageId": "cc555be5-5389-4062-ac52-26af8781d479",
+                    "quote": "현재 해지 상태인 고객님 계정에도 다음 달 요금은 청구됩니다."
+                  }
+                ],
+                "followUp": "해지된 제 계정에 대해 다음 달 청구가 발생하는지 명확히 확인해 주세요."
+              }
+            ],
+            "promises": []
+          }
+        },
+        {
+          "name": "replytrack_draft",
+          "reasoningEffort": "low",
+          "ms": 6117,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1150,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 425,
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "total_tokens": 1575
+          },
+          "data": {
+            "body": "해지된 계정의 다음 달 청구 여부를 문의했으나 안내가 상충합니다. 처음에는 \"다음 달 청구가 없습니다\"라고 안내받았고, 다른 답변에서는 \"다음 달 요금은 청구됩니다\"라고 안내받았습니다. 어떤 답변이 정확한지 명확히 확인해 주시고, 청구 발생 여부를 분명히 알려주시기 바랍니다.",
+            "sourceMessageIds": [
+              "6f1230ef-91d2-44ba-9912-9074d47e9a6a",
+              "2886a8c9-d0f6-4cb9-a4c3-30426ef8cb26",
+              "cc555be5-5389-4062-ac52-26af8781d479"
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "reasoningEffort": "medium",
+          "ms": 5124,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1152,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 388,
+            "output_tokens_details": {
+              "reasoning_tokens": 320
+            },
+            "total_tokens": 1540
+          },
+          "data": {
+            "valid": true,
+            "feedback": ""
+          }
+        }
+      ],
+      "draft": {
+        "kind": "handoff",
+        "body": "해지된 계정의 다음 달 청구 여부를 문의했으나 안내가 상충합니다. 처음에는 \"다음 달 청구가 없습니다\"라고 안내받았고, 다른 답변에서는 \"다음 달 요금은 청구됩니다\"라고 안내받았습니다. 어떤 답변이 정확한지 명확히 확인해 주시고, 청구 발생 여부를 분명히 알려주시기 바랍니다.",
+        "sourceMessageIds": [
+          "6f1230ef-91d2-44ba-9912-9074d47e9a6a",
+          "2886a8c9-d0f6-4cb9-a4c3-30426ef8cb26",
+          "cc555be5-5389-4062-ac52-26af8781d479"
+        ],
+        "at": "2026-11-14T05:32:35.663Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 1
+        },
+        "semanticReview": "pending independent semantic review"
+      }
+    }
+  ],
+  "summary": {
+    "cases": 7,
+    "completedCases": 7,
+    "passedCases": 6,
+    "stages": 9,
+    "passedStages": 8,
+    "totals": {
+      "expectedQuestions": 14,
+      "found": 14,
+      "correct": 13,
+      "falseAnswered": 0,
+      "expectedUnresolved": 9,
+      "evidenceCorrect": 13,
+      "expectedPromises": 4,
+      "correctPromises": 4,
+      "references": 30,
+      "grounded": 30
+    },
+    "calls": 24,
+    "apiErrors": 0,
+    "draftErrors": 1,
+    "inputTokens": 33630,
+    "outputTokens": 14079,
+    "latencyMs": {
+      "median": 7828,
+      "p95": 10439,
+      "max": 12789
+    }
+  },
+  "completedAt": "2026-11-14T05:32:35.665Z",
+  "complete": true
+}

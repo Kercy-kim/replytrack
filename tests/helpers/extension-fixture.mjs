@@ -15,6 +15,8 @@ export class ExtensionFixtureAI {
     } else if (name === 'replytrack_analysis') {
       if (this.failAnalysis) throw new AppError(502, '검증용 일시 분석 오류');
       result = demoAnalysis({ messages: data.messages, questions: data.existingQuestions, promises: data.existingPromises });
+    } else if (name === 'replytrack_draft_review') {
+      result = { valid: true, feedback: '' };
     } else {
       result = demoDraft({ messages: data.messages, questions: data.questions, promises: data.promises }, data.kind, data.questions.map(q => q.id));
     }

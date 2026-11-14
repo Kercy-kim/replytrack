@@ -1,0 +1,106 @@
+{
+  "mode": "live draft review negative probes",
+  "startedAt": "2026-11-14T05:29:55.124Z",
+  "requestedModel": "gpt-5-mini",
+  "hashes": {
+    "evals/support-cases.mjs": "ab86201457d670ffd62d4844fa66e72711bb4be91ea677260946b3c98a904b8d",
+    "evals/grade.mjs": "ed6a5defa0212d1e473f9235dd8cd877fe046e8d017f80835c4ab9eaecd9145d",
+    "src/prompts.mjs": "a6d86839079c532a9f55f69971b1f71733b02e5000375e8313c063dd12926851",
+    "src/schema.mjs": "c8a6b1e3c2e58526295a361062313b8b19db069e5ee0d599c849c84fa79573d1",
+    "src/domain.mjs": "3c43f9ce64239f6167620dc86fe7bb52e28ec93b005b6e66746f1135ac21d01d",
+    "src/service.mjs": "245ae63882075739db95ea489cea3a1501647917a11ba9e72378d66da79a605d",
+    "src/openai.mjs": "b53726163300241f486299965e0567f1391c6bb8c714d041431659a54d05beac",
+    "src/analysis-changes.mjs": "36d13aaab3b180d7a2081dc22127a79e394ddb1e006136090a10945c88d94d73",
+    "scripts/evaluate-ai.mjs": "7d3f24f95335193d2d4689faad2d9212f7a20cd1d3c4e3a551f70ebde44ef5cc"
+  },
+  "results": [
+    {
+      "source": "iteration-3/S02",
+      "expectedFailure": "선택한 배송비 질문 누락",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 13759,
+      "data": {
+        "valid": false,
+        "feedback": "followup인데 '배송비 금액 문의' 항목이 초안에 빠져 있습니다. 초안에 해당 주문(또는 운송장 번호 1234567890)에 적용된 배송비 금액을 묻는 문구를 추가해 주세요. (담당자를 특정할 수 없으면 ‘이전 답변/후속 답변’으로 표기하세요.)"
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1134,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 1065,
+        "output_tokens_details": {
+          "reasoning_tokens": 960
+        },
+        "total_tokens": 2199
+      }
+    },
+    {
+      "source": "iteration-3/S06",
+      "expectedFailure": "원문에 없는 동일 상담원 추정",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 12920,
+      "data": {
+        "valid": false,
+        "feedback": "초안이 ‘동일 상담원’이라고 특정하여 표현하고 있습니다. 원문에서 상담원 동일성은 확인할 수 없으므로 이는 추정입니다. 담당자를 식별할 수 없을 경우에는 ‘이전 답변/후속 답변’ 또는 ‘이후 안내에서’ 등으로 바꾸어 표현해 주세요. 그 외에는 문제 없습니다."
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1545,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 1011,
+        "output_tokens_details": {
+          "reasoning_tokens": 896
+        },
+        "total_tokens": 2556
+      }
+    },
+    {
+      "source": "baseline/R02",
+      "expectedFailure": "상담원 입장으로 고객 정보 요구",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 31676,
+      "data": {
+        "valid": false,
+        "feedback": "여러 기준에 부합하지 않습니다. 수정 방향만 간단히 적습니다.\n\n1) 상담원처럼 행동·약속하는 표현 삭제: “확인 후 환불 예정 금액을 안내드리겠습니다”처럼 상담원이 대신 처리하거나 안내하겠다는 1인칭 표현은 소비자 문장으로 바꾸세요(요청 형태로). \n\n2) 개인정보 요청 문장 표현 조정: “주문번호나 결제 내역을 알려주실 수 있나요?”는 상담원이 고객에게 묻는 형태로 읽힐 수 있습니다. 소비자가 정보를 제공할 의향을 묻는 형태(또는 회사가 필요한지 묻는 형태)로 바꾸세요.\n\n3) 이전 안내 언급 시 담당자 식별 금지: ‘이미 안내받으셨으므로’처럼 특정 담당자를 연상시키지 말고 ‘이전 답변(또는 후속 답변)에서 반품비가 5,000원으로 안내되어 있어…’처럼 표현하세요.\n\n참고: 질문 항목(최종 환불액 확인을 위해 주문번호/결제 내역이 필요한지)은 초안에 포함되어 있어 그 부분은 충족됩니다."
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 906,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 2766,
+        "output_tokens_details": {
+          "reasoning_tokens": 2432
+        },
+        "total_tokens": 3672
+      }
+    }
+  ],
+  "completedAt": "2026-11-14T05:30:53.488Z"
+}

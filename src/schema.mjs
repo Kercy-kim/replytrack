@@ -7,12 +7,13 @@ export const analysisSchema = object({
   summary: text,
   questions: array(object({
     id: text, title: text, source: evidenceSchema,
+    reason: text,
     status: { type: 'string', enum: ['unanswered', 'partial', 'waiting', 'answered', 'review'] },
-    reason: text, evidence: array(evidenceSchema), followUp: text,
+    evidence: array(evidenceSchema), followUp: text,
   })),
   promises: array(object({
     id: text, title: text, questionIds: array(text), evidence: evidenceSchema,
-    dueText: text, state: { type: 'string', enum: ['promised', 'reported'] },
+    dueText: text, deadlineCleared: { type: 'boolean' }, state: { type: 'string', enum: ['promised', 'reported'] },
   })),
 });
 export const transcriptSchema = object({
@@ -23,3 +24,4 @@ export const transcriptSchema = object({
   notes: array(text),
 });
 export const draftSchema = object({ body: text, sourceMessageIds: array(text) });
+export const draftReviewSchema = object({ valid: { type: 'boolean' }, feedback: text });

@@ -1,8 +1,8 @@
 import { assert, AppError } from './errors.mjs';
 import { newCase, message, history, applyAnalysis, validateDraft, statuses, cleanText } from './domain.mjs';
 import { createDemo, advanceDemo, demoAnalysis, demoDraft } from './demo.mjs';
-import { analysisSchema, transcriptSchema, draftSchema } from './schema.mjs';
-import { ANALYSIS_PROMPT, TRANSCRIPT_PROMPT, DRAFT_PROMPT } from './prompts.mjs';
+import { analysisSchema, transcriptSchema, draftSchema, draftReviewSchema } from './schema.mjs';
+import { ANALYSIS_PROMPT, TRANSCRIPT_PROMPT, DRAFT_PROMPT, DRAFT_REVIEW_PROMPT } from './prompts.mjs';
 
 export class ReplyTrack {
   constructor(store, ai) { this.store = store; this.ai = ai; this.busy = new Set(); this.activeAI = 0; }
@@ -98,10 +98,33 @@ export class ReplyTrack {
     const ids = Array.isArray(input.questionIds) ? input.questionIds : [];
     const selected = c.questions.filter(q => ids.includes(q.id) && q.status !== 'answered');
     assert(input.kind === 'handoff' || selected.length, '재문의할 미해결 질문을 선택해 주세요.');
-    const result = c.mode === 'demo' ? { data: demoDraft(c, input.kind, ids), model: '준비된 예제' } : await this.withAI(() => this.ai.structured({ name: 'replytrack_draft', schema: draftSchema, instructions: DRAFT_PROMPT,
-      data: { kind: input.kind, messages: c.messages, questions: input.kind === 'followup' ? selected : c.questions, promises: c.promises } }));
-    const draft = validateDraft(result.data, c);
-    c.drafts[input.kind] = { ...draft, at: new Date().toISOString(), model: result.model };
+    let draft, model, review = null;
+    if (c.mode === 'demo') {
+      draft = validateDraft(demoDraft(c, input.kind, ids), c); model = '준비된 예제';
+    } else {
+      const context = { kind: input.kind, messages: c.messages, questions: input.kind === 'followup' ? selected : c.questions, promises: c.promises };
+      let revisionFeedback = '', previousDraft = null;
+      // Bound paid calls: one generation + review, with at most one repair attempt.
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const result = await this.withAI(() => this.ai.structured({ name: 'replytrack_draft', schema: draftSchema, instructions: DRAFT_PROMPT,
+          data: { ...context, ...(revisionFeedback ? { revisionFeedback, previousDraft } : {}) } }));
+        model = result.model; previousDraft = result.data;
+        let candidate;
+        try { candidate = validateDraft(result.data, c); }
+        catch (error) {
+          if (attempt === 1) throw error;
+          revisionFeedback = error.message; continue;
+        }
+        const checked = await this.withAI(() => this.ai.structured({ name: 'replytrack_draft_review', schema: draftReviewSchema, instructions: DRAFT_REVIEW_PROMPT, reasoningEffort: 'medium',
+          data: { ...context, draft: candidate } }));
+        if (checked.data?.valid === true) {
+          draft = candidate; review = { model: checked.model, attempts: attempt + 1 }; break;
+        }
+        revisionFeedback = typeof checked.data?.feedback === 'string' ? checked.data.feedback.slice(0, 1500) : '선택한 모든 질문, 소비자 관점, 원문 사실과 일치하도록 수정해 주세요.';
+      }
+      if (!draft) throw new AppError(502, '초안을 검토했지만 선택한 질문이나 원문과 맞지 않는 부분이 남아 저장하지 않았습니다. 다시 작성해 주세요.', 'DRAFT_REVIEW');
+    }
+    c.drafts[input.kind] = { ...draft, at: new Date().toISOString(), model, ...(review ? { review } : {}) };
     history(c, 'draft', input.kind === 'followup' ? '남은 질문으로 재문의 초안을 만들었어요' : '상담 인계 요약을 만들었어요');
     return this.store.save(c, input.version);
   }

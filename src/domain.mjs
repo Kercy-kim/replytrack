@@ -99,14 +99,27 @@ export function applyAnalysis(record, raw, meta = {}) {
     if (promises.some(x => x.id === id)) continue;
     const dueText = typeof p.dueText === 'string' && p.evidence.quote.includes(p.dueText) ? p.dueText : '';
     const source = record.messages.find(m => m.id === p.evidence.messageId);
+    // An omitted deadline preserves history; an explicit retraction in a newer reply clears it.
+    // Older AI output/fixtures without this flag keep the previous behavior.
+    const laterEvidence = !old || record.messages.indexOf(source) > record.messages.findIndex(m => m.id === old.evidence.messageId);
+    const clearDeadline = p.deadlineCleared === true && p.dueText === '' && laterEvidence;
+    if (p.deadlineCleared === true && !clearDeadline && old?.dueText) warnings.push('기한 철회의 새 원문 근거를 확인하지 못해 철회 판정을 적용하지 않았습니다.');
     promises.push({ id, title: typeof p.title === 'string' ? p.title.slice(0, 200) : '처리 내용 확인',
       questionIds: (Array.isArray(p.questionIds) ? p.questionIds : []).map(id => mapping.get(id) ?? id).filter(id => questions.some(q => q.id === id)),
-      evidence: p.evidence, dueText: dueText || old?.dueText || '', dueAt: dueText ? dueDate(dueText, source.sentAt) : old?.dueAt ?? null,
+      evidence: p.evidence, dueText: clearDeadline ? '' : dueText || old?.dueText || '', dueAt: clearDeadline ? null : dueText ? dueDate(dueText, source.sentAt) : old?.dueAt ?? null,
       state: p.state === 'reported' ? 'reported' : 'promised', confirmedAt: old?.confirmedAt ?? null,
     });
   }
   // Omission must never erase a user's confirmation or a previous commitment.
   for (const p of record.promises) if (!promises.some(x => x.id === p.id)) promises.push(p);
+  // Waiting asserts a future reply was promised, not merely that an answer is unknown.
+  // Require a validated, linked commitment instead of trusting an unsupported status label.
+  for (const q of questions) {
+    if (q.aiStatus !== 'waiting' || promises.some(p => p.state === 'promised' && p.questionIds.includes(q.id) && q.evidence.some(e => e.messageId === p.evidence.messageId))) continue;
+    q.aiStatus = 'review'; q.aiReason = '향후 안내 약속을 질문의 원문 근거와 연결하지 못했습니다. 직접 확인해 주세요.';
+    if (!q.manualStatus) { q.status = q.aiStatus; q.reason = q.aiReason; }
+    warnings.push('답변 대기 판정에 연결된 처리 약속이 없어 확인 필요로 표시했습니다.');
+  }
   const comparison = compareAnalysis(record, questions, promises, new Date().toISOString());
   const changes = questions.map(q => {
     const old = oldQuestions.find(p => p.id === q.id);
@@ -126,6 +139,11 @@ export function validateDraft(raw, record) {
   const sources = raw.sourceMessageIds.map(id => record.messages.find(m => m.id === id));
   if (!sources.length || sources.some(m => !m)) throw new AppError(502, '초안의 원문 근거를 확인할 수 없습니다. 다시 작성해 주세요.', 'DRAFT_EVIDENCE');
   const sourceText = sources.map(m => m.text).join('\n');
+  const references = raw.body.match(/\b[\da-f]{8}-(?:[\da-f]{4}-){3}[\da-f]{12}\b/gi) ?? [];
+  if (references.some(id => !sourceText.includes(id))) throw new AppError(502, '본문에 내부 메시지 ID가 포함됐습니다. 괄호 안의 UUID 등 참조값은 본문에서 제거하고 sourceMessageIds 필드에만 넣어 주세요.', 'DRAFT_REFERENCE');
+  // Messages identify roles, not individual agents. Do not invent actor identity from turn order.
+  const actors = raw.body.match(/(?:동일|같은|다른(?:\s*한)?|두(?:\s*[명분])?(?:의)?|여러)\s*(?:상담원|상담사|담당자)/g) ?? [];
+  if (actors.some(actor => !sourceText.replaceAll(/\s/g, '').includes(actor.replaceAll(/\s/g, '')))) throw new AppError(502, '원문에서 상담원이 같은 사람인지 다른 사람인지 확인되지 않습니다. 담당자 동일성을 추정하지 말고 이전 답변과 후속 답변으로 표현해 주세요.', 'DRAFT_ACTOR');
   const numbers = raw.body.match(/\d[\d,.]*(?:\s*(?:원|일|월|년|시간|분|%))?/g) ?? [];
   if (numbers.some(n => !sourceText.replaceAll(' ', '').includes(n.replaceAll(' ', '')))) throw new AppError(502, '원문에 없는 숫자나 기한이 초안에 포함되어 제외했습니다. 다시 작성해 주세요.', 'DRAFT_FACT');
   return { body: raw.body, sourceMessageIds: [...new Set(raw.sourceMessageIds)] };

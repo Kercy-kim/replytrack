@@ -54,6 +54,30 @@ test('agent report is not user-confirmed completion', () => {
     assert(c.promises[0].dueAt);
   } finally {store.close();}
 });
+test('waiting without a linked future commitment becomes review, not an invented promise', () => {
+  const c = createDemo(), raw = demoAnalysis(c);
+  c.promises = []; raw.promises = [];
+  applyAnalysis(c, raw);
+  assert.equal(c.questions[0].aiStatus, 'review');
+  assert.equal(c.questions[0].status, 'review');
+  assert.equal(c.promises.length, 0);
+  assert(c.warnings.some(w => w.includes('답변 대기')));
+});
+test('waiting requires the promise to be linked to that question and its cited reply', () => {
+  const valid = createDemo(); applyAnalysis(valid, demoAnalysis(valid));
+  assert.equal(valid.questions[0].status, 'waiting');
+  const unrelated = createDemo(), raw = demoAnalysis(unrelated);
+  unrelated.promises = []; raw.promises[0].questionIds = [raw.questions[2].id];
+  applyAnalysis(unrelated, raw);
+  assert.equal(unrelated.questions[0].status, 'review');
+});
+test('unsupported AI waiting does not overwrite a manually chosen status', () => {
+  const c = createDemo(), raw = demoAnalysis(c);
+  c.questions[0].manualStatus = 'partial'; c.questions[0].status = 'partial';
+  c.promises = []; raw.promises = [];
+  applyAnalysis(c, raw);
+  assert.equal(c.questions[0].status, 'partial'); assert.equal(c.questions[0].aiStatus, 'review');
+});
 test('deadlines use known source date in Korea, never analysis time', () => {
   assert.equal(dueDate('내일까지',null),null);
   assert.equal(dueDate('내일까지','2026-12-31T16:00:00Z'),'2027-01-02');
@@ -67,6 +91,21 @@ test('drafts reject invented source references and numbers', () => {
   assert.throws(()=>validateDraft({body:'환불은 50,000원입니다.',sourceMessageIds:[c.messages[1].id]},c),{code:'DRAFT_FACT'});
   assert.throws(()=>validateDraft({body:'안녕하세요.',sourceMessageIds:['missing']},c),{code:'DRAFT_EVIDENCE'});
   assert.equal(validateDraft({body:'수리비 안내 예정일과 왕복 배송비 부담 주체를 알려 주세요.',sourceMessageIds:c.messages.map(m=>m.id)},c).sourceMessageIds.length,2);
+});
+test('drafts cannot infer identical or different agents from anonymized message roles', () => {
+  const c = createDemo(), sourceMessageIds = c.messages.map(m => m.id);
+  for (const actor of ['동일 상담원', '같은 담당자', '다른 한 상담원', '두 명의 상담사', '여러 담당자']) {
+    assert.throws(() => validateDraft({ body: `${actor}의 안내가 달랐습니다.`, sourceMessageIds }, c), { code: 'DRAFT_ACTOR' });
+  }
+  assert.equal(validateDraft({ body: '이전 답변과 후속 답변의 안내가 달랐습니다.', sourceMessageIds }, c).body, '이전 답변과 후속 답변의 안내가 달랐습니다.');
+  c.messages[0].text += ' 다른 상담원에게 연결됐어요.';
+  assert.equal(validateDraft({ body: '다른 상담원에게 연결됐습니다.', sourceMessageIds: [c.messages[0].id] }, c).body, '다른 상담원에게 연결됐습니다.');
+});
+test('drafts reject internal message IDs in prose but allow identifiers actually present in the source', () => {
+  const c = createDemo(), id = c.messages[0].id;
+  assert.throws(() => validateDraft({ body: `이전 문의(${id})의 답변을 알려 주세요.`, sourceMessageIds: [id] }, c), { code: 'DRAFT_REFERENCE' });
+  c.messages[0].text += ` 고객에게 보이는 접수번호는 ${id}입니다.`;
+  assert.equal(validateDraft({ body: `접수번호 ${id}의 답변을 알려 주세요.`, sourceMessageIds: [id] }, c).sourceMessageIds[0], id);
 });
 test('stale writes cannot overwrite recent changes', () => {
   const store=new CaseStore(':memory:');

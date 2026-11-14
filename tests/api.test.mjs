@@ -46,6 +46,9 @@ test('Responses request has strict schema and no storage; provider errors are re
   }});
   const result=await client.structured({name:'test',schema:{type:'object'},instructions:'test',data:{text:'hello'}});
   assert.equal(result.data.ok,true); assert.equal(request.store,false); assert.equal(request.text.format.strict,true);
+  assert.equal(request.reasoning.effort,'low');
+  await client.structured({name:'review',schema:{type:'object'},instructions:'review',data:{text:'hello'},reasoningEffort:'medium'});
+  assert.equal(request.reasoning.effort,'medium');
   client.fetch=async()=>new Response('do not expose provider details',{status:401});
   await assert.rejects(()=>client.structured({}),e=>e.code==='AI_AUTH'&&!e.message.includes('credential'));
   client.fetch=async()=>new Response(JSON.stringify({status:'incomplete',output:[]}));
