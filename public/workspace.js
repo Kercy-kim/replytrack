@@ -48,3 +48,20 @@ export function selectedQuestionIds(previous, next, selected) {
   if (previous?.id !== next.id || !previous.questions.length) return remaining;
   return remaining.filter(id => selected.has(id));
 }
+
+// A slow read or completed AI job must not reopen an older view or version.
+export class CaseNavigation {
+  records = new Map();
+  request = 0;
+  remember(record) {
+    const saved = this.records.get(record.id);
+    if (!saved || record.version >= saved.version) this.records.set(record.id, record);
+    return this.records.get(record.id);
+  }
+  leave() { this.request++; }
+  async open(id, fetchCase) {
+    const request = ++this.request;
+    const record = this.remember(await fetchCase(id));
+    return request === this.request ? record : null;
+  }
+}

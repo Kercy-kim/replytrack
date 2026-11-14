@@ -15,6 +15,7 @@ try { process.loadEnvFile(join(root, '.env')); } catch (error) { if (error.code 
 const staticFiles = new Map([['/', ['index.html', 'text/html']], ['/app.js', ['app.js', 'text/javascript']], ['/styles.css', ['styles.css', 'text/css']], ['/favicon.svg', ['favicon.svg', 'image/svg+xml']]]);
 staticFiles.set('/workspace.js', ['workspace.js', 'text/javascript']);
 staticFiles.set('/operations.js', ['operations.js', 'text/javascript']);
+staticFiles.set('/onboarding.js', ['onboarding.js', 'text/javascript']);
 
 export function createApp({ store, ai, ocr } = {}) {
   const db = store ?? new CaseStore(resolve(root, process.env.REPLYTRACK_DATA_DIR || 'data', 'replytrack.sqlite'));

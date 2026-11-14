@@ -1,5 +1,6 @@
-import { deadlineState, filterCases, dirtyDraftKinds, savedDraft, selectedQuestionIds } from './workspace.js';
+import { deadlineState, filterCases, dirtyDraftKinds, savedDraft, selectedQuestionIds, CaseNavigation } from './workspace.js';
 import { WebOperation, stages, elapsedLabel } from './operations.js';
+import { newOnboarding, hasOnboardingInput, manualMessages } from './onboarding.js';
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const names = { unanswered: '미답변', partial: '부분 답변', waiting: '답변 대기', answered: '답변 받음', review: '확인 필요' };
@@ -18,6 +19,12 @@ const icons = {
 const icon = (name, cls = '') => `<svg class="icon ${cls}" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.chat}</svg>`;
 const state = { cases: [], current: null, config: { configured: false, model: 'gpt-5-mini' }, busy: '', tab: 'questions', mobile: 'analysis', filter: 'all', selected: new Set(), draftEdits: {}, error: '', onboarding: null, query: '', caseFilter: 'active', sort: 'priority' };
 const dirtyKinds = () => dirtyDraftKinds(state.current?.drafts || {}, state.draftEdits);
+const views = new CaseNavigation();
+let viewRevision = 0;
+let settingsReturn = false;
+const readActions = new Set(['home', 'open', 'refresh', 'tab', 'draft-tab', 'mobile', 'source', 'copy', 'export', 'case-filter', 'reset-search', 'dismiss-error', 'guard-cancel', 'guard-continue', 'close-modal']);
+const canBrowse = () => !!state.operation && !!state.task?.caseId;
+const blocked = action => !!state.busy && !(canBrowse() && readActions.has(action));
 let guardResolve;
 let modalReturnFocus;
 function guardEdits(invalidates = false, kind) {
@@ -27,7 +34,7 @@ function guardEdits(invalidates = false, kind) {
   return new Promise(resolve => { guardResolve = resolve; });
 }
 function resolveGuard(allowed) { const resolve = guardResolve; guardResolve = null; $('#modal').close(); resolve?.(allowed); }
-window.addEventListener('beforeunload', event => { if (dirtyKinds().length || state.operation) { event.preventDefault(); event.returnValue = ''; } });
+window.addEventListener('beforeunload', event => { if (dirtyKinds().length || state.operation || hasOnboardingInput(state.onboarding)) { event.preventDefault(); event.returnValue = ''; } });
 window.addEventListener('pagehide', () => {
   if (state.operation?.snapshot.state === 'running') fetch(`/api/operations/${state.operation.id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: '{}', keepalive: true }).catch(() => {});
 });
@@ -42,22 +49,25 @@ async function api(path, method = 'GET', data) {
 async function work(label, fn) {
   if (state.busy) return;
   const focus = focusBookmark();
+  const revision = viewRevision;
   const previousCaseId = state.current?.id;
   const previousAnalysisId = state.current?.history.find(h => h.type === 'analysis')?.id;
-  state.busy = label; state.error = ''; render(); setModalBusy(true);
+  state.busy = label; state.task = null; state.error = ''; render(); setModalBusy(true);
   const timer = setInterval(renderProgress, 250);
   try { await fn(); }
   catch (e) {
     if (e.code === 'OPERATION_CANCELLED') { toast('작업을 취소했어요. 입력과 기존 기록은 그대로예요.'); return; }
-    state.error = e.message; toast(e.message);
+    state.error = `${state.task?.caseId && state.current?.id !== state.task.caseId ? `${state.task.title}: ` : ''}${e.message}`; toast(state.error);
     const error = $('#modal-error'); if (error) error.textContent = e.message;
-    if (e.status === 409 && state.current) {
-      await loadCase(state.current.id).catch(() => {});
+    const failedCaseId = state.task?.caseId || previousCaseId;
+    if (e.status === 409 && failedCaseId) {
+      await api(`/api/cases/${failedCaseId}`).then(record => { views.remember(record); if (state.current?.id === failedCaseId) setCase(record); }).catch(() => {});
       state.error += ' 편집 중인 초안은 화면에 유지했어요. 최신 내용과 비교한 뒤 다시 저장해 주세요.';
     }
   } finally {
-    clearInterval(timer); state.operation = null; state.busy = ''; render(); setModalBusy(false); renderProgress(); restoreFocus(focus);
-    if (!state.error && state.current?.id === previousCaseId && state.current?.history.find(h => h.type === 'analysis')?.id !== previousAnalysisId && $('#analysis-changes')) {
+    if (!state.error && state.task?.caseId && state.current?.id !== state.task.caseId && state.operation?.snapshot.state === 'completed') toast(`${state.task.title} 작업을 완료했어요. 해당 상담에서 결과를 확인해 주세요.`);
+    clearInterval(timer); state.operation = null; state.task = null; state.busy = ''; render(); setModalBusy(false); renderProgress(); if (viewRevision === revision) restoreFocus(focus);
+    if (viewRevision === revision && !state.error && state.current?.id === previousCaseId && state.current?.history.find(h => h.type === 'analysis')?.id !== previousAnalysisId && $('#analysis-changes')) {
       $('#comparison-heading').focus({ preventScroll: true });
       $('#analysis-changes').scrollIntoView({ block: 'start', behavior: 'instant' });
     }
@@ -69,7 +79,9 @@ function setModalBusy(busy) {
 }
 async function runOperation(kind, input = {}, caseId) {
   const operation = new WebOperation(api, renderProgress);
-  state.operation = operation; renderProgress();
+  state.operation = operation;
+  if (caseId) state.task = { caseId, title: state.current?.title || '상담' };
+  render(); renderProgress();
   try {
     const result = await operation.run(kind, input, caseId);
     if (operation.cancelRequested) toast('취소 요청 전에 작업이 완료되어 결과를 반영했어요.');
@@ -83,12 +95,12 @@ function renderProgress() {
     panel.hidden = !state.busy || !operation;
     if (panel.hidden) { panel.innerHTML = ''; delete panel.dataset.signature; return; }
     const job = operation.snapshot;
-    const signature = JSON.stringify([job.stage, job.events, operation.cancelRequested, operation.cancelling, operation.warning, job.state]);
+    const signature = JSON.stringify([job.stage, job.events, operation.cancelRequested, operation.cancelling, operation.warning, job.state, state.current?.id]);
     if (panel.dataset.signature !== signature) {
       const restoreCancelFocus = panel.contains(document.activeElement) && document.activeElement.dataset.action === 'cancel-operation';
       panel.dataset.signature = signature;
       const label = operation.cancelling ? '서버에서 취소 확인 중' : stages[job.stage] || '작업 처리 중';
-      panel.innerHTML = `<div class="operation-head"><span class="spinner" aria-hidden="true"></span><strong role="status">${esc(label)}</strong><span class="operation-time" data-elapsed aria-live="off"></span></div><p class="operation-note">취소해도 입력과 이전 분석·초안은 유지돼요. 이미 전송된 AI 요청은 비용이 발생할 수 있어요.</p>${job.events.length ? `<ol class="operation-stages" aria-label="실제 처리 단계">${job.events.map((event, i) => `<li ${i === job.events.length - 1 ? 'aria-current="step"' : ''}>${esc(stages[event.stage] || event.stage).replace(/ 중$/, '')}</li>`).join('')}</ol>` : ''}<div class="operation-bottom"><small>${esc(operation.warning || '완료율을 추정하지 않고 실제 처리 단계를 표시해요.')}</small><button type="button" class="btn secondary compact" data-action="cancel-operation" ${operation.cancelling || job.state !== 'running' ? 'disabled' : ''}>${operation.cancelling ? '취소 확인 중…' : '작업 취소'}</button></div>`;
+      panel.innerHTML = `<div class="operation-head"><span class="spinner" aria-hidden="true"></span><strong role="status">${esc(label)}</strong><span class="operation-time" data-elapsed aria-live="off"></span></div><p class="operation-note">${state.task ? `<strong>${esc(state.task.title)}</strong> · 생성 중에도 상담 조회와 초안 복사를 할 수 있어요.<br>` : ''}취소해도 입력과 이전 분석·초안은 유지돼요. 이미 전송된 AI 요청은 비용이 발생할 수 있어요.</p>${job.events.length ? `<ol class="operation-stages" aria-label="실제 처리 단계">${job.events.map((event, i) => `<li ${i === job.events.length - 1 ? 'aria-current="step"' : ''}>${esc(stages[event.stage] || event.stage).replace(/ 중$/, '')}</li>`).join('')}</ol>` : ''}<div class="operation-bottom">${state.task && state.current?.id !== state.task.caseId ? button('open','작업 중인 상담 보기','secondary compact','',`data-id="${state.task.caseId}"`) : ''}<small>${esc(operation.warning || '완료율을 추정하지 않고 실제 처리 단계를 표시해요.')}</small><button type="button" class="btn secondary compact" data-action="cancel-operation" ${operation.cancelling || job.state !== 'running' ? 'disabled' : ''}>${operation.cancelling ? '취소 확인 중…' : '작업 취소'}</button></div>`;
       if (restoreCancelFocus) panel.querySelector('[data-action="cancel-operation"]').focus({ preventScroll: true });
     }
     panel.querySelector('[data-elapsed]').textContent = `경과 ${elapsedLabel(operation.elapsedMs)}`;
@@ -97,6 +109,7 @@ function renderProgress() {
 }
 async function refreshList() { state.cases = await api('/api/cases'); }
 function setCase(c) {
+  c = views.remember(c);
   // Retain local edits during conflict recovery, even if another window invalidated a draft.
   const edits = state.current?.id === c.id ? { ...state.draftEdits } : {};
   if (state.current?.id !== c.id) state.mobile = 'analysis';
@@ -105,10 +118,17 @@ function setCase(c) {
   localStorage.setItem('replytrack:last-case', c.id);
   window.history.replaceState(null, '', `?case=${encodeURIComponent(c.id)}`);
 }
-async function loadCase(id) { setCase(await api(`/api/cases/${id}`)); await refreshList(); }
+async function loadCase(id) {
+  const record = await views.open(id, async caseId => { const c = await api(`/api/cases/${caseId}`); await refreshList(); return c; });
+  if (record) setCase(record);
+}
+async function viewWork(label, fn) {
+  if (!state.busy) return work(label, fn);
+  try { await fn(); render(); } catch (error) { toast(error.message); }
+}
 const date = value => value ? new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(value)) : '날짜 미입력';
 const badge = status => `<span class="badge ${status}"><span class="status-dot"></span>${names[status]}</span>`;
-const button = (action, label, type = 'secondary', symbol = '', attrs = '') => `<button class="btn ${type}" data-action="${action}" ${state.busy ? 'disabled' : ''} ${attrs}>${symbol ? icon(symbol) : ''}${label}</button>`;
+const button = (action, label, type = 'secondary', symbol = '', attrs = '') => `<button class="btn ${type}" data-action="${action}" ${blocked(action) ? 'disabled' : ''} ${attrs}>${symbol ? icon(symbol) : ''}${label}</button>`;
 function focusBookmark() {
   const el = document.activeElement;
   const scope = el?.closest('#app, #modal');
@@ -124,7 +144,7 @@ function focusBookmark() {
     fallback: el.dataset.action === 'save-draft' ? `#draft-${el.dataset.kind}` : null };
 }
 function restoreFocus(bookmark) {
-  if (!bookmark || state.busy) return;
+  if (!bookmark) return;
   const modal = $('#modal');
   if (modal.open && bookmark.scope !== 'modal') return;
   const scope = modal.open ? modal : $('#app');
@@ -147,7 +167,7 @@ function render() {
       ${button('new', '새 상담 시작하기', 'primary wide', 'plus')}
       ${button('home', '상담 전체 보기', 'secondary wide workspace-home', 'file')}
       <div class="nav-heading"><span>내 상담</span><span>${state.cases.filter(item => !item.archivedAt || item.id === c?.id).length.toString().padStart(2, '0')}</span></div>
-      <nav class="case-list" aria-label="상담 목록">${state.cases.length ? state.cases.filter(item => !item.archivedAt || item.id === c?.id).map(item => `<button class="case-item ${c?.id === item.id ? 'active' : ''}" data-action="open" data-id="${item.id}" ${state.busy ? 'disabled' : ''}>${icon('chat')}<span><strong>${esc(item.title)}</strong><small>${esc(item.company)}${item.mode === 'demo' ? ' · 예제' : ''}</small></span>${item.unanswered ? `<b>${item.unanswered}</b>` : icon('check')}</button>`).join('') : '<p class="sidebar-empty">새 상담을 시작하면<br>이곳에 기록이 쌓여요.</p>'}</nav>
+      <nav class="case-list" aria-label="상담 목록">${state.cases.length ? state.cases.filter(item => !item.archivedAt || item.id === c?.id).map(item => `<button class="case-item ${c?.id === item.id ? 'active' : ''}" data-action="open" data-id="${item.id}" ${blocked('open') ? 'disabled' : ''}>${icon('chat')}<span><strong>${esc(item.title)}</strong><small>${esc(item.company)}${item.mode === 'demo' ? ' · 예제' : ''}</small></span>${item.unanswered ? `<b>${item.unanswered}</b>` : icon('check')}</button>`).join('') : '<p class="sidebar-empty">새 상담을 시작하면<br>이곳에 기록이 쌓여요.</p>'}</nav>
       <div class="sidebar-bottom"><div class="demo-promo"><span class="eyebrow">FIRST TIME HERE?</span><strong>어떻게 이어주는지 궁금하다면</strong><p>가상의 A/S 상담으로<br>전체 흐름을 체험해 보세요.</p>${button('demo', '예제 상담 열기', 'text', 'arrow')}</div>
       <button class="connection" data-action="settings"><span class="connection-dot ${state.config.connection?.state === 'ready' ? 'connected' : ''}"></span><span>${connectionLabel()}<small>${state.config.configured ? esc(state.config.model) : '실제 상담 분석에 사용해요'}</small></span>${icon('settings')}</button>
       <div class="local-note">로컬 워크스페이스 · 이 기기에 저장</div></div>
@@ -159,6 +179,7 @@ function render() {
       ${c ? detail(c) : landing()}
       <footer class="footer">ReplyTrack <span>대화는 이어지고, 기록은 남으니까.</span><span>AI 판단은 원문과 함께 확인해 주세요.</span></footer>
     </main>`;
+  $('#app').querySelectorAll('button[data-action]').forEach(el => { if (blocked(el.dataset.action) && el.dataset.action !== 'cancel-operation') el.disabled = true; });
   renderProgress(); restoreFocus(focus);
 }
 function landing() {
@@ -229,7 +250,7 @@ function detail(c) {
   const unresolved = c.questions.filter(q => q.status !== 'answered').length;
   const answered = c.questions.length - unresolved;
   const pending = c.analyzedMessageCount < c.messages.length;
-  return `<section class="case-heading"><div><div class="eyebrow">${esc(c.company)} <span class="middle-dot">·</span> ${c.mode === 'demo' ? 'DEMO CASE' : 'MY CASE'}</div><h1>${esc(c.title)}</h1><p>${esc(c.summary || '상담은 안전하게 저장됐어요. 질문을 분석하면 확인표가 만들어져요.')}</p></div><div class="heading-actions">${button('case-settings', '상담 관리', 'secondary compact', 'settings')}${button('export', '내려받기', 'secondary compact', 'download')}${button('delete', '', 'icon-btn', 'close', 'aria-label="상담 삭제"')}</div></section>
+  return `<section class="case-heading"><div><div class="eyebrow">${esc(c.company)} <span class="middle-dot">·</span> ${c.mode === 'demo' ? 'DEMO CASE' : 'MY CASE'}</div><h1>${esc(c.title)}</h1><p>${esc(c.summary || '상담은 안전하게 저장됐어요. 질문을 분석하면 확인표가 만들어져요.')}</p></div><div class="heading-actions">${c.mode === 'live' ? button('append', '새 답변 추가', 'primary compact append-primary', 'plus') : ''}${button('case-settings', '상담 관리', 'secondary compact', 'settings')}${button('export', '내려받기', 'secondary compact', 'download')}${button('delete', '', 'icon-btn', 'close', 'aria-label="상담 삭제"')}</div></section>
     ${c.archivedAt ? `<div class="archive-banner"><span>보관한 상담이에요. 보관은 실제 처리 완료를 의미하지 않아요.</span>${button('restore','진행 목록으로 복원','secondary compact')}</div>` : ''}
     ${c.mode === 'demo' ? `<div class="demo-banner"><span>${icon('spark')}<strong>예제 상담</strong> 준비된 가상 데이터예요. AI API를 호출하지 않아요.</span>${c.demoStep < 2 ? button('demo-next', c.demoStep === 0 ? '예제 답변 추가하기' : '견적 도착 시연하기', 'text', 'arrow') : '<span class="demo-complete">모든 예제 답변을 확인했어요</span>'}</div>` : ''}
     ${pending ? `<div class="pending-banner"><span>새 메시지가 저장됐어요. 분석하면 질문과 약속에 반영돼요.</span>${button('analyze', c.questions.length ? '새 답변 분석' : '질문 분석하기', 'primary compact', 'spark')}</div>` : ''}
@@ -237,7 +258,7 @@ function detail(c) {
     ${comparisonPanel(c)}
     <div class="mobile-switch" role="group" aria-label="보기 선택"><button data-action="mobile" data-value="source" class="${state.mobile === 'source' ? 'active' : ''}">상담 원문</button><button data-action="mobile" data-value="analysis" class="${state.mobile === 'analysis' ? 'active' : ''}">질문 확인표</button></div>
     <div class="workspace mobile-${state.mobile}"><section class="source-panel panel"><div class="panel-header"><div>${icon('chat')}<h2>상담 원문</h2><span class="count">${c.messages.length}</span></div><span class="subtle">${c.mode === 'demo' ? '가상 상담' : '검토한 텍스트'}</span></div><div class="source-messages">${c.messages.map(m => `<article class="message ${m.role}" id="message-${m.id}"><div class="message-meta"><span class="speaker-avatar">${m.role === 'customer' ? '나' : 'CS'}</span><strong>${m.role === 'customer' ? '나' : esc(c.company)}</strong><time>${date(m.sentAt)}</time></div><div class="message-text">${esc(m.text)}</div></article>`).join('')}</div><div class="source-bottom"><span>${icon('link')}근거를 누르면 해당 원문으로 이동해요</span>${c.mode === 'live' ? button('append', '새 답변 / 질문 추가', 'secondary wide', 'plus') : ''}</div></section>
-    <section class="analysis-panel"><div class="tabs" role="tablist" aria-label="분석 보기">${[['questions','질문 확인표', c.questions.length],['drafts','재문의 · 인계', null],['history','변경 이력', null]].map(([id,label,count]) => `<button id="tab-${id}" role="tab" aria-controls="panel-${id}" tabindex="${state.tab === id ? 0 : -1}" ${state.busy ? 'disabled' : ''} aria-selected="${state.tab === id}" class="${state.tab === id ? 'active' : ''}" data-action="tab" data-value="${id}">${label}${count !== null ? `<span>${count}</span>` : ''}</button>`).join('')}</div>${c.warnings.map(w => `<div class="warning-note">${esc(w)}</div>`).join('')}<div id="panel-${state.tab}" role="tabpanel" aria-labelledby="tab-${state.tab}" tabindex="0">${state.tab === 'questions' ? questionPanel(c) : state.tab === 'drafts' ? draftPanel(c) : historyPanel(c)}</div></section></div>`;
+    <section class="analysis-panel"><div class="tabs" role="tablist" aria-label="분석 보기">${[['questions','질문 확인표', c.questions.length],['drafts','재문의 · 인계', null],['history','변경 이력', null]].map(([id,label,count]) => `<button id="tab-${id}" role="tab" aria-controls="panel-${id}" tabindex="${state.tab === id ? 0 : -1}" ${blocked('tab') ? 'disabled' : ''} aria-selected="${state.tab === id}" class="${state.tab === id ? 'active' : ''}" data-action="tab" data-value="${id}">${label}${count !== null ? `<span>${count}</span>` : ''}</button>`).join('')}</div>${c.warnings.map(w => `<div class="warning-note">${esc(w)}</div>`).join('')}<div id="panel-${state.tab}" role="tabpanel" aria-labelledby="tab-${state.tab}" tabindex="0">${state.tab === 'questions' ? questionPanel(c) : state.tab === 'drafts' ? draftPanel(c) : historyPanel(c)}</div></section></div>`;
 }
 function questionPanel(c) {
   const visible = c.questions.filter(q => state.filter !== 'remaining' || q.status !== 'answered');
@@ -255,7 +276,7 @@ function draftEditor(c, kind) {
   const draft = c.drafts[kind];
   const dirty = dirtyKinds().includes(kind);
   if (!draft && state.draftEdits[kind] === undefined) return '';
-  return `<div class="draft-editor"><label for="draft-${kind}">${kind === 'followup' ? '재문의 초안' : '상담 인계 요약'} <span>직접 수정할 수 있어요</span></label>${!draft ? '<p class="warning-note">다른 작업에서 원래 초안이 초기화됐어요. 편집 내용은 아래에 보존했으니 먼저 복사한 뒤 최신 상담으로 초안을 다시 만들어 주세요.</p>' : ''}<textarea id="draft-${kind}" data-draft="${kind}" rows="7" maxlength="8000" ${state.busy ? 'disabled' : ''}>${esc(state.draftEdits[kind] ?? savedDraft(draft))}</textarea><div class="draft-editor-bottom"><span id="draft-status-${kind}" role="status">${draftStatus(kind)}</span><div class="draft-actions">${draft ? button('save-draft','편집 저장','primary compact','check',`data-kind="${kind}" ${!dirty ? 'disabled' : ''}`) : ''}${button('copy','복사하기','secondary compact','copy',`data-kind="${kind}"`)}</div></div><p class="draft-note">자동 전송되지 않아요. 직접 편집한 문장은 원문과 대조해 주세요.</p>${draft ? `<details class="draft-sources"><summary>생성 당시 원문 근거 ${draft.sourceMessageIds.length}개</summary>${draft.sourceMessageIds.map(id => `<button class="quote" data-action="source" data-id="${id}">${icon('link')}${esc(c.messages.find(m => m.id === id)?.text)}</button>`).join('')}</details>${draft.editedAt ? `<details class="draft-sources"><summary>편집 전 생성 초안 보기</summary><p class="original-draft">${esc(draft.body)}</p></details>` : ''}` : ''}</div>`;
+  return `<div class="draft-editor"><label for="draft-${kind}">${kind === 'followup' ? '재문의 초안' : '상담 인계 요약'} <span>직접 수정할 수 있어요</span></label>${!draft ? '<p class="warning-note">다른 작업에서 원래 초안이 초기화됐어요. 편집 내용은 아래에 보존했으니 먼저 복사한 뒤 최신 상담으로 초안을 다시 만들어 주세요.</p>' : ''}<textarea id="draft-${kind}" data-draft="${kind}" rows="7" maxlength="8000" ${state.busy ? 'readonly' : ''}>${esc(state.draftEdits[kind] ?? savedDraft(draft))}</textarea><div class="draft-editor-bottom"><span id="draft-status-${kind}" role="status">${draftStatus(kind)}</span><div class="draft-actions">${draft ? button('save-draft','편집 저장','primary compact','check',`data-kind="${kind}" ${!dirty ? 'disabled' : ''}`) : ''}${button('copy','복사하기','secondary compact','copy',`data-kind="${kind}"`)}</div></div><p class="draft-note">자동 전송되지 않아요. 직접 편집한 문장은 원문과 대조해 주세요.</p>${draft ? `<details class="draft-sources"><summary>생성 당시 원문 근거 ${draft.sourceMessageIds.length}개</summary>${draft.sourceMessageIds.map(id => `<button class="quote" data-action="source" data-id="${id}">${icon('link')}${esc(c.messages.find(m => m.id === id)?.text)}</button>`).join('')}</details>${draft.editedAt ? `<details class="draft-sources"><summary>편집 전 생성 초안 보기</summary><p class="original-draft">${esc(draft.body)}</p></details>` : ''}` : ''}</div>`;
 }
 function draftStatus(kind) {
   const draft = state.current?.drafts[kind];
@@ -275,30 +296,66 @@ function connectionLabel() {
   return state.config.connection?.state === 'ready' ? 'AI 연결 점검 통과' : state.config.connection?.state === 'failed' ? 'AI 연결 점검 실패' : state.config.configured ? 'API 키 등록 · 점검 전' : 'AI 연결 설정';
 }
 function showSettings() {
+  captureOnboarding();
+  settingsReturn = $('#modal').open && !!$('#modal').querySelector('#import-form, #privacy-form, #review-form');
   showModal('실제 AI 분석 연결', `<p class="modal-intro">키는 서버 메모리에만 보관돼요. 짧은 실제 요청으로 키·모델·응답 형식을 확인하며 소량의 API 비용이 발생해요.</p><p class="connection-result" role="status">${connectionLabel()}${state.config.connection?.checkedAt ? ` · ${date(state.config.connection.checkedAt)}` : ''}</p><form id="settings-form"><label class="field">OpenAI API 키<input id="api-key" type="password" autocomplete="off" placeholder="${state.config.configured ? '등록됨 · 변경할 때만 입력' : 'sk-…'}" ${state.config.configured ? '' : 'required'}></label><label class="field">모델<input id="api-model" value="${esc(state.config.model)}" required></label><div class="form-note">상담 자료 없이 연결만 점검해요. 실제 분석 전에도 점검하며, 통과 결과는 10분간 사용해요. 키는 기록이나 내보내기에 포함하지 않아요.</div><div class="modal-actions"><button class="btn secondary" type="button" data-action="close-modal">닫기</button><button class="btn primary" type="submit">저장하고 연결 점검</button></div></form>`);
 }
 function showCaseSettings() {
   const c = state.current;
   showModal('상담 관리', `<form id="case-settings-form"><label class="field">상담 제목<input name="title" maxlength="100" value="${esc(c.title)}" required></label><label class="field">업체명<input name="company" maxlength="60" value="${esc(c.company)}"></label><div class="modal-actions"><button class="btn secondary" type="button" data-action="close-modal">취소</button><button class="btn primary" type="submit">상담 정보 저장</button></div></form><div class="archive-controls"><h3>${c.archivedAt ? '보관한 상담' : '상담 보관하기'}</h3><p>진행 목록에서 잠시 빼 둘 수 있어요. 원문과 질문·약속 상태는 그대로 유지하며, 보관함에서 언제든 복원할 수 있어요.</p>${button(c.archivedAt ? 'restore' : 'archive',c.archivedAt ? '진행 목록으로 복원' : '보관함으로 이동','secondary compact')}</div>`);
 }
+function captureOnboarding() {
+  if (!state.onboarding) return;
+  if ($('#import-form')) readNewMetadata();
+  const privacy = $('#privacy-form');
+  if (privacy) state.onboarding.prepared.text = privacy.elements.text.value;
+  const review = $('#review-form');
+  if (review) {
+    state.onboarding.title = review.elements.title.value;
+    state.onboarding.company = review.elements.company.value;
+    state.onboarding.messages = [...review.querySelectorAll('.review-row')].map(row => ({
+      role: row.querySelector('[name=role]').value, text: row.querySelector('textarea').value,
+      sentAt: row.querySelector('[name=sentAt]').value ? new Date(row.querySelector('[name=sentAt]').value).toISOString() : null,
+    }));
+  }
+}
+function resumeOnboarding() {
+  state.onboarding ||= newOnboarding();
+  if (state.onboarding.stage === 'privacy') showPrivacyPreview(state.onboarding.prepared);
+  else if (state.onboarding.stage === 'review') showReview();
+  else showNew();
+}
+function onboardingConnection() {
+  return `<div class="onboarding-connection"><span>${state.config.configured ? 'AI 연결을 확인하거나 변경할 수 있어요.' : '실제 AI 분석에는 API 키가 필요해요.'} 설정 후 이 단계로 돌아와요.</span><button type="button" class="btn secondary compact" data-action="settings">AI 연결 설정</button></div>`;
+}
 function showNew() {
-  state.onboarding = { title: '', company: '', messages: [], notes: [] };
-  showModal('어떤 상담을 이어갈까요?', `<p class="modal-intro">대화를 가져온 뒤, 발화자와 내용을 확인하고 분석해요.</p><form id="import-form"><div class="form-grid"><label class="field">상담 제목<input name="title" placeholder="예: 무선 청소기 A/S 문의" maxlength="100" required></label><label class="field">업체명<input name="company" placeholder="예: 클린홈 고객센터" maxlength="60"></label></div><label class="field">상담 내용<textarea name="text" rows="8" maxlength="30000" placeholder="나: 수리비와 왕복 배송비가 궁금합니다.&#10;고객센터: 수리비는 점검 후 안내하겠습니다."></textarea></label><label class="upload-zone">${icon('file')}<span><strong>대화 캡처로 가져오기</strong><small>PNG · JPG · WebP / 최대 4MB / 1장</small></span><input name="image" type="file" accept="image/png,image/jpeg,image/webp"></label><p class="form-note">전화번호·주소를 기본으로 가려요. 캡처는 기기에서 글자를 읽으며 원본 이미지는 외부 AI로 보내거나 저장하지 않아요. 다음 화면에서 가림 결과를 확인해 주세요.</p><div class="modal-actions"><button type="button" class="btn secondary" data-action="manual">직접 나누어 입력</button><button class="btn primary" type="submit">${icon('spark')}개인정보 가리고 확인</button></div></form>`, true);
+  state.onboarding ||= newOnboarding();
+  const data = state.onboarding;
+  data.stage = 'import';
+  showModal('어떤 상담을 이어갈까요?', `<p class="modal-intro">대화를 가져온 뒤, 발화자와 내용을 확인하고 분석해요. 이 탭을 열어 둔 동안 입력을 유지해요.</p>${onboardingConnection()}<form id="import-form"><div class="form-grid"><label class="field">상담 제목<input name="title" value="${esc(data.title)}" placeholder="예: 무선 청소기 A/S 문의" maxlength="100" required></label><label class="field">업체명<input name="company" value="${esc(data.company)}" placeholder="예: 클린홈 고객센터" maxlength="60"></label></div><label class="field">상담 내용<textarea name="text" rows="8" maxlength="30000" placeholder="나: 수리비와 왕복 배송비가 궁금합니다.&#10;고객센터: 수리비는 점검 후 안내하겠습니다.">${esc(data.text)}</textarea></label><label class="upload-zone">${icon('file')}<span><strong>대화 캡처로 가져오기</strong><small>PNG · JPG · WebP / 최대 4MB / 1장</small></span><input name="image" type="file" accept="image/png,image/jpeg,image/webp"></label>${data.file ? `<p class="selected-capture">선택한 캡처: ${esc(data.file.name)} <button type="button" class="btn text compact" data-action="remove-capture">선택 해제</button></p>` : ''}<p class="form-note">전화번호·주소를 기본으로 가려요. 캡처는 기기에서 글자를 읽으며 원본 이미지는 외부 AI로 보내거나 저장하지 않아요. 다음 화면에서 가림 결과를 확인해 주세요.</p><div class="modal-actions"><button type="button" class="btn secondary" data-action="manual">직접 나누어 입력</button><button class="btn primary" type="submit">${icon('spark')}개인정보 가리고 확인</button></div></form>`, true);
 }
 function readNewMetadata() {
   const form = $('#import-form');
-  if (form) { state.onboarding.title = form.elements.title.value; state.onboarding.company = form.elements.company.value; }
+  if (form) {
+    const data = state.onboarding;
+    if (data.text !== form.elements.text.value) { data.prepared = null; data.messages = []; data.notes = []; }
+    data.title = form.elements.title.value; data.company = form.elements.company.value; data.text = form.elements.text.value;
+    if (form.elements.image.files[0] && data.file !== form.elements.image.files[0]) { data.file = form.elements.image.files[0]; data.prepared = null; }
+  }
 }
 function showPrivacyPreview(prepared) {
-  showModal('AI에 보내기 전에 확인해 주세요', `<p class="modal-intro">전화번호 ${prepared.counts.phone}개·주소 ${prepared.counts.address}개를 자동으로 가렸어요. 아직 상담 내용은 외부 AI로 보내지 않았어요.</p><form id="privacy-form"><label class="field">AI에 전달할 상담 내용<textarea name="text" rows="12" maxlength="30000" required>${esc(prepared.text)}</textarea></label><p class="form-note">한국 전화번호·도로명·지번 주소를 기본 탐지해요. 특이한 표기나 캡처 인식 오류는 놓칠 수 있으니 이름·계좌번호 등 추가로 숨길 내용도 직접 지워 주세요. 가림 표시는 저장 후 되돌릴 수 없어요.</p><div class="modal-actions"><button type="button" class="btn secondary" data-action="close-modal">닫기</button><button type="submit" class="btn primary">확인한 내용으로 AI 대화 읽기</button></div></form>`, true);
+  state.onboarding.prepared = prepared;
+  state.onboarding.stage = 'privacy';
+  showModal('AI에 보내기 전에 확인해 주세요', `<p class="modal-intro">전화번호 ${prepared.counts.phone}개·주소 ${prepared.counts.address}개를 자동으로 가렸어요. 아직 상담 내용은 외부 AI로 보내지 않았어요.</p>${onboardingConnection()}<form id="privacy-form"><label class="field">AI에 전달할 상담 내용<textarea name="text" rows="12" maxlength="30000" required>${esc(prepared.text)}</textarea></label><p class="form-note">한국 전화번호·도로명·지번 주소를 기본 탐지해요. 특이한 표기나 캡처 인식 오류는 놓칠 수 있으니 이름·계좌번호 등 추가로 숨길 내용도 직접 지워 주세요. 가림 표시는 저장 후 되돌릴 수 없어요.</p><div class="modal-actions"><button type="button" class="btn secondary" data-action="onboarding-import">이전 단계</button><button type="submit" class="btn primary">확인한 내용으로 AI 대화 읽기</button></div></form>`, true);
 }
 const localDateInput = iso => iso ? new Date(new Date(iso).getTime() - new Date(iso).getTimezoneOffset() * 60000).toISOString().slice(0,16) : '';
 function reviewRow(m, i) {
-  return `<div class="review-row" data-index="${i}"><div class="review-row-head"><span>메시지 ${i + 1}</span><select name="role" aria-label="메시지 ${i + 1} 발화자"><option value="customer" ${m.role === 'customer' ? 'selected' : ''}>나</option><option value="agent" ${m.role === 'agent' ? 'selected' : ''}>고객센터</option><option value="unknown" ${m.role === 'unknown' ? 'selected' : ''}>발화자 확인 필요</option></select><input type="datetime-local" name="sentAt" value="${localDateInput(m.sentAt)}" aria-label="메시지 ${i + 1} 날짜 (선택)"><button class="btn icon-btn" type="button" data-action="remove-row" aria-label="메시지 ${i + 1} 삭제">${icon('close')}</button></div><textarea name="text" rows="3" maxlength="6000" required aria-label="메시지 ${i + 1} 내용">${esc(m.text)}</textarea></div>`;
+  return `<div class="review-row" data-index="${i}"><div class="review-row-head"><span>메시지 ${i + 1}</span><select name="role" aria-label="메시지 ${i + 1} 발화자"><option value="customer" ${m.role === 'customer' ? 'selected' : ''}>나</option><option value="agent" ${m.role === 'agent' ? 'selected' : ''}>고객센터</option><option value="unknown" ${m.role === 'unknown' ? 'selected' : ''}>발화자 확인 필요</option></select><button class="btn icon-btn" type="button" data-action="remove-row" aria-label="메시지 ${i + 1} 삭제">${icon('close')}</button></div><label class="review-date">실제 상담 날짜와 시간 (선택)<input type="datetime-local" name="sentAt" value="${localDateInput(m.sentAt)}" aria-label="메시지 ${i + 1} 날짜 (선택)"></label><textarea name="text" rows="3" maxlength="6000" required aria-label="메시지 ${i + 1} 내용">${esc(m.text)}</textarea></div>`;
 }
 function showReview() {
   const data = state.onboarding;
-  showModal('원문을 한 번 확인해 주세요', `<p class="modal-intro">이 내용이 분석의 기준이 돼요. 발화자와 인식 오류를 고치고, 실제 상담 날짜를 아는 경우 입력해 주세요.</p>${data.notes.map(n => `<p class="warning-note">${esc(n)}</p>`).join('')}<form id="review-form"><div class="form-grid"><label class="field">상담 제목<input name="title" value="${esc(data.title)}" maxlength="100" required></label><label class="field">업체명<input name="company" value="${esc(data.company)}" maxlength="60"></label></div><div id="review-rows">${data.messages.map(reviewRow).join('')}</div><button class="btn secondary" type="button" data-action="add-row">${icon('plus')}메시지 추가</button><div class="form-note">날짜가 없는 “내일” 같은 표현은 기한 미정으로 남겨요. 전화번호·주소는 저장 전 다시 가리고, 가린 원문만 OpenAI에 전달해요. 인식 오류와 누락된 개인정보를 확인해 주세요.</div><div class="modal-actions"><button class="btn secondary" type="button" data-action="close-modal">취소</button><button class="btn primary" type="submit">저장하고 질문 분석하기 ${icon('arrow')}</button></div></form>`, true);
+  data.stage = 'review';
+  showModal('원문을 한 번 확인해 주세요', `<p class="modal-intro">이 내용이 분석의 기준이 돼요. 발화자와 인식 오류를 고치고, 실제 상담 날짜를 아는 경우 입력해 주세요.</p>${onboardingConnection()}${data.notes.map(n => `<p class="warning-note">${esc(n)}</p>`).join('')}<form id="review-form"><div class="form-grid"><label class="field">상담 제목<input name="title" value="${esc(data.title)}" maxlength="100" required></label><label class="field">업체명<input name="company" value="${esc(data.company)}" maxlength="60"></label></div><div id="review-rows">${data.messages.map(reviewRow).join('')}</div><button class="btn secondary" type="button" data-action="add-row">${icon('plus')}메시지 추가</button><div class="form-note">날짜가 없는 “내일” 같은 표현은 기한 미정으로 남겨요. 전화번호·주소는 저장 전 다시 가리고, 가린 원문만 OpenAI에 전달해요. 인식 오류와 누락된 개인정보를 확인해 주세요.</div><div class="modal-actions"><button class="btn secondary" type="button" data-action="onboarding-back">이전 단계</button><button class="btn primary" type="submit">저장하고 질문 분석하기 ${icon('arrow')}</button></div></form>`, true);
 }
 function showAppend() {
   showModal('새로운 대화 이어 붙이기', `<p class="modal-intro">기존 질문과 새 답변을 연결해요. 전화번호·주소를 가린 메시지를 먼저 저장해요. 분석을 취소하거나 실패해도 메시지와 이전 분석·초안은 유지돼요.</p><form id="append-form"><div class="form-grid"><label class="field">발화자<select name="role"><option value="agent">고객센터</option><option value="customer">나</option></select></label><label class="field">실제 상담 날짜 (선택)<input name="sentAt" type="datetime-local"></label></div><label class="field">추가 메시지<textarea name="text" rows="7" maxlength="6000" required placeholder="새로 받은 답변을 붙여넣어 주세요."></textarea></label><div class="modal-actions"><button class="btn secondary" type="button" data-action="close-modal">취소</button><button class="btn primary" type="submit">저장하고 새 답변 분석</button></div></form>`);
@@ -313,10 +370,13 @@ async function updateCase(path, method, data) {
   const result = path === 'analyze' ? await runOperation('analyze', input, c.id)
     : path === 'drafts' && method === 'POST' ? await runOperation('draft', input, c.id)
     : await api(`/api/cases/${c.id}${path ? `/${path}` : ''}`, method, input);
-  if (['analyze','demo-next'].includes(path) || /^(questions|promises)\//.test(path)) state.draftEdits = {};
-  if (path === 'drafts' && method === 'POST') delete state.draftEdits[data.kind];
-  if (path.startsWith('drafts/') && method === 'PATCH') delete state.draftEdits[path.split('/')[1]];
-  setCase(result);
+  views.remember(result);
+  if (state.current?.id === c.id) {
+    if (['analyze','demo-next'].includes(path) || /^(questions|promises)\//.test(path)) state.draftEdits = {};
+    if (path === 'drafts' && method === 'POST') delete state.draftEdits[data.kind];
+    if (path.startsWith('drafts/') && method === 'PATCH') delete state.draftEdits[path.split('/')[1]];
+    setCase(result);
+  }
   await refreshList();
   render();
 }
@@ -335,25 +395,26 @@ document.addEventListener('click', async event => {
   const target = event.target.closest('[data-action]'); if (!target) return;
   event.preventDefault();
   if (target.dataset.action === 'cancel-operation') { await state.operation?.cancel(); return; }
-  if (state.busy) return;
   const action = target.dataset.action;
+  if (blocked(action)) return;
+  if (['home', 'open', 'tab', 'draft-tab', 'mobile', 'source'].includes(action)) viewRevision++;
   if (action === 'guard-cancel') return resolveGuard(false);
   if (action === 'guard-continue') return resolveGuard(true);
   const navigating = ['home','new','demo'].includes(action) || (action === 'open' && target.dataset.id !== state.current?.id);
   const invalidating = ['demo-next','analyze','append','edit-question','apply-ai','confirm-promise','generate-draft'].includes(action);
   if ((navigating || invalidating) && !await guardEdits(invalidating, action === 'generate-draft' ? target.dataset.kind : undefined)) return;
-  if (action === 'home') { state.current = null; state.draftEdits = {}; state.error = ''; window.history.replaceState(null,'','/'); await work('상담 목록을 불러오고 있어요', refreshList); }
-  if (action === 'refresh') await work('상담 목록을 새로 불러오고 있어요', refreshList);
+  if (action === 'home') { views.leave(); state.current = null; state.draftEdits = {}; state.error = ''; window.history.replaceState(null,'','/'); await viewWork('상담 목록을 불러오고 있어요', refreshList); }
+  if (action === 'refresh') await viewWork('상담 목록을 새로 불러오고 있어요', refreshList);
   if (action === 'case-filter') { state.caseFilter = target.dataset.value; render(); }
   if (action === 'reset-search') { state.query = ''; state.caseFilter = 'active'; render(); }
   if (action === 'case-settings') showCaseSettings();
   if (['archive','restore'].includes(action)) await work('상담 목록을 정리하고 있어요', async () => { await updateCase('','PATCH',{archived:action === 'archive'}); $('#modal').close(); toast(action === 'archive' ? '보관함으로 이동했어요. 언제든 복원할 수 있어요.' : '진행 목록으로 복원했어요.'); });
   if (action === 'save-draft') await work('편집한 초안을 저장하고 있어요', async () => { await updateCase(`drafts/${target.dataset.kind}`,'PATCH',{body:state.draftEdits[target.dataset.kind]}); toast('편집 내용을 이 기기에 저장했어요.'); });
-  if (action === 'new') showNew();
+  if (action === 'new') resumeOnboarding();
   if (action === 'settings') showSettings();
-  if (action === 'close-modal') { if (guardResolve) resolveGuard(false); else $('#modal').close(); }
+  if (action === 'close-modal') { captureOnboarding(); if (guardResolve) resolveGuard(false); else if (settingsReturn) { settingsReturn = false; resumeOnboarding(); } else $('#modal').close(); }
   if (action === 'dismiss-error') { state.error = ''; render(); }
-  if (action === 'open') await work('상담 기록을 불러오고 있어요', () => loadCase(target.dataset.id));
+  if (action === 'open') await viewWork('상담 기록을 불러오고 있어요', () => loadCase(target.dataset.id));
   if (action === 'demo') await work('예제 상담을 준비하고 있어요', async () => { setCase(await api('/api/demo','POST',{})); state.tab = 'questions'; state.filter = 'all'; await refreshList(); });
   if (action === 'demo-next') await work('새 예제 답변을 반영하고 있어요', async () => { await updateCase('demo-next', 'POST', {}); state.tab = 'questions'; toast('질문과 처리 약속이 갱신됐어요.'); });
   if (action === 'analyze') await work('AI가 질문과 답변 근거를 대조하고 있어요', () => updateCase('analyze','POST',{}));
@@ -379,11 +440,15 @@ document.addEventListener('click', async event => {
   if (action === 'export') downloadRecord();
   if (action === 'delete') showModal('상담 기록을 삭제할까요?', `<p class="modal-intro">‘${esc(state.current.title)}’의 원문과 분석 기록이 이 기기에서 삭제돼요. 삭제 후에는 되돌릴 수 없어요.</p><div class="modal-actions"><button class="btn secondary" data-action="close-modal">취소</button><button class="btn danger" data-action="delete-yes">상담 삭제</button></div>`);
   if (action === 'delete-yes') await work('상담 기록을 삭제하고 있어요', async () => { await api(`/api/cases/${state.current.id}`, 'DELETE', {version:state.current.version}); state.current=null; state.draftEdits={}; window.history.replaceState(null,'','/'); localStorage.removeItem('replytrack:last-case'); await refreshList(); $('#modal').close(); });
-  if (action === 'manual') { readNewMetadata(); state.onboarding.messages = [{role:'customer',text:'',sentAt:null},{role:'agent',text:'',sentAt:null}]; showReview(); }
-  if (action === 'add-row') { const rows = $('#review-rows'); if(rows.children.length < 60) rows.insertAdjacentHTML('beforeend',reviewRow({role:'agent',text:'',sentAt:null},rows.children.length)); }
-  if (action === 'remove-row') target.closest('.review-row').remove();
+  if (action === 'manual') { readNewMetadata(); if (!state.onboarding.messages.length) state.onboarding.messages = manualMessages(state.onboarding.text); showReview(); }
+  if (action === 'onboarding-import') { captureOnboarding(); showNew(); }
+  if (action === 'onboarding-back') { captureOnboarding(); if (state.onboarding.prepared) showPrivacyPreview(state.onboarding.prepared); else showNew(); }
+  if (action === 'remove-capture') { state.onboarding.file = null; state.onboarding.prepared = null; $('#import-form [name=image]').value = ''; showNew(); }
+  if (action === 'add-row') { const rows = $('#review-rows'); if(rows.children.length < 60) rows.insertAdjacentHTML('beforeend',reviewRow({role:'agent',text:'',sentAt:null},rows.children.length)); captureOnboarding(); }
+  if (action === 'remove-row') { target.closest('.review-row').remove(); captureOnboarding(); }
 });
 document.addEventListener('change', event => {
+  if (event.target.closest('#import-form, #privacy-form, #review-form')) captureOnboarding();
   if (event.target.id === 'case-sort') { state.sort = event.target.value; $('#workspace-results').innerHTML = caseResults(); }
   if (event.target.id === 'question-filter') { state.filter = event.target.value; render(); }
   if (event.target.name === 'draft-question') {
@@ -394,17 +459,19 @@ document.addEventListener('change', event => {
 });
 document.addEventListener('keydown', event => {
   const tab = event.target.closest('[role="tab"][data-action="tab"]');
-  if (!tab || state.busy || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  if (!tab || blocked('tab') || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
   event.preventDefault();
   const tabs = [...tab.closest('[role="tablist"]').querySelectorAll('[role="tab"]')];
   const index = tabs.indexOf(tab);
   const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1
     : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
   state.tab = tabs[next].dataset.value;
+  viewRevision++;
   render();
   $(`#tab-${state.tab}`).focus();
 });
 document.addEventListener('input', event => {
+  if (event.target.closest('#import-form, #privacy-form, #review-form')) captureOnboarding();
   if (event.target.id === 'case-search') { state.query = event.target.value; $('#workspace-results').innerHTML = caseResults(); }
   const kind = event.target.dataset.draft;
   if (kind) {
@@ -429,9 +496,11 @@ document.addEventListener('submit', async event => {
       try { state.config = await runOperation('preflight'); toast('AI 키·모델·응답 형식을 확인했어요.'); }
       finally { const result = $('.connection-result'); if (result) result.textContent = `${connectionLabel()}${state.config.connection?.checkedAt ? ` · ${date(state.config.connection.checkedAt)}` : ''}`; }
     });
+    if (!state.error && settingsReturn) { settingsReturn = false; resumeOnboarding(); }
   }
   if (form.id === 'import-form') {
-    readNewMetadata(); const text = form.elements.text.value.trim(), file = form.elements.image.files[0];
+    readNewMetadata(); const text = state.onboarding.text.trim(), file = state.onboarding.file;
+    if (state.onboarding.prepared) { showPrivacyPreview(state.onboarding.prepared); return; }
     await work('기기에서 대화를 읽고 개인정보를 가리고 있어요', async () => {
       if (!text && !file) throw new Error('상담 텍스트나 캡처를 입력해 주세요.');
       if (file && file.size > 4 * 1024 * 1024) throw new Error('4MB 이하 캡처를 선택해 주세요.');
@@ -441,31 +510,37 @@ document.addEventListener('submit', async event => {
     });
   }
   if (form.id === 'privacy-form') {
+    captureOnboarding();
+    if (!state.config.configured) { showSettings(); return; }
     const text = form.elements.text.value;
+    if (state.onboarding.messages.length && state.onboarding.reviewText === text) { showReview(); return; }
     await work('연결을 확인하고 AI가 대화를 정리하고 있어요', async () => {
       const result = await runOperation('extract', {text});
-      Object.assign(state.onboarding, result); showReview();
+      Object.assign(state.onboarding, result, { reviewText: text }); showReview();
     });
   }
   if (form.id === 'review-form') {
+    captureOnboarding();
+    if (!state.config.configured) { showSettings(); return; }
     const title = form.elements.title.value, company = form.elements.company.value;
     const messages = [...form.querySelectorAll('.review-row')].map(row => ({ role:row.querySelector('[name=role]').value,text:row.querySelector('textarea').value,sentAt:row.querySelector('[name=sentAt]').value ? new Date(row.querySelector('[name=sentAt]').value).toISOString() : null }));
     await work('상담을 저장하고 AI가 질문을 분석하고 있어요', async () => {
       if (messages.some(m => m.role === 'unknown')) throw new Error('모든 메시지의 발화자를 확인해 주세요.');
-      setCase(await api('/api/cases','POST',{title,company,messages})); await refreshList(); $('#modal').close(); state.tab='questions'; state.filter='all'; render();
+      setCase(await api('/api/cases','POST',{title,company,messages})); state.onboarding = null; await refreshList(); $('#modal').close(); state.tab='questions'; state.filter='all'; render();
       await updateCase('analyze','POST',{});
     });
   }
   if (form.id === 'append-form') {
     const body = {role:form.elements.role.value,text:form.elements.text.value,sentAt:form.elements.sentAt.value ? new Date(form.elements.sentAt.value).toISOString() : null};
-    await work('새 대화를 저장하고 기존 질문에 연결하고 있어요', async () => { await updateCase('messages','POST',body); $('#modal').close(); await updateCase('analyze','POST',{}); state.tab='questions'; });
+    const revision = viewRevision, caseId = state.current.id;
+    await work('새 대화를 저장하고 기존 질문에 연결하고 있어요', async () => { await updateCase('messages','POST',body); $('#modal').close(); await updateCase('analyze','POST',{}); if (viewRevision === revision && state.current?.id === caseId) state.tab='questions'; });
   }
   if (form.id === 'edit-form') {
     const body = {title:form.elements.title.value,status:form.elements.status.value};
     await work('수정 내용을 저장하고 있어요', async () => { await updateCase(`questions/${form.dataset.id}`,'PATCH',body); $('#modal').close(); });
   }
 });
-$('#modal').addEventListener('cancel', event => { if(state.busy) event.preventDefault(); else if (guardResolve) { event.preventDefault(); resolveGuard(false); } });
+$('#modal').addEventListener('cancel', event => { captureOnboarding(); if (settingsReturn && !state.busy) { event.preventDefault(); settingsReturn = false; resumeOnboarding(); return; } if(state.busy) event.preventDefault(); else if (guardResolve) { event.preventDefault(); resolveGuard(false); } });
 $('#modal').addEventListener('close', () => {
   if ($('#modal').open) return;
   restoreFocus(modalReturnFocus); modalReturnFocus = null;
