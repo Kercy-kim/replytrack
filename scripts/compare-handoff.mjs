@@ -28,6 +28,8 @@ const comparison = {
   sourceReports: files.map(path => ({ path, sha256: createHash('sha256').update(readFileSync(path)).digest('hex') })),
   requestedModel: first.requestedModel, mode: first.mode, suite: first.suite, fixtureHash: first.fixtureHash, pairCount: before.length,
   over50Seconds: { before: before.filter(r => r.operations[0].ms > 50000).length, after: after.filter(r => r.operations[0].ms > 50000).length },
+  over45Seconds: { before: before.filter(r => r.operations[0].ms > 45000).length, after: after.filter(r => r.operations[0].ms > 45000).length },
+  maxMs: { before: Math.max(...before.map(r => r.operations[0].ms)), after: Math.max(...after.map(r => r.operations[0].ms)) },
   before: b, after: a, beforeSaved: before.filter(r => r.draft).length, afterSaved: after.filter(r => r.draft).length,
   beforeRepairs: before.filter(r => r.draft?.review.attempts > 1).length, afterRepairs: after.filter(r => r.draft?.review.attempts > 1).length,
   reductionPercent: { median: reduction(b.draftMs.median,a.draftMs.median), p95: reduction(b.draftMs.p95,a.draftMs.p95), totalTokens: a.callsWithoutUsage || b.callsWithoutUsage ? null : reduction(b.totalTokens,a.totalTokens) },

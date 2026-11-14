@@ -38,6 +38,37 @@ export function stripInternalCitations(raw, record) {
   return body === raw.body ? raw : { ...raw, body };
 }
 
+// A pair of quoted answers does not establish two different people. Only
+// normalize this closed attribution pattern; the unchanged critic must still
+// verify facts, contradictions and perspective before anything is saved.
+export function normalizeHandoffAttribution(raw, record) {
+  if (!raw || typeof raw.body !== 'string' || !Array.isArray(raw.sourceMessageIds)) return raw;
+  const sources = raw.sourceMessageIds.map(id => record.messages.find(m => m.id === id));
+  if (!sources.length || sources.some(m => !m)) return raw;
+  // Be conservative when the transcript itself discusses individual agents.
+  if (record.messages.some(m => /상담원|상담사|담당자|(?:한|다른)\s*분/.test(m.text))) return raw;
+  if (new Set(sources.filter(m=>m.role==='agent').map(m=>m.id)).size < 2) return raw;
+  // Indirect reported speech: remove only the unsupported identity distinction.
+  // Action clauses and requests to another agent do not match these patterns.
+  const received = /(?<![가-힣\w])(한|다른)\s*(?:상담원|상담사|담당자)에게는([^.!?\n]{1,300}?(?:라고|다고|고)\s*안내받(?:았고|았으며|았습니다|아))/g;
+  const recipients = [...raw.body.matchAll(received)];
+  let body = raw.body;
+  if (recipients.length === 2 && recipients[0][1] === '한' && recipients[1][1] === '다른' && recipients.every(m=>!/상담원|상담사|담당자/.test(m[2]))) body = body.replace(received,'$1 답변에서는$2');
+  body = body.replace(/(?<![가-힣\w])(상담원|상담사|담당자)들로부터(?=\s*['"‘“][^.!?\n]{1,300}?안내(?:를\s*받|받))/g,'$1으로부터');
+  const quoted = '“([^“”\\n]{1,300})”|‘([^‘’\\n]{1,300})’|"([^"\\n]{1,300})"|\'([^\'\\n]{1,300})\'';
+  const pattern = new RegExp(`(?<![가-힣\\w])(한|다른)\\s*(?:상담원|상담사|담당자)은\\s*(?:${quoted})(?:라고|고)\\s*(?:안내했(?:고|으며|습니다)|설명했(?:고|으며|습니다)|답변했(?:고|으며|습니다)|안내받(?:았고|았으며|았습니다|아))`, 'g');
+  const matches = [...body.matchAll(pattern)];
+  if (matches.length !== 2 || matches[0][1] !== '한' || matches[1][1] !== '다른') return body===raw.body ? raw : {...raw,body};
+  const evidence = matches.map(m => {
+    const quote = m.slice(2).find(Boolean);
+    return sources.filter(s => s.role === 'agent' && s.text.includes(quote));
+  });
+  if (!evidence[0].some(a => evidence[1].some(b => a.id !== b.id))) return body===raw.body ? raw : {...raw,body};
+  // No chronology is inferred. Quotes, predicates, facts and source IDs stay.
+  body = body.replace(pattern, match => match.replace(/^(한|다른)\s*(?:상담원|상담사|담당자)은/, '$1 답변에서는'));
+  return { ...raw, body };
+}
+
 // Keep the general safeguards; specialize the scope of a factual handoff.
 export const HANDOFF_REVIEW_PROMPT = `${DRAFT_REVIEW_PROMPT}
 인계 추가 기준: 앞의 '약속한 안내 시점 질문 허용'은 재문의에만 적용한다. 인계에서는 원래 questions에 없는 질문을 하나라도 더하면 실패다. 특히 '환불 예정일'과 '그 날짜를 언제 안내할지'는 별개이며, 미정인 안내 시점을 설명하는 것은 허용하지만 새로 물으면 제거한다.
