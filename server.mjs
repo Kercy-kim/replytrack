@@ -7,6 +7,7 @@ import { CaseStore } from './src/store.mjs';
 import { OpenAIClient } from './src/openai.mjs';
 import { ReplyTrack } from './src/service.mjs';
 import { AppError, assert } from './src/errors.mjs';
+import { allowExtensionRequest } from './src/extension-access.mjs';
 
 const root = dirname(fileURLToPath(import.meta.url));
 try { process.loadEnvFile(join(root, '.env')); } catch (error) { if (error.code !== 'ENOENT') throw error; }
@@ -26,8 +27,10 @@ export function createApp({ store, ai } = {}) {
       const host = req.headers.host;
       const port = server.address()?.port;
       assert([`localhost:${port}`, `127.0.0.1:${port}`].includes(host), '로컬 주소로 접속해 주세요.', 403);
-      if (req.headers.origin) assert(req.headers.origin === `http://${host}`, '이 요청의 출처를 허용하지 않습니다.', 403);
       const path = new URL(req.url, `http://${host}`).pathname;
+      if (req.headers.origin && req.headers.origin !== `http://${host}`) {
+        if (allowExtensionRequest(req, res, path)) return;
+      }
       const method = req.method;
       let body = {};
       if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {

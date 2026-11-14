@@ -246,7 +246,7 @@ async function init() {
   render();
   try {
     [state.config, state.cases] = await Promise.all([api('/api/config'),api('/api/cases')]);
-    const last = localStorage.getItem('replytrack:last-case');
+    const last = new URLSearchParams(location.search).get('case') || localStorage.getItem('replytrack:last-case');
     if (last && state.cases.some(c => c.id === last)) setCase(await api(`/api/cases/${last}`));
   } catch(e) { state.error=e.message; }
   render();
