@@ -4,7 +4,7 @@
 
 `support-cases.mjs`는 실제 고객 정보가 없는 가상 한국어 상담 20건(배송 7, 환불 7, 구독 6)이다. 첫 API 호출 전에 입력과 기대 질문·상태·근거 메시지·약속·기한을 작성했다. 정답은 개발 에이전트가 작성했으며 외부 전문가/사용자가 검증한 정답은 아니다. 모델에는 입력 대화와 기존 분석만 전달하고 기대값은 전달하지 않는다.
 
-초기 분석 20회와 새 답변 반영 3회(S06/R03/U04), 재문의 4회와 인계 3회를 실행한다. 초안 검토 추가 전에는 **30 API 호출**, 현재 구성의 기본 호출은 분석 23회와 초안 생성·검토 14회로 37회다. 확인 필요 질문의 경계 검토, 인용 수정, 초안 수정이 있으면 추가되며 모두 필요한 이론적 최대는 97회다. 실제 호출 수를 실행별로 기록한다. 사용자의 DB 대신 메모리 SQLite를 사용한다. 서비스의 `analyze`, `append`, `draft`와 실제 OpenAI Responses API를 호출한다. 예제 모드나 응답 fixture는 쓰지 않는다. 기본 모델은 앱과 동일한 `gpt-5-mini`다. 현재 reasoning effort는 분석·모든 초안 생성·검토에서 `medium`이다. 초기 보고서의 분석·생성 `low`와 구분하며 각 실제 호출의 설정과 토큰 수를 결과에 보존한다. 평가 정답 채점은 코드로 하며, 제품 내부의 초안 검토 호출을 정답 채점기로 사용하지 않는다.
+초기 분석 20회와 새 답변 반영 3회(S06/R03/U04), 재문의 4회와 인계 3회를 실행한다. 초안 검토 추가 전에는 **30 API 호출**, 현재 구성의 기본 호출은 분석 23회와 초안 생성·검토 14회로 37회다. 확인 필요 질문의 경계 검토, 인용 수정, 초안 수정이 있으면 추가되며 모두 필요한 이론적 최대는 97회다. 실제 호출 수를 실행별로 기록한다. 사용자의 DB 대신 메모리 SQLite를 사용한다. 서비스의 `analyze`, `append`, `draft`와 실제 OpenAI Responses API를 호출한다. 예제 모드나 응답 fixture는 쓰지 않는다. 기본 모델은 앱과 동일한 `gpt-5-mini`다. 이전 품질 개선까지는 reasoning effort가 분석·모든 초안 생성·검토에서 `medium`이었다. 현재 최적화 설정은 아래 재실행 절을 따른다. 초기 보고서의 분석·생성 `low`와 구분하며 각 실제 호출의 설정과 토큰 수를 결과에 보존한다. 평가 정답 채점은 코드로 하며, 제품 내부의 초안 검토 호출을 정답 채점기로 사용하지 않는다.
 
 - 질문 추출: 원문 메시지와 주제 표현으로 일대일 대응한다. 대응이 모호하면 통과시키지 않고 검토 대상으로 기록한다. 누락과 추가 항목을 따로 확인한다.
 - 상태: 5개 상태의 정답과 정확히 일치해야 한다. 미해결 정답을 `answered`로 표시한 횟수는 별도 집계한다. `answered`는 답변을 받았다는 뜻이며 실제 처리가 완료됐다는 뜻이 아니다.
@@ -17,6 +17,8 @@
 
 ## 재실행
 
+현재 추론 설정은 분석·경계 검토·인계·모든 초안 의미 검토와 수정에서 `medium`, 재문의 첫 생성에서만 `low`다. 위 초기 평가의 설정과 달라졌으며, 변경 근거는 [성능 최적화 보고서](../docs/AI-PERFORMANCE.md)와 [ADR 0008](../docs/adr/0008-ai-request-efficiency.md)에 있다.
+
 Node.js 24 이상에서 로컬 `.env`에 `OPENAI_API_KEY`를 설정한 뒤 실행한다. 실제 API 요금이 발생한다. 키는 결과 파일에 기록되지 않는다.
 
 ```powershell
@@ -27,6 +29,15 @@ node --env-file=.env scripts/evaluate-ai.mjs --only draft-probes --out .artifact
 node --env-file=.env scripts/evaluate-ai.mjs --suite all --analysis-only --out .artifacts/eval/status-boundaries.json
 node --env-file=.env scripts/evaluate-ai.mjs --suite unseen --out .artifacts/eval/unseen-new-run.json
 ```
+
+성능을 비교할 때는 모델 별칭 대신 동일한 모델 버전을 지정한다. 토큰 절감은 API가 보고한 전체 입력+출력 사용량이며 캐시 입력과 추론 출력도 포함한다. 분석·초안 각각의 `operations`에는 수정·검토·저장까지의 서비스 완료 시간과 실패 여부가 들어간다. UI 렌더링이나 텍스트·이미지 전사 시간은 측정하지 않는다.
+
+```powershell
+node --env-file=.env scripts/evaluate-ai.mjs --suite unseen --model gpt-5-mini-2025-08-07 --out .artifacts/eval/benchmark.json
+node scripts/compare-evaluations.mjs evals/results/performance/baseline.json evals/results/performance/optimized.json
+```
+
+비교 도구는 모델·자료·채점기·케이스·분석/초안 실행 범위가 다르면 거절한다. 이전에 맞았던 질문 상태·근거·약속 또는 생성 가능한 초안이 퇴행하면 실패하며, 토큰 집계가 없는 API 호출이 있으면 절감률을 계산하지 않는다. 초안 의미는 자동 비교만으로 보증하지 않으므로 원문 대조를 별도로 수행한다. `performance/*.json`에는 같은 20건의 최적화 전후, 채택하지 않은 후보, 28건 회귀·마지막 오류 재검사·7건 검토 대조 결과를 보관한다.
 
 `draft-probes`는 저장된 실제 실패 출력(질문 누락, 담당자 추정, 상담원 관점, 안내 순서 왜곡, 비용 차감 전제) 5개와 올바른 인계 2개를 현재 제품의 검토 AI에 다시 넣는 대조 검사다. 정상 출력에는 중간 실행에서 검토 AI가 과도하게 거절했던 초안도 포함한다. 새로운 상담이나 초안 생성으로 세지 않는다. 실제 API 응답이 실패 출력에서는 `valid=false`, 정상 출력에서는 `valid=true`여야 통과한다. 다른 평가 모드와 결과 형식이 다르므로 `--rescore` 대상은 아니다.
 

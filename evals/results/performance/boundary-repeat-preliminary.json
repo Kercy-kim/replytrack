@@ -1,0 +1,427 @@
+{
+  "formatVersion": 1,
+  "startedAt": "2026-11-14T07:51:40.231Z",
+  "mode": "live OpenAI Responses API",
+  "requestedModel": "gpt-5-mini-2025-08-07",
+  "suite": "unseen",
+  "analysisOnly": false,
+  "baseCommit": "a8aabec56c17530e39d369ee235fa63bfae385e5",
+  "hashes": {
+    "evals/support-cases.mjs": "ab86201457d670ffd62d4844fa66e72711bb4be91ea677260946b3c98a904b8d",
+    "evals/status-boundary-cases.mjs": "482f9f80fb7aaa5998faebed0f515f41c34e9ad20d6feedcc77310cd601a0d96",
+    "evals/unseen-cases.mjs": "c436aedb0dc0bd93528afe1f42ae18f6e066cc0958d00bf2e92ed4662f484f59",
+    "evals/grade.mjs": "ed6a5defa0212d1e473f9235dd8cd877fe046e8d017f80835c4ab9eaecd9145d",
+    "src/prompts.mjs": "9cb65f55ebf75d57f63ff2e3d7a7e7c762ca072498cafc2ffe482d8275a25c03",
+    "src/schema.mjs": "10cfc80b547fd039f268dbed85f8ac3812faf41c53af89895728c41e673995ec",
+    "src/domain.mjs": "670c33f311d17f40e5e236b55b4d9f978cfa689808deddac38d0b74b855e1846",
+    "src/service.mjs": "79508152e57628629b5505e69aee5cc1995a9b75c600a8830dd26cd381a08b13",
+    "src/openai.mjs": "8f725fd4673bafd3c83c5f35ce5b712f887bc309c763b8df0943b1b562b5a3c3",
+    "src/analysis-changes.mjs": "36d13aaab3b180d7a2081dc22127a79e394ddb1e006136090a10945c88d94d73",
+    "scripts/evaluate-ai.mjs": "136fd48ee9a5e95f2503a0726ada9dd98974694d1272adc195be5306402a8698",
+    "evals/performance.mjs": "4d7b06a187cd7466e608ace7f5abd333850a883cb3d23f35c8d69551f078558c",
+    "src/ai-wire.mjs": "99c9eb1cd11f201085870e0076ac70c565c77004184789efca390f9f04e89cd8"
+  },
+  "results": [
+    {
+      "id": "NR06",
+      "category": "환불",
+      "title": "환불 결과 통지와 은행 입금 상태를 분리",
+      "stages": [
+        {
+          "record": {
+            "id": "8c9e0e9a-7cce-4b5b-8b6f-472ce713dfd2",
+            "title": "환불 결과 통지와 은행 입금 상태를 분리",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T07:51:40.263Z",
+            "updatedAt": "2026-11-14T07:52:12.429Z",
+            "messages": [
+              {
+                "id": "41087dc2-346b-42ab-9581-8d44d20b6a4b",
+                "role": "customer",
+                "text": "환불 승인됐나요?",
+                "sentAt": null
+              },
+              {
+                "id": "d2c2b54a-8448-49c0-b33e-ece417c0947d",
+                "role": "customer",
+                "text": "은행 계좌에 실제로 입금된 상태인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "4b812fe2-a9e4-4fbe-afc1-5be1ea039835",
+                "role": "agent",
+                "text": "요청하신 환불 승인을 완료했습니다. 은행 계좌의 실제 입금 여부는 저희 쪽에서 알 수 없습니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "77f3aba8-39c1-417a-829a-55315a1ba107",
+                "title": "환불 승인 여부",
+                "source": {
+                  "messageId": "41087dc2-346b-42ab-9581-8d44d20b6a4b",
+                  "quote": "환불 승인됐나요?"
+                },
+                "status": "answered",
+                "reason": "상담원이 환불 승인 완료를 직접 안내했으므로 승인 여부 자체는 제시되었음.",
+                "evidence": [
+                  {
+                    "messageId": "4b812fe2-a9e4-4fbe-afc1-5be1ea039835",
+                    "quote": "요청하신 환불 승인을 완료했습니다."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "answered",
+                "aiReason": "상담원이 환불 승인 완료를 직접 안내했으므로 승인 여부 자체는 제시되었음.",
+                "manualStatus": null,
+                "manualTitle": null
+              },
+              {
+                "id": "c9ae721e-b8dc-4352-812d-81a55828c138",
+                "title": "은행 계좌의 실제 입금 여부",
+                "source": {
+                  "messageId": "d2c2b54a-8448-49c0-b33e-ece417c0947d",
+                  "quote": "은행 계좌에 실제로 입금된 상태인가요?"
+                },
+                "status": "review",
+                "reason": "제공된 정보: 업체는 ‘은행 계좌의 실제 입금 여부는 저희 쪽에서 알 수 없습니다’라고 명시함. 미확인 내용: 계좌에 실제로 입금되었는지 여부(입금 완료 여부 자체).",
+                "evidence": [
+                  {
+                    "messageId": "4b812fe2-a9e4-4fbe-afc1-5be1ea039835",
+                    "quote": "은행 계좌의 실제 입금 여부는 저희 쪽에서 알 수 없습니다."
+                  }
+                ],
+                "followUp": "입금 여부를 확인해서 알려주세요.",
+                "aiStatus": "review",
+                "aiReason": "제공된 정보: 업체는 ‘은행 계좌의 실제 입금 여부는 저희 쪽에서 알 수 없습니다’라고 명시함. 미확인 내용: 계좌에 실제로 입금되었는지 여부(입금 완료 여부 자체).",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [
+              {
+                "id": "016c76cf-f48d-49f8-9df2-116c428d56bf",
+                "title": "환불 승인 완료 통보",
+                "questionIds": [
+                  "77f3aba8-39c1-417a-829a-55315a1ba107"
+                ],
+                "evidence": {
+                  "messageId": "4b812fe2-a9e4-4fbe-afc1-5be1ea039835",
+                  "quote": "요청하신 환불 승인을 완료했습니다."
+                },
+                "dueText": "",
+                "dueAt": null,
+                "state": "reported",
+                "confirmedAt": null
+              }
+            ],
+            "history": [
+              {
+                "id": "b2d5c5a2-b710-4029-b198-113bbf43e8dd",
+                "at": "2026-11-14T07:52:12.429Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "2개 질문 · 1개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T07:52:12.429Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 3,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "379393c0-2d02-459d-b3dc-51aad9513aa8",
+                "at": "2026-11-14T07:51:40.263Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "3개 메시지 등록"
+              }
+            ],
+            "summary": "고객은 환불 승인 여부와 실제 계좌 입금 여부를 물었고, 상담원은 환불 승인을 완료했다고 답했으나 은행 계좌의 실제 입금 여부는 확인할 수 없다고 안내했습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 3,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 3648,
+                "output_tokens": 2661,
+                "total_tokens": 6309,
+                "input_tokens_details": {
+                  "cached_tokens": 1792
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 2048
+                }
+              },
+              "attempts": 1,
+              "boundaryReview": {
+                "model": "gpt-5-mini-2025-08-07",
+                "questions": 1
+              },
+              "at": "2026-11-14T07:52:12.429Z",
+              "comparison": {
+                "at": "2026-11-14T07:52:12.429Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 3,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "승인",
+                  "status": "answered",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "actual": {
+                  "id": "77f3aba8-39c1-417a-829a-55315a1ba107",
+                  "title": "환불 승인 여부",
+                  "status": "answered",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "evidenceOK": true
+              },
+              {
+                "gold": {
+                  "message": 1,
+                  "topic": "입금|계좌",
+                  "status": "review",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "actual": {
+                  "id": "c9ae721e-b8dc-4352-812d-81a55828c138",
+                  "title": "은행 계좌의 실제 입금 여부",
+                  "status": "review",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [
+              {
+                "gold": {
+                  "message": 2,
+                  "topic": "승인",
+                  "state": "reported",
+                  "dueAt": null,
+                  "deadline": ""
+                },
+                "actual": {
+                  "id": "016c76cf-f48d-49f8-9df2-116c428d56bf",
+                  "title": "환불 승인 완료 통보",
+                  "state": "reported",
+                  "dueAt": null,
+                  "dueText": "",
+                  "confirmedAt": null
+                },
+                "ok": true
+              }
+            ],
+            "metrics": {
+              "expectedQuestions": 2,
+              "found": 2,
+              "correct": 2,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 2,
+              "expectedPromises": 1,
+              "correctPromises": 1,
+              "references": 5,
+              "grounded": 5
+            }
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "medium",
+          "ms": 23191,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 2930,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 1792
+            },
+            "output_tokens": 1813,
+            "output_tokens_details": {
+              "reasoning_tokens": 1344
+            },
+            "total_tokens": 4743
+          },
+          "data": {
+            "summary": "고객은 환불 승인 여부와 실제 계좌 입금 여부를 물었고, 상담원은 환불 승인을 완료했다고 답했으나 은행 계좌의 실제 입금 여부는 확인할 수 없다고 안내했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "환불 승인 여부",
+                "source": {
+                  "messageId": "41087dc2-346b-42ab-9581-8d44d20b6a4b",
+                  "quote": "환불 승인됐나요?"
+                },
+                "reason": "상담원이 환불 승인 완료를 직접 안내했으므로 승인 여부 자체는 제시되었음.",
+                "status": "answered",
+                "evidence": [
+                  {
+                    "messageId": "4b812fe2-a9e4-4fbe-afc1-5be1ea039835",
+                    "quote": "요청하신 환불 승인을 완료했습니다."
+                  }
+                ],
+                "followUp": ""
+              },
+              {
+                "id": "new-q-2",
+                "title": "은행 계좌의 실제 입금 여부",
+                "source": {
+                  "messageId": "d2c2b54a-8448-49c0-b33e-ece417c0947d",
+                  "quote": "은행 계좌에 실제로 입금된 상태인가요?"
+                },
+                "reason": "상담원이 입금 여부는 알 수 없다고만 밝혀 실제 입금 상태는 확인되지 않음.",
+                "status": "review",
+                "evidence": [
+                  {
+                    "messageId": "4b812fe2-a9e4-4fbe-afc1-5be1ea039835",
+                    "quote": "은행 계좌의 실제 입금 여부는 저희 쪽에서 알 수 없습니다."
+                  }
+                ],
+                "followUp": "입금 여부를 확인해서 알려주세요."
+              }
+            ],
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "환불 승인 완료 통보",
+                "questionIds": [
+                  "new-q-1"
+                ],
+                "evidence": {
+                  "messageId": "4b812fe2-a9e4-4fbe-afc1-5be1ea039835",
+                  "quote": "요청하신 환불 승인을 완료했습니다."
+                },
+                "dueText": "",
+                "deadlineCleared": false,
+                "state": "reported"
+              }
+            ]
+          }
+        },
+        {
+          "name": "replytrack_boundary_review",
+          "reasoningEffort": "medium",
+          "ms": 8973,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 718,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 848,
+            "output_tokens_details": {
+              "reasoning_tokens": 704
+            },
+            "total_tokens": 1566
+          },
+          "data": {
+            "questions": [
+              {
+                "id": "new-q-2",
+                "status": "review",
+                "reason": "제공된 정보: 업체는 ‘은행 계좌의 실제 입금 여부는 저희 쪽에서 알 수 없습니다’라고 명시함. 미확인 내용: 계좌에 실제로 입금되었는지 여부(입금 완료 여부 자체)."
+              }
+            ]
+          }
+        }
+      ],
+      "operations": [
+        {
+          "kind": "analysis",
+          "ms": 32165,
+          "success": true
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "cases": 1,
+    "completedCases": 1,
+    "passedCases": 1,
+    "stages": 1,
+    "passedStages": 1,
+    "totals": {
+      "expectedQuestions": 2,
+      "found": 2,
+      "correct": 2,
+      "falseAnswered": 0,
+      "expectedUnresolved": 1,
+      "evidenceCorrect": 2,
+      "expectedPromises": 1,
+      "correctPromises": 1,
+      "references": 5,
+      "grounded": 5
+    },
+    "calls": 2,
+    "apiErrors": 0,
+    "draftErrors": 0,
+    "inputTokens": 3648,
+    "outputTokens": 2661,
+    "latencyMs": {
+      "median": 23191,
+      "p95": 23191,
+      "max": 23191
+    }
+  },
+  "performance": {
+    "inputTokens": 3648,
+    "cachedInputTokens": 1792,
+    "outputTokens": 2661,
+    "reasoningTokens": 2048,
+    "totalTokens": 6309,
+    "calls": 2,
+    "callsWithoutUsage": 0,
+    "analysisMs": {
+      "count": 1,
+      "median": 32165,
+      "p95": 32165
+    },
+    "draftMs": {
+      "count": 0,
+      "median": null,
+      "p95": null
+    },
+    "failedOperations": 0
+  },
+  "completedAt": "2026-11-14T07:52:12.431Z",
+  "complete": true
+}

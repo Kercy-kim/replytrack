@@ -42,7 +42,7 @@ export const transcriptSchema = object({
 });
 export const draftSchema = object({ body: text, sourceMessageIds: array(text) });
 export function draftSchemaFor(messages) {
-  return object({ body: text, sourceMessageIds: { type: 'array', minItems: 1, items: { type: 'string', enum: messages.map(m => m.id) } } });
+  return object({ body: text, sourceMessageIds: { type: 'array', minItems: 1, maxItems: messages.length, items: { type: 'string', enum: messages.map(m => m.id) } } });
 }
 export const draftReviewSchema = object({ valid: { type: 'boolean' }, feedback: text });
 export function boundaryReviewSchemaFor(ids) {

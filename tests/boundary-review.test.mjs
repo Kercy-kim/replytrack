@@ -45,3 +45,24 @@ test('boundary review cannot introduce IDs, duplicates, answered status or overw
     } finally { store.close(); }
   }
 });
+
+test('boundary review sees separately asked topics but can only decide the uncertain question', async () => {
+  const store = new CaseStore(':memory:');
+  try {
+    const service = new ReplyTrack(store, { async structured(request) {
+      if (request.name === 'replytrack_analysis') {
+        const raw = analysis(request.data);
+        raw.questions.unshift({ ...structuredClone(raw.questions[0]), id: 'other-q', title: '별도 처리 상태', status: 'answered', followUp: '' });
+        return { model: 'test', data: raw };
+      }
+      assert.equal(request.data.questions.length, 1);
+      assert.deepEqual(Object.keys(request.data.questions[0]).sort(), ['id', 'source', 'title']);
+      assert.deepEqual(request.data.otherQuestions.map(q => q.id), ['other-q']);
+      assert.deepEqual(Object.keys(request.data.otherQuestions[0]).sort(), ['id', 'source', 'title']);
+      return { model: 'test', data: { questions: [{ id: request.data.questions[0].id, status: 'review', reason: '이 질문에는 미정 설명만 있음' }] } };
+    } });
+    const c = service.create(input), saved = await service.analyze(c.id, c.version);
+    assert.equal(saved.questions.find(q => q.title === '별도 처리 상태').status, 'answered');
+    assert.equal(saved.questions.find(q => q.title === '이번 기간 요금').status, 'review');
+  } finally { store.close(); }
+});

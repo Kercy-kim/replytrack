@@ -10,6 +10,11 @@ export const draftSourceContext = record => ({
   messages: record.messages.map(({ id, role, text }) => ({ id, role, text })),
   promises: record.promises.map(({ id, title, questionIds, evidence, dueText, state, confirmedAt }) => ({ id, title, questionIds, evidence, dueText, state, ...(confirmedAt ? { confirmedByUser: true } : {}) })),
 });
+export const analysisContext = record => ({
+  messages: record.messages,
+  existingQuestions: record.questions.map(({ id, title, source, status, aiStatus, evidence }) => ({ id, title, source, status: aiStatus ?? status, evidence })),
+  existingPromises: record.promises.map(({ id, title, questionIds, evidence, dueText, state }) => ({ id, title, questionIds, evidence, dueText, state })),
+});
 
 function analysisUsage(results) {
   const usages = results.map(r => r.usage).filter(Boolean);
@@ -83,7 +88,7 @@ export class ReplyTrack {
       const results = [];
       if (c.mode === 'demo') result = { data: demoAnalysis(c), model: '준비된 예제 · AI 호출 없음', usage: null };
       else {
-        const data = { messages: c.messages, existingQuestions: c.questions, existingPromises: c.promises };
+        const data = analysisContext(c);
         let revision = {};
         for (let attempt = 0; attempt < 2; attempt++) {
           if (attempt) this.getVersion(id, version);
@@ -92,13 +97,13 @@ export class ReplyTrack {
           const validationErrors = analysisValidationErrors(result.data, c.messages);
           if (!validationErrors.length) break;
           if (attempt === 1) throw new AppError(502, '분석의 원문 인용과 상태를 다시 확인했지만 맞지 않아 저장하지 않았습니다. 기존 기록은 유지됩니다.', 'AI_EVIDENCE');
-          revision = { previousAnalysis: result.data, revisionFeedback: `다음 원문 인용 또는 상태·근거의 일관성 오류를 수정하세요: ${validationErrors.join(', ')}. source는 customer, evidence는 agent의 실제 ID와 정확한 원문 부분 문자열이어야 합니다. 동의어 치환·띄어쓰기 수정·요약을 하지 말고 원문을 그대로 복사하세요. 미답변인데 근거가 있다면 그 근거의 관련성을 다시 판단하고, 관련 안내가 있으면 맞는 상태를 선택하고 무관한 안내면 근거에서 제외하세요. 전체 분석을 다시 반환하세요.` };
+          revision = { revisionFeedback: `앞선 생성에서 다음 원문 인용 또는 상태·근거의 일관성 오류가 있었습니다: ${validationErrors.join(', ')}. source는 customer, evidence는 agent의 실제 ID와 정확한 원문 부분 문자열이어야 합니다. 동의어 치환·조사 생략·띄어쓰기 수정·요약을 하지 말고 원문을 그대로 복사하세요. 미답변인데 근거가 있다면 그 근거의 관련성을 다시 판단하고, 관련 안내가 있으면 맞는 상태를 선택하고 무관한 안내면 근거에서 제외하세요. 잘못된 출력을 재사용하지 말고 제공된 원문과 기존 기록에서 전체 분석을 다시 반환하세요.` };
         }
         const uncertain = result.data.questions.filter(q => q.status === 'review' && q.evidence.length);
         if (uncertain.length) {
           this.getVersion(id, version);
           const checked = await this.withAI(() => this.ai.structured({ name: 'replytrack_boundary_review', schema: boundaryReviewSchemaFor(uncertain.map(q => q.id)), instructions: BOUNDARY_REVIEW_PROMPT, reasoningEffort: 'medium',
-            data: { messages: c.messages, questions: draftQuestionContext(uncertain) } }));
+            data: { messages: c.messages, questions: uncertain.map(({ id, title, source }) => ({ id, title, source })), otherQuestions: result.data.questions.filter(q => !uncertain.includes(q)).map(({ id, title, source }) => ({ id, title, source })) } }));
           results.push(checked);
           const decisions = checked.data?.questions;
           if (!Array.isArray(decisions) || decisions.length !== uncertain.length || new Set(decisions.map(q => q.id)).size !== uncertain.length || decisions.some(q => !uncertain.some(u => u.id === q.id) || !['partial', 'review'].includes(q.status) || typeof q.reason !== 'string' || !q.reason.trim())) throw new AppError(502, '질문 상태 검토 결과가 맞지 않아 기존 기록을 유지했습니다.', 'AI_BOUNDARY');
@@ -149,7 +154,7 @@ export class ReplyTrack {
       let revisionFeedback = '', previousDraft = null;
       // Bound paid calls: one generation + review, with at most one repair attempt.
       for (let attempt = 0; attempt < 2; attempt++) {
-        const result = await this.withAI(() => this.ai.structured({ name: 'replytrack_draft', schema: draftSchemaFor(c.messages), instructions: DRAFT_PROMPT, reasoningEffort: 'medium',
+        const result = await this.withAI(() => this.ai.structured({ name: 'replytrack_draft', schema: draftSchemaFor(c.messages), instructions: DRAFT_PROMPT, reasoningEffort: input.kind === 'followup' && attempt === 0 ? 'low' : 'medium',
           data: { ...context, ...(revisionFeedback ? { revisionFeedback, previousDraft } : {}) } }));
         model = result.model; previousDraft = result.data;
         let candidate;
