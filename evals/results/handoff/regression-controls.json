@@ -1,0 +1,227 @@
+{
+  "mode": "live draft review control probes",
+  "startedAt": "2026-11-14T09:08:32.777Z",
+  "requestedModel": "gpt-5-mini-2025-08-07",
+  "hashes": {
+    "evals/support-cases.mjs": "ab86201457d670ffd62d4844fa66e72711bb4be91ea677260946b3c98a904b8d",
+    "evals/status-boundary-cases.mjs": "482f9f80fb7aaa5998faebed0f515f41c34e9ad20d6feedcc77310cd601a0d96",
+    "evals/unseen-cases.mjs": "c436aedb0dc0bd93528afe1f42ae18f6e066cc0958d00bf2e92ed4662f484f59",
+    "evals/grade.mjs": "ed6a5defa0212d1e473f9235dd8cd877fe046e8d017f80835c4ab9eaecd9145d",
+    "src/prompts.mjs": "da0c9fce38a0615413925b2b0640309a257fabc7b3cad7b05ef6cd7451599503",
+    "src/schema.mjs": "10cfc80b547fd039f268dbed85f8ac3812faf41c53af89895728c41e673995ec",
+    "src/domain.mjs": "670c33f311d17f40e5e236b55b4d9f978cfa689808deddac38d0b74b855e1846",
+    "src/service.mjs": "331e5fd43f0cf72228ea7a29081ea4bd0c1a36f141a2249e524fa71a0a1a1686",
+    "src/openai.mjs": "0c4909b3d4ce585d9d5d1ad0de70a2b4bcd7f3236b2198a2e9d4b269359e5597",
+    "src/analysis-changes.mjs": "36d13aaab3b180d7a2081dc22127a79e394ddb1e006136090a10945c88d94d73",
+    "scripts/evaluate-ai.mjs": "7c4333d294256f4514405f107e81f5f2de6ec5e14023c3af7b1dae717a63d900",
+    "evals/performance.mjs": "4d7b06a187cd7466e608ace7f5abd333850a883cb3d23f35c8d69551f078558c",
+    "src/ai-wire.mjs": "73655462fd4966f5889dfd6e82effcb4a13a6e12027574b4f4d120aaf2c79fe1",
+    "src/handoff.mjs": "364ec66035ad26ae2f9c0e3c92c4ae9263d4b43308d57406b2c13b0f9b0a295f"
+  },
+  "results": [
+    {
+      "source": "iteration-3/S02",
+      "expectedFailure": "선택한 배송비 질문 누락",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 8960,
+      "data": {
+        "valid": false,
+        "feedback": "followup인데 questions에 있는 '배송비 금액 문의'(162ab1ea-2dc1-423d-8d7a-38c98ba4b8a3)를 묻고 있지 않습니다. 초안에 '배송비 금액은 얼마인지'에 대한 명확한 문장을 추가해 모든 미해결 항목을 질문하도록 고치세요."
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1040,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 901,
+        "output_tokens_details": {
+          "reasoning_tokens": 768
+        },
+        "total_tokens": 1941
+      }
+    },
+    {
+      "source": "iteration-3/S06",
+      "expectedFailure": "원문에 없는 동일 상담원 추정",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 12600,
+      "data": {
+        "valid": false,
+        "feedback": "초안에서 '동일 상담원이 해당 안내를 정정하여'라고 담당자가 동일하다고 단정한 표현이 원문에 근거가 없습니다. 담당자 동일성 표시는 삭제하고 '이후 안내에서 정정되어' 또는 '앞선 안내를 정정하여'처럼 '이전 답변/후속 답변' 관점으로 바꾸세요. 그 외 내용(배송비 무료 안내·발송 상태 운송 중·남은 문의 없음)은 원문과 일치합니다."
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1731,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 1086,
+        "output_tokens_details": {
+          "reasoning_tokens": 896
+        },
+        "total_tokens": 2817
+      }
+    },
+    {
+      "source": "baseline/R02",
+      "expectedFailure": "상담원 입장으로 고객 정보 요구",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 24135,
+      "data": {
+        "valid": false,
+        "feedback": "초안이 상담원처럼 수신자(고객센터)에게 ‘주문번호나 결제 내역을 알려주실 수 있나요?’라고 요청하는 표현입니다. 소비자 입장에서 보내는 메시여야 하므로, 문의자가 주문번호·결제 내역을 제공하겠다는 형태로 바꾸세요(예: 확인을 위해 제 주문번호·결제 내역을 알려드립니다/어떤 정보를 드리면 될지 문의). ‘반품비는 이미 5,000원으로 안내받으셨으므로…’ 부분은 원문(3904ef40-ea89-42c4-a417-2a48e5b513e2)에 근거하므로 유지해도 됩니다."
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1028,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 2012,
+        "output_tokens_details": {
+          "reasoning_tokens": 1856
+        },
+        "total_tokens": 3040
+      }
+    },
+    {
+      "source": "unseen/baseline/NR05",
+      "expectedFailure": "중간의 계좌 안내를 초기 안내로 요약",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 22974,
+      "data": {
+        "valid": false,
+        "feedback": "초기 안내 순서가 원문과 다릅니다. 원문은 처음에 카드 안내(1e6952b4-9298-4e4f-b260-56b6d743e65e), 그 다음 계좌 안내(d866d7cc-7bea-401b-9ae2-458fbeeb37ba), 이후 계좌 안내가 잘못되어 카드로 정정되었다(0953525d-8bfb-40a9-80b3-24b875a4fed6)입니다. 초안의 ‘초기에는 … 계좌 환불이라고 안내했으나’ 문장을 원문 순서대로 고치세요. 또한 “환불이 카드로 처리된다는 점”이 이미 처리 완료로 읽힐 수 있으니, 원문에 있는 ‘환불 수단은 카드입니다’라는 안내만 전달하도록 문구를 명확히 하세요."
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1635,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 1886,
+        "output_tokens_details": {
+          "reasoning_tokens": 1728
+        },
+        "total_tokens": 3521
+      }
+    },
+    {
+      "source": "unseen/baseline/NS03",
+      "expectedFailure": "장소 확인 뒤 안내를 정확히 전달한 정상 인계",
+      "expectedValid": true,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 11443,
+      "data": {
+        "valid": true,
+        "feedback": ""
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1696,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 814,
+        "output_tokens_details": {
+          "reasoning_tokens": 768
+        },
+        "total_tokens": 2510
+      }
+    },
+    {
+      "source": "unseen/iteration-1/NS03",
+      "expectedFailure": "역할명만 쓴 정상 인계를 동일인 주장으로 오인하지 않기",
+      "expectedValid": true,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 11711,
+      "data": {
+        "valid": true,
+        "feedback": ""
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1698,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 865,
+        "output_tokens_details": {
+          "reasoning_tokens": 832
+        },
+        "total_tokens": 2563
+      }
+    },
+    {
+      "source": "unseen/regression-1/R02",
+      "expectedFailure": "질문형 문장에서 원문에 없는 비용 차감 관계 전제",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 15549,
+      "data": {
+        "valid": false,
+        "feedback": "초안은 다음 두 가지 오류가 있습니다.\n1) 원문에 차감 관계가 명시되지 않았는데 ‘이 금액을 반영한 최종 환불 예정액’처럼 반품비가 환불액에서 차감된다는 전제로 질문하고 있습니다. 원문은 반품비(5,000원) 안내만 있을 뿐 차감 여부를 확정하지 않았습니다. ‘이 금액을 반영한’ 등의 전제 문구를 삭제하고 단순히 최종 환불액만 문의하세요.\n2) questions에 없는 추가 요청(환불액 산출 내역: 상품가, 할인·적립 반영 여부 등)을 포함하고 있습니다. followup에서는 질문 목록에 있는 항목만 물어봐야 하므로 산출 내역 요청은 제거하세요.\n위 두 부분을 수정하면 유효합니다."
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1030,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 1272,
+        "output_tokens_details": {
+          "reasoning_tokens": 1024
+        },
+        "total_tokens": 2302
+      }
+    }
+  ],
+  "completedAt": "2026-11-14T09:10:20.167Z"
+}

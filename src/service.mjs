@@ -3,6 +3,7 @@ import { newCase, message, history, applyAnalysis, analysisValidationErrors, val
 import { createDemo, advanceDemo, demoAnalysis, demoDraft } from './demo.mjs';
 import { analysisSchemaFor, transcriptSchema, draftSchemaFor, draftReviewSchema, boundaryReviewSchemaFor } from './schema.mjs';
 import { ANALYSIS_PROMPT, TRANSCRIPT_PROMPT, DRAFT_PROMPT, DRAFT_REVIEW_PROMPT, BOUNDARY_REVIEW_PROMPT } from './prompts.mjs';
+import { HANDOFF_PROMPT, HANDOFF_REVIEW_PROMPT } from './handoff.mjs';
 
 // Derived reasoning and suggested follow-ups are not independent source facts.
 export const draftQuestionContext = questions => questions.map(({ id, title, source, status, evidence }) => ({ id, title, source, status, evidence }));
@@ -154,7 +155,7 @@ export class ReplyTrack {
       let revisionFeedback = '', previousDraft = null;
       // Bound paid calls: one generation + review, with at most one repair attempt.
       for (let attempt = 0; attempt < 2; attempt++) {
-        const result = await this.withAI(() => this.ai.structured({ name: 'replytrack_draft', schema: draftSchemaFor(c.messages), instructions: DRAFT_PROMPT, reasoningEffort: input.kind === 'followup' && attempt === 0 ? 'low' : 'medium',
+        const result = await this.withAI(() => this.ai.structured({ name: 'replytrack_draft', schema: draftSchemaFor(c.messages), instructions: input.kind === 'handoff' ? HANDOFF_PROMPT : DRAFT_PROMPT, reasoningEffort: attempt === 0 ? 'low' : 'medium',
           data: { ...context, ...(revisionFeedback ? { revisionFeedback, previousDraft } : {}) } }));
         model = result.model; previousDraft = result.data;
         let candidate;
@@ -163,7 +164,7 @@ export class ReplyTrack {
           if (attempt === 1) throw error;
           revisionFeedback = error.message; continue;
         }
-        const checked = await this.withAI(() => this.ai.structured({ name: 'replytrack_draft_review', schema: draftReviewSchema, instructions: DRAFT_REVIEW_PROMPT, reasoningEffort: 'medium',
+        const checked = await this.withAI(() => this.ai.structured({ name: 'replytrack_draft_review', schema: draftReviewSchema, instructions: input.kind === 'handoff' ? HANDOFF_REVIEW_PROMPT : DRAFT_REVIEW_PROMPT, reasoningEffort: 'medium',
           data: { ...context, draft: candidate } }));
         if (checked.data?.valid === true) {
           draft = candidate; review = { model: checked.model, attempts: attempt + 1 }; break;

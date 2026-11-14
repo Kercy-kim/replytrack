@@ -13,6 +13,7 @@ import { OpenAIClient } from '../src/openai.mjs';
 import { CaseStore } from '../src/store.mjs';
 import { ReplyTrack, draftQuestionContext, draftSourceContext } from '../src/service.mjs';
 import { DRAFT_REVIEW_PROMPT } from '../src/prompts.mjs';
+import { HANDOFF_REVIEW_PROMPT } from '../src/handoff.mjs';
 import { draftReviewSchema } from '../src/schema.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -20,6 +21,7 @@ const hash = value => createHash('sha256').update(value).digest('hex');
 const sourceFiles = ['evals/support-cases.mjs', 'evals/status-boundary-cases.mjs', 'evals/unseen-cases.mjs', 'evals/grade.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/domain.mjs', 'src/service.mjs', 'src/openai.mjs', 'src/analysis-changes.mjs', 'scripts/evaluate-ai.mjs'];
 sourceFiles.push('evals/performance.mjs');
 if (existsSync(resolve(root, 'src/ai-wire.mjs'))) sourceFiles.push('src/ai-wire.mjs');
+if (existsSync(resolve(root, 'src/handoff.mjs'))) sourceFiles.push('src/handoff.mjs');
 const suites = { support: cases, boundary: boundaryCases, all: [...cases, ...boundaryCases], unseen: unseenCases };
 const args = process.argv.slice(2);
 const option = (name, fallback) => args.includes(name) ? args[args.indexOf(name) + 1] : fallback;
@@ -149,7 +151,7 @@ async function runDraftProbes({ out, model }) {
     const draft = lastAttempt ? result.calls.filter(c => c.name === 'replytrack_draft').at(-1).data : result.draft;
     const start = performance.now();
     try {
-      const response = await client.structured({ name: 'replytrack_draft_review', schema: draftReviewSchema, instructions: DRAFT_REVIEW_PROMPT, reasoningEffort: 'medium',
+      const response = await client.structured({ name: 'replytrack_draft_review', schema: draftReviewSchema, instructions: result.draft.kind === 'handoff' ? HANDOFF_REVIEW_PROMPT : DRAFT_REVIEW_PROMPT, reasoningEffort: 'medium',
         data: { kind: result.draft.kind, ...draftSourceContext(record), questions: draftQuestionContext(result.draft.kind === 'followup' ? record.questions.filter(q => q.status !== 'answered') : record.questions), draft: { body: draft.body, sourceMessageIds: draft.sourceMessageIds } } });
       report.results.push({ source: `${run}/${id}`, expectedFailure, expectedValid, reasoningEffort: 'medium', pass: response.data.valid === expectedValid, ms: Math.round(performance.now() - start), ...response });
     } catch (error) { report.results.push({ source: `${run}/${id}`, expectedFailure, pass: false, error: { code: error.code, message: error.message } }); }

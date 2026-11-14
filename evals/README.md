@@ -17,7 +17,7 @@
 
 ## 재실행
 
-현재 추론 설정은 분석·경계 검토·인계·모든 초안 의미 검토와 수정에서 `medium`, 재문의 첫 생성에서만 `low`다. 위 초기 평가의 설정과 달라졌으며, 변경 근거는 [성능 최적화 보고서](../docs/AI-PERFORMANCE.md)와 [ADR 0008](../docs/adr/0008-ai-request-efficiency.md)에 있다.
+현재 추론 설정은 분석·경계 검토·모든 초안 의미 검토와 수정에서 `medium`, 재문의와 인계의 첫 생성에서 `low`다. 인계에는 별도 생성 지침과 추가 검토 기준을 적용한다. 위 초기 평가의 설정과 달라졌으며, 변경 근거는 [성능 최적화 보고서](../docs/AI-PERFORMANCE.md), [인계 지연 개선 보고서](../docs/HANDOFF-PERFORMANCE.md), [ADR 0009](../docs/adr/0009-handoff-specific-generation.md)에 있다.
 
 Node.js 24 이상에서 로컬 `.env`에 `OPENAI_API_KEY`를 설정한 뒤 실행한다. 실제 API 요금이 발생한다. 키는 결과 파일에 기록되지 않는다.
 
@@ -52,3 +52,18 @@ node scripts/compare-evaluations.mjs evals/results/performance/baseline.json eva
 키를 파일에 두지 않는 실행은 `--key-stdin`을 사용한다. `--interactive`를 함께 쓰면 숨겨진 stdin으로 `{"out":".artifacts/eval/after.json"}`을 입력해 변경된 코드로 재실행할 수 있다. 각 실행은 새 프로세스에서 현재 서비스 코드를 불러온다. 종료는 `quit`이다.
 
 설계 참고: [OpenAI 평가 가이드](https://developers.openai.com/api/docs/guides/evaluation-best-practices)의 과제별 기준 설정, 경계 사례 포함, 자동 점수와 사람의 검토 결합 원칙을 적용했다. 이 저장소의 구체적인 정답과 판정 기준은 프로젝트에서 정한 것이다.
+
+## 인계 응답 시간 전후 비교
+
+`handoff-cases.json`은 API 호출 전에 고정한 12개 분석 기록이다. 기존 6개를 두 번, 새 합성 기록 6개를 한 번씩 실행해 총 18쌍을 비교한다. 분석 정확도는 재측정하지 않는다. 기준 main `1309bb1`과 현재 코드에 동일한 원문·질문·약속·ID를 제공한다. 같은 모델 버전으로 쌍마다 전후 순서를 번갈아 실행하며 작업자는 2개다. 기준 소스는 Git에서 `.artifacts/handoff-baseline`에 복원한다.
+
+```powershell
+node scripts/prepare-handoff-eval.mjs
+node --env-file=.env scripts/evaluate-handoff.mjs --out .artifacts/eval/handoff-new.json
+node scripts/compare-handoff.mjs .artifacts/eval/handoff-new.json
+node --env-file=.env scripts/evaluate-handoff.mjs --only review-probes --out .artifacts/eval/handoff-review-new.json
+```
+
+생성·검증·검토·수정·저장을 포함한 완료 시간을 비교하고 실패 시간도 남긴다. 누락된 사용량이 있으면 전체 토큰 절감률은 계산하지 않는다. 비교 도구는 소스·자료·평가 코드 해시 불일치, 누락·중복·다른 모델을 거절한다. 현재 구현이 실패하면 종료 코드 1이며, 실행 성공과 별도로 모든 본문을 원문 및 고정 기준에 대조해야 한다. `--variant current`는 개선안만 실행하는 진단용이며 전후 비교 도구 입력으로 사용할 수 없다.
+
+`results/handoff/`에는 채택하지 않은 후보, 최종 전체 비교, 정상·오류 초안 검토 대조를 보관한다. `handoff-review-probes.json`의 9개 대조는 후보의 오류 5개와 정상 4개를 검사하며 생성 성능의 분모에 더하지 않는다. 각 정답은 검토 API 호출 전에 고정했다. 이전 `draft-probes` 7개도 실제 제품의 초안 종류에 맞는 검토 지침으로 실행한다. 모델의 내부 검토 통과만으로 독립적인 품질 점수를 주장하지 않는다. [인계 보고서](../docs/HANDOFF-PERFORMANCE.md)에 실제 측정과 원문 대조를 기록한다.
