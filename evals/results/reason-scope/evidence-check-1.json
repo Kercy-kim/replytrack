@@ -1,0 +1,740 @@
+{
+  "formatVersion": 1,
+  "startedAt": "2026-11-14T13:33:30.632Z",
+  "mode": "live OpenAI Responses API",
+  "requestedModel": "gpt-5-mini-2025-08-07",
+  "suite": "full",
+  "analysisOnly": true,
+  "baseCommit": "1dc8742e64c42e037c92316a73ae1177de3a6464",
+  "hashes": {
+    "evals/support-cases.mjs": "ab86201457d670ffd62d4844fa66e72711bb4be91ea677260946b3c98a904b8d",
+    "evals/status-boundary-cases.mjs": "482f9f80fb7aaa5998faebed0f515f41c34e9ad20d6feedcc77310cd601a0d96",
+    "evals/unseen-cases.mjs": "c436aedb0dc0bd93528afe1f42ae18f6e066cc0958d00bf2e92ed4662f484f59",
+    "evals/grade.mjs": "ed6a5defa0212d1e473f9235dd8cd877fe046e8d017f80835c4ab9eaecd9145d",
+    "src/prompts.mjs": "7fc36e5033b2454d1810ab89866f2808ac3a5edd7754e6cb1208ecdca8aa33e8",
+    "src/schema.mjs": "f085385dda3fed082db6e68e0d5cd3cbc30e22079536becf8b1cc816fa445003",
+    "src/domain.mjs": "2e4111560108918cf490975c53610a9b6d1460bfb5f83a5ad69f63d16fc03437",
+    "src/service.mjs": "701914b6c49c560eccdcd9bf7cb61937bf4272aba6a00ea3a8de40ee6884d0c2",
+    "src/openai.mjs": "8b6fdc58984c9206b1d98ff0f97be3418851ddfd91fa1ae3458061a84906ecb4",
+    "src/analysis-changes.mjs": "36d13aaab3b180d7a2081dc22127a79e394ddb1e006136090a10945c88d94d73",
+    "scripts/evaluate-ai.mjs": "d4e084aa894588c8007d6bf8568295983d6f53f74c8395396fe98b1032adf1e6",
+    "evals/performance.mjs": "4d7b06a187cd7466e608ace7f5abd333850a883cb3d23f35c8d69551f078558c",
+    "src/privacy.mjs": "75db14559c861418e60fe28f2354d920931cbb44a7cf9e5a4b0b95022e9d16b8",
+    "evals/reason-cases.mjs": "aa58f48ceb2ea86f9fdca5d0c48e3c7d9cce176b045e01fd8ad74ea27e634f85",
+    "evals/reason-quality.mjs": "914fef36a9a4215797ab5776b28739d1e22115b539ae6141d53f54b5cff6c96c",
+    "src/ai-wire.mjs": "73655462fd4966f5889dfd6e82effcb4a13a6e12027574b4f4d120aaf2c79fe1",
+    "src/handoff.mjs": "b2a86dc899ea58d7d9ccde575567fc0c1b36c4525e6218af6f9cc4c752ddd365"
+  },
+  "results": [
+    {
+      "id": "S04",
+      "category": "배송",
+      "title": "조건표는 있지만 내 주문의 조건 미확인",
+      "stages": [
+        {
+          "record": {
+            "id": "6ff1c685-1743-4b4b-855c-aad3c41c8f59",
+            "title": "조건표는 있지만 내 주문의 조건 미확인",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T13:33:30.673Z",
+            "updatedAt": "2026-11-14T13:33:41.885Z",
+            "messages": [
+              {
+                "id": "acaf8244-0f3d-404f-ace3-55ef1dca2ea4",
+                "role": "customer",
+                "text": "제 주문의 추가 배송비는 얼마인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "ae7073f1-9bc9-417d-b062-d71778e5b3d7",
+                "role": "agent",
+                "text": "제주도는 추가 배송비 3,000원이고 다른 지역은 무료입니다. 고객님의 배송 지역은 아직 확인하지 못했습니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "1e9123fc-34fa-4ca4-b7e7-9980de73c7ee",
+                "title": "제 주문의 추가 배송비 금액",
+                "source": {
+                  "messageId": "acaf8244-0f3d-404f-ace3-55ef1dca2ea4",
+                  "quote": "제 주문의 추가 배송비는 얼마인가요?"
+                },
+                "status": "partial",
+                "reason": "제주도는 3,000원·그외 무료라는 안내는 받았지만 고객님의 배송 지역에 따른 확정 금액은 확인되지 않았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "ae7073f1-9bc9-417d-b062-d71778e5b3d7",
+                    "quote": "제주도는 추가 배송비 3,000원이고 다른 지역은 무료입니다. 고객님의 배송 지역은 아직 확인하지 못했습니다."
+                  }
+                ],
+                "followUp": "제 주문의 배송 지역을 확인해 추가 배송비를 알려주세요.",
+                "aiStatus": "partial",
+                "aiReason": "제주도는 3,000원·그외 무료라는 안내는 받았지만 고객님의 배송 지역에 따른 확정 금액은 확인되지 않았습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [],
+            "history": [
+              {
+                "id": "f84cab25-3ed7-458e-bfba-292116cc5f20",
+                "at": "2026-11-14T13:33:41.885Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 0개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T13:33:41.884Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "9734749d-b554-40ef-acbe-67f91e42ba0e",
+                "at": "2026-11-14T13:33:30.674Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객은 본인 주문의 추가 배송비를 물었고, 상담원은 제주도는 3,000원이며 다른 지역은 무료라고 안내했으나 고객의 배송 지역은 확인하지 못했다고 답했습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 2,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 4319,
+                "output_tokens": 1176,
+                "total_tokens": 5495,
+                "input_tokens_details": {
+                  "cached_tokens": 4096
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 960
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-14T13:33:41.884Z",
+              "comparison": {
+                "at": "2026-11-14T13:33:41.884Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 2,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "배송비",
+                  "status": "partial",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "actual": {
+                  "id": "1e9123fc-34fa-4ca4-b7e7-9980de73c7ee",
+                  "title": "제 주문의 추가 배송비 금액",
+                  "status": "partial",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 1,
+              "expectedPromises": 0,
+              "correctPromises": 0,
+              "references": 2,
+              "grounded": 2
+            }
+          },
+          "reasonGrade": {
+            "pass": true,
+            "issues": [],
+            "checkedQuestions": 1,
+            "scopedChecks": 0
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "medium",
+          "ms": 11209,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 4319,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 4096
+            },
+            "output_tokens": 1176,
+            "output_tokens_details": {
+              "reasoning_tokens": 960
+            },
+            "total_tokens": 5495
+          },
+          "data": {
+            "summary": "고객은 본인 주문의 추가 배송비를 물었고, 상담원은 제주도는 3,000원이며 다른 지역은 무료라고 안내했으나 고객의 배송 지역은 확인하지 못했다고 답했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "제 주문의 추가 배송비 금액",
+                "source": {
+                  "messageId": "acaf8244-0f3d-404f-ace3-55ef1dca2ea4",
+                  "quote": "제 주문의 추가 배송비는 얼마인가요?"
+                },
+                "status": "partial",
+                "reason": "제주도는 3,000원·그외 무료라는 안내는 받았지만 고객님의 배송 지역에 따른 확정 금액은 확인되지 않았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "ae7073f1-9bc9-417d-b062-d71778e5b3d7",
+                    "quote": "제주도는 추가 배송비 3,000원이고 다른 지역은 무료입니다. 고객님의 배송 지역은 아직 확인하지 못했습니다."
+                  }
+                ],
+                "followUp": "제 주문의 배송 지역을 확인해 추가 배송비를 알려주세요."
+              }
+            ],
+            "promises": []
+          }
+        }
+      ],
+      "operations": [
+        {
+          "kind": "analysis",
+          "ms": 11210,
+          "success": true
+        }
+      ]
+    },
+    {
+      "id": "U03",
+      "category": "구독",
+      "title": "다음 달부터 할인과 이번 청구액 구분",
+      "stages": [
+        {
+          "record": {
+            "id": "15fe34a4-32f1-4f7b-92bd-b388e1688b1d",
+            "title": "다음 달부터 할인과 이번 청구액 구분",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T13:33:30.696Z",
+            "updatedAt": "2026-11-14T13:33:49.713Z",
+            "messages": [
+              {
+                "id": "6d013f24-20af-4d17-bdf5-7c6f74ac84a1",
+                "role": "customer",
+                "text": "이번 달 청구액이 얼마인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "48216d6f-66be-4cc1-8400-36fcbfd80100",
+                "role": "agent",
+                "text": "다음 달부터는 할인되어 월 9,900원입니다. 이번 달 청구액은 아직 확인하지 못했습니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "765b08b9-1d27-42b5-bfd3-3b13904d505d",
+                "title": "이번 달 청구액 금액 확인",
+                "source": {
+                  "messageId": "6d013f24-20af-4d17-bdf5-7c6f74ac84a1",
+                  "quote": "이번 달 청구액이 얼마인가요?"
+                },
+                "status": "partial",
+                "reason": "다음 달부터 월 9,900원이라는 안내는 받았지만 이번 달 청구액 금액은 확인되지 않았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "48216d6f-66be-4cc1-8400-36fcbfd80100",
+                    "quote": "다음 달부터는 할인되어 월 9,900원입니다. 이번 달 청구액은 아직 확인하지 못했습니다."
+                  }
+                ],
+                "followUp": "이번 달 청구액을 확인해 알려주세요.",
+                "aiStatus": "partial",
+                "aiReason": "다음 달부터 월 9,900원이라는 안내는 받았지만 이번 달 청구액 금액은 확인되지 않았습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [],
+            "history": [
+              {
+                "id": "0c506dc6-3554-4860-8614-315e08492efb",
+                "at": "2026-11-14T13:33:49.713Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 0개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T13:33:49.713Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "c82b97f9-ead9-4413-bef7-2697861cf608",
+                "at": "2026-11-14T13:33:30.696Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객이 이번 달 청구액을 물었고, 상담원은 이번 달 청구액을 확인하지 못했다고 안내했습니다. 다음 달 요금(월 9,900원)은 안내했습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 2,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 6311,
+                "output_tokens": 1808,
+                "total_tokens": 8119,
+                "input_tokens_details": {
+                  "cached_tokens": 1920
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 1536
+                }
+              },
+              "attempts": 1,
+              "boundaryReview": {
+                "model": "gpt-5-mini-2025-08-07",
+                "questions": 1
+              },
+              "at": "2026-11-14T13:33:49.713Z",
+              "comparison": {
+                "at": "2026-11-14T13:33:49.713Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 2,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "청구|이번",
+                  "status": "partial",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "actual": {
+                  "id": "765b08b9-1d27-42b5-bfd3-3b13904d505d",
+                  "title": "이번 달 청구액 금액 확인",
+                  "status": "partial",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 1,
+              "expectedPromises": 0,
+              "correctPromises": 0,
+              "references": 2,
+              "grounded": 2
+            }
+          },
+          "reasonGrade": {
+            "pass": true,
+            "issues": [],
+            "checkedQuestions": 1,
+            "scopedChecks": 1
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "medium",
+          "ms": 13095,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 4315,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 1212,
+            "output_tokens_details": {
+              "reasoning_tokens": 1024
+            },
+            "total_tokens": 5527
+          },
+          "data": {
+            "summary": "고객이 이번 달 청구액을 물었고, 상담원은 이번 달 청구액을 확인하지 못했다고 안내했습니다. 다음 달 요금(월 9,900원)은 안내했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "이번 달 청구액 금액 확인",
+                "source": {
+                  "messageId": "6d013f24-20af-4d17-bdf5-7c6f74ac84a1",
+                  "quote": "이번 달 청구액이 얼마인가요?"
+                },
+                "status": "review",
+                "reason": "업체가 이번 달 청구액을 알 수 없다고 안내했습니다.",
+                "evidence": [
+                  {
+                    "messageId": "48216d6f-66be-4cc1-8400-36fcbfd80100",
+                    "quote": "다음 달부터는 할인되어 월 9,900원입니다. 이번 달 청구액은 아직 확인하지 못했습니다."
+                  }
+                ],
+                "followUp": "이번 달 청구액을 확인해 알려주세요."
+              }
+            ],
+            "promises": []
+          }
+        },
+        {
+          "name": "replytrack_boundary_review",
+          "reasoningEffort": "medium",
+          "ms": 5922,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1996,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 1920
+            },
+            "output_tokens": 596,
+            "output_tokens_details": {
+              "reasoning_tokens": 512
+            },
+            "total_tokens": 2592
+          },
+          "data": {
+            "questions": [
+              {
+                "id": "new-q-1",
+                "status": "partial",
+                "reason": "다음 달부터 월 9,900원이라는 안내는 받았지만 이번 달 청구액 금액은 확인되지 않았습니다."
+              }
+            ]
+          }
+        }
+      ],
+      "operations": [
+        {
+          "kind": "analysis",
+          "ms": 19018,
+          "success": true
+        }
+      ]
+    },
+    {
+      "id": "NR02",
+      "category": "환불",
+      "title": "반품 도착과 검수 승인 구분",
+      "stages": [
+        {
+          "record": {
+            "id": "c790ce00-abb3-4a0c-a9a0-38fbdc9eab89",
+            "title": "반품 도착과 검수 승인 구분",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T13:33:41.887Z",
+            "updatedAt": "2026-11-14T13:33:54.781Z",
+            "messages": [
+              {
+                "id": "79a173f2-5c35-404c-8ba0-24d11b8fc000",
+                "role": "customer",
+                "text": "보낸 신발의 검수가 통과됐는지 알고 싶어요.",
+                "sentAt": null
+              },
+              {
+                "id": "ed82383a-7de9-4107-8e0f-a3ece9640ab6",
+                "role": "agent",
+                "text": "반품 신발은 창고에 도착했습니다. 검수 통과 여부는 아직 등록되지 않았습니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "60a455a9-c542-4bc6-ac56-d50e8bf5d89e",
+                "title": "반품 신발의 검수 통과 여부 확인",
+                "source": {
+                  "messageId": "79a173f2-5c35-404c-8ba0-24d11b8fc000",
+                  "quote": "보낸 신발의 검수가 통과됐는지 알고 싶어요."
+                },
+                "status": "partial",
+                "reason": "창고 도착은 안내받았지만 검수 통과 여부는 확인되지 않았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "ed82383a-7de9-4107-8e0f-a3ece9640ab6",
+                    "quote": "반품 신발은 창고에 도착했습니다. 검수 통과 여부는 아직 등록되지 않았습니다."
+                  }
+                ],
+                "followUp": "검수 통과 여부를 확인해 알려주세요.",
+                "aiStatus": "partial",
+                "aiReason": "창고 도착은 안내받았지만 검수 통과 여부는 확인되지 않았습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [],
+            "history": [
+              {
+                "id": "0aba3e27-9e48-48b9-96bb-b085dbc14c6e",
+                "at": "2026-11-14T13:33:54.781Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 0개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T13:33:54.781Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "c2601631-83ab-4cf4-95bd-fbaf933a5a93",
+                "at": "2026-11-14T13:33:41.887Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "반품한 신발의 검수 통과 여부를 묻는 문의에 대해 창고 도착은 확인되었으나 검수 통과 여부는 아직 등록되지 않았다고 안내받았습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 2,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 4317,
+                "output_tokens": 1366,
+                "total_tokens": 5683,
+                "input_tokens_details": {
+                  "cached_tokens": 3840
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 1152
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-14T13:33:54.781Z",
+              "comparison": {
+                "at": "2026-11-14T13:33:54.781Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 2,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "검수|통과",
+                  "status": "partial",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "actual": {
+                  "id": "60a455a9-c542-4bc6-ac56-d50e8bf5d89e",
+                  "title": "반품 신발의 검수 통과 여부 확인",
+                  "status": "partial",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 1,
+              "expectedPromises": 0,
+              "correctPromises": 0,
+              "references": 2,
+              "grounded": 2
+            }
+          },
+          "reasonGrade": {
+            "pass": true,
+            "issues": [],
+            "checkedQuestions": 1,
+            "scopedChecks": 0
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "medium",
+          "ms": 12894,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 4317,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 3840
+            },
+            "output_tokens": 1366,
+            "output_tokens_details": {
+              "reasoning_tokens": 1152
+            },
+            "total_tokens": 5683
+          },
+          "data": {
+            "summary": "반품한 신발의 검수 통과 여부를 묻는 문의에 대해 창고 도착은 확인되었으나 검수 통과 여부는 아직 등록되지 않았다고 안내받았습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "반품 신발의 검수 통과 여부 확인",
+                "source": {
+                  "messageId": "79a173f2-5c35-404c-8ba0-24d11b8fc000",
+                  "quote": "보낸 신발의 검수가 통과됐는지 알고 싶어요."
+                },
+                "status": "partial",
+                "reason": "창고 도착은 안내받았지만 검수 통과 여부는 확인되지 않았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "ed82383a-7de9-4107-8e0f-a3ece9640ab6",
+                    "quote": "반품 신발은 창고에 도착했습니다. 검수 통과 여부는 아직 등록되지 않았습니다."
+                  }
+                ],
+                "followUp": "검수 통과 여부를 확인해 알려주세요."
+              }
+            ],
+            "promises": []
+          }
+        }
+      ],
+      "operations": [
+        {
+          "kind": "analysis",
+          "ms": 12895,
+          "success": true
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "cases": 3,
+    "completedCases": 3,
+    "passedCases": 3,
+    "stages": 3,
+    "passedStages": 3,
+    "totals": {
+      "expectedQuestions": 3,
+      "found": 3,
+      "correct": 3,
+      "falseAnswered": 0,
+      "expectedUnresolved": 3,
+      "evidenceCorrect": 3,
+      "expectedPromises": 0,
+      "correctPromises": 0,
+      "references": 6,
+      "grounded": 6
+    },
+    "calls": 4,
+    "apiErrors": 0,
+    "draftErrors": 0,
+    "inputTokens": 14947,
+    "outputTokens": 4350,
+    "latencyMs": {
+      "median": 12894,
+      "p95": 13095,
+      "max": 13095
+    }
+  },
+  "performance": {
+    "inputTokens": 14947,
+    "cachedInputTokens": 9856,
+    "outputTokens": 4350,
+    "reasoningTokens": 3648,
+    "totalTokens": 19297,
+    "calls": 4,
+    "callsWithoutUsage": 0,
+    "analysisMs": {
+      "count": 3,
+      "median": 12895,
+      "p95": 19018
+    },
+    "draftMs": {
+      "count": 0,
+      "median": null,
+      "p95": null
+    },
+    "failedOperations": 0
+  },
+  "completedAt": "2026-11-14T13:33:54.782Z",
+  "complete": true
+}

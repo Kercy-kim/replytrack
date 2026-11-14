@@ -1,5 +1,26 @@
 # ReplyTrack 실제 AI 평가
 
+## 질문 범위와 판정 이유 회귀
+
+현재 `--only draft-probes`는 기존 7개에 NU03의 불필요한 추가 예약 절차 질문과 정상 재문의를 더한 **9개**다. 아래 과거 평가의 7개라는 표기는 당시 실행 범위를 뜻한다. 새 실패 출력은 `results/reason-scope/accepted.json`, 정상 출력은 `results/full-regression/accepted.json`에서 가져오며 호출 전에 expectedValid를 고정했다.
+
+`--suite full`의 기존 48건과 기대값은 그대로 유지한다. `--suite reasons`는 `reason-cases.mjs`의 대조 상담 4건이다. 상세 화면 경로·실제 입금 시각을 명시적으로 요청했을 때 미정 설명을 보존하고, 실제 환불 예외 조건과 별도로 질문한 배송 날짜/시각을 구분하는지 확인한다. 새 사례 4건은 5개 질문이며, 최초 호출 전에 고정한 합성 대조 자료다.
+
+```powershell
+node scripts/evaluate-ai.mjs --key-stdin --suite full --model gpt-5-mini-2025-08-07 --out .artifacts/eval/reasons-full-new.json
+node scripts/evaluate-ai.mjs --key-stdin --suite reasons --analysis-only --model gpt-5-mini-2025-08-07 --out .artifacts/eval/reasons-contrast-new.json
+```
+
+각 분석 단계에는 기존 `grade`와 별개로 `reasonGrade`가 저장된다. `reason-quality.mjs`는 빈 문장·일부 판정 해설·알려진 사례의 불필요한 추가 항목과 필요한 사실의 누락을 검사한다. 원문 메시지와 질문의 대응이 없거나 모호하면 실패한다. 콘솔의 PASS는 기존 분석 기준이며, 실행 종료 성공에는 reasonGrade 통과도 필요하다. 과거 결과의 `--rescore`는 기존 상태·근거·약속 기준 재채점용이다. 표현 검사는 정규식 보조 검사이므로 모든 문장의 질문 범위와 사실 보존은 별도 원문 대조로 확인한다.
+
+질문에 이미 명시된 조건(R06)은 원문 질문과 이유를 함께 보존하면 되고, 답변에서 새로 나온 예외(Q03)는 이유 자체에 남아야 한다. R06의 조건 반복을 강제하던 보조 검사 오탐은 원본 API 출력을 그대로 두고 별도 재채점했다. 아래 명령은 유료 API 호출 없이 고정 자료 해시를 확인하고, 원본/현재 검사 결과를 함께 기록한다.
+
+```powershell
+node scripts/rescore-reasons.mjs evals/results/reason-scope/final.json .artifacts/eval/reason-rescore-new.json
+```
+
+`results/reason-scope/`에 중간 후보와 최종 전체·반복 대조 결과를 보존한다. 기존 accepted 결과와 같은 질문 71개를 대응시킨 문장 및 문자 수 비교, 소스·자료 해시는 `verification.json`에 있다. 문자 수는 공백과 문장부호를 포함한 Unicode 코드 포인트 수이며, 짧아졌다는 사실 자체를 품질 점수로 삼지 않는다. [판정 이유 평가 보고서](../docs/REASON-SCOPE-EVALUATION.md)에 채택 범위와 한계를 기록한다.
+
 ## 고정한 평가 기준
 
 `support-cases.mjs`는 실제 고객 정보가 없는 가상 한국어 상담 20건(배송 7, 환불 7, 구독 6)이다. 첫 API 호출 전에 입력과 기대 질문·상태·근거 메시지·약속·기한을 작성했다. 정답은 개발 에이전트가 작성했으며 외부 전문가/사용자가 검증한 정답은 아니다. 모델에는 입력 대화와 기존 분석만 전달하고 기대값은 전달하지 않는다.

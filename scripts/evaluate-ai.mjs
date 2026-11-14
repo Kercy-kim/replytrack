@@ -7,6 +7,8 @@ import { fileURLToPath } from 'node:url';
 import { cases } from '../evals/support-cases.mjs';
 import { boundaryCases } from '../evals/status-boundary-cases.mjs';
 import { unseenCases } from '../evals/unseen-cases.mjs';
+import { reasonCases } from '../evals/reason-cases.mjs';
+import { gradeReasons } from '../evals/reason-quality.mjs';
 import { grade, summarize } from '../evals/grade.mjs';
 import { performanceSummary } from '../evals/performance.mjs';
 import { OpenAIClient } from '../src/openai.mjs';
@@ -21,13 +23,14 @@ const hash = value => createHash('sha256').update(value).digest('hex');
 const sourceFiles = ['evals/support-cases.mjs', 'evals/status-boundary-cases.mjs', 'evals/unseen-cases.mjs', 'evals/grade.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/domain.mjs', 'src/service.mjs', 'src/openai.mjs', 'src/analysis-changes.mjs', 'scripts/evaluate-ai.mjs'];
 sourceFiles.push('evals/performance.mjs');
 sourceFiles.push('src/privacy.mjs');
+sourceFiles.push('evals/reason-cases.mjs', 'evals/reason-quality.mjs');
 if (existsSync(resolve(root, 'src/ai-wire.mjs'))) sourceFiles.push('src/ai-wire.mjs');
 if (existsSync(resolve(root, 'src/handoff.mjs'))) sourceFiles.push('src/handoff.mjs');
-const suites = { support: cases, boundary: boundaryCases, all: [...cases, ...boundaryCases], unseen: unseenCases, full: [...cases, ...boundaryCases, ...unseenCases] };
+const suites = { support: cases, boundary: boundaryCases, all: [...cases, ...boundaryCases], unseen: unseenCases, full: [...cases, ...boundaryCases, ...unseenCases], reasons: reasonCases };
 const args = process.argv.slice(2);
 const option = (name, fallback) => args.includes(name) ? args[args.indexOf(name) + 1] : fallback;
 if (args.includes('--help')) {
-  console.log('--suite support|boundary|all|unseen|full selects the frozen cases. all preserves the original 28 cases; unseen selects the newer 20; full runs all 48. --analysis-only skips draft generation/review. Interactive JSON also accepts suite and analysisOnly.');
+  console.log('--suite support|boundary|all|unseen|full|reasons selects frozen cases. full runs the existing 48; reasons runs 4 additional contrast controls. --analysis-only skips draft generation/review. Interactive JSON also accepts suite and analysisOnly.');
   console.log('Live evaluation (paid API calls): node --env-file=.env scripts/evaluate-ai.mjs --out .artifacts/eval/run.json [--only S01,R03] [--model gpt-5-mini]\n--key-stdin accepts one hidden line; --interactive keeps credentials in memory for another run after code changes. Never writes the key.\nScore saved output offline: node scripts/evaluate-ai.mjs --rescore path/to/run.json');
   process.exit(0);
 }
@@ -38,6 +41,7 @@ if (args.includes('--rescore')) {
   if (!suiteCases) throw new Error('Unknown saved suite');
   if (['boundary', 'all', 'full'].includes(report.suite) && report.hashes['evals/status-boundary-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/status-boundary-cases.mjs')))) throw new Error('Boundary dataset hash mismatch');
   if (['unseen', 'full'].includes(report.suite) && report.hashes['evals/unseen-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/unseen-cases.mjs')))) throw new Error('Unseen dataset hash mismatch');
+  if (report.suite === 'reasons' && report.hashes['evals/reason-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/reason-cases.mjs')))) throw new Error('Reason dataset hash mismatch');
   for (const result of report.results) {
     const testCase = suiteCases.find(c => c.id === result.id);
     if (!testCase) throw new Error('Unknown saved case');
@@ -99,7 +103,7 @@ async function run({ out, only = '', model = process.env.OPENAI_MODEL || 'gpt-5-
         const start = performance.now(); let success = false;
         try {
           const saved = await service.analyze(record.id, record.version); success = true;
-          result.stages.push({ record: saved, grade: grade(saved, expected, previous) });
+          result.stages.push({ record: saved, grade: grade(saved, expected, previous), reasonGrade: gradeReasons(saved, testCase.id) });
           return saved;
         } finally { result.operations.push({ kind: 'analysis', ms: Math.round(performance.now() - start), success }); }
       }
@@ -135,7 +139,7 @@ async function run({ out, only = '', model = process.env.OPENAI_MODEL || 'gpt-5-
   await Promise.all([worker(), worker()]);
   report.completedAt = new Date().toISOString(); report.complete = report.results.length === selected.length; save();
   console.log(JSON.stringify(report.summary));
-  if (!report.complete || report.results.some(r => r.error || r.draft?.error || r.stages.some(s => !s.grade.pass))) process.exitCode = 1;
+  if (!report.complete || report.results.some(r => r.error || r.draft?.error || r.stages.some(s => !s.grade.pass || !s.reasonGrade.pass))) process.exitCode = 1;
 }
 async function runDraftProbes({ out, model }) {
   // Test the new product reviewer against real failed outputs preserved from earlier runs.
@@ -145,7 +149,9 @@ async function runDraftProbes({ out, model }) {
   const probes = [['iteration-3', 'S02', '선택한 배송비 질문 누락'], ['iteration-3', 'S06', '원문에 없는 동일 상담원 추정'], ['baseline', 'R02', '상담원 입장으로 고객 정보 요구'],
     ['unseen/baseline', 'NR05', '중간의 계좌 안내를 초기 안내로 요약'], ['unseen/baseline', 'NS03', '장소 확인 뒤 안내를 정확히 전달한 정상 인계', true],
     ['unseen/iteration-1', 'NS03', '역할명만 쓴 정상 인계를 동일인 주장으로 오인하지 않기', true, true],
-    ['unseen/regression-1', 'R02', '질문형 문장에서 원문에 없는 비용 차감 관계 전제']];
+    ['unseen/regression-1', 'R02', '질문형 문장에서 원문에 없는 비용 차감 관계 전제'],
+    ['reason-scope/accepted', 'NU03', '현재 예약 상태 외에 추가 조작·확인 절차를 요구'],
+    ['full-regression/accepted', 'NU03', '현재 예약 상태만 묻는 정상 재문의', true]];
   const client = new OpenAIClient({ apiKey, model });
   const report = { mode: 'live draft review control probes', startedAt: new Date().toISOString(), requestedModel: model,
     hashes: Object.fromEntries(sourceFiles.map(file => [file, hash(readFileSync(resolve(root, file)))])), results: [] };

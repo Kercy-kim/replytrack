@@ -2,13 +2,16 @@ const text = { type: 'string' };
 const nullableText = { type: ['string', 'null'] };
 const array = items => ({ type: 'array', items });
 const object = properties => ({ type: 'object', properties, required: Object.keys(properties), additionalProperties: false });
+// One explanation contract for initial analysis and the partial/review check.
+// Do not require a missing-information clause when the requested answer is complete.
+const questionReason = { type: 'string', description: '화면에 표시할 짧은 한국어 한 문장. 핵심 사실을 보존하면서 보통 30~70자 정도로 쓴다(길이 때문에 사실을 삭제하지 않는다). answered: 받은 답만 설명하고 누락·단서 후문을 붙이지 않는다. partial: 받은 부분 정보와 이 질문에서 아직 모르는 부분만 쓴다. waiting: 이 질문의 답을 확인해 안내하겠다는 약속만 쓴다. review: 이 질문의 미정·식별 불가·상충 사유만 쓴다. unanswered: 관련 안내가 없다고만 쓴다. 질문 반복, 원문 문장 재인용, 괄호로 같은 뜻 풀이, 분류 절차, 묻지 않은 추가 항목은 생략한다. 업체의 안내임을 밝혀 직접 처리하거나 확인한 것처럼 말하지 않는다.' };
 export const evidenceSchema = object({ messageId: text, quote: text });
 export const analysisSchema = object({
   summary: text,
   questions: array(object({
     id: text, title: text, source: evidenceSchema,
-    reason: { type: 'string', description: '해당 질문에 제공된 실질 정보와 아직 빠진 정보를 각각 설명한다. 미정이라는 문장 외에 방법·진행 단계·같은 항목의 다른 기간 정보가 있는지도 확인한다.' },
     status: { type: 'string', enum: ['unanswered', 'partial', 'waiting', 'answered', 'review'], description: '요구한 정보 전부=answered, 명시적인 향후 안내 약속=waiting. 약속 없이 방법·진행 단계·조건·같은 청구 항목의 일부/다른 기간 정보가 있으면 결과가 미정이어도 partial. 유용한 부분 정보 없이 미정이라고만 하거나 해소되지 않은 충돌이면 review. 관련 안내 자체가 없을 때만 unanswered.' },
+    reason: questionReason,
     evidence: array(evidenceSchema), followUp: text,
   })),
   promises: array(object({
@@ -46,5 +49,5 @@ export function draftSchemaFor(messages) {
 }
 export const draftReviewSchema = object({ valid: { type: 'boolean' }, feedback: text });
 export function boundaryReviewSchemaFor(ids) {
-  return object({ questions: { ...array(object({ id: { type: 'string', enum: ids }, status: { type: 'string', enum: ['partial', 'review'] }, reason: text })), minItems: ids.length, maxItems: ids.length } });
+  return object({ questions: { ...array(object({ id: { type: 'string', enum: ids }, status: { type: 'string', enum: ['partial', 'review'] }, reason: questionReason })), minItems: ids.length, maxItems: ids.length } });
 }

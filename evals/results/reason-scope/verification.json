@@ -1,0 +1,833 @@
+{
+  "verifiedAt": "2026-11-14T14:04:28.685Z",
+  "scope": "Final source hashes, frozen core rubric, completeness, grades and scoped lexical checks. Independent source review by development agent is documented separately.",
+  "baseline": {
+    "path": "evals/results/full-regression/accepted.json",
+    "sha256": "298e05778b8ae3859a612283e04254028bae3e78f62d477463a87a1d166a5478",
+    "note": "Earlier accepted run on starting main; not a new randomized paired performance benchmark."
+  },
+  "draftSourceNote": "All adopted live runs match current product/evaluator/fixture hashes. Handoff generation/review controls were rerun because HANDOFF_REVIEW_PROMPT composes the changed common DRAFT_REVIEW_PROMPT. The offline reason grader was corrected after an R06 lexical false positive; untouched raw results and separate rescores preserve both judgments.",
+  "files": {
+    "final.json": "bdf922ae1fc7c70ae3004445b71b1170f0ad180eeecb612e54525f1b378a1d53",
+    "contrast-7.json": "9b35a2a6dca3cf50468fc64ed1bf8ef1a21638130c5b4ca7a2814910844a09da",
+    "contrast-8.json": "64e7d726a894601f0bfc73186d88d1d5ce228ffa5ea6a7bc35cc29036b85c3bd",
+    "handoff-final.json": "01740f0346e8f44b65cbfc2c12de01286c7258f9080474f278725380ba71e892",
+    "review-final.json": "69c25537f2c6c64757674a40f536162bd1c47709bf0d93907cb108adba60836e",
+    "draft-controls-accepted.json": "37144f8b3f9181a742d1d426ccae493a0433876943972ce704caceb4374eabaf",
+    "reason-rescore.json": "1c651e00d3aeba4359714aaec98c2558f46de924e6a3012276c276570c822b47",
+    "contrast-7-rescore.json": "cb05b3b34edf5eee27d1b350361610863e23837ff7378c8a9633679685c2bf2e",
+    "contrast-8-rescore.json": "90e35c214f812da9988216d5adafc652bc4e6e12ee463254d58e58a72bb6fdca",
+    "performance-comparison.json": "8b475cbdd47d91d22376a2cef1d0ed041e0398a0db782357942fe62394fc2f5e"
+  },
+  "productHashes": {
+    "src/prompts.mjs": "66eeb4dd350524ad810b13186f9c64fbee3875ca4c288747e74411c930384536",
+    "src/schema.mjs": "f085385dda3fed082db6e68e0d5cd3cbc30e22079536becf8b1cc816fa445003",
+    "src/domain.mjs": "2e4111560108918cf490975c53610a9b6d1460bfb5f83a5ad69f63d16fc03437",
+    "src/service.mjs": "701914b6c49c560eccdcd9bf7cb61937bf4272aba6a00ea3a8de40ee6884d0c2",
+    "src/openai.mjs": "8b6fdc58984c9206b1d98ff0f97be3418851ddfd91fa1ae3458061a84906ecb4",
+    "src/analysis-changes.mjs": "36d13aaab3b180d7a2081dc22127a79e394ddb1e006136090a10945c88d94d73",
+    "src/privacy.mjs": "75db14559c861418e60fe28f2354d920931cbb44a7cf9e5a4b0b95022e9d16b8",
+    "src/ai-wire.mjs": "73655462fd4966f5889dfd6e82effcb4a13a6e12027574b4f4d120aaf2c79fe1",
+    "src/handoff.mjs": "b2a86dc899ea58d7d9ccde575567fc0c1b36c4525e6218af6f9cc4c752ddd365"
+  },
+  "categories": {
+    "배송": {
+      "cases": 17,
+      "passed": 17
+    },
+    "환불": {
+      "cases": 17,
+      "passed": 17
+    },
+    "구독": {
+      "cases": 14,
+      "passed": 14
+    }
+  },
+  "summary": {
+    "cases": 48,
+    "completedCases": 48,
+    "passedCases": 48,
+    "stages": 55,
+    "passedStages": 55,
+    "totals": {
+      "expectedQuestions": 71,
+      "found": 71,
+      "correct": 71,
+      "falseAnswered": 0,
+      "expectedUnresolved": 37,
+      "evidenceCorrect": 71,
+      "expectedPromises": 22,
+      "correctPromises": 22,
+      "references": 165,
+      "grounded": 165
+    },
+    "calls": 99,
+    "apiErrors": 0,
+    "draftErrors": 0,
+    "inputTokens": 322715,
+    "outputTokens": 107134,
+    "latencyMs": {
+      "median": 10411,
+      "p95": 22488,
+      "max": 24375
+    }
+  },
+  "generatedDrafts": 13,
+  "handoffs": 18,
+  "reviewControls": 11,
+  "draftControls": 9,
+  "contrastRuns": 2,
+  "contrastCasesPerRun": 4,
+  "contrastQuestionsPerRun": 5,
+  "reasonGrading": {
+    "currentGraderHash": "e8bb9156da494f39bfe64b975651c276bb692e6be4d1cc3b2c9dee3c11d64f33",
+    "recordedGraderHash": "914fef36a9a4215797ab5776b28739d1e22115b539ae6141d53f54b5cff6c96c",
+    "recordedFlags": [
+      {
+        "id": "R06",
+        "stage": 0,
+        "issue": "missing:R06/0:불량"
+      }
+    ],
+    "offlinePass": true
+  },
+  "reasonCharacters": {
+    "unit": "Unicode code points including spaces and punctuation",
+    "before": {
+      "total": 4791,
+      "mean": 67.47887323943662,
+      "median": 66,
+      "p95": 100,
+      "max": 119
+    },
+    "after": {
+      "total": 2412,
+      "mean": 33.971830985915496,
+      "median": 35,
+      "p95": 56,
+      "max": 62
+    },
+    "pairs": [
+      {
+        "id": "S01",
+        "stage": 0,
+        "message": 0,
+        "topic": "출고",
+        "before": "상담원이 '2026년 11월 16일까지 출고해 드리겠습니다.'라고 출고 기한과 수행 의사를 명시해 출고일 값이 제시되었으므로 해당 값이 제공되었다.",
+        "after": "2026년 11월 16일까지 출고해 드리겠다고 안내받았습니다.",
+        "beforeCharacters": 82,
+        "afterCharacters": 34
+      },
+      {
+        "id": "S01",
+        "stage": 0,
+        "message": 0,
+        "topic": "배송비",
+        "before": "상담원이 '배송비는 3,000원입니다.'라고 배송비 금액을 명확히 제시했으므로 금액 정보가 제공되었다.",
+        "after": "배송비는 3,000원이라고 안내받았습니다.",
+        "beforeCharacters": 57,
+        "afterCharacters": 23
+      },
+      {
+        "id": "S02",
+        "stage": 0,
+        "message": 0,
+        "topic": "운송장",
+        "before": "상담원이 운송장 번호를 명시적으로 안내하여 질문에 대한 값이 제공되었다.",
+        "after": "운송장 번호는 1234567890이라고 안내받았습니다.",
+        "beforeCharacters": 40,
+        "afterCharacters": 30
+      },
+      {
+        "id": "S02",
+        "stage": 0,
+        "message": 0,
+        "topic": "도착",
+        "before": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "after": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "beforeCharacters": 36,
+        "afterCharacters": 36
+      },
+      {
+        "id": "S02",
+        "stage": 0,
+        "message": 0,
+        "topic": "배송비",
+        "before": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "after": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "beforeCharacters": 36,
+        "afterCharacters": 36
+      },
+      {
+        "id": "S03",
+        "stage": 0,
+        "message": 0,
+        "topic": "위치",
+        "before": "상담원이 배송 위치를 확인해 '내일까지 안내해 드리겠다'고 약속했으므로 배송 위치 확인 결과 통보를 받아야 한다.",
+        "after": "배송 위치를 확인해 내일까지 안내하겠다는 약속을 받았습니다.",
+        "beforeCharacters": 63,
+        "afterCharacters": 33
+      },
+      {
+        "id": "S04",
+        "stage": 0,
+        "message": 0,
+        "topic": "배송비",
+        "before": "상담원이 지역별 요금(제주 3,000원·다른 지역 무료)은 안내했지만 고객의 배송 지역 확인이 되지 않아 고객 주문에 대한 확정 금액은 제시되지 않았다.",
+        "after": "제주도는 추가 배송비 3,000원이고 다른 지역은 무료는 안내받았지만 고객님의 배송 지역은 확인되지 않았습니다.",
+        "beforeCharacters": 85,
+        "afterCharacters": 62
+      },
+      {
+        "id": "S05",
+        "stage": 0,
+        "message": 0,
+        "topic": "배송비",
+        "before": "제공된 정보: '배송비는 무료입니다.' 및 '배송비는 3,000원입니다.' (상충). 아직 모르는 항목: 실제 배송비(정확한 금액 또는 무료 여부).",
+        "after": "'무료'와 '3,000원'으로 안내가 엇갈립니다.",
+        "beforeCharacters": 83,
+        "afterCharacters": 27
+      },
+      {
+        "id": "S06",
+        "stage": 0,
+        "message": 0,
+        "topic": "배송비",
+        "before": "상담원이 배송비 금액(3,000원)을 명시적으로 제시하여 질문에 대한 금액 답변이 제공되었음.",
+        "after": "배송비는 3,000원이라고 안내받았습니다.",
+        "beforeCharacters": 52,
+        "afterCharacters": 23
+      },
+      {
+        "id": "S06",
+        "stage": 0,
+        "message": 0,
+        "topic": "발송",
+        "before": "상담원이 발송 여부를 직접 확인해 안내하겠다고만 밝혔고(확정된 발송 상태는 제시되지 않음), 실제 발송 여부에 대한 확정 정보는 없음.",
+        "after": "발송 여부를 확인해 안내하겠다는 약속을 받았습니다.",
+        "beforeCharacters": 75,
+        "afterCharacters": 28
+      },
+      {
+        "id": "S06",
+        "stage": 1,
+        "message": 0,
+        "topic": "배송비",
+        "before": "상담원이 앞선 안내를 정정하여 배송비가 무료라고 명시했으므로 금액이 제공되었습니다.",
+        "after": "배송비는 무료라고 안내받았습니다.",
+        "beforeCharacters": 46,
+        "afterCharacters": 18
+      },
+      {
+        "id": "S06",
+        "stage": 1,
+        "message": 0,
+        "topic": "발송",
+        "before": "상담원이 발송 여부 확인을 완료하고 현재 상태를 '운송 중'이라고 안내했으므로 발송 여부가 제공되었습니다.",
+        "after": "발송 여부는 운송 중이라고 안내받았습니다.",
+        "beforeCharacters": 59,
+        "afterCharacters": 23
+      },
+      {
+        "id": "S07",
+        "stage": 0,
+        "message": 0,
+        "topic": "위치",
+        "before": "상담원이 배송 위치를 확인해 알려 주겠다고 약속했으나, 현재 실제 배송 위치 정보는 제공되지 않았다.",
+        "after": "배송 위치를 확인해 내일까지 안내하겠다는 약속을 받았습니다.",
+        "beforeCharacters": 56,
+        "afterCharacters": 33
+      },
+      {
+        "id": "R01",
+        "stage": 0,
+        "message": 0,
+        "topic": "환불",
+        "before": "상담원이 '사용한 제품은 환불 불가'라고 명확히 답했고, 예외·절차·금액 등 추가 정보는 제공되지 않았습니다.",
+        "after": "사용한 제품은 환불 불가하다고 안내받았습니다.",
+        "beforeCharacters": 61,
+        "afterCharacters": 25
+      },
+      {
+        "id": "R02",
+        "stage": 0,
+        "message": 0,
+        "topic": "반품비",
+        "before": "고객이 반품비 금액을 물었고 상담원이 \"반품비는 5,000원입니다.\"라고 명확히 안내했으므로 금액이 제시되어 질문이 해결되었습니다.",
+        "after": "반품비는 5,000원이라고 안내받았습니다.",
+        "beforeCharacters": 73,
+        "afterCharacters": 23
+      },
+      {
+        "id": "R02",
+        "stage": 0,
+        "message": 1,
+        "topic": "환불",
+        "before": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "after": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "beforeCharacters": 36,
+        "afterCharacters": 36
+      },
+      {
+        "id": "R03",
+        "stage": 0,
+        "message": 0,
+        "topic": "환불",
+        "before": "상담원이 환불 예정일을 직접 제시하지 않고 확인 후 2026년 11월 16일까지 안내하겠다고 약속하여, 실제 예정일은 아직 제시되지 않았음.",
+        "after": "환불 예정일을 확인해 2026년 11월 16일까지 안내하겠다는 약속을 받았습니다.",
+        "beforeCharacters": 78,
+        "afterCharacters": 45
+      },
+      {
+        "id": "R03",
+        "stage": 1,
+        "message": 0,
+        "topic": "환불",
+        "before": "상담사가 처음에는 2026년 11월 16일까지 안내하겠다고 약속했지만 그 약속 기한을 취소하고 안내 시점을 확정하지 못했다고 밝혀 정확한 환불 예정일은 확인이 필요합니다.",
+        "after": "환불 예정일을 확인해 안내하겠다는 약속을 받았습니다.",
+        "beforeCharacters": 95,
+        "afterCharacters": 29
+      },
+      {
+        "id": "R04",
+        "stage": 0,
+        "message": 0,
+        "topic": "환불",
+        "before": "상담원이 '환불 처리를 완료했습니다'라고 명시하여 환불 처리 완료 여부에 대한 답을 제공했다.",
+        "after": "환불 처리를 완료했다고 안내받았습니다.",
+        "beforeCharacters": 52,
+        "afterCharacters": 21
+      },
+      {
+        "id": "R05",
+        "stage": 0,
+        "message": 0,
+        "topic": "카드|취소|기간",
+        "before": "상담원이 일반적인 소요 기간(3~5영업일)을 제시했고, 해당 안내가 고객 건의 취소 접수나 완료 통보가 아님을 명시했으므로 기간은 안내되었고 접수·완료 여부는 제공되지 않았습니다.",
+        "after": "카드 취소 반영은 일반적으로 3~5영업일 걸린다고 안내받았습니다.",
+        "beforeCharacters": 100,
+        "afterCharacters": 36
+      },
+      {
+        "id": "R06",
+        "stage": 0,
+        "message": 0,
+        "topic": "반품비|불량",
+        "before": "상담원이 ‘불량이면 업체가 반품비를 부담합니다.’라고 명시적으로 안내하여 부담 주체가 제시되었으므로 질문에 대한 직접적 답변이 제공되었다.",
+        "after": "업체가 반품비를 부담한다고 안내받았습니다.",
+        "beforeCharacters": 77,
+        "afterCharacters": 23
+      },
+      {
+        "id": "R06",
+        "stage": 0,
+        "message": 1,
+        "topic": "반품비|변심",
+        "before": "상담원이 ‘단순 변심이면 고객님 부담입니다.’라고 명시적으로 안내하여 부담 주체가 제시되었으므로 질문에 대한 직접적 답변이 제공되었다.",
+        "after": "단순 변심이면 고객님 부담이라고 안내받았습니다.",
+        "beforeCharacters": 75,
+        "afterCharacters": 26
+      },
+      {
+        "id": "R07",
+        "stage": 0,
+        "message": 0,
+        "topic": "환불",
+        "before": "제공된 정보: '환불액에 관해서는 아직 안내드릴 정보가 없습니다.' 부족한 정보: 환불액(구체적 금액)",
+        "after": "업체가 환불액을 확인할 정보가 없어 알 수 없다고 안내했습니다.",
+        "beforeCharacters": 57,
+        "afterCharacters": 35
+      },
+      {
+        "id": "U01",
+        "stage": 0,
+        "message": 0,
+        "topic": "갱신",
+        "before": "상담 안내가 '자동 갱신을 해제했습니다.'라고 명시적으로 안내했으므로 자동 갱신 해제 여부는 확인되었다.",
+        "after": "자동 갱신을 해제했습니다라고 안내받았습니다.",
+        "beforeCharacters": 58,
+        "afterCharacters": 24
+      },
+      {
+        "id": "U01",
+        "stage": 0,
+        "message": 0,
+        "topic": "종료",
+        "before": "상담 안내가 '이용 종료일은 2026년 11월 30일입니다.'라고 명시적으로 안내했으므로 종료일이 제시되었다.",
+        "after": "이용 종료일은 2026년 11월 30일입니다라고 안내받았습니다.",
+        "beforeCharacters": 61,
+        "afterCharacters": 35
+      },
+      {
+        "id": "U02",
+        "stage": 0,
+        "message": 0,
+        "topic": "해지",
+        "before": "상담원은 해지 방법만 안내하여 구독의 현재 해지 여부(이미 해지되었는지)에 대한 정보가 제공되지 않았습니다.",
+        "after": "해지 방법은 안내받았지만 이미 해지되었는지는 확인되지 않았습니다.",
+        "beforeCharacters": 60,
+        "afterCharacters": 36
+      },
+      {
+        "id": "U03",
+        "stage": 0,
+        "message": 0,
+        "topic": "청구|이번",
+        "before": "상담원이 다음 달 요금(월 9,900원)은 안내했으나 이번 달 청구액은 '아직 확인하지 못했습니다'라고만 답해 구체 금액은 제공되지 않았습니다.",
+        "after": "다음 달부터 월 9,900원이라는 안내는 받았지만 이번 달 청구액은 확인되지 않았습니다.",
+        "beforeCharacters": 80,
+        "afterCharacters": 49
+      },
+      {
+        "id": "U04",
+        "stage": 0,
+        "message": 0,
+        "topic": "중복|결제",
+        "before": "상담원이 확인 후 안내하겠다고 기한을 제시했으나, 중복 결제 여부 자체의 결과는 제공되지 않았다.",
+        "after": "중복 결제 여부를 확인해 모레까지 안내하겠다는 약속을 받았습니다.",
+        "beforeCharacters": 54,
+        "afterCharacters": 36
+      },
+      {
+        "id": "U04",
+        "stage": 1,
+        "message": 0,
+        "topic": "중복|결제",
+        "before": "상담원이 중복 결제 확인을 완료하고 '같은 이용 기간에 두 번 청구된 것이 맞습니다'라고 안내하여 질문의 결론을 제시함.",
+        "after": "같은 이용 기간에 두 번 청구된 것이 맞다고 안내받았습니다.",
+        "beforeCharacters": 67,
+        "afterCharacters": 33
+      },
+      {
+        "id": "U05",
+        "stage": 0,
+        "message": 0,
+        "topic": "이메일|메일",
+        "before": "상담 안내가 발송 시점을 '3영업일 이내'로 명확히 제시해 질문의 값이 제공되었으므로 답변 완료로 판단합니다.",
+        "after": "해지 확인 이메일을 3영업일 이내에 보내 드리겠다고 안내받았습니다.",
+        "beforeCharacters": 61,
+        "afterCharacters": 37
+      },
+      {
+        "id": "U06",
+        "stage": 0,
+        "message": 0,
+        "topic": "청구|요금",
+        "before": "제공된 정보: 상담원 답변이 상반됨(‘다음 달 청구 없음’ vs ‘다음 달 요금이 청구된다’). 누락된 정보: 실제로 다음 달에 청구되는지 여부.",
+        "after": "다음 달 청구 여부에 대해 '청구가 없습니다'와 '청구됩니다'라는 상반된 답변으로 안내가 엇갈립니다.",
+        "beforeCharacters": 81,
+        "afterCharacters": 56
+      },
+      {
+        "id": "B01",
+        "stage": 0,
+        "message": 0,
+        "topic": "배송|위치",
+        "before": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "after": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "beforeCharacters": 36,
+        "afterCharacters": 36
+      },
+      {
+        "id": "B02",
+        "stage": 0,
+        "message": 0,
+        "topic": "환불|금액",
+        "before": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "after": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "beforeCharacters": 36,
+        "afterCharacters": 36
+      },
+      {
+        "id": "B03",
+        "stage": 0,
+        "message": 0,
+        "topic": "환불|금액",
+        "before": "제공된 정보: 환불 금액은 아직 확정되지 않았다고 안내됨. 부족한 정보: 확정된 환불 금액(구체적 금액)",
+        "after": "업체가 환불 금액을 알 수 없다고 안내했습니다.",
+        "beforeCharacters": 58,
+        "afterCharacters": 26
+      },
+      {
+        "id": "B04",
+        "stage": 0,
+        "message": 0,
+        "topic": "갱신",
+        "before": "설정에서 자동 갱신을 끄는 방법만 안내했고, 고객 계정의 현재 자동 갱신 상태(켜져 있는지/꺼져 있는지)는 안내하지 않았다.",
+        "after": "자동 갱신을 끄는 방법은 안내받았지만 현재 자동 갱신 상태는 확인되지 않았습니다.",
+        "beforeCharacters": 69,
+        "afterCharacters": 45
+      },
+      {
+        "id": "B05",
+        "stage": 0,
+        "message": 0,
+        "topic": "배송|위치",
+        "before": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "after": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "beforeCharacters": 36,
+        "afterCharacters": 36
+      },
+      {
+        "id": "B06",
+        "stage": 0,
+        "message": 0,
+        "topic": "갱신",
+        "before": "고객은 자동 갱신을 끄는 방법(방법 문의)을 물었고, 상담원은 설정에서 갱신 스위치를 끄라고 안내했으나 설정 메뉴의 구체적 경로나 플랫폼(예: 앱/웹) 구분 등 추가 세부 정보는 제공하지 않았다.",
+        "after": "설정에서 갱신 스위치를 끄면 된다고 안내받았습니다.",
+        "beforeCharacters": 109,
+        "afterCharacters": 28
+      },
+      {
+        "id": "B07",
+        "stage": 0,
+        "message": 0,
+        "topic": "환불|금액",
+        "before": "상담원이 환불 금액이 확정되지 않았다고 안내하고 담당 부서에 확인해 금액을 안내하겠다고 약속했으므로 금액은 제공되지 않았고 확인 후 안내가 필요합니다.",
+        "after": "확정된 환불 금액을 확인해 안내하겠다는 약속을 받았습니다.",
+        "beforeCharacters": 84,
+        "afterCharacters": 32
+      },
+      {
+        "id": "B08",
+        "stage": 0,
+        "message": 0,
+        "topic": "배송비",
+        "before": "상담원은 제주도 3,000원·그 외 지역 무료라는 일반 요금을 알려주었으나, 고객님의 해당 주문에 적용되는 정확한 금액은 배송 지역 확인 후 안내하겠다고만 밝혀 구체적 금액이 제시되지 않았습니다.",
+        "after": "추가 배송비를 확인해 안내하겠다는 약속을 받았습니다.",
+        "beforeCharacters": 109,
+        "afterCharacters": 29
+      },
+      {
+        "id": "NS01",
+        "stage": 0,
+        "message": 0,
+        "topic": "머그|운송장",
+        "before": "에이전트가 요청한 머그컵 상자 운송장 번호를 '8800123456'으로 직접 안내했으므로 해당 질문은 답변됨.",
+        "after": "8800123456이라고 안내받았습니다.",
+        "beforeCharacters": 61,
+        "afterCharacters": 22
+      },
+      {
+        "id": "NS01",
+        "stage": 0,
+        "message": 1,
+        "topic": "접시|운송장",
+        "before": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "after": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "beforeCharacters": 36,
+        "afterCharacters": 36
+      },
+      {
+        "id": "NS02",
+        "stage": 0,
+        "message": 0,
+        "topic": "번호",
+        "before": "상담원이 수령 번호(824617)를 명시적으로 안내했으므로 수령 번호에 대한 답변이 제공됨.",
+        "after": "상담원이 수령 번호를 명확히 '824617'로 안내했습니다.",
+        "beforeCharacters": 51,
+        "afterCharacters": 33
+      },
+      {
+        "id": "NS02",
+        "stage": 0,
+        "message": 1,
+        "topic": "언제|기한|만료|수령",
+        "before": "제공된 정보: 보관 만료 시각은 시스템에 표시되지 않아 알 수 없다는 안내. 누락된 정보: 실제 만료 시각(찾아가야 할 최종 기한).",
+        "after": "업체가 보관 만료 시각(언제까지 찾아가야 하는지)을 알 수 없다고 안내했습니다.",
+        "beforeCharacters": 74,
+        "afterCharacters": 44
+      },
+      {
+        "id": "NS03",
+        "stage": 0,
+        "message": 0,
+        "topic": "장소|위치|택배",
+        "before": "상담원이 기사에게 확인해 내일 알려주겠다고 약속했으나, 실제 놓인 정확한 장소 정보는 아직 제공되지 않았다.",
+        "after": "택배를 놓은 정확한 장소를 확인해 안내하겠다는 약속을 받았습니다.",
+        "beforeCharacters": 60,
+        "afterCharacters": 36
+      },
+      {
+        "id": "NS03",
+        "stage": 1,
+        "message": 0,
+        "topic": "장소|위치|택배",
+        "before": "에이전트가 기사 확인 후 구체적 장소('옆 동 1층 경비실')를 안내했으므로 질문이 해결되었습니다.",
+        "after": "택배를 둔 곳은 옆 동 1층 경비실이라고 안내받았습니다.",
+        "beforeCharacters": 55,
+        "afterCharacters": 31
+      },
+      {
+        "id": "NS04",
+        "stage": 0,
+        "message": 0,
+        "topic": "배송지|주소|변경|바꿀",
+        "before": "상담원은 주소 변경이 가능한 조건(포장 전 가능, 포장 후 불가)과 해당 주문의 포장 단계가 조회되지 않는다고 안내했으나, 이 주문이 현재 포장 전인지 여부는 제공하지 않았다.",
+        "after": "포장 전엔 주소 변경 가능하단 안내는 받았지만 고객님 주문의 현재 포장 단계는 확인되지 않았습니다.",
+        "beforeCharacters": 98,
+        "afterCharacters": 55
+      },
+      {
+        "id": "NS05",
+        "stage": 0,
+        "message": 0,
+        "topic": "날짜|방문|배송",
+        "before": "상담원이 \"책상을 2026년 11월 24일에 방문 배송하겠습니다.\"라고 안내하여 배송 날짜가 제시되었음.",
+        "after": "책상을 2026년 11월 24일에 방문 배송하겠다고 안내받았습니다.",
+        "beforeCharacters": 58,
+        "afterCharacters": 37
+      },
+      {
+        "id": "NS05",
+        "stage": 1,
+        "message": 0,
+        "topic": "날짜|방문|배송",
+        "before": "상담 안내가 방문 배송 날짜로 2026년 11월 26일을 제시해 질문에 답했습니다 (이전 안내 2026년 11월 24일은 변경됨).",
+        "after": "2026년 11월 26일에 방문 배송하겠다고 안내받았습니다.",
+        "beforeCharacters": 73,
+        "afterCharacters": 33
+      },
+      {
+        "id": "NS06",
+        "stage": 0,
+        "message": 0,
+        "topic": "보관|경비실",
+        "before": "고객은 주말 동안 경비실 보관 가능 여부를 물었고, 상담원이 '냉장 식품은 주말 동안 경비실 보관이 불가합니다.'라고 명시해 보관 가능 여부는 답변되었으므로 추가 정보는 없습니다.",
+        "after": "냉장 식품은 주말 동안 경비실 보관이 불가하다고 안내받았습니다.",
+        "beforeCharacters": 100,
+        "afterCharacters": 35
+      },
+      {
+        "id": "NS06",
+        "stage": 0,
+        "message": 1,
+        "topic": "사진|파손",
+        "before": "고객은 파손 시 요구되는 사진 종류를 물었고, 상담원이 박스 전체·깨진 부위·송장이 보이는 사진이 필요하다고 안내해 사진 종류는 답변되었으므로 추가 정보는 없습니다.",
+        "after": "파손 접수에는 박스 전체, 깨진 부위, 송장이 보이는 사진이 필요하다고 안내받았습니다.",
+        "beforeCharacters": 92,
+        "afterCharacters": 48
+      },
+      {
+        "id": "NS07",
+        "stage": 0,
+        "message": 0,
+        "topic": "주문|수령|장소|지점",
+        "before": "제공된 정보: 상담원이 문자가 주문 410번인지 411번인지 구분되지 않아 판단할 수 없다고 설명함. 누락된 정보: 해당 문자와 주문 410번의 연관성(즉, 문자에 나온 픽업 지점이 410번의 수령 장소인지 여부)",
+        "after": "업체가 문자가 주문 410번의 수령 장소인지 알 수 없다고 안내했습니다.",
+        "beforeCharacters": 119,
+        "afterCharacters": 40
+      },
+      {
+        "id": "NR01",
+        "stage": 0,
+        "message": 0,
+        "topic": "카드|금액",
+        "before": "에이전트가 카드 환불 가능액을 '18,500원'으로 제시했으므로 금액 질문에 대한 답변이 제시되었다.",
+        "after": "18,500원이라고 안내받았습니다.",
+        "beforeCharacters": 56,
+        "afterCharacters": 19
+      },
+      {
+        "id": "NR01",
+        "stage": 0,
+        "message": 1,
+        "topic": "포인트",
+        "before": "에이전트가 복원 가능한 포인트를 '2,000점'으로 제시했으므로 포인트 복원량 질문에 대한 답변이 제시되었다.",
+        "after": "2,000점이라고 안내받았습니다.",
+        "beforeCharacters": 61,
+        "afterCharacters": 18
+      },
+      {
+        "id": "NR02",
+        "stage": 0,
+        "message": 0,
+        "topic": "검수|통과",
+        "before": "상담원은 반품 신발의 창고 도착을 안내했지만, 검수 통과 여부(통과·불합격 등)의 등록 여부에 대해선 등록되지 않았다고만 알려주어 최종 결과 정보가 부족합니다.",
+        "after": "창고 도착은 안내받았지만 검수 통과 여부는 확인되지 않았습니다.",
+        "beforeCharacters": 89,
+        "afterCharacters": 35
+      },
+      {
+        "id": "NR03",
+        "stage": 0,
+        "message": 0,
+        "topic": "쿠폰",
+        "before": "상담원이 '유효기간이 지난 쿠폰은 반품해도 복원되지 않습니다.'라고 명확히 안내했으므로 질문의 결론이 제시됨.",
+        "after": "만료된 쿠폰은 반품해도 복원되지 않는다고 안내받았습니다.",
+        "beforeCharacters": 61,
+        "afterCharacters": 31
+      },
+      {
+        "id": "NR03",
+        "stage": 0,
+        "message": 1,
+        "topic": "계좌|수단",
+        "before": "상담원이 '환불은 원래 결제 수단으로만 가능하며 다른 사람 계좌로는 받을 수 없습니다.'라고 명확히 안내했으므로 질문의 결론이 제시됨.",
+        "after": "환불은 원래 결제 수단으로만 가능하며 다른 사람 계좌로 받을 수 없다고 안내받았습니다.",
+        "beforeCharacters": 75,
+        "afterCharacters": 48
+      },
+      {
+        "id": "NR04",
+        "stage": 0,
+        "message": 0,
+        "topic": "수거비",
+        "before": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "after": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "beforeCharacters": 36,
+        "afterCharacters": 36
+      },
+      {
+        "id": "NR05",
+        "stage": 0,
+        "message": 0,
+        "topic": "수단|환불",
+        "before": "제공된 정보: 환불 수단에 대해 '카드'라는 답변과 '계좌'라는 상충되는 답변이 모두 있음. 누락/불명확: 실제로 어떤 결제수단으로 환불되는지 불명확함.",
+        "after": "카드와 계좌로 안내가 엇갈립니다.",
+        "beforeCharacters": 85,
+        "afterCharacters": 18
+      },
+      {
+        "id": "NR05",
+        "stage": 1,
+        "message": 0,
+        "topic": "수단|환불",
+        "before": "상담 안내가 최종적으로 환불 수단을 '카드'로 정정 안내했으므로 환불 수단이 카드임이 제시되었고 추가 확인사항은 없다.",
+        "after": "카드라고 안내받았습니다.",
+        "beforeCharacters": 66,
+        "afterCharacters": 13
+      },
+      {
+        "id": "NR06",
+        "stage": 0,
+        "message": 0,
+        "topic": "승인",
+        "before": "상담원이 '요청하신 환불 승인을 완료했습니다.'라고 명시적으로 안내하여 승인 완료는 제시되었으므로 질문이 충족되었습니다.",
+        "after": "요청하신 환불 승인을 완료했습니다라고 안내받았습니다.",
+        "beforeCharacters": 67,
+        "afterCharacters": 29
+      },
+      {
+        "id": "NR06",
+        "stage": 0,
+        "message": 1,
+        "topic": "입금|계좌",
+        "before": "제공된 정보: 상담사는 ‘은행 계좌의 실제 입금 여부는 저희 쪽에서 알 수 없다’고 안내함. 아직 모르는 사항: 실제 입금 여부(입금 완료 여부 및 입금 시점 등).",
+        "after": "업체가 은행 계좌의 실제 입금 여부를 알 수 없다고 안내했습니다.",
+        "beforeCharacters": 92,
+        "afterCharacters": 36
+      },
+      {
+        "id": "NR07",
+        "stage": 0,
+        "message": 0,
+        "topic": "환불액|금액",
+        "before": "업체는 사은품 비용 7,000원이 차감된다는 점을 알려주었으나, 최종 환불액의 금액은 아직 산정되어 제시되지 않았다.",
+        "after": "사용한 사은품 비용 7,000원은 안내받았지만 최종 환불액은 산정되지 않았습니다.",
+        "beforeCharacters": 65,
+        "afterCharacters": 45
+      },
+      {
+        "id": "NU01",
+        "stage": 0,
+        "message": 0,
+        "topic": "일시정지|월간",
+        "before": "상담원이 \"일시정지는 연간 요금제에만 제공되며 월간 요금제에는 제공되지 않습니다.\"라고 명확히 안내했으므로 해당 질문에 대한 답이 제시되었습니다.",
+        "after": "월간 요금제에는 일시정지가 제공되지 않는다고 안내받았습니다.",
+        "beforeCharacters": 81,
+        "afterCharacters": 33
+      },
+      {
+        "id": "NU01",
+        "stage": 0,
+        "message": 1,
+        "topic": "파일|보관",
+        "before": "상담원이 \"일시정지한 계정의 파일 보관 기간은 60일입니다.\"라고 명확히 안내했으므로 해당 질문에 대한 답이 제시되었습니다.",
+        "after": "파일 보관 기간은 60일이라고 안내받았습니다.",
+        "beforeCharacters": 69,
+        "afterCharacters": 25
+      },
+      {
+        "id": "NU02",
+        "stage": 0,
+        "message": 0,
+        "topic": "최대|인원|몇 명",
+        "before": "최대 초대 인원 수치를 물었고 상담원이 '최대 초대 인원은 4명입니다.'라고 구체적 수치를 제시했으므로 질문이 충족됨.",
+        "after": "최대 초대 인원은 4명이라고 안내받았습니다.",
+        "beforeCharacters": 66,
+        "afterCharacters": 24
+      },
+      {
+        "id": "NU02",
+        "stage": 0,
+        "message": 1,
+        "topic": "수락",
+        "before": "제공된 정보: 어제 보낸 초대의 수락 여부는 '현재 확인할 수 없습니다'라고만 안내됨. 누락된 정보: 해당 초대의 실제 수락 여부(수락/거절/대기 등).",
+        "after": "업체가 어제 보낸 엄마 초대의 수락 여부를 알 수 없다고 안내했습니다.",
+        "beforeCharacters": 85,
+        "afterCharacters": 39
+      },
+      {
+        "id": "NU03",
+        "stage": 0,
+        "message": 0,
+        "topic": "예약|요금제|변경",
+        "before": "상담원은 예약 방법만 안내했으며 고객 계정에 이미 예약되어 있는지에 대한 확인은 제공하지 않았다.",
+        "after": "다음 결제일부터 적용되도록 예약하는 방법은 안내받았지만 현재 계정에 예약되어 있는지는 확인되지 않았습니다.",
+        "beforeCharacters": 54,
+        "afterCharacters": 59
+      },
+      {
+        "id": "NU04",
+        "stage": 0,
+        "message": 0,
+        "topic": "링크|발송|언제",
+        "before": "상담원이 이메일로 '2영업일 안에' 보내겠다고 명시하여 발송 방법과 기간(시점)이 제공되었으므로 요청한 값이 제시되었다.",
+        "after": "데이터 내보내기 링크를 2영업일 안에 이메일로 보내주겠다고 안내받았습니다.",
+        "beforeCharacters": 67,
+        "afterCharacters": 41
+      },
+      {
+        "id": "NU05",
+        "stage": 0,
+        "message": 0,
+        "topic": "체험|마지막|종료",
+        "before": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "after": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+        "beforeCharacters": 36,
+        "afterCharacters": 36
+      },
+      {
+        "id": "NU06",
+        "stage": 0,
+        "message": 0,
+        "topic": "할인|코드|적용",
+        "before": "상담원이 적용 여부를 확인해 안내하겠다고 기한을 제시했으므로 안내 기한은 있으나 실제 적용 여부 답변은 아직 제공되지 않았다.",
+        "after": "연간 이용권 할인 코드 적용 여부를 확인해 2026년 11월 23일까지 안내하겠다는 약속을 받았습니다.",
+        "beforeCharacters": 70,
+        "afterCharacters": 57
+      },
+      {
+        "id": "NU06",
+        "stage": 1,
+        "message": 0,
+        "topic": "할인|코드|적용",
+        "before": "상담원이 할인 코드 적용 여부를 확인해 안내하겠다고 약속했으나 이후 기한(2026년 11월 23일)을 철회하고 새 안내 날짜를 미정으로 해 실제 적용 여부는 아직 안내되지 않았다.",
+        "after": "연간 이용권 할인 코드 적용 여부를 확인해 안내하겠다는 약속을 받았습니다.",
+        "beforeCharacters": 100,
+        "afterCharacters": 41
+      }
+    ]
+  },
+  "localTests": {
+    "command": "node --test",
+    "passed": 123,
+    "failed": 0
+  },
+  "syntax": {
+    "command": "node scripts/check.mjs",
+    "files": 67
+  }
+}
