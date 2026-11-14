@@ -115,6 +115,9 @@ export function applyAnalysis(record, raw, meta = {}) {
       status = 'review'; reason = '미답변 판정과 답변 근거가 함께 제시되어 일치하지 않습니다. 인용된 안내를 직접 확인해 주세요.';
       warnings.push('미답변 판정에 답변 근거가 있어 확인 필요로 표시했습니다.');
     }
+    // No relevant guidance is the complete meaning of this status. Do not turn
+    // an unsupported model explanation into a new prerequisite for the user.
+    if (status === 'unanswered') reason = '이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.';
     const title = typeof q.title === 'string' && q.title.trim() ? q.title.slice(0, 200) : q.source.quote.slice(0, 200);
     questions.push({
       id, title: old?.manualTitle ?? title, source: old?.source ?? q.source,
@@ -179,7 +182,7 @@ export function validateDraft(raw, record) {
   const references = raw.body.match(/\b(?:[\da-f]{8}-(?:[\da-f]{4}-){3}[\da-f]{12}|_r\d+)\b/gi) ?? [];
   if (references.some(id => !sourceText.includes(id))) throw new AppError(502, '본문에 내부 메시지 ID가 포함됐습니다. 괄호 안의 UUID 등 참조값은 본문에서 제거하고 sourceMessageIds 필드에만 넣어 주세요.', 'DRAFT_REFERENCE');
   // Messages identify roles, not individual agents. Do not invent actor identity from turn order.
-  const actors = raw.body.match(/(?:동일|같은|다른(?:\s*한)?|두(?:\s*[명분])?(?:의)?|여러)\s*(?:상담원|상담사|담당자)|(?:상담원|상담사|담당자)들/g) ?? [];
+  const actors = raw.body.match(/(?:동일|같은|다른(?:\s*한)?|두(?:\s*[명분])?(?:의)?|여러)\s*(?:상담원|상담사|담당자)|(?:상담원|상담사|담당자)(?:들|\s*중\s*한\s*(?:쪽|분|명))/g) ?? [];
   if (actors.some(actor => !sourceText.replaceAll(/\s/g, '').includes(actor.replaceAll(/\s/g, '')))) throw new AppError(502, '원문에서 상담원이 같은 사람인지 다른 사람인지 확인되지 않습니다. 담당자 동일성을 추정하지 말고 이전 답변과 후속 답변으로 표현해 주세요.', 'DRAFT_ACTOR');
   const numbers = raw.body.match(/\d[\d,.]*(?:\s*(?:원|일|월|년|시간|분|%))?/g) ?? [];
   if (numbers.some(n => !sourceText.replaceAll(' ', '').includes(n.replaceAll(' ', '')))) throw new AppError(502, '원문에 없는 숫자나 기한이 초안에 포함되어 제외했습니다. 다시 작성해 주세요.', 'DRAFT_FACT');

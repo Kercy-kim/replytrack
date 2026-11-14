@@ -33,6 +33,20 @@ test('compact Korean addresses are hidden without masking amounts or promised da
   assert.equal(maskPrivate(text), text);
 });
 
+test('duration ranges survive masking while adjacent real addresses remain hidden', () => {
+  for (const duration of ['3~5영업일', '3-5영업일', '3 ~ 5 영업일', '2영업일', '3～5일', '3–5시간']) {
+    const text = `카드 취소 반영은 일반적으로 ${duration} 걸립니다.`;
+    assert.equal(maskPrivate(text), text);
+  }
+  const text = '일반적으로 3~5영업일 걸립니다. 배송지는 서울 강남구 테헤란로 123-45 101동 202호, 연락처는 010-1234-5678입니다.';
+  const envelope = privacyEnvelope(text);
+  assert(envelope.data.startsWith('일반적으로 3~5영업일 걸립니다.'));
+  assert.deepEqual(envelope.counts, { phone: 1, address: 1 });
+  assert(!envelope.data.includes('테헤란로'));
+  assert(!envelope.data.includes('010-1234-5678'));
+  assert.equal(envelope.decode(envelope.data), text);
+});
+
 test('outbound Responses input and repair feedback are masked, legacy evidence restored locally, raw images blocked', async () => {
   let payload;
   const client = new OpenAIClient({ apiKey: 'sk-test-not-a-real-credential', fetchImpl: async (_, options) => {

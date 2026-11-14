@@ -42,7 +42,7 @@ async function run({ out, only = '', variant = 'paired' }) {
     const module = file => import(pathToFileURL(resolve(root, dir, 'src', file)).href);
     const [service, store, client, domain] = await Promise.all([module('service.mjs'), module('store.mjs'), module('openai.mjs'), module('domain.mjs')]);
     modules[name] = { ...service, ...store, ...client, validateDraft: domain.validateDraft };
-    const files = [...productFiles, ...(existsSync(resolve(root, dir, 'src/handoff.mjs')) ? ['handoff.mjs'] : [])];
+    const files = [...productFiles, ...['handoff.mjs', 'privacy.mjs'].filter(f => existsSync(resolve(root, dir, 'src', f)))];
     sources[name] = Object.fromEntries(files.map(f => [f, hash(readFileSync(resolve(root, dir, 'src', f)))]));
   }
   if (variants.includes('before') && readFileSync(resolve(root, profile.baseline, 'base.txt'), 'utf8') !== dataset.baseCommit) throw Error('Baseline commit mismatch');
@@ -105,7 +105,7 @@ async function run({ out, only = '', variant = 'paired' }) {
 async function runReviewProbes(out) {
   const output = resolve(root, out);
   if (existsSync(output)) throw Error('Refusing to overwrite prior results');
-  const datasetPath = resolve(root, profile.dataset), probesPath = resolve(root, 'evals/handoff-review-probes.json');
+  const datasetPath = resolve(root, profile.dataset), probesPath = resolve(root, option('--review-probes', 'evals/handoff-review-probes.json'));
   const dataset = JSON.parse(readFileSync(datasetPath)), probes = JSON.parse(readFileSync(probesPath)).probes;
   const [{ OpenAIClient }, { draftSourceContext, draftQuestionContext }, { draftReviewSchema }, { HANDOFF_REVIEW_PROMPT }] = await Promise.all([
     import('../src/openai.mjs'), import('../src/service.mjs'), import('../src/schema.mjs'), import('../src/handoff.mjs'),
@@ -113,7 +113,7 @@ async function runReviewProbes(out) {
   const model = 'gpt-5-mini-2025-08-07', client = new OpenAIClient({ apiKey, model });
   const report = { mode: 'live handoff reviewer controls; no generation', startedAt: new Date().toISOString(), requestedModel: model,
     fixtureHash: hash(readFileSync(datasetPath)), probesHash: hash(readFileSync(probesPath)), evaluatorHash: hash(readFileSync(fileURLToPath(import.meta.url))),
-    sources: Object.fromEntries(['handoff.mjs','prompts.mjs','service.mjs','schema.mjs','openai.mjs'].map(f => [f, hash(readFileSync(resolve(root,'src',f)))])), results: [] };
+    sources: Object.fromEntries(['handoff.mjs','prompts.mjs','service.mjs','schema.mjs','openai.mjs','privacy.mjs'].map(f => [f, hash(readFileSync(resolve(root,'src',f)))])), results: [] };
   mkdirSync(dirname(output), { recursive: true });
   for (const probe of probes) {
     const record = dataset.cases.find(c => c.id === probe.caseId)?.record;
@@ -121,7 +121,7 @@ async function runReviewProbes(out) {
     const start = performance.now();
     try {
       const response = await client.structured({ name: 'replytrack_draft_review', schema: draftReviewSchema, instructions: HANDOFF_REVIEW_PROMPT, reasoningEffort: 'medium',
-        data: { kind: 'handoff', ...draftSourceContext(record), questions: draftQuestionContext(record.questions), draft: probe.draft } });
+        data: { kind: 'handoff', ...draftSourceContext(record, 'handoff'), questions: draftQuestionContext(record.questions), draft: probe.draft } });
       report.results.push({ ...probe, pass: response.data.valid === probe.expectedValid, ms: Math.round(performance.now()-start), ...response });
     } catch(e) { report.results.push({ ...probe, pass: false, error: { code: e.code, message: e.message } }); }
     writeFileSync(output, JSON.stringify(report,null,2)+'\n');
@@ -133,7 +133,7 @@ async function runReviewProbes(out) {
 }
 const runFresh = options => new Promise((resolve, reject) => {
   const target = options.control ? 'scripts/evaluate-ai.mjs' : 'scripts/evaluate-handoff.mjs';
-  const params = options.control ? ['--only','draft-probes','--model','gpt-5-mini-2025-08-07'] : ['--only',options.only || '', '--variant',options.variant || 'paired','--suite',suite];
+  const params = options.control ? ['--only','draft-probes','--model','gpt-5-mini-2025-08-07'] : ['--only',options.only || '', '--variant',options.variant || 'paired','--suite',suite,'--review-probes',options.reviewProbes || option('--review-probes','evals/handoff-review-probes.json')];
   const child = fork(resolvePath(target), ['--internal-ipc','--out',options.out,...params], { stdio: ['ignore','inherit','inherit','ipc'] });
   child.on('error', reject); child.on('exit', code => { if (code) process.exitCode = code; resolve(); }); child.send({ apiKey });
 });

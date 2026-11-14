@@ -20,13 +20,14 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const hash = value => createHash('sha256').update(value).digest('hex');
 const sourceFiles = ['evals/support-cases.mjs', 'evals/status-boundary-cases.mjs', 'evals/unseen-cases.mjs', 'evals/grade.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/domain.mjs', 'src/service.mjs', 'src/openai.mjs', 'src/analysis-changes.mjs', 'scripts/evaluate-ai.mjs'];
 sourceFiles.push('evals/performance.mjs');
+sourceFiles.push('src/privacy.mjs');
 if (existsSync(resolve(root, 'src/ai-wire.mjs'))) sourceFiles.push('src/ai-wire.mjs');
 if (existsSync(resolve(root, 'src/handoff.mjs'))) sourceFiles.push('src/handoff.mjs');
-const suites = { support: cases, boundary: boundaryCases, all: [...cases, ...boundaryCases], unseen: unseenCases };
+const suites = { support: cases, boundary: boundaryCases, all: [...cases, ...boundaryCases], unseen: unseenCases, full: [...cases, ...boundaryCases, ...unseenCases] };
 const args = process.argv.slice(2);
 const option = (name, fallback) => args.includes(name) ? args[args.indexOf(name) + 1] : fallback;
 if (args.includes('--help')) {
-  console.log('--suite support|boundary|all|unseen selects the frozen cases. all preserves the original 28 cases; unseen selects the new 20. --analysis-only skips draft generation/review. Interactive JSON also accepts suite and analysisOnly.');
+  console.log('--suite support|boundary|all|unseen|full selects the frozen cases. all preserves the original 28 cases; unseen selects the newer 20; full runs all 48. --analysis-only skips draft generation/review. Interactive JSON also accepts suite and analysisOnly.');
   console.log('Live evaluation (paid API calls): node --env-file=.env scripts/evaluate-ai.mjs --out .artifacts/eval/run.json [--only S01,R03] [--model gpt-5-mini]\n--key-stdin accepts one hidden line; --interactive keeps credentials in memory for another run after code changes. Never writes the key.\nScore saved output offline: node scripts/evaluate-ai.mjs --rescore path/to/run.json');
   process.exit(0);
 }
@@ -35,8 +36,8 @@ if (args.includes('--rescore')) {
   if (report.hashes['evals/support-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/support-cases.mjs')))) throw new Error('Dataset hash mismatch');
   const suiteCases = suites[report.suite || 'support'];
   if (!suiteCases) throw new Error('Unknown saved suite');
-  if (['boundary', 'all'].includes(report.suite) && report.hashes['evals/status-boundary-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/status-boundary-cases.mjs')))) throw new Error('Boundary dataset hash mismatch');
-  if (report.suite === 'unseen' && report.hashes['evals/unseen-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/unseen-cases.mjs')))) throw new Error('Unseen dataset hash mismatch');
+  if (['boundary', 'all', 'full'].includes(report.suite) && report.hashes['evals/status-boundary-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/status-boundary-cases.mjs')))) throw new Error('Boundary dataset hash mismatch');
+  if (['unseen', 'full'].includes(report.suite) && report.hashes['evals/unseen-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/unseen-cases.mjs')))) throw new Error('Unseen dataset hash mismatch');
   for (const result of report.results) {
     const testCase = suiteCases.find(c => c.id === result.id);
     if (!testCase) throw new Error('Unknown saved case');
@@ -104,10 +105,14 @@ async function run({ out, only = '', model = process.env.OPENAI_MODEL || 'gpt-5-
       }
       try {
         let record = service.create({ title: testCase.title, company: '가상 고객센터', messages: testCase.messages });
+        // Frozen support/boundary/unseen fixtures contain no personal data to mask.
+        // A privacy false positive must fail even when the question-state grade passes.
+        if (record.messages.some((m, i) => m.text !== testCase.messages[i].text)) throw Object.assign(new Error('Synthetic source text changed during masking'), { code: 'SOURCE_ALTERED' });
         record = await analyze(record, testCase.expected, null);
         if (testCase.next) {
           const previous = structuredClone(record);
           for (const m of testCase.next) record = service.append(record.id, { ...m, version: record.version });
+          if (record.messages.slice(previous.messages.length).some((m, i) => m.text !== testCase.next[i].text)) throw Object.assign(new Error('Synthetic follow-up text changed during masking'), { code: 'SOURCE_ALTERED' });
           record = await analyze(record, testCase.after, previous);
         }
         if (testCase.draft && !analysisOnly) {
@@ -152,7 +157,7 @@ async function runDraftProbes({ out, model }) {
     const start = performance.now();
     try {
       const response = await client.structured({ name: 'replytrack_draft_review', schema: draftReviewSchema, instructions: result.draft.kind === 'handoff' ? HANDOFF_REVIEW_PROMPT : DRAFT_REVIEW_PROMPT, reasoningEffort: 'medium',
-        data: { kind: result.draft.kind, ...draftSourceContext(record), questions: draftQuestionContext(result.draft.kind === 'followup' ? record.questions.filter(q => q.status !== 'answered') : record.questions), draft: { body: draft.body, sourceMessageIds: draft.sourceMessageIds } } });
+        data: { kind: result.draft.kind, ...draftSourceContext(record, result.draft.kind), questions: draftQuestionContext(result.draft.kind === 'followup' ? record.questions.filter(q => q.status !== 'answered') : record.questions), draft: { body: draft.body, sourceMessageIds: draft.sourceMessageIds } } });
       report.results.push({ source: `${run}/${id}`, expectedFailure, expectedValid, reasoningEffort: 'medium', pass: response.data.valid === expectedValid, ms: Math.round(performance.now() - start), ...response });
     } catch (error) { report.results.push({ source: `${run}/${id}`, expectedFailure, pass: false, error: { code: error.code, message: error.message } }); }
     writeFileSync(path, JSON.stringify(report, null, 2) + '\n');

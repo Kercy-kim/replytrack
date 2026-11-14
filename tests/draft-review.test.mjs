@@ -74,6 +74,23 @@ test('draft generation and review cannot treat AI reasoning or follow-up suggest
   } finally { t.store.close(); }
 });
 
+test('handoff generation, review and repair share only the effective pending question scope', async () => {
+  const t = setup((input, count, record) => input.name === 'replytrack_draft' ? draft(record) : { valid: count === 4, feedback: '원래 남은 질문만 유지하세요.' });
+  try {
+    const c = t.store.get(t.record.id);
+    c.questions[0].status = c.questions[0].manualStatus = 'answered';
+    const saved = t.store.save(c, c.version);
+    await t.service.draft(c.id, { ...t.input, version: saved.version, kind: 'handoff' });
+    assert.equal(t.calls.length, 4);
+    for (const call of t.calls) {
+      assert.deepEqual(call.data.pendingQuestions, [{ id: c.questions[2].id, title: c.questions[2].title }]);
+      assert.equal(call.data.questions.length, 3); // Received answers remain available for the factual recap.
+      assert.deepEqual(call.data.messages, draftSourceContext(c).messages);
+    }
+    assert.equal(draftSourceContext(c, 'followup').pendingQuestions, undefined);
+  } finally { t.store.close(); }
+});
+
 test('draft sources omit metadata dates and unknown confirmation while preserving explicit user confirmation', () => {
   const record = createDemo(), before = structuredClone(record);
   record.promises[0].confirmedAt = '2026-11-14T00:00:00Z';

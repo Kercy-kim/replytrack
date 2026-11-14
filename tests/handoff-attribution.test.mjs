@@ -84,6 +84,26 @@ test('indirect attribution does not rewrite an action, another actor clause, sou
   assert.equal(normalizeHandoffAttribution(plural,c),plural);
 });
 
+test('paired side attribution removes invented staff identities while preserving the guidance and guards',()=>{
+  const body='해지한 제 계정의 다음 달 청구 여부를 문의했습니다. 상담원 중 한 쪽은 다음 달 청구가 없다고 안내했고 다른 쪽은 청구된다고 안내하여 안내가 상충하므로 확인이 필요합니다.';
+  const candidate={...raw,body};
+  assert.throws(()=>validateDraft(candidate,record),{code:'DRAFT_ACTOR'});
+  const normalized=normalizeHandoffAttribution(candidate,record);
+  assert.equal(normalized.body,body.replace('상담원 중 한 쪽은','한 답변에서는').replace('다른 쪽은','다른 답변에서는'));
+  assert.deepEqual(normalized.sourceMessageIds,candidate.sourceMessageIds);
+  assert.equal(validateDraft(normalized,record).body,normalized.body);
+  const actualAgents=structuredClone(record); actualAgents.messages[0].text+=' 상담원 중 한 쪽이 먼저 답변했습니다.';
+  assert.equal(normalizeHandoffAttribution(candidate,actualAgents),candidate);
+  for(const unsafe of [
+    {...candidate,sourceMessageIds:raw.sourceMessageIds.slice(0,2)},
+    {...candidate,sourceMessageIds:['missing']},
+    {...candidate,body:'상담원 중 한 쪽은 환불했고 다른 쪽은 결제를 취소했습니다.'},
+    {...candidate,body:'상담원 중 한 분에게 다시 확인해 주세요.'},
+  ]) assert.equal(normalizeHandoffAttribution(unsafe,record),unsafe);
+  assert.throws(()=>validateDraft({...candidate,body:'상담원 중 한 분에게 다시 확인해 주세요.'},record),{code:'DRAFT_ACTOR'});
+  assert.throws(()=>validateDraft(normalizeHandoffAttribution({...candidate,body:body+' 금액은 999999원입니다.'},record),record),{code:'DRAFT_FACT'});
+});
+
 test('handoff attribution uses the original full-context medium review without a regeneration',async()=>{
   const store=new CaseStore(':memory:'), c=store.create({...structuredClone(record),drafts:{}}), calls=[];
   const service=new ReplyTrack(store,{async structured(input){calls.push(input);return {data:input.name==='replytrack_draft'?structuredClone(raw):{valid:true,feedback:''},model:'fixture'};}});
