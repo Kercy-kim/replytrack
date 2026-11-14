@@ -24,9 +24,12 @@ node --env-file=.env scripts/evaluate-ai.mjs --out .artifacts/eval/new-run.json
 node --env-file=.env scripts/evaluate-ai.mjs --only R03 --out .artifacts/eval/r03.json
 node scripts/evaluate-ai.mjs --rescore evals/results/baseline.json
 node --env-file=.env scripts/evaluate-ai.mjs --only draft-probes --out .artifacts/eval/probes.json
+node --env-file=.env scripts/evaluate-ai.mjs --suite all --analysis-only --out .artifacts/eval/status-boundaries.json
 ```
 
 `draft-probes`는 저장된 실제 실패 출력 3개(질문 누락, 담당자 추정, 상담원 관점)를 현재 제품의 검토 AI에 다시 넣는 부정 사례 검사다. 새로운 상담 3건이나 초안 생성 3건으로 세지 않는다. 응답은 실제 API로 받으며 `valid=false`여야 통과한다. 다른 평가 모드와 결과 형식이 다르므로 `--rescore` 대상은 아니다.
+
+상태 기준 후속 평가는 `--suite support`(원래 20건, 기본값), `--suite boundary`(추가 경계 8건), `--suite all`(28건)을 지원한다. `--analysis-only`는 변경 대상인 분석만 평가하며 초안을 생성하지 않는다. 전체 28건은 후속 답변을 포함해 31회 분석 호출이다. 원래 정답은 수정하지 않았고 추가 자료는 `status-boundary-cases.mjs`에 별도 보관한다. Interactive JSON에서도 `suite`, `analysisOnly`를 사용할 수 있다.
 
 실행 중 각 케이스 결과를 저장하며 기존 결과 파일은 덮어쓰지 않는다. API 오류 자동 재시도는 하지 않으며 제품의 초안 수정만 한 번 허용한다. 동시 요청은 최대 2개다. 결과에는 데이터/프롬프트/스키마/구현의 SHA-256, 기반 커밋, 실제 반환 모델, 토큰 수, 호출 지연 시간, 구조화된 원본 출력, 검증 후 기록이 들어간다. 실패한 중간 구성도 `results/iteration-*.json`에 보존한다. 저장된 대화와 AI 출력도 공개 전에 검토해야 한다. 실제 사용자 대화로 데이터셋을 교체한 경우 결과를 커밋하면 안 된다.
 

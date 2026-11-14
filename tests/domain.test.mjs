@@ -63,6 +63,25 @@ test('waiting without a linked future commitment becomes review, not an invented
   assert.equal(c.promises.length, 0);
   assert(c.warnings.some(w => w.includes('답변 대기')));
 });
+test('unanswered with cited agent guidance is flagged without discarding the source or comparison', () => {
+  const c = createDemo(), raw = demoAnalysis(c), originalId = c.questions[2].id;
+  const evidence = { messageId: c.messages[1].id, quote: raw.questions[0].evidence[0].quote };
+  raw.questions[2].status = 'unanswered'; raw.questions[2].evidence = [evidence];
+  applyAnalysis(c, raw);
+  const q = c.questions.find(q => q.id === originalId);
+  assert.equal(q.status, 'review'); assert.equal(q.aiStatus, 'review');
+  assert.deepEqual(q.evidence, [evidence]);
+  assert(c.warnings.some(w => w.includes('미답변')));
+  const change = c.analysis.comparison.questions.find(q => q.id === originalId);
+  assert.equal(change.before.status, 'unanswered'); assert.equal(change.after.status, 'review');
+});
+test('an inconsistent unanswered AI label cannot overwrite a manual status', () => {
+  const c = createDemo(), raw = demoAnalysis(c);
+  c.questions[2].manualStatus = 'partial'; c.questions[2].status = 'partial';
+  raw.questions[2].status = 'unanswered'; raw.questions[2].evidence = raw.questions[0].evidence;
+  applyAnalysis(c, raw);
+  assert.equal(c.questions[2].status, 'partial'); assert.equal(c.questions[2].aiStatus, 'review');
+});
 test('waiting requires the promise to be linked to that question and its cited reply', () => {
   const valid = createDemo(); applyAnalysis(valid, demoAnalysis(valid));
   assert.equal(valid.questions[0].status, 'waiting');

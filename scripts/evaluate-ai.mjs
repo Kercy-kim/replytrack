@@ -5,6 +5,7 @@ import { execFileSync, fork } from 'node:child_process';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { cases } from '../evals/support-cases.mjs';
+import { boundaryCases } from '../evals/status-boundary-cases.mjs';
 import { grade, summarize } from '../evals/grade.mjs';
 import { OpenAIClient } from '../src/openai.mjs';
 import { CaseStore } from '../src/store.mjs';
@@ -14,18 +15,24 @@ import { draftReviewSchema } from '../src/schema.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const hash = value => createHash('sha256').update(value).digest('hex');
-const sourceFiles = ['evals/support-cases.mjs', 'evals/grade.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/domain.mjs', 'src/service.mjs', 'src/openai.mjs', 'src/analysis-changes.mjs', 'scripts/evaluate-ai.mjs'];
+const sourceFiles = ['evals/support-cases.mjs', 'evals/status-boundary-cases.mjs', 'evals/grade.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/domain.mjs', 'src/service.mjs', 'src/openai.mjs', 'src/analysis-changes.mjs', 'scripts/evaluate-ai.mjs'];
+const suites = { support: cases, boundary: boundaryCases, all: [...cases, ...boundaryCases] };
 const args = process.argv.slice(2);
 const option = (name, fallback) => args.includes(name) ? args[args.indexOf(name) + 1] : fallback;
 if (args.includes('--help')) {
+  console.log('--suite support|boundary|all selects the frozen cases. --analysis-only skips draft generation/review. Interactive JSON also accepts suite and analysisOnly.');
   console.log('Live evaluation (paid API calls): node --env-file=.env scripts/evaluate-ai.mjs --out .artifacts/eval/run.json [--only S01,R03] [--model gpt-5-mini]\n--key-stdin accepts one hidden line; --interactive keeps credentials in memory for another run after code changes. Never writes the key.\nScore saved output offline: node scripts/evaluate-ai.mjs --rescore path/to/run.json');
   process.exit(0);
 }
 if (args.includes('--rescore')) {
   const report = JSON.parse(readFileSync(option('--rescore'), 'utf8'));
   if (report.hashes['evals/support-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/support-cases.mjs')))) throw new Error('Dataset hash mismatch');
+  const suiteCases = suites[report.suite || 'support'];
+  if (!suiteCases) throw new Error('Unknown saved suite');
+  if (report.suite && report.suite !== 'support' && report.hashes['evals/status-boundary-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/status-boundary-cases.mjs')))) throw new Error('Boundary dataset hash mismatch');
   for (const result of report.results) {
-    const testCase = cases.find(c => c.id === result.id);
+    const testCase = suiteCases.find(c => c.id === result.id);
+    if (!testCase) throw new Error('Unknown saved case');
     result.stages.forEach((stage, i) => { if (stage.record) stage.grade = grade(stage.record, i ? testCase.after : testCase.expected, i ? result.stages[i-1].record : null); });
   }
   console.log(JSON.stringify(summarize(report.results), null, 2));
@@ -48,13 +55,15 @@ if (args.includes('--internal-ipc')) {
 }
 if (!apiKey) throw new Error('Set OPENAI_API_KEY or use --key-stdin. No calls made.');
 
-async function run({ out, only = '', model = process.env.OPENAI_MODEL || 'gpt-5-mini' }) {
+async function run({ out, only = '', model = process.env.OPENAI_MODEL || 'gpt-5-mini', suite = 'support', analysisOnly = false }) {
   if (only === 'draft-probes') return runDraftProbes({ out, model });
-  const selected = only ? cases.filter(c => only.split(',').includes(c.id)) : cases;
+  const suiteCases = suites[suite];
+  if (!suiteCases) throw new Error('Unknown suite');
+  const selected = only ? suiteCases.filter(c => only.split(',').includes(c.id)) : suiteCases;
   if (!selected.length || (only && selected.length !== new Set(only.split(',')).size)) throw new Error('Unknown or empty case selection');
   const outputPath = resolve(root, out);
   if (existsSync(outputPath)) throw new Error('Output already exists; use a new filename to preserve prior results');
-  const report = { formatVersion: 1, startedAt: new Date().toISOString(), mode: 'live OpenAI Responses API', requestedModel: model,
+  const report = { formatVersion: 1, startedAt: new Date().toISOString(), mode: 'live OpenAI Responses API', requestedModel: model, suite, analysisOnly,
     baseCommit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
     hashes: Object.fromEntries(sourceFiles.map(file => [file, hash(readFileSync(resolve(root, file)))])), results: [] };
   mkdirSync(dirname(outputPath), { recursive: true });
@@ -91,7 +100,7 @@ async function run({ out, only = '', model = process.env.OPENAI_MODEL || 'gpt-5-
           for (const m of testCase.next) record = service.append(record.id, { ...m, version: record.version });
           record = await analyze(record, testCase.after, previous);
         }
-        if (testCase.draft) {
+        if (testCase.draft && !analysisOnly) {
           const selectedQuestions = record.questions.filter(q => q.status !== 'answered');
           try {
             record = await service.draft(record.id, { version: record.version, kind: testCase.draft, questionIds: selectedQuestions.map(q => q.id) });
@@ -100,7 +109,7 @@ async function run({ out, only = '', model = process.env.OPENAI_MODEL || 'gpt-5-
         }
       } catch (error) { result.error = { code: error.code || 'UNKNOWN', message: error.message }; }
       finally { store.close(); }
-      report.results.push(result); report.results.sort((a,b) => cases.findIndex(c => c.id === a.id) - cases.findIndex(c => c.id === b.id)); save();
+      report.results.push(result); report.results.sort((a,b) => suiteCases.findIndex(c => c.id === a.id) - suiteCases.findIndex(c => c.id === b.id)); save();
       console.log(`${testCase.id}: ${result.error ? result.error.code : result.stages.every(s => s.grade.pass) ? 'PASS' : 'REVIEW'} (${report.results.length}/${selected.length})`);
       if (result.error?.code === 'AI_AUTH' || result.error?.code === 'AI_LIMIT') cursor = selected.length;
     }
@@ -136,13 +145,13 @@ async function runDraftProbes({ out, model }) {
   if (report.results.some(r => !r.pass)) process.exitCode = 1;
 }
 const runFresh = options => new Promise((resolve, reject) => {
-  const child = fork(fileURLToPath(import.meta.url), ['--internal-ipc', '--out', options.out, '--only', options.only || '', '--model', options.model || process.env.OPENAI_MODEL || 'gpt-5-mini'], { stdio: ['ignore', 'inherit', 'inherit', 'ipc'] });
+  const child = fork(fileURLToPath(import.meta.url), ['--internal-ipc', '--out', options.out, '--only', options.only || '', '--model', options.model || process.env.OPENAI_MODEL || 'gpt-5-mini', '--suite', options.suite || 'support', ...(options.analysisOnly ? ['--analysis-only'] : [])], { stdio: ['ignore', 'inherit', 'inherit', 'ipc'] });
   child.on('error', reject);
   child.on('exit', code => { if (code) process.exitCode = code; resolve(); });
   child.send({ apiKey });
 });
 const execute = args.includes('--interactive') ? runFresh : run;
-await execute({ out: option('--out', '.artifacts/eval/run.json'), only: option('--only', ''), model: option('--model', process.env.OPENAI_MODEL || 'gpt-5-mini') });
+await execute({ out: option('--out', '.artifacts/eval/run.json'), only: option('--only', ''), model: option('--model', process.env.OPENAI_MODEL || 'gpt-5-mini'), suite: option('--suite', 'support'), analysisOnly: args.includes('--analysis-only') });
 if (args.includes('--interactive')) {
   console.log('Ready for next run: JSON with out/only/model, or quit.');
   while (true) {
