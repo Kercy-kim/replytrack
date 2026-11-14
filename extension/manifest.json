@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "ReplyTrack — 상담 확인표",
+  "version": "0.1.0",
+  "description": "선택한 고객센터 대화의 빠진 답변을 확인하고, 남은 질문으로 재문의 초안을 만듭니다.",
+  "minimum_chrome_version": "116",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4VkSnwA7Swc9jqueppx6rSx4Yu2g4APhQ0tuzeHUoPUAGXCfxMqb8WhbmKMXBNk8sSnePygxqGU73VhUDrf780MQlEZE57pxsaMxntCsfKKvEwEFdMTF4b0RvfCvtjeYCNqfXcxt2EWRNJ/qNrVrbmhMN+DjFBtqzpb1Jsd+QDHEzaDYM+gTzC3TC+LS9dzY2rMgZv02rpmTNuB30lFT99vp18BMxCNlUHZrLCN3T+y4A34gJejk99ffr0iaeja4u+POhBh3Az+nlDTlSKNoxJmM+lUHCWS7JjcDK1epHQ4efruXKe9BdULPxAOT3y+BcgKweekhdFBpxcMC9fpsdQIDAQAB",
+  "permissions": ["activeTab", "scripting", "sidePanel", "storage", "contextMenus", "clipboardWrite"],
+  "host_permissions": ["http://127.0.0.1/*"],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "action": { "default_title": "ReplyTrack에서 선택한 대화 가져오기" },
+  "side_panel": { "default_path": "sidepanel.html" },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; connect-src http://127.0.0.1:3100; base-uri 'none'; form-action 'none'"
+  }
+}

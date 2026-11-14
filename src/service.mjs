@@ -18,6 +18,31 @@ export class ReplyTrack {
   }
   create(input) { return this.store.create(newCase(input)); }
   demo() { return this.store.create(createDemo()); }
+  metadata(id, input) {
+    const c = this.getVersion(id, input.version);
+    assert(['title', 'company', 'archived'].some(key => input[key] !== undefined), '수정할 내용을 입력해 주세요.');
+    if (input.title !== undefined) c.title = cleanText(input.title, 100, '상담 제목');
+    if (input.company !== undefined) {
+      assert(typeof input.company === 'string' && input.company.length <= 60, '업체명은 60자까지 입력할 수 있습니다.');
+      c.company = input.company.trim() || '고객센터';
+    }
+    if (input.archived !== undefined) {
+      assert(typeof input.archived === 'boolean', '보관 여부를 확인해 주세요.');
+      c.archivedAt = input.archived ? (c.archivedAt || new Date().toISOString()) : null;
+    }
+    history(c, 'metadata', input.archived === true ? '상담을 보관했어요' : input.archived === false ? '상담을 진행 목록으로 복원했어요' : '상담 정보를 수정했어요');
+    return this.store.save(c, input.version);
+  }
+  saveDraft(id, kind, input) {
+    const c = this.getVersion(id, input.version);
+    assert(['followup', 'handoff'].includes(kind) && c.drafts[kind], '먼저 초안을 생성해 주세요.', 404);
+    assert(typeof input.body === 'string' && input.body.trim() && input.body.length <= 8000, '초안은 1~8,000자로 입력해 주세요.');
+    // Preserve generated text and its evidence; user edits are not AI-verified facts.
+    c.drafts[kind].editedBody = input.body;
+    c.drafts[kind].editedAt = new Date().toISOString();
+    history(c, 'draft', kind === 'followup' ? '편집한 재문의 초안을 저장했어요' : '편집한 인계 요약을 저장했어요');
+    return this.store.save(c, input.version);
+  }
   advance(id, version) {
     const c = this.getVersion(id, version);
     assert(c.mode === 'demo', '예제 상담에서만 사용할 수 있습니다.');

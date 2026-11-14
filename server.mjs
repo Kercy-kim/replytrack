@@ -7,10 +7,12 @@ import { CaseStore } from './src/store.mjs';
 import { OpenAIClient } from './src/openai.mjs';
 import { ReplyTrack } from './src/service.mjs';
 import { AppError, assert } from './src/errors.mjs';
+import { allowExtensionRequest } from './src/extension-access.mjs';
 
 const root = dirname(fileURLToPath(import.meta.url));
 try { process.loadEnvFile(join(root, '.env')); } catch (error) { if (error.code !== 'ENOENT') throw error; }
 const staticFiles = new Map([['/', ['index.html', 'text/html']], ['/app.js', ['app.js', 'text/javascript']], ['/styles.css', ['styles.css', 'text/css']], ['/favicon.svg', ['favicon.svg', 'image/svg+xml']]]);
+staticFiles.set('/workspace.js', ['workspace.js', 'text/javascript']);
 
 export function createApp({ store, ai } = {}) {
   const db = store ?? new CaseStore(resolve(root, process.env.REPLYTRACK_DATA_DIR || 'data', 'replytrack.sqlite'));
@@ -26,8 +28,10 @@ export function createApp({ store, ai } = {}) {
       const host = req.headers.host;
       const port = server.address()?.port;
       assert([`localhost:${port}`, `127.0.0.1:${port}`].includes(host), '로컬 주소로 접속해 주세요.', 403);
-      if (req.headers.origin) assert(req.headers.origin === `http://${host}`, '이 요청의 출처를 허용하지 않습니다.', 403);
       const path = new URL(req.url, `http://${host}`).pathname;
+      if (req.headers.origin && req.headers.origin !== `http://${host}`) {
+        if (allowExtensionRequest(req, res, path)) return;
+      }
       const method = req.method;
       let body = {};
       if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
@@ -48,6 +52,7 @@ export function createApp({ store, ai } = {}) {
       if (match) {
         const [, id, action, item] = match;
         if (!action && method === 'GET') return json(db.get(id));
+        if (!action && method === 'PATCH') return json(service.metadata(id, body));
         if (!action && method === 'DELETE') { service.getVersion(id, body.version); db.delete(id, body.version); return json({ deleted: true }); }
         if (action === 'analyze' && method === 'POST') return json(await service.analyze(id, body.version));
         if (action === 'messages' && method === 'POST') return json(service.append(id, body));
@@ -55,6 +60,7 @@ export function createApp({ store, ai } = {}) {
         if (action === 'questions' && item && method === 'PATCH') return json(service.question(id, item, body));
         if (action === 'promises' && item && method === 'PATCH') return json(service.promise(id, item, body));
         if (action === 'drafts' && method === 'POST') return json(await service.draft(id, body));
+        if (action === 'drafts' && item && method === 'PATCH') return json(service.saveDraft(id, item, body));
       }
       if (method === 'GET' && staticFiles.has(path)) {
         const [file, mime] = staticFiles.get(path);
