@@ -38,6 +38,8 @@ async function api(path, method = 'GET', data) {
 async function work(label, fn) {
   if (state.busy) return;
   const focus = focusBookmark();
+  const previousCaseId = state.current?.id;
+  const previousAnalysisId = state.current?.history.find(h => h.type === 'analysis')?.id;
   state.busy = label; state.error = ''; render(); setModalBusy(true);
   try { await fn(); }
   catch (e) {
@@ -47,7 +49,13 @@ async function work(label, fn) {
       await loadCase(state.current.id).catch(() => {});
       state.error += ' 편집 중인 초안은 화면에 유지했어요. 최신 내용과 비교한 뒤 다시 저장해 주세요.';
     }
-  } finally { state.busy = ''; render(); setModalBusy(false); restoreFocus(focus); }
+  } finally {
+    state.busy = ''; render(); setModalBusy(false); restoreFocus(focus);
+    if (!state.error && state.current?.id === previousCaseId && state.current?.history.find(h => h.type === 'analysis')?.id !== previousAnalysisId && $('#analysis-changes')) {
+      $('#comparison-heading').focus({ preventScroll: true });
+      $('#analysis-changes').scrollIntoView({ block: 'start', behavior: 'instant' });
+    }
+  }
 }
 function setModalBusy(busy) {
   $('#modal').querySelectorAll('button, input, select, textarea').forEach(el => { el.disabled = busy; });
@@ -150,6 +158,39 @@ function deadlineLabel(p) {
   const text = {overdue:'기한 지남 · 실제 처리 확인 필요',today:'오늘까지 · 실제 처리 확인 필요',upcoming:'기한 예정',unknown:'기한 미정',confirmed:'직접 확인 완료'}[status];
   return `<span class="deadline-chip ${status}">${text}</span>`;
 }
+const comparisonTitles = { reply: '이번 답변으로 달라진 점', messages: '추가 대화로 달라진 점', reanalysis: '같은 원문 재분석 결과' };
+const changeStatus = status => `<strong class="change-state">${esc(names[status] || '확인 필요')}</strong>`;
+const promiseStatus = state => state === 'reported' ? '업체의 처리 안내' : '처리 약속';
+const changeDeadline = p => p.dueAt ? `${p.dueAt}까지` : p.dueText ? `기한 미정 · ${p.dueText}` : '기한 미정';
+function changeTransition(label, before, after) {
+  return `<div class="change-field"><p>${esc(label)}</p><div class="change-values"><span><small>이전</small>${before}</span>${icon('arrow')}<span><small>이번 분석</small>${after}</span></div></div>`;
+}
+function changeEvidence(change) {
+  return `<div class="change-evidence">${change.evidenceMessageIds.map((id, i) => button('source', change.evidenceMessageIds.length > 1 ? `근거 원문 ${i + 1}` : '근거 원문', 'text', 'link', `data-id="${esc(id)}" aria-label="${esc(change.title)} 변경 근거 원문 ${i + 1} 보기"`)).join('')}</div>`;
+}
+function comparisonContents(comparison) {
+  if (!comparison.questions.length && !comparison.promises.length) return '<p class="changes-empty">질문 상태와 처리 약속에 바뀐 항목이 없어요. 원문 근거와 판단 설명은 갱신될 수 있어요.</p>';
+  const questions = comparison.questions.map(q => `<li><h4>${esc(q.title)}${!q.before ? '<span class="change-added">새 질문</span>' : ''}</h4>
+    ${!q.before || q.before.status !== q.after.status ? changeTransition('질문 상태', q.before ? changeStatus(q.before.status) : '등록 전', changeStatus(q.after.status)) : `<p class="change-note">직접 지정한 상태: ${changeStatus(q.after.status)} 유지</p>`}
+    ${q.after.manualStatus && q.before && q.before.aiStatus !== q.after.aiStatus ? changeTransition('AI 제안 · 지정한 상태에 자동 적용하지 않아요', changeStatus(q.before.aiStatus), changeStatus(q.after.aiStatus)) : ''}${changeEvidence(q)}</li>`).join('');
+  const promises = comparison.promises.map(p => `<li><h4>${esc(p.title)}${!p.before ? '<span class="change-added">새 약속</span>' : ''}</h4>
+    ${p.fields.includes('title') ? changeTransition('약속 내용', esc(p.before.title), esc(p.after.title)) : ''}
+    ${!p.before || p.fields.includes('state') ? changeTransition('업체 안내', p.before ? esc(promiseStatus(p.before.state)) : '등록 전', esc(promiseStatus(p.after.state))) : ''}
+    ${!p.before || p.fields.includes('deadline') ? changeTransition('약속 기한', p.before ? esc(changeDeadline(p.before)) : '등록 전', esc(changeDeadline(p.after))) : ''}
+    <p class="change-note">${p.after.confirmedAt ? '분석 당시 사용자 확인 완료 상태를 유지했어요.' : '분석 당시 직접 확인 전이에요. 업체 안내만으로 실제 처리 완료가 되지는 않아요.'}</p>${changeEvidence(p)}</li>`).join('');
+  return `<div class="changes-grid"><div><h3>질문 변화 <span>${comparison.questions.length}</span></h3>${questions ? `<ul class="change-list">${questions}</ul>` : '<p class="change-note">질문 상태 변화 없음</p>'}</div><div><h3>약속 변화 <span>${comparison.promises.length}</span></h3>${promises ? `<ul class="change-list">${promises}</ul>` : '<p class="change-note">처리 약속 변화 없음</p>'}</div></div>`;
+}
+function comparisonPanel(c) {
+  const comparison = c.analysis?.comparison;
+  if (!comparison || comparison.kind === 'initial') return '';
+  const pending = c.analyzedMessageCount < c.messages.length;
+  const analysisIndex = c.history.findIndex(h => h.type === 'analysis');
+  const manuallyChanged = (analysisIndex < 0 ? c.history : c.history.slice(0, analysisIndex)).some(h => ['correction', 'confirmation'].includes(h.type));
+  return `<section id="analysis-changes" class="analysis-changes" aria-label="분석 전후 비교"><header class="changes-heading"><div><h2 id="comparison-heading" tabindex="-1">${pending ? '이전 분석에서 달라진 점' : comparisonTitles[comparison.kind]}</h2><p><time>${date(comparison.at)}</time> 분석 기준${comparison.messageIds.length ? ` · 추가 메시지 ${comparison.messageIds.length}개 반영` : ' · 추가 메시지 없음'}</p></div><p class="changes-count">질문 ${comparison.questions.length}건 · 약속 ${comparison.promises.length}건</p></header>
+    ${pending ? '<p class="changes-notice">새 메시지는 아직 분석 전이에요. 아래는 마지막으로 성공한 분석의 비교입니다.</p>' : ''}
+    ${manuallyChanged ? '<p class="changes-notice">이 비교 이후 직접 수정한 내용이 있어요. 현재 상태는 질문 확인표와 변경 이력에서 확인해 주세요.</p>' : ''}
+    ${comparisonContents(comparison)}</section>`;
+}
 function detail(c) {
   const unresolved = c.questions.filter(q => q.status !== 'answered').length;
   const answered = c.questions.length - unresolved;
@@ -159,6 +200,7 @@ function detail(c) {
     ${c.mode === 'demo' ? `<div class="demo-banner"><span>${icon('spark')}<strong>예제 상담</strong> 준비된 가상 데이터예요. AI API를 호출하지 않아요.</span>${c.demoStep < 2 ? button('demo-next', c.demoStep === 0 ? '예제 답변 추가하기' : '견적 도착 시연하기', 'text', 'arrow') : '<span class="demo-complete">모든 예제 답변을 확인했어요</span>'}</div>` : ''}
     ${pending ? `<div class="pending-banner"><span>새 메시지가 저장됐어요. 분석하면 질문과 약속에 반영돼요.</span>${button('analyze', c.questions.length ? '새 답변 분석' : '질문 분석하기', 'primary compact', 'spark')}</div>` : ''}
     <section class="stats" aria-label="상담 현황"><div><span class="stat-icon neutral">${icon('chat')}</span><span>전체 질문<strong>${c.questions.length}<small>개</small></strong></span></div><div><span class="stat-icon green">${icon('check')}</span><span>답변 받은 질문<strong>${answered}<small>개</small></strong></span></div><div><span class="stat-icon orange">${icon('clock')}</span><span>아직 남은 질문<strong>${unresolved}<small>개</small></strong></span></div><div><span class="stat-icon violet">${icon('file')}</span><span>확인할 처리 약속<strong>${c.promises.filter(p => !p.confirmedAt).length}<small>개</small></strong></span></div></section>
+    ${comparisonPanel(c)}
     <div class="mobile-switch" role="group" aria-label="보기 선택"><button data-action="mobile" data-value="source" class="${state.mobile === 'source' ? 'active' : ''}">상담 원문</button><button data-action="mobile" data-value="analysis" class="${state.mobile === 'analysis' ? 'active' : ''}">질문 확인표</button></div>
     <div class="workspace mobile-${state.mobile}"><section class="source-panel panel"><div class="panel-header"><div>${icon('chat')}<h2>상담 원문</h2><span class="count">${c.messages.length}</span></div><span class="subtle">${c.mode === 'demo' ? '가상 상담' : '검토한 텍스트'}</span></div><div class="source-messages">${c.messages.map(m => `<article class="message ${m.role}" id="message-${m.id}"><div class="message-meta"><span class="speaker-avatar">${m.role === 'customer' ? '나' : 'CS'}</span><strong>${m.role === 'customer' ? '나' : esc(c.company)}</strong><time>${date(m.sentAt)}</time></div><div class="message-text">${esc(m.text)}</div></article>`).join('')}</div><div class="source-bottom"><span>${icon('link')}근거를 누르면 해당 원문으로 이동해요</span>${c.mode === 'live' ? button('append', '새 답변 / 질문 추가', 'secondary wide', 'plus') : ''}</div></section>
     <section class="analysis-panel"><div class="tabs" role="tablist" aria-label="분석 보기">${[['questions','질문 확인표', c.questions.length],['drafts','재문의 · 인계', null],['history','변경 이력', null]].map(([id,label,count]) => `<button id="tab-${id}" role="tab" aria-controls="panel-${id}" tabindex="${state.tab === id ? 0 : -1}" ${state.busy ? 'disabled' : ''} aria-selected="${state.tab === id}" class="${state.tab === id ? 'active' : ''}" data-action="tab" data-value="${id}">${label}${count !== null ? `<span>${count}</span>` : ''}</button>`).join('')}</div>${c.warnings.map(w => `<div class="warning-note">${esc(w)}</div>`).join('')}<div id="panel-${state.tab}" role="tabpanel" aria-labelledby="tab-${state.tab}" tabindex="0">${state.tab === 'questions' ? questionPanel(c) : state.tab === 'drafts' ? draftPanel(c) : historyPanel(c)}</div></section></div>`;
@@ -186,7 +228,7 @@ function draftStatus(kind) {
   return dirtyKinds().includes(kind) ? '저장하지 않은 편집 내용' : draft?.editedAt ? `${date(draft.editedAt)} 편집 저장됨` : '생성 초안 저장됨';
 }
 function historyPanel(c) {
-  return `<div class="section-tools"><div><h2>상담이 이어진 발자취</h2><p>새 답변, AI 분석, 직접 확인한 내용을 기록해요.</p></div></div><ol class="timeline">${c.history.map(h => `<li><span class="timeline-dot">${icon(h.type === 'confirmation' ? 'check' : h.type === 'analysis' ? 'spark' : 'chat')}</span><div><time>${date(h.at)}</time><h3>${esc(h.label)}</h3>${h.details ? `<p>${esc(h.details)}</p>` : ''}</div></li>`).join('')}</ol>`;
+  return `<div class="section-tools"><div><h2>상담이 이어진 발자취</h2><p>새 답변, AI 분석, 직접 확인한 내용을 기록해요.</p></div></div><ol class="timeline">${c.history.map(h => `<li><span class="timeline-dot">${icon(h.type === 'confirmation' ? 'check' : h.type === 'analysis' ? 'spark' : 'chat')}</span><div><time>${date(h.at)}</time><h3>${esc(h.label)}</h3>${h.details ? `<p>${esc(h.details)}</p>` : ''}${h.comparison && h.comparison.kind !== 'initial' ? `<details class="history-comparison"><summary>반영 전후 비교 보기 · 질문 ${h.comparison.questions.length}건 · 약속 ${h.comparison.promises.length}건</summary><p class="change-note">이 분석 당시의 기록이에요. 현재 상태와 다를 수 있어요.</p>${comparisonContents(h.comparison)}</details>` : ''}</div></li>`).join('')}</ol>`;
 }
 function showModal(title, content, wide = false) {
   const modal = $('#modal'); modal.className = wide ? 'modal wide-modal' : 'modal';

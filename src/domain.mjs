@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { assert, AppError } from './errors.mjs';
+import { compareAnalysis } from './analysis-changes.mjs';
 
 export const statuses = ['unanswered', 'partial', 'waiting', 'answered', 'review'];
 export const statusNames = { unanswered: '미답변', partial: '부분 답변', waiting: '답변 대기', answered: '답변 받음', review: '확인 필요' };
@@ -19,8 +20,10 @@ export function message(input) {
   return { id: uid(), role: input.role, text, sentAt };
 }
 export function history(record, type, label, details = '') {
-  record.history.unshift({ id: uid(), at: new Date().toISOString(), type, label, details });
+  const entry = { id: uid(), at: new Date().toISOString(), type, label, details };
+  record.history.unshift(entry);
   record.history = record.history.slice(0, 150);
+  return entry;
 }
 export function newCase(input, mode = 'live') {
   assert(Array.isArray(input.messages) && input.messages.length > 0 && input.messages.length <= 60, '상담 메시지를 1~60개 등록해 주세요.');
@@ -104,15 +107,18 @@ export function applyAnalysis(record, raw, meta = {}) {
   }
   // Omission must never erase a user's confirmation or a previous commitment.
   for (const p of record.promises) if (!promises.some(x => x.id === p.id)) promises.push(p);
+  const comparison = compareAnalysis(record, questions, promises, new Date().toISOString());
   const changes = questions.map(q => {
     const old = oldQuestions.find(p => p.id === q.id);
     return old && old.status !== q.status ? `${q.title}: ${statusNames[old.status]} → ${statusNames[q.status]}` : null;
   }).filter(Boolean);
   Object.assign(record, { questions, promises, summary: typeof raw.summary === 'string' ? raw.summary.slice(0, 2000) : '',
     warnings: [...new Set(warnings)], analyzedMessageCount: record.messages.length, drafts: {},
-    analysis: { at: new Date().toISOString(), ...meta },
+    analysis: { ...meta, at: comparison.at, comparison },
   });
-  history(record, 'analysis', oldQuestions.length ? '새 답변을 확인표에 반영했어요' : '질문별 확인표가 준비됐어요', changes.join('\n') || `${questions.length}개 질문 · ${promises.length}개 처리 약속`);
+  const label = comparison.kind === 'initial' ? '질문별 확인표가 준비됐어요' : comparison.kind === 'reanalysis' ? '같은 원문을 다시 분석했어요' : comparison.kind === 'reply' ? '새 답변을 확인표에 반영했어요' : '추가 대화를 확인표에 반영했어요';
+  const entry = history(record, 'analysis', label, comparison.kind === 'initial' ? `${questions.length}개 질문 · ${promises.length}개 처리 약속` : changes.join('\n') || `질문 변화 ${comparison.questions.length}건 · 약속 변화 ${comparison.promises.length}건`);
+  entry.comparison = comparison;
   return record;
 }
 export function validateDraft(raw, record) {
