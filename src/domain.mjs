@@ -73,10 +73,20 @@ export function dueDate(dueText, sentAt) {
   if (absolute) [, year, month, day] = absolute.map(Number);
   else if (sentAt && Number.isFinite(Date.parse(sentAt))) {
     const base = new Date(Date.parse(sentAt) + 9 * 3600000);
-    const relative = dueText.match(/오늘|내일|모레/);
-    if (!relative) return null;
-    base.setUTCDate(base.getUTCDate() + ({ 오늘: 0, 내일: 1, 모레: 2 })[relative[0]]);
-    [year, month, day] = [base.getUTCFullYear(), base.getUTCMonth() + 1, base.getUTCDate()];
+    const monthDay = dueText.match(/(?<!\d)(\d{1,2})\s*월\s*(\d{1,2})\s*일/);
+    if (monthDay) {
+      // A dated message supplies the missing year, never the analysis clock.
+      // Past month/day values and explicit year shifts need clarification;
+      // do not silently roll an ambiguous December promise into next January.
+      if (/작년|지난해|내년|다음\s*해|후년/.test(dueText)) return null;
+      [year, month, day] = [base.getUTCFullYear(), Number(monthDay[1]), Number(monthDay[2])];
+      if (month < base.getUTCMonth() + 1 || (month === base.getUTCMonth() + 1 && day < base.getUTCDate())) return null;
+    } else {
+      const relative = dueText.match(/오늘|내일|모레/);
+      if (!relative) return null;
+      base.setUTCDate(base.getUTCDate() + ({ 오늘: 0, 내일: 1, 모레: 2 })[relative[0]]);
+      [year, month, day] = [base.getUTCFullYear(), base.getUTCMonth() + 1, base.getUTCDate()];
+    }
   } else return null;
   const check = new Date(Date.UTC(year, month - 1, day));
   if (check.getUTCFullYear() !== year || check.getUTCMonth() + 1 !== month || check.getUTCDate() !== day) return null;
