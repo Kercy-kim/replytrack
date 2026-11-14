@@ -23,6 +23,7 @@ test('handoff comparison includes failure time and refuses to infer unknown toke
   const r = report(); r.results[0].operations[0] = { kind: 'draft', ms: 90000, success: false }; r.results[0].error = { code: 'AI_TIMEOUT' }; delete r.results[0].draft; r.results[0].calls = [{ error: 'timeout' }];
   const run = compare([r]); assert.equal(run.status, 0);
   const data = JSON.parse(run.stdout); assert.equal(data.before.draftMs.median, 90000); assert.equal(data.beforeSaved, 0); assert.equal(data.afterSaved, 1); assert.equal(data.reductionPercent.totalTokens, null);
+  assert.deepEqual(data.over50Seconds, { before: 1, after: 0 });
   assert.equal(data.completeUsagePairs.count, 0);
   assert.equal(data.completeUsagePairs.tokenReductionPercent, null);
   const good = report(); good.results.forEach(r => { r.id = 'case#2'; });
@@ -33,9 +34,11 @@ test('handoff comparison includes failure time and refuses to infer unknown toke
   assert.equal(paired.completeUsagePairs.before.totalTokens, 20);
   assert.equal(paired.completeUsagePairs.after.totalTokens, 20);
   assert.equal(paired.completeUsagePairs.tokenReductionPercent, 0);
+  const boundary = report(); boundary.results[0].operations[0].ms = 50000; boundary.results[1].operations[0].ms = 50001;
+  assert.deepEqual(JSON.parse(compare([boundary]).stdout).over50Seconds, { before: 0, after: 1 });
 });
 test('handoff comparison rejects mixed fixtures, implementations, duplicate and unpaired results', () => {
-  for (const change of [r => { r.fixtureHash = 'changed'; }, r => { r.sources.after = { file: 'changed' }; }, r => { r.evaluatorHash = 'changed'; }, r => { r.complete = false; }]) {
+  for (const change of [r => { r.fixtureHash = 'changed'; }, r => { r.sources.after = { file: 'changed' }; }, r => { r.evaluatorHash = 'changed'; }, r => { r.complete = false; }, r => { r.mode = 'repair replay'; }, r => { r.suite = 'tail'; }]) {
     const a = report(), b = report(); b.results.forEach(r => { r.id = 'case#2'; }); change(b); assert.notEqual(compare([a,b]).status, 0);
   }
   assert.notEqual(compare([report(), report()]).status, 0);

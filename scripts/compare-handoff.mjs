@@ -9,7 +9,7 @@ if (!files.length || (outIndex >= 0 && !output)) throw Error('Usage: compare-han
 const reports = files.map(f => JSON.parse(readFileSync(f, 'utf8'))), first = reports[0];
 for (const r of reports) {
   if (!r.complete || r.results.length !== r.expectedResults) throw Error('Incomplete run');
-  for (const key of ['requestedModel', 'baseCommit', 'fixtureHash', 'evaluatorHash', 'performanceHash']) if (r[key] !== first[key]) throw Error('Comparison configuration changed: ' + key);
+  for (const key of ['mode', 'suite', 'requestedModel', 'baseCommit', 'fixtureHash', 'evaluatorHash', 'performanceHash']) if (r[key] !== first[key]) throw Error('Comparison configuration changed: ' + key);
   if (JSON.stringify(r.sources) !== JSON.stringify(first.sources) || JSON.stringify(r.variants) !== JSON.stringify(['before','after'])) throw Error('Source or variant mismatch');
 }
 const results = reports.flatMap(r => r.results), seen = new Set();
@@ -26,7 +26,8 @@ const matchedAfter = matchedBefore.map(old => after.find(r => r.id === old.id));
 const mb = performanceSummary(matchedBefore), ma = performanceSummary(matchedAfter);
 const comparison = {
   sourceReports: files.map(path => ({ path, sha256: createHash('sha256').update(readFileSync(path)).digest('hex') })),
-  requestedModel: first.requestedModel, fixtureHash: first.fixtureHash, pairCount: before.length,
+  requestedModel: first.requestedModel, mode: first.mode, suite: first.suite, fixtureHash: first.fixtureHash, pairCount: before.length,
+  over50Seconds: { before: before.filter(r => r.operations[0].ms > 50000).length, after: after.filter(r => r.operations[0].ms > 50000).length },
   before: b, after: a, beforeSaved: before.filter(r => r.draft).length, afterSaved: after.filter(r => r.draft).length,
   beforeRepairs: before.filter(r => r.draft?.review.attempts > 1).length, afterRepairs: after.filter(r => r.draft?.review.attempts > 1).length,
   reductionPercent: { median: reduction(b.draftMs.median,a.draftMs.median), p95: reduction(b.draftMs.p95,a.draftMs.p95), totalTokens: a.callsWithoutUsage || b.callsWithoutUsage ? null : reduction(b.totalTokens,a.totalTokens) },

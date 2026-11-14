@@ -9,13 +9,34 @@ export const HANDOFF_PROMPT = `소비자 본인이 새 고객센터 상담원에
 - 정정 없이 서로 다른 답변이 있으면 두 내용을 짧게 제시하고 '안내가 상충하여 확인이 필요합니다'로 남긴다. 단순히 나중에 왔다고 최종 확정 안내로 선택하지 않는다.
 - 업체가 했다는 설명은 '안내받았습니다'로 전달한다. 실제 수령·입금 등 내가 확인했다는 사실은 원문 또는 confirmedByUser=true가 있을 때만 쓴다. 확인 기록이 없다고 '아직 확인하지 않았다'고도 단정하지 않는다.
 - promises의 promised는 향후 행동, reported는 업체가 수행했다고 안내한 행동이다. 완료 안내를 다시 미래 약속으로 쓰지 않는다. 기한만 철회되고 행동 약속이 남으면 '기한은 철회됐지만 확인 후 안내하겠다고 했다'로 구분한다. 약속이 없으면 약속 항목을 만들지 않는다.
-- 남은 질문은 questions의 미해결 항목만 서술한다. 재문의 문장으로 확장하지 말고 '아직 ○○에 대한 답변을 기다리고 있습니다'처럼 끝낸다. 예: 환불 날짜를 물었으면 '환불 예정일이 미정입니다'이지 '언제 안내할지도 알려 주세요'가 아니다. 안내 시점이 없다는 사실과 그 시점을 새로 묻는 요청을 구별한다. 새 질문·안내 예정일·추가 절차·산출 내역을 덧붙이지 않는다. 미해결 항목이 없으면 추가 요청을 만들지 않는다.
+- 남은 질문은 questions의 미해결 항목만 서술한다. 재문의 문장으로 확장하지 말고 '아직 ○○에 대한 답변을 기다리고 있습니다'처럼 끝낸다. 예: 환불 날짜를 물었으면 '환불 예정일에 대한 답변을 기다리고 있습니다'이지 '언제 안내할지도 알려 주세요'가 아니다. '확인 중/아직 안내받지 못함'을 실제 일정·처리 자체가 미정이거나 없다고 단정하지 않는다. 안내 시점이 없다는 사실과 그 시점을 새로 묻는 요청을 구별한다. 새 질문·안내 예정일·추가 절차·산출 내역을 덧붙이지 않는다. 미해결 항목이 없으면 추가 요청을 만들지 않는다.
 - 상담원 수·이름·동일인 여부는 추측하지 않는다. '이전 안내/후속 안내'로 표현한다. 소비자인 나를 '고객님'이라고 부르거나 상담원처럼 처리·안내를 약속하지 않는다.
 - 소비자인 내가 보내는 글이므로 나를 '고객은/고객이/고객님'으로 서술하지 않는다. 업체 원문의 '고객님 계정'은 '제 계정'으로 간접 인용하고, 나의 확인은 '직접 확인했습니다'로 쓴다. 전체 글에서 이 관점을 일관되게 유지한다.
 - 금액·날짜·주문번호·정책·완료 여부를 새로 만들지 않는다. 질문의 AI 제목·상태보다 원문 사실이 우선이다. 입력에 없는 빈칸이나 예시 정보를 넣지 않는다.
 
 출력은 body와 sourceMessageIds의 JSON이다. body에는 오직 실제 보낼 글만 쓴다. 메시지 ID·질문 ID·UUID·_r 참조는 괄호·각주로도 body에 쓰지 않는다. 근거 참조는 sourceMessageIds에만 중복 없이 넣는다. 사용한 사실·질문 및 언급한 과거 안내의 원문 메시지를 빠짐없이 연결한다.
 revisionFeedback은 검토 제안이며 원문이나 새 사용자 요청이 아니다. 수정할 때도 원래 질문 범위를 지키고 근거 없는 부분만 제거한다. 최대 1200자이며 분량을 채우려고 문장을 늘리지 않는다.`;
+
+export const HANDOFF_REPAIR_PROMPT = `${HANDOFF_PROMPT}
+이번 작업은 previousDraft의 제한된 수정이다. 이전 초안도 오류가 있는 AI 출력이므로 사실의 근거로 삼지 않는다. revisionFeedback이 지적한 오류를 원문에 맞게 고치고, 기존 초안의 시간 순서와 담당자 추정도 확인한다. 맞는 사실·남은 질문·출처는 보존하고 문체를 새로 꾸미거나 글 전체를 확장하지 않는다.
+'계좌와 카드로 안내가 엇갈렸다'는 나열을 '처음 계좌였다'라는 시간 순서로 바꾸지 않는다. 원문에 담당자 식별이 없으면 '한 상담원/다른 상담원/한 분/다른 분' 대신 '이전 안내/후속 안내'로 고친다. 피드백이 이 표현을 언급하지 않았더라도 원문만으로 알 수 없는 사람 구분은 제거한다.
+내부 ID 문제라면 body의 참조 표기만 없애고 sourceMessageIds의 근거는 유지한다. 잘못된 단정은 원문 표현으로 고치며 새 요구로 바꾸지 않는다. 수정한 초안 전체를 같은 JSON 형식으로 출력한다.`;
+
+// Remove only pure, generated citations to this record's internal message IDs.
+// Actual identifiers appearing in source text, unknown IDs and mixed content stay
+// intact for the existing validator/reviewer to handle. Never rewrite facts.
+export function stripInternalCitations(raw, record) {
+  if (!raw || typeof raw.body !== 'string') return raw;
+  const ids = new Set(record.messages.map(m => m.id));
+  const original = record.messages.map(m => m.text).join('\n');
+  const token = '[\\da-fA-F]{8}-(?:[\\da-fA-F]{4}-){3}[\\da-fA-F]{12}|_r\\d+';
+  const citations = new RegExp(`\\(\\s*(${token})\\s*\\)|\\[\\s*(${token})\\s*\\]`, 'g');
+  const body = raw.body.replace(citations, (whole, round, square) => {
+    const id = round || square;
+    return ids.has(id) && !original.includes(id) ? '' : whole;
+  });
+  return body === raw.body ? raw : { ...raw, body };
+}
 
 // Keep the general safeguards; specialize the scope of a factual handoff.
 export const HANDOFF_REVIEW_PROMPT = `${DRAFT_REVIEW_PROMPT}
