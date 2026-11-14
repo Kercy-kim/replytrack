@@ -4,6 +4,8 @@ import { CaseStore } from '../src/store.mjs';
 import { ReplyTrack, draftSourceContext } from '../src/service.mjs';
 import { createDemo } from '../src/demo.mjs';
 import { draftSchema, draftSchemaFor } from '../src/schema.mjs';
+import { HANDOFF_PROMPT, HANDOFF_REVIEW_PROMPT } from '../src/handoff.mjs';
+import { DRAFT_PROMPT, DRAFT_REVIEW_PROMPT } from '../src/prompts.mjs';
 
 function setup(respond) {
   const store = new CaseStore(':memory:'), calls = [];
@@ -22,6 +24,8 @@ test('draft reference schema permits only message IDs from this conversation, ne
   try {
     await t.service.draft(t.record.id, t.input);
     const sources = t.calls[0].schema.properties.sourceMessageIds;
+    assert.equal(t.calls[0].instructions, DRAFT_PROMPT);
+    assert.equal(t.calls[1].instructions, DRAFT_REVIEW_PROMPT);
     assert.deepEqual(sources.items.enum, t.record.messages.map(m => m.id));
     assert.equal(sources.minItems, 1);
     assert.equal(sources.maxItems, t.record.messages.length);
@@ -32,13 +36,21 @@ test('draft reference schema permits only message IDs from this conversation, ne
   } finally { t.store.close(); }
 });
 
-test('handoff generation keeps medium reasoning for both its first attempt and repair', async () => {
+test('handoff uses its own instructions with a low first attempt and medium review/repair', async () => {
   const t = setup((input, count, record) => input.name === 'replytrack_draft' ? draft(record) : { valid: count === 4, feedback: count === 2 ? '안내의 시간 순서를 확인하세요.' : '' });
   try {
     const saved = await t.service.draft(t.record.id, { ...t.input, kind: 'handoff' });
     assert.equal(saved.drafts.handoff.review.attempts, 2);
     assert.equal(t.calls.length, 4);
-    assert(t.calls.every(c => c.reasoningEffort === 'medium'));
+    assert.deepEqual(t.calls.map(c => c.reasoningEffort), ['low', 'medium', 'medium', 'medium']);
+    assert.equal(t.calls[0].instructions, HANDOFF_PROMPT);
+    assert.equal(t.calls[2].instructions, HANDOFF_PROMPT);
+    assert.equal(t.calls[1].instructions, HANDOFF_REVIEW_PROMPT);
+    assert.equal(t.calls[3].instructions, HANDOFF_REVIEW_PROMPT);
+    assert.notEqual(t.calls[0].instructions, DRAFT_PROMPT);
+    assert.deepEqual(t.calls[0].data.messages, draftSourceContext(t.record).messages);
+    assert.equal(t.calls[0].data.questions.length, t.record.questions.length);
+    assert.deepEqual(t.calls[1].data.questions, t.calls[0].data.questions);
   } finally { t.store.close(); }
 });
 
@@ -92,6 +104,20 @@ test('repeated review failure is bounded and preserves the previously saved draf
     const saved = t.store.save(original, original.version);
     await assert.rejects(() => t.service.draft(saved.id, { ...t.input, version: saved.version }), { code: 'DRAFT_REVIEW' });
     assert.equal(t.calls.length, 4);
+    assert.deepEqual(t.store.get(saved.id).drafts, saved.drafts);
+    assert.equal(t.store.get(saved.id).version, saved.version);
+  } finally { t.store.close(); }
+});
+
+test('handoff speed settings do not bypass review or overwrite an edited draft after rejection', async () => {
+  const t = setup((input, count, record) => input.name === 'replytrack_draft' ? draft(record) : { valid: false, feedback: '원문과 다른 처리 완료 주장' });
+  try {
+    const original = t.store.get(t.record.id);
+    original.drafts.handoff = { body: '기존 인계', editedBody: '사용자가 편집한 인계' };
+    const saved = t.store.save(original, original.version);
+    await assert.rejects(() => t.service.draft(saved.id, { ...t.input, kind: 'handoff', version: saved.version }), { code: 'DRAFT_REVIEW' });
+    assert.equal(t.calls.length, 4);
+    assert.equal(t.calls.filter(c => c.name === 'replytrack_draft_review').length, 2);
     assert.deepEqual(t.store.get(saved.id).drafts, saved.drafts);
     assert.equal(t.store.get(saved.id).version, saved.version);
   } finally { t.store.close(); }
