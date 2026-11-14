@@ -8,16 +8,19 @@ import { OpenAIClient } from './src/openai.mjs';
 import { ReplyTrack } from './src/service.mjs';
 import { AppError, assert } from './src/errors.mjs';
 import { allowExtensionRequest } from './src/extension-access.mjs';
+import { Operations, checkpoint } from './src/operation.mjs';
 
 const root = dirname(fileURLToPath(import.meta.url));
 try { process.loadEnvFile(join(root, '.env')); } catch (error) { if (error.code !== 'ENOENT') throw error; }
 const staticFiles = new Map([['/', ['index.html', 'text/html']], ['/app.js', ['app.js', 'text/javascript']], ['/styles.css', ['styles.css', 'text/css']], ['/favicon.svg', ['favicon.svg', 'image/svg+xml']]]);
 staticFiles.set('/workspace.js', ['workspace.js', 'text/javascript']);
+staticFiles.set('/operations.js', ['operations.js', 'text/javascript']);
 
-export function createApp({ store, ai } = {}) {
+export function createApp({ store, ai, ocr } = {}) {
   const db = store ?? new CaseStore(resolve(root, process.env.REPLYTRACK_DATA_DIR || 'data', 'replytrack.sqlite'));
   const client = ai ?? new OpenAIClient({ apiKey: process.env.OPENAI_API_KEY || '', model: process.env.OPENAI_MODEL || 'gpt-5-mini' });
-  const service = new ReplyTrack(db, client);
+  const service = new ReplyTrack(db, client, { ocr });
+  const operations = new Operations();
   const server = createServer(async (req, res) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Referrer-Policy', 'no-referrer');
@@ -42,8 +45,27 @@ export function createApp({ store, ai } = {}) {
         assert(body && typeof body === 'object' && !Array.isArray(body), '요청 형식을 확인해 주세요.');
       }
       if (method === 'GET' && path === '/api/health') return json({ ok: true, app: 'ReplyTrack' });
-      if (method === 'GET' && path === '/api/config') return json({ configured: client.configured, model: client.model });
-      if (method === 'PUT' && path === '/api/config') { client.configure(body); return json({ configured: client.configured, model: client.model }); }
+      if (method === 'GET' && path === '/api/config') return json(service.config());
+      if (method === 'PUT' && path === '/api/config') return json(service.configure(body));
+      if (method === 'POST' && path === '/api/operations') {
+        const { id, kind, caseId, input = {} } = body;
+        assert(['preflight', 'prepare', 'extract', 'analyze', 'draft'].includes(kind), '작업 종류를 확인해 주세요.');
+        assert(input && typeof input === 'object' && !Array.isArray(input), '작업 입력을 확인해 주세요.');
+        // Do optimistic-version validation before spending any provider tokens.
+        const record = ['analyze', 'draft'].includes(kind) ? service.getVersion(caseId, input.version) : null;
+        return json(operations.start(id, async context => {
+          if (kind === 'preflight') return service.preflight(context);
+          if (kind === 'prepare') return service.prepare(input, context);
+          if (record?.mode !== 'demo') await service.ensureConnection(context);
+          checkpoint(context);
+          if (kind === 'extract') return service.extract(input, context);
+          if (kind === 'analyze') return service.analyze(caseId, input.version, context);
+          return service.draft(caseId, input, context);
+        }), 202);
+      }
+      const operation = path.match(/^\/api\/operations\/([\w-]+)$/);
+      if (operation && method === 'GET') return json(operations.get(operation[1]));
+      if (operation && method === 'DELETE') return json(operations.cancel(operation[1]));
       if (method === 'GET' && path === '/api/cases') return json(db.list());
       if (method === 'POST' && path === '/api/cases') return json(service.create(body), 201);
       if (method === 'POST' && path === '/api/demo') return json(service.demo(), 201);
@@ -77,7 +99,8 @@ export function createApp({ store, ai } = {}) {
     }
   });
   server.requestTimeout = 120000;
-  return { server, service, store: db, ai: client };
+  server.on('close', () => operations.close());
+  return { server, service, store: db, ai: client, operations };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

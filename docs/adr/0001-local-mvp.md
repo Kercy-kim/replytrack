@@ -1,6 +1,7 @@
 # ADR 0001 — 3일 시연을 위한 로컬 단일 사용자 MVP
 
 - 상태: 채택
+- 후속 변경: [ADR 0012](0012-web-operations-and-local-masking.md)에서 전송 전 개인정보 보호를 위해 로컬 OCR 의존성 설치를 추가했다. 아래 내용은 최초 MVP 결정이다.
 - 날짜: 2026-11-14
 - 관련 작업: [#1](https://github.com/Kercy-kim/tripsketch-ai/issues/1)
 

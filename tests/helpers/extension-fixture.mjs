@@ -10,7 +10,9 @@ export class ExtensionFixtureAI {
   async structured({ name, data }) {
     this.calls.push({ name, data });
     let result;
-    if (name === 'replytrack_transcript') {
+    if (name === 'replytrack_connection') {
+      result = { ok: true };
+    } else if (name === 'replytrack_transcript') {
       result = { messages: createDemo().messages.map(({ role, text }) => ({ role, text, sentAt: null })), notes: [] };
     } else if (name === 'replytrack_analysis') {
       if (this.failAnalysis) throw new AppError(502, '검증용 일시 분석 오류');
