@@ -1,0 +1,226 @@
+{
+  "mode": "live draft review control probes",
+  "startedAt": "2026-11-14T07:39:19.153Z",
+  "requestedModel": "gpt-5-mini-2025-08-07",
+  "hashes": {
+    "evals/support-cases.mjs": "ab86201457d670ffd62d4844fa66e72711bb4be91ea677260946b3c98a904b8d",
+    "evals/status-boundary-cases.mjs": "482f9f80fb7aaa5998faebed0f515f41c34e9ad20d6feedcc77310cd601a0d96",
+    "evals/unseen-cases.mjs": "c436aedb0dc0bd93528afe1f42ae18f6e066cc0958d00bf2e92ed4662f484f59",
+    "evals/grade.mjs": "ed6a5defa0212d1e473f9235dd8cd877fe046e8d017f80835c4ab9eaecd9145d",
+    "src/prompts.mjs": "693304715ee83c620e5177cff12481c122b3e8fc9fd2b1e8daef2b6ace9a3c7b",
+    "src/schema.mjs": "10cfc80b547fd039f268dbed85f8ac3812faf41c53af89895728c41e673995ec",
+    "src/domain.mjs": "670c33f311d17f40e5e236b55b4d9f978cfa689808deddac38d0b74b855e1846",
+    "src/service.mjs": "335bf28fed0b1aa5952f5c43be4164b217ea1aa2bea903c0bece65118e2940bf",
+    "src/openai.mjs": "8f725fd4673bafd3c83c5f35ce5b712f887bc309c763b8df0943b1b562b5a3c3",
+    "src/analysis-changes.mjs": "36d13aaab3b180d7a2081dc22127a79e394ddb1e006136090a10945c88d94d73",
+    "scripts/evaluate-ai.mjs": "136fd48ee9a5e95f2503a0726ada9dd98974694d1272adc195be5306402a8698",
+    "evals/performance.mjs": "4d7b06a187cd7466e608ace7f5abd333850a883cb3d23f35c8d69551f078558c",
+    "src/ai-wire.mjs": "99c9eb1cd11f201085870e0076ac70c565c77004184789efca390f9f04e89cd8"
+  },
+  "results": [
+    {
+      "source": "iteration-3/S02",
+      "expectedFailure": "선택한 배송비 질문 누락",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 9481,
+      "data": {
+        "valid": false,
+        "feedback": "결과: followup인데 질문 목록의 모든 미해결 항목을 묻고 있지 않습니다. 초안에는 도착일 문의(_r3)만 포함되어 있고 배송비 금액 문의(_r4)가 빠져 있습니다. 수정 방향: questions에 있는 모든 미해결 항목(이 경우 ‘배송비는 얼마인가요?’)을 초안에 추가하세요. 담당자 동일성 표현을 피하려면 현재처럼 ‘이전 답변’/‘이전 안내’ 등으로 표현하면 됩니다."
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1040,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 690,
+        "output_tokens_details": {
+          "reasoning_tokens": 512
+        },
+        "total_tokens": 1730
+      }
+    },
+    {
+      "source": "iteration-3/S06",
+      "expectedFailure": "원문에 없는 동일 상담원 추정",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 14579,
+      "data": {
+        "valid": false,
+        "feedback": "초안의 \"동일 상담원이 해당 안내를 정정하여\"라는 문구는 원문에서 상담원 동일성을 확인할 근거가 없어 근거 없는 주장입니다. 담당자를 식별할 수 없으면 '동일 상담원' 대신 '이후 안내' 또는 '후속 답변/이전 답변'과 같은 중립적 표현으로 바꾸세요. 그 외 내용은 원문과 일치합니다."
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1272,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 1101,
+        "output_tokens_details": {
+          "reasoning_tokens": 960
+        },
+        "total_tokens": 2373
+      }
+    },
+    {
+      "source": "baseline/R02",
+      "expectedFailure": "상담원 입장으로 고객 정보 요구",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 29805,
+      "data": {
+        "valid": false,
+        "feedback": "문체가 상담원 쪽(예: ‘안내드리겠습니다’)으로 되어 있어 소비자 입장이 아닙니다. 또한 ‘주문번호나 결제 내역을 알려주실 수 있나요?’가 상담원에게 정보를 요구하는 것으로 읽힐 여지가 있어 누가 정보를 제공해야 하는지(소비자가 제공할 항목인지 고객센터가 확인해 주어야 하는지)를 명확히 해야 합니다. 소비자 관점으로 바꾸고 상담원 1인칭 표현(‘안내드리겠습니다’ 등)을 제거하여, 최종 환불액 확인을 요청하는 문장만 남기세요. 반품비(5,000원)는 이미 안내된 사실로 재요청하지 않는 점은 적절합니다."
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1028,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 2720,
+        "output_tokens_details": {
+          "reasoning_tokens": 2496
+        },
+        "total_tokens": 3748
+      }
+    },
+    {
+      "source": "unseen/baseline/NR05",
+      "expectedFailure": "중간의 계좌 안내를 초기 안내로 요약",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 17469,
+      "data": {
+        "valid": false,
+        "feedback": "문제: 초기에 ‘상담원이 계좌 환불이라고 안내했다’고 명시한 부분이 원문 순서와 다릅니다. 원문 순서는 카드 안내(_r2) → 계좌 안내(_r3) → ‘계좌 안내는 잘못’이라 정정하며 카드로 환불된다고 안내(_r4)입니다. 수정 방향: ‘초기에는 상담원이 계좌 환불…’ 문구를 삭제하거나, 원문 순서를 그대로 반영하여 ‘메시지들에서 카드·계좌 안내가 혼재했으나 최종 안내는 카드’ 등으로 바꾸세요. 그 외(미해결 질문 없음, 별도 약속 없음)는 원문과 일치합니다."
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1176,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 1432,
+        "output_tokens_details": {
+          "reasoning_tokens": 1216
+        },
+        "total_tokens": 2608
+      }
+    },
+    {
+      "source": "unseen/baseline/NS03",
+      "expectedFailure": "장소 확인 뒤 안내를 정확히 전달한 정상 인계",
+      "expectedValid": true,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 10656,
+      "data": {
+        "valid": true,
+        "feedback": ""
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1237,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 785,
+        "output_tokens_details": {
+          "reasoning_tokens": 704
+        },
+        "total_tokens": 2022
+      }
+    },
+    {
+      "source": "unseen/iteration-1/NS03",
+      "expectedFailure": "역할명만 쓴 정상 인계를 동일인 주장으로 오인하지 않기",
+      "expectedValid": true,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 8440,
+      "data": {
+        "valid": true,
+        "feedback": ""
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1239,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 672,
+        "output_tokens_details": {
+          "reasoning_tokens": 640
+        },
+        "total_tokens": 1911
+      }
+    },
+    {
+      "source": "unseen/regression-1/R02",
+      "expectedFailure": "질문형 문장에서 원문에 없는 비용 차감 관계 전제",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 18423,
+      "data": {
+        "valid": false,
+        "feedback": "문제: 초안은 ‘이 금액을 반영한 최종 환불액’이라고 전제하고 있으며(반품비가 환불액에서 차감된다는 사실을 가정), 또한 ‘환불액 산출 내역(상품가, 할인·적립 반영 여부, 반품비 차감 등)’을 추가로 요구하고 있습니다. 원문에는 반품비가 환불에서 차감된다는 안내가 없고, questions에는 최종 환불액 문의만 등록되어 있으므로 근거 없는 전제 및 질문에 없는 추가 요구가 포함되어 오류입니다. 수정 방향: ‘이 금액을 반영한’ 등 차감 관계를 전제하는 표현과 질문 목록에 없는 산출 내역 요구를 삭제하고, questions에 적힌 ‘최종 환불액은 얼마인가요?’ 항목만 묻도록 간결하게 정리하세요."
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1030,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 1555,
+        "output_tokens_details": {
+          "reasoning_tokens": 1344
+        },
+        "total_tokens": 2585
+      }
+    }
+  ],
+  "completedAt": "2026-11-14T07:41:08.023Z"
+}

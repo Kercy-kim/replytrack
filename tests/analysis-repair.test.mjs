@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { CaseStore } from '../src/store.mjs';
 import { ReplyTrack } from '../src/service.mjs';
+import { analysisValidationErrors } from '../src/domain.mjs';
 
 function output(data, broken = false) {
   if (!data.existingQuestions) return { model: 'test', usage: { input_tokens: 10, output_tokens: 5, total_tokens: 15 }, data: { questions: data.questions.map(q => ({ id: q.id, status: 'review', reason: '실질 정보 없이 결과 미정' })) } };
@@ -13,6 +14,16 @@ function output(data, broken = false) {
   } };
 }
 const input = { title: '인용 검증', messages: [{ role: 'customer', text: '검수 결과가 나왔나요?' }, { role: 'agent', text: '결과가 등록되지 않았습니다.' }] };
+
+test('repair feedback names every invalid field but repeats each source message only once', () => {
+  const messages = input.messages.map((m, i) => ({ ...m, id: String(i) }));
+  const raw = output({ messages, existingQuestions: [] }, true).data;
+  raw.questions.push(structuredClone(raw.questions[0]));
+  const errors = analysisValidationErrors(raw, messages), feedback = errors.join('\n');
+  assert.equal(errors.length, 4);
+  for (const m of messages) assert.equal(feedback.split(JSON.stringify(m.text)).length - 1, 1);
+  assert.match(feedback, /questions\[1\].evidence\[0\]/);
+});
 
 test('contradictory unanswered-with-evidence output is repaired without deleting evidence by rule', async () => {
   const store = new CaseStore(':memory:'), requests = [];
@@ -38,7 +49,10 @@ test('analysis repairs invalid quotes once, validates them, and counts repair pl
     const c = service.create(input), saved = await service.analyze(c.id, c.version);
     assert.equal(requests.length, 3); assert.match(requests[1].data.revisionFeedback, /questions\[0\].source/);
     assert.match(requests[1].data.revisionFeedback, /questions\[0\].evidence\[0\]/);
-    assert.equal(requests[1].data.previousAnalysis.questions[0].source.quote, '원문을 바꾼 질문');
+    assert.equal(requests[1].data.previousAnalysis, undefined);
+    assert(requests[1].data.revisionFeedback.includes(input.messages[0].text));
+    assert(requests[1].data.revisionFeedback.includes(input.messages[1].text));
+    assert(!requests[1].data.revisionFeedback.includes('원문을 바꾼 질문'));
     assert.equal(saved.questions[0].source.quote, input.messages[0].text);
     assert.equal(saved.questions[0].evidence[0].quote, input.messages[1].text);
     assert.deepEqual(saved.warnings, []); assert.equal(saved.analysis.attempts, 2);

@@ -1,4 +1,5 @@
 import { AppError } from './errors.mjs';
+import { compactReferences } from './ai-wire.mjs';
 
 export class OpenAIClient {
   constructor({ apiKey = '', model = 'gpt-5-mini', fetchImpl = fetch, timeoutMs = 90000 } = {}) {
@@ -17,12 +18,13 @@ export class OpenAIClient {
   }
   async structured({ name, schema, instructions, data, image, reasoningEffort = 'low' }) {
     if (!this.configured) throw new AppError(503, 'AI 연결 설정에서 OpenAI API 키를 등록해 주세요. 예제 상담은 키 없이 체험할 수 있습니다.', 'API_KEY_REQUIRED');
-    const content = [{ type: 'input_text', text: JSON.stringify(data) }];
+    const wire = compactReferences(data, schema);
+    const content = [{ type: 'input_text', text: JSON.stringify(wire.data) }];
     if (image) content.push({ type: 'input_image', image_url: image, detail: 'high' });
     const payload = {
       model: this.model, store: false, instructions,
       input: [{ role: 'user', content }],
-      text: { format: { type: 'json_schema', name, strict: true, schema } },
+      text: { format: { type: 'json_schema', name, strict: true, schema: wire.schema } },
       max_output_tokens: 6500,
     };
     if (/^gpt-5/.test(this.model)) payload.reasoning = { effort: reasoningEffort };
@@ -47,7 +49,7 @@ export class OpenAIClient {
     const parts = (response.output ?? []).flatMap(item => item.content ?? []);
     if (parts.some(p => p.type === 'refusal')) throw new AppError(422, '이 자료에 대한 AI 분석이 거절됐습니다. 입력 내용을 확인해 주세요.', 'AI_REFUSAL');
     const output = parts.filter(p => p.type === 'output_text').map(p => p.text).join('');
-    try { return { data: JSON.parse(output), model: response.model ?? this.model, usage: response.usage ?? null }; }
+    try { return { data: wire.decode(JSON.parse(output)), model: response.model ?? this.model, usage: response.usage ?? null }; }
     catch { throw new AppError(502, 'AI가 올바른 분석 형식을 반환하지 않았습니다. 다시 시도해 주세요.', 'AI_FORMAT'); }
   }
 }

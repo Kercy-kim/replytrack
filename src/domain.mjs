@@ -49,14 +49,21 @@ function assertAnalysisShape(raw) {
 export function analysisValidationErrors(raw, messages) {
   assertAnalysisShape(raw);
   const errors = [];
+  const shownMessages = new Set();
+  const checkReference = (ref, role, path) => {
+    if (validEvidence(ref, messages, role)) return;
+    const original = messages.find(m => m.id === ref?.messageId && m.role === role);
+    errors.push(`${path}: ${original ? shownMessages.has(original.id) ? '같은 메시지의 위 원문에서 그대로 인용하세요' : `이 메시지의 실제 원문은 ${JSON.stringify(original.text)}입니다. 이 원문에서 그대로 인용하세요` : `${role} 원문 메시지의 ID와 인용을 사용하세요`}`);
+    if (original) shownMessages.add(original.id);
+  };
   raw.questions.forEach((q, i) => {
-    if (!validEvidence(q?.source, messages, 'customer')) errors.push(`questions[${i}].source`);
+    checkReference(q?.source, 'customer', `questions[${i}].source`);
     if (q?.status === 'unanswered' && q.evidence?.length) errors.push(`questions[${i}].status/evidence: 미답변인데 답변 근거가 포함되어 모순입니다. 관련 안내가 없으면 근거를 비우고, 관련 안내가 있으면 그에 맞는 미해결 상태를 선택하세요`);
     (Array.isArray(q?.evidence) ? q.evidence : []).forEach((ref, j) => {
-      if (!validEvidence(ref, messages, 'agent')) errors.push(`questions[${i}].evidence[${j}]`);
+      checkReference(ref, 'agent', `questions[${i}].evidence[${j}]`);
     });
   });
-  raw.promises.forEach((p, i) => { if (!validEvidence(p?.evidence, messages, 'agent')) errors.push(`promises[${i}].evidence`); });
+  raw.promises.forEach((p, i) => { checkReference(p?.evidence, 'agent', `promises[${i}].evidence`); });
   return errors;
 }
 export function dueDate(dueText, sentAt) {
@@ -159,7 +166,7 @@ export function validateDraft(raw, record) {
   const sources = raw.sourceMessageIds.map(id => record.messages.find(m => m.id === id));
   if (!sources.length || sources.some(m => !m)) throw new AppError(502, '초안의 원문 근거를 확인할 수 없습니다. 다시 작성해 주세요.', 'DRAFT_EVIDENCE');
   const sourceText = sources.map(m => m.text).join('\n');
-  const references = raw.body.match(/\b[\da-f]{8}-(?:[\da-f]{4}-){3}[\da-f]{12}\b/gi) ?? [];
+  const references = raw.body.match(/\b(?:[\da-f]{8}-(?:[\da-f]{4}-){3}[\da-f]{12}|_r\d+)\b/gi) ?? [];
   if (references.some(id => !sourceText.includes(id))) throw new AppError(502, '본문에 내부 메시지 ID가 포함됐습니다. 괄호 안의 UUID 등 참조값은 본문에서 제거하고 sourceMessageIds 필드에만 넣어 주세요.', 'DRAFT_REFERENCE');
   // Messages identify roles, not individual agents. Do not invent actor identity from turn order.
   const actors = raw.body.match(/(?:동일|같은|다른(?:\s*한)?|두(?:\s*[명분])?(?:의)?|여러)\s*(?:상담원|상담사|담당자)|(?:상담원|상담사|담당자)들/g) ?? [];

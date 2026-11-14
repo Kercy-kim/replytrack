@@ -8,6 +8,7 @@ import { cases } from '../evals/support-cases.mjs';
 import { boundaryCases } from '../evals/status-boundary-cases.mjs';
 import { unseenCases } from '../evals/unseen-cases.mjs';
 import { grade, summarize } from '../evals/grade.mjs';
+import { performanceSummary } from '../evals/performance.mjs';
 import { OpenAIClient } from '../src/openai.mjs';
 import { CaseStore } from '../src/store.mjs';
 import { ReplyTrack, draftQuestionContext, draftSourceContext } from '../src/service.mjs';
@@ -17,6 +18,8 @@ import { draftReviewSchema } from '../src/schema.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const hash = value => createHash('sha256').update(value).digest('hex');
 const sourceFiles = ['evals/support-cases.mjs', 'evals/status-boundary-cases.mjs', 'evals/unseen-cases.mjs', 'evals/grade.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/domain.mjs', 'src/service.mjs', 'src/openai.mjs', 'src/analysis-changes.mjs', 'scripts/evaluate-ai.mjs'];
+sourceFiles.push('evals/performance.mjs');
+if (existsSync(resolve(root, 'src/ai-wire.mjs'))) sourceFiles.push('src/ai-wire.mjs');
 const suites = { support: cases, boundary: boundaryCases, all: [...cases, ...boundaryCases], unseen: unseenCases };
 const args = process.argv.slice(2);
 const option = (name, fallback) => args.includes(name) ? args[args.indexOf(name) + 1] : fallback;
@@ -69,14 +72,14 @@ async function run({ out, only = '', model = process.env.OPENAI_MODEL || 'gpt-5-
     baseCommit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
     hashes: Object.fromEntries(sourceFiles.map(file => [file, hash(readFileSync(resolve(root, file)))])), results: [] };
   mkdirSync(dirname(outputPath), { recursive: true });
-  const save = () => { report.summary = summarize(report.results); writeFileSync(outputPath, JSON.stringify(report, null, 2) + '\n'); };
+  const save = () => { report.summary = summarize(report.results); report.performance = performanceSummary(report.results); writeFileSync(outputPath, JSON.stringify(report, null, 2) + '\n'); };
   save();
   const client = new OpenAIClient({ apiKey, model });
   let cursor = 0;
   async function worker() {
     while (cursor < selected.length) {
       const testCase = selected[cursor++], store = new CaseStore(':memory:');
-      const result = { id: testCase.id, category: testCase.category, title: testCase.title, stages: [], calls: [] };
+      const result = { id: testCase.id, category: testCase.category, title: testCase.title, stages: [], calls: [], operations: [] };
       const ai = { async structured(input) {
         const start = performance.now();
         try {
@@ -90,9 +93,12 @@ async function run({ out, only = '', model = process.env.OPENAI_MODEL || 'gpt-5-
       } };
       const service = new ReplyTrack(store, ai);
       async function analyze(record, expected, previous) {
-        const saved = await service.analyze(record.id, record.version);
-        result.stages.push({ record: saved, grade: grade(saved, expected, previous) });
-        return saved;
+        const start = performance.now(); let success = false;
+        try {
+          const saved = await service.analyze(record.id, record.version); success = true;
+          result.stages.push({ record: saved, grade: grade(saved, expected, previous) });
+          return saved;
+        } finally { result.operations.push({ kind: 'analysis', ms: Math.round(performance.now() - start), success }); }
       }
       try {
         let record = service.create({ title: testCase.title, company: '가상 고객센터', messages: testCase.messages });
@@ -104,15 +110,18 @@ async function run({ out, only = '', model = process.env.OPENAI_MODEL || 'gpt-5-
         }
         if (testCase.draft && !analysisOnly) {
           const selectedQuestions = record.questions.filter(q => q.status !== 'answered');
+          const start = performance.now(); let success = false;
           try {
             record = await service.draft(record.id, { version: record.version, kind: testCase.draft, questionIds: selectedQuestions.map(q => q.id) });
+            success = true;
             result.draft = { kind: testCase.draft, ...record.drafts[testCase.draft], semanticReview: 'pending independent semantic review' };
           } catch (error) { result.draft = { kind: testCase.draft, error: { code: error.code || 'UNKNOWN', message: error.message } }; }
+          finally { result.operations.push({ kind: 'draft', ms: Math.round(performance.now() - start), success }); }
         }
       } catch (error) { result.error = { code: error.code || 'UNKNOWN', message: error.message }; }
       finally { store.close(); }
       report.results.push(result); report.results.sort((a,b) => suiteCases.findIndex(c => c.id === a.id) - suiteCases.findIndex(c => c.id === b.id)); save();
-      console.log(`${testCase.id}: ${result.error ? result.error.code : result.stages.every(s => s.grade.pass) ? 'PASS' : 'REVIEW'} (${report.results.length}/${selected.length})`);
+      console.log(`${testCase.id}: ${result.error ? result.error.code : result.stages.every(s => s.grade.pass) ? 'PASS' : 'REVIEW'}${result.draft?.error ? ' / ' + result.draft.error.code : ''} (${report.results.length}/${selected.length})`);
       if (result.error?.code === 'AI_AUTH' || result.error?.code === 'AI_LIMIT') cursor = selected.length;
     }
   }

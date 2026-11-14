@@ -24,10 +24,21 @@ test('draft reference schema permits only message IDs from this conversation, ne
     const sources = t.calls[0].schema.properties.sourceMessageIds;
     assert.deepEqual(sources.items.enum, t.record.messages.map(m => m.id));
     assert.equal(sources.minItems, 1);
+    assert.equal(sources.maxItems, t.record.messages.length);
     assert(!sources.items.enum.includes(t.record.questions[0].id));
     assert.deepEqual(draftSchemaFor([{ id: 'another-message' }]).properties.sourceMessageIds.items.enum, ['another-message']);
     assert.equal(draftSchema.properties.sourceMessageIds.items.enum, undefined);
     assert.deepEqual(sources.items.enum, t.record.messages.map(m => m.id));
+  } finally { t.store.close(); }
+});
+
+test('handoff generation keeps medium reasoning for both its first attempt and repair', async () => {
+  const t = setup((input, count, record) => input.name === 'replytrack_draft' ? draft(record) : { valid: count === 4, feedback: count === 2 ? '안내의 시간 순서를 확인하세요.' : '' });
+  try {
+    const saved = await t.service.draft(t.record.id, { ...t.input, kind: 'handoff' });
+    assert.equal(saved.drafts.handoff.review.attempts, 2);
+    assert.equal(t.calls.length, 4);
+    assert(t.calls.every(c => c.reasoningEffort === 'medium'));
   } finally { t.store.close(); }
 });
 
@@ -65,7 +76,10 @@ test('live drafts are reviewed for all selected questions and repaired once befo
     const saved = await t.service.draft(t.record.id, t.input);
     assert.deepEqual(t.calls.map(c => c.name), ['replytrack_draft', 'replytrack_draft_review', 'replytrack_draft', 'replytrack_draft_review']);
     assert.equal(t.calls[1].data.questions.length, 2);
+    assert.equal(t.calls[0].reasoningEffort, 'low');
     assert.equal(t.calls[1].reasoningEffort, 'medium');
+    assert.equal(t.calls[2].reasoningEffort, 'medium');
+    assert.equal(t.calls[3].reasoningEffort, 'medium');
     assert(t.calls[2].data.revisionFeedback.includes('수리비'));
     assert.equal(saved.drafts.followup.body, draft(t.record).body);
     assert.equal(saved.drafts.followup.review.attempts, 2);
