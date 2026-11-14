@@ -82,6 +82,26 @@ test('an inconsistent unanswered AI label cannot overwrite a manual status', () 
   applyAnalysis(c, raw);
   assert.equal(c.questions[2].status, 'partial'); assert.equal(c.questions[2].aiStatus, 'review');
 });
+
+test('unanswered explanations cannot invent prerequisites and preserve manual status plus evidence guards', () => {
+  for(const manual of [null,'partial']) {
+    const c=createDemo(), raw=demoAnalysis(c), id=c.questions[2].id;
+    raw.questions[2].reason='주문번호나 신분증을 먼저 제출해야 확인할 수 있습니다.';
+    c.questions[2].manualStatus=manual;
+    applyAnalysis(c,raw);
+    const q=c.questions.find(q=>q.id===id);
+    assert.equal(q.aiStatus,'unanswered'); assert.deepEqual(q.evidence,[]);
+    assert.equal(q.aiReason,'이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.');
+    assert.equal(q.status,manual??'unanswered');
+    assert.equal(q.reason,manual?'사용자가 직접 지정한 상태입니다. 새 AI 판단은 별도로 표시합니다.':q.aiReason);
+    assert.deepEqual(c.warnings,[]);
+  }
+  const c=createDemo(), raw=demoAnalysis(c);
+  raw.questions[2].evidence=raw.questions[0].evidence;
+  applyAnalysis(c,raw);
+  assert.equal(c.questions[2].aiStatus,'review');
+  assert.match(c.questions[2].aiReason,/일치하지 않습니다/);
+});
 test('waiting requires the promise to be linked to that question and its cited reply', () => {
   const valid = createDemo(); applyAnalysis(valid, demoAnalysis(valid));
   assert.equal(valid.questions[0].status, 'waiting');

@@ -43,6 +43,13 @@ node scripts/compare-evaluations.mjs evals/results/performance/baseline.json eva
 
 상태 기준 후속 평가는 `--suite support`(원래 20건, 기본값), `--suite boundary`(추가 경계 8건), `--suite all`(28건)을 지원한다. `--analysis-only`는 변경 대상인 분석만 평가하며 초안을 생성하지 않는다. 전체 28건은 후속 답변을 포함해 31개 분석 단계이며 수정·경계 검토 호출은 별도로 더해진다. 원래 정답은 수정하지 않았고 추가 자료는 `status-boundary-cases.mjs`에 별도 보관한다. Interactive JSON에서도 `suite`, `analysisOnly`를 사용할 수 있다.
 
+전체 회귀는 `--suite full`로 기존 20건·경계 8건·추가 20건을 한 번에 실행한다. 배송 17·환불 17·구독 14건, 후속 답변을 포함한 분석 55회와 지정 초안 13건이며 동시 작업자는 2개다. `all`의 기존 28건 의미와 과거 보고서 호환성은 유지한다. `--rescore`는 full 자료 세 파일의 해시를 모두 검증한다. 원문과 기대값은 기존 파일을 그대로 사용하며 이번 프롬프트 수정의 전체 회귀 결과는 [전체 품질 회귀 보고서](../docs/FULL-AI-REGRESSION.md)에 기록한다.
+
+```powershell
+node scripts/evaluate-ai.mjs --key-stdin --suite full --model gpt-5-mini-2025-08-07 --out .artifacts/eval/full-new.json
+node scripts/evaluate-ai.mjs --rescore .artifacts/eval/full-new.json
+```
+
 `--suite unseen`은 기존 입력을 재사용하지 않은 배송 7·환불 7·구독 6건을 선택한다. `unseen-cases.mjs`의 입력과 정답을 최초 호출 전에 고정했고, 상담 20건에서 분석 24회(후속 답변 4회 포함), 질문 상태 32회, 약속 8회, 재문의 3건·인계 3건을 평가한다. `all`은 과거 보고서의 재채점 호환성을 위해 기존 28건을 그대로 뜻한다. **unseen이라는 이름은 최초 실행 때 미사용이었다는 뜻이다.** 첫 결과를 본 뒤 수정한 실행은 같은 자료에 대한 회귀 평가로 구분한다. 사람이 수집·독립 검수한 실사용 자료는 아니다.
 
 실행 중 각 케이스 결과를 저장하며 기존 결과 파일은 덮어쓰지 않는다. API 오류 자동 재시도는 하지 않으며 제품의 초안 수정과 분석 인용·상태/근거 모순 수정을 각각 한 번 허용하고, 근거가 있는 확인 필요 질문에는 경계 검토를 한 번만 적용한다. 동시 요청은 최대 2개다. 결과에는 데이터/프롬프트/스키마/구현의 SHA-256, 기반 커밋, 실제 반환 모델, 토큰 수, 호출 지연 시간, 구조화된 원본 출력, 검증 후 기록이 들어간다. 실패한 중간 구성도 `results/`에 보존한다. 저장된 대화와 AI 출력도 공개 전에 검토해야 한다. 실제 사용자 대화로 데이터셋을 교체한 경우 결과를 커밋하면 안 된다.

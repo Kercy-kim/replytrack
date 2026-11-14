@@ -10,9 +10,10 @@ import { readImage } from './ocr.mjs';
 
 // Derived reasoning and suggested follow-ups are not independent source facts.
 export const draftQuestionContext = questions => questions.map(({ id, title, source, status, evidence }) => ({ id, title, source, status, evidence }));
-export const draftSourceContext = record => ({
+export const draftSourceContext = (record, kind) => ({
   messages: record.messages.map(({ id, role, text }) => ({ id, role, text })),
   promises: record.promises.map(({ id, title, questionIds, evidence, dueText, state, confirmedAt }) => ({ id, title, questionIds, evidence, dueText, state, ...(confirmedAt ? { confirmedByUser: true } : {}) })),
+  ...(kind === 'handoff' ? { pendingQuestions: record.questions.filter(q => q.status !== 'answered').map(({ id, title }) => ({ id, title })) } : {}),
 });
 export const analysisContext = record => ({
   messages: record.messages,
@@ -147,7 +148,7 @@ export class ReplyTrack {
           const validationErrors = analysisValidationErrors(result.data, c.messages);
           if (!validationErrors.length) break;
           if (attempt === 1) throw new AppError(502, '분석의 원문 인용과 상태를 다시 확인했지만 맞지 않아 저장하지 않았습니다. 기존 기록은 유지됩니다.', 'AI_EVIDENCE');
-          revision = { revisionFeedback: `앞선 생성에서 다음 원문 인용 또는 상태·근거의 일관성 오류가 있었습니다: ${validationErrors.join(', ')}. source는 customer, evidence는 agent의 실제 ID와 정확한 원문 부분 문자열이어야 합니다. 동의어 치환·조사 생략·띄어쓰기 수정·요약을 하지 말고 원문을 그대로 복사하세요. 미답변인데 근거가 있다면 그 근거의 관련성을 다시 판단하고, 관련 안내가 있으면 맞는 상태를 선택하고 무관한 안내면 근거에서 제외하세요. 잘못된 출력을 재사용하지 말고 제공된 원문과 기존 기록에서 전체 분석을 다시 반환하세요.` };
+          revision = { revisionFeedback: `앞선 생성에서 다음 원문 인용 또는 상태·근거의 일관성 오류가 있었습니다: ${validationErrors.join(', ')}. source는 customer, evidence는 agent의 실제 ID와 정확한 원문 부분 문자열이어야 합니다. 동의어 치환·조사 생략·띄어쓰기 수정·요약을 하지 말고 원문을 그대로 복사하세요. 미답변인데 근거가 있다면 그 근거의 관련성을 다시 판단하고, 관련 안내가 있으면 맞는 상태를 선택하고 무관한 안내면 근거에서 제외하세요. 최종 상태를 답하지 않았어도 같은 처리의 실행 방법을 안내했다면 partial이며 방법 안내를 근거에 보존하세요. 미답변 형식에 맞추려고 관련 근거만 삭제하지 마세요. 잘못된 출력을 재사용하지 말고 제공된 원문과 기존 기록에서 전체 분석을 다시 반환하세요.` };
         }
         const uncertain = result.data.questions.filter(q => q.status === 'review' && q.evidence.length);
         if (uncertain.length) {
@@ -202,7 +203,7 @@ export class ReplyTrack {
     if (c.mode === 'demo') {
       draft = validateDraft(demoDraft(c, input.kind, ids), c); model = '준비된 예제';
     } else {
-      const source = { kind: input.kind, ...draftSourceContext(c), questions: draftQuestionContext(input.kind === 'followup' ? selected : c.questions) };
+      const source = { kind: input.kind, ...draftSourceContext(c, input.kind), questions: draftQuestionContext(input.kind === 'followup' ? selected : c.questions) };
       let revisionFeedback = '', previousDraft = null;
       // Bound paid calls: one generation + review, with at most one repair attempt.
       for (let attempt = 0; attempt < 2; attempt++) {

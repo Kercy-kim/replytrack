@@ -1,0 +1,228 @@
+{
+  "mode": "live draft review control probes",
+  "startedAt": "2026-11-14T13:08:27.668Z",
+  "requestedModel": "gpt-5-mini-2025-08-07",
+  "hashes": {
+    "evals/support-cases.mjs": "ab86201457d670ffd62d4844fa66e72711bb4be91ea677260946b3c98a904b8d",
+    "evals/status-boundary-cases.mjs": "482f9f80fb7aaa5998faebed0f515f41c34e9ad20d6feedcc77310cd601a0d96",
+    "evals/unseen-cases.mjs": "c436aedb0dc0bd93528afe1f42ae18f6e066cc0958d00bf2e92ed4662f484f59",
+    "evals/grade.mjs": "ed6a5defa0212d1e473f9235dd8cd877fe046e8d017f80835c4ab9eaecd9145d",
+    "src/prompts.mjs": "b553dd4269be071c6a3af3c57009726412475d01a4480d1dbbef57ccf62e562d",
+    "src/schema.mjs": "10cfc80b547fd039f268dbed85f8ac3812faf41c53af89895728c41e673995ec",
+    "src/domain.mjs": "2e4111560108918cf490975c53610a9b6d1460bfb5f83a5ad69f63d16fc03437",
+    "src/service.mjs": "701914b6c49c560eccdcd9bf7cb61937bf4272aba6a00ea3a8de40ee6884d0c2",
+    "src/openai.mjs": "8b6fdc58984c9206b1d98ff0f97be3418851ddfd91fa1ae3458061a84906ecb4",
+    "src/analysis-changes.mjs": "36d13aaab3b180d7a2081dc22127a79e394ddb1e006136090a10945c88d94d73",
+    "scripts/evaluate-ai.mjs": "79f29a3e2db78942ff6ab81bdb516e4c1f96f1de0cfd7e2840a7d7a5760d06a1",
+    "evals/performance.mjs": "4d7b06a187cd7466e608ace7f5abd333850a883cb3d23f35c8d69551f078558c",
+    "src/privacy.mjs": "75db14559c861418e60fe28f2354d920931cbb44a7cf9e5a4b0b95022e9d16b8",
+    "src/ai-wire.mjs": "73655462fd4966f5889dfd6e82effcb4a13a6e12027574b4f4d120aaf2c79fe1",
+    "src/handoff.mjs": "b2a86dc899ea58d7d9ccde575567fc0c1b36c4525e6218af6f9cc4c752ddd365"
+  },
+  "results": [
+    {
+      "source": "iteration-3/S02",
+      "expectedFailure": "선택한 배송비 질문 누락",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 8961,
+      "data": {
+        "valid": false,
+        "feedback": "미해당(빠짐): 질문 목록의 모든 미해결 항목을 물어야 하는데 초안은 도착일만 묻고 '배송비 금액 문의'(162ab1ea-2dc1-423d-8d7a-38c98ba4b8a3)를 포함하지 않았습니다. 초안에 배송비 금액 문의도 명시적으로 추가하세요. (운송장 번호 인용과 이전 답변에 도착일 안내가 없다는 점은 원문과 일치합니다.)"
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1101,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 1024
+        },
+        "output_tokens": 737,
+        "output_tokens_details": {
+          "reasoning_tokens": 576
+        },
+        "total_tokens": 1838
+      }
+    },
+    {
+      "source": "iteration-3/S06",
+      "expectedFailure": "원문에 없는 동일 상담원 추정",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 11171,
+      "data": {
+        "valid": false,
+        "feedback": "초안이 ‘동일 상담원’이라고 특정하고 있는데, 원문에서 상담원 동일성은 확인되지 않습니다. 담당자 식별이 불가할 경우에는 ‘이전 답변/후속 답변’ 또는 ‘앞선 안내/정정 안내’ 등으로 바꿔 표현하십시오."
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 2042,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 1920
+        },
+        "output_tokens": 989,
+        "output_tokens_details": {
+          "reasoning_tokens": 896
+        },
+        "total_tokens": 3031
+      }
+    },
+    {
+      "source": "baseline/R02",
+      "expectedFailure": "상담원 입장으로 고객 정보 요구",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 24016,
+      "data": {
+        "valid": false,
+        "feedback": "두 가지 수정 필요합니다. 1) 문체가 상담원 쪽 표현을 포함합니다(예: “확인 후 환불 예정 금액을 안내드리겠습니다”). 소비자 초안이므로 상담원이 대신 처리·안내하겠다는 표현은 삭제하고 업체에 환불액 확인을 요청하는 어조로 바꾸세요. 2) “주문번호나 결제 내역을 알려주실 수 있나요?”는 수신자(업체)가 정보를 제공해야 한다는 의미여서 앞뒤가 맞지 않습니다. 주문번호·결제내역은 소비자가 제공하는 정보이므로 해당 문구를 소비자가 정보를 제공한다는 표현으로 수정하세요. (질문 항목은 ‘최종 환불액’ 하나가 요구되어 있는 점은 초안에 반영되어 있습니다.)"
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1089,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 1024
+        },
+        "output_tokens": 2490,
+        "output_tokens_details": {
+          "reasoning_tokens": 2240
+        },
+        "total_tokens": 3579
+      }
+    },
+    {
+      "source": "unseen/baseline/NR05",
+      "expectedFailure": "중간의 계좌 안내를 초기 안내로 요약",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 15580,
+      "data": {
+        "valid": false,
+        "feedback": "문장 \"초기에는 상담원이 계좌 환불이라고 안내했으나\"가 원문과 일치하지 않습니다. 원문 순서는 처음 카드 안내(1e6952b4-9298-4e4f-b260-56b6d743e65e), 그다음 계좌 안내(d866d7cc-7bea-401b-9ae2-458fbeeb37ba), 이후 계좌 안내를 정정하여 카드라고 안내(0953525d-8bfb-40a9-80b3-24b875a4fed6)입니다. '초기에는 계좌'라는 표현을 삭제하거나, 원문 순서대로 ‘앞선 안내 중 계좌 안내가 있었으나 최종 정정은 카드’처럼 실제 순서를 반영하도록 고치세요."
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1946,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 1792
+        },
+        "output_tokens": 1565,
+        "output_tokens_details": {
+          "reasoning_tokens": 1408
+        },
+        "total_tokens": 3511
+      }
+    },
+    {
+      "source": "unseen/baseline/NS03",
+      "expectedFailure": "장소 확인 뒤 안내를 정확히 전달한 정상 인계",
+      "expectedValid": true,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 8331,
+      "data": {
+        "valid": true,
+        "feedback": ""
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 2007,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 1920
+        },
+        "output_tokens": 714,
+        "output_tokens_details": {
+          "reasoning_tokens": 640
+        },
+        "total_tokens": 2721
+      }
+    },
+    {
+      "source": "unseen/iteration-1/NS03",
+      "expectedFailure": "역할명만 쓴 정상 인계를 동일인 주장으로 오인하지 않기",
+      "expectedValid": true,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 11222,
+      "data": {
+        "valid": true,
+        "feedback": ""
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 2009,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 1920
+        },
+        "output_tokens": 1020,
+        "output_tokens_details": {
+          "reasoning_tokens": 960
+        },
+        "total_tokens": 3029
+      }
+    },
+    {
+      "source": "unseen/regression-1/R02",
+      "expectedFailure": "질문형 문장에서 원문에 없는 비용 차감 관계 전제",
+      "expectedValid": false,
+      "reasoningEffort": "medium",
+      "pass": true,
+      "ms": 16891,
+      "data": {
+        "valid": false,
+        "feedback": "두 가지 문제입니다. (1) \"이 금액을 반영한 최종 환불 예정액\" 문구는 반품비가 환불금에서 차감된다는 전제를 담고 있는데, 원문에 차감 관계가 명시되어 있지 않으므로 삭제해야 합니다. (2) \"환불액 산출 내역(상품가, 할인·적립 반영 여부, 반품비 차감 등)\"은 questions에 없는 추가 요구사항입니다. 원문에서 묻지 않은 산출 내역을 새로 요구하므로 삭제해야 합니다. 참고로 \"안내해 주신 반품비는 5,000원으로 확인했습니다.\" 표현 자체는 원문 근거가 있어 사용해도 됩니다."
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "usage": {
+        "input_tokens": 1091,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 1024
+        },
+        "output_tokens": 1719,
+        "output_tokens_details": {
+          "reasoning_tokens": 1536
+        },
+        "total_tokens": 2810
+      }
+    }
+  ],
+  "completedAt": "2026-11-14T13:10:03.865Z"
+}

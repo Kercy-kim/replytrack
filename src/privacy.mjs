@@ -6,7 +6,9 @@ const region = '(?:(?:[가-힣]{2,}(?:특별자치시|특별자치도|특별시|
 const road = '[가-힣A-Za-z][가-힣A-Za-z0-9·.]*?(?:대로|로|길)(?:\\s*\\d+(?:번길|길))?\\s*\\d+(?:-\\d+)?';
 const lot = '(?:[가-힣][가-힣0-9·]*(?:동|리)|[가-힣·]+\\d+가)\\s*(?:산\\s*)?\\d+(?:-\\d+)?(?:번지)?';
 const detail = '(?:[ ,]+(?:[가-힣A-Za-z]+(?:아파트|빌라|오피스텔|빌딩|타워)\\s*)?(?:[A-Za-z가-힣0-9-]+동\\s*)?\\d+(?:층|호)(?:\\s*\\d+호)?|\\s*\\([가-힣0-9 ,·-]+\\))*';
-const address = new RegExp(`(?<![가-힣A-Za-z0-9])(?:${region}){0,4}(?:${lot}|${road})(?![\\d-]|[,\\.]\\d|[ \\t]*(?:원|만원|천원|%|일|시간|분|초|개월|건|개|회))${detail}`, 'g');
+// Numeric ranges and business-day units belong to durations/prices, not street numbers.
+const quantity = '[ \\t]*(?:[~～〜–—-][ \\t]*\\d+(?:[,\\.]\\d+)*[ \\t]*)?(?:원|만원|천원|%|영업일|일|시간|분|초|개월|건|개|회)';
+const address = new RegExp(`(?<![가-힣A-Za-z0-9])(?:${region}){0,4}(?:${lot}|${road})(?![\\d-]|[,\\.]\\d|${quantity})${detail}`, 'g');
 
 const walk = (value, convert) => typeof value === 'string' ? convert(value) : Array.isArray(value) ? value.map(v => walk(v, convert))
   : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([k, v]) => [k, walk(v, convert)])) : value;
