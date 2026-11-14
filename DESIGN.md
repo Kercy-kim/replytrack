@@ -12,21 +12,21 @@ colors:
   nav-hover: "#f5f7f0"
   supporting-ink: "#536958"
   promise-ink: "#705f3a"
-  evidence-ink: "#71805f"
+  evidence-ink: "#536958"
   evidence-surface: "#f7f9f3"
   field-border: "#d9dfd7"
   focus-action: "#88ad66"
   focus-field: "#82a78c"
   waiting-surface: "#fbf1e0"
-  waiting-ink: "#946c24"
+  waiting-ink: "#795a1d"
   answered-surface: "#edf4e5"
-  answered-ink: "#5f7d39"
+  answered-ink: "#3f5d39"
   unanswered-surface: "#faeee8"
-  unanswered-ink: "#a2664c"
+  unanswered-ink: "#8a4935"
   partial-surface: "#eef1f9"
-  partial-ink: "#6379a1"
+  partial-ink: "#425a85"
   review-surface: "#f3edf7"
-  review-ink: "#89659b"
+  review-ink: "#6c4780"
   promise-surface: "#fdfdf8"
   danger: "#aa463d"
 typography:
@@ -59,7 +59,7 @@ typography:
     lineHeight: 1.8
   evidence:
     fontFamily: "Inter, \"Pretendard\", \"Segoe UI\", \"Malgun Gothic\", sans-serif"
-    fontSize: "11px"
+    fontSize: "14px"
     fontWeight: 400
     lineHeight: 1.8
   control:
@@ -69,9 +69,9 @@ typography:
     lineHeight: 1.4
   badge:
     fontFamily: "Inter, \"Pretendard\", \"Segoe UI\", \"Malgun Gothic\", sans-serif"
-    fontSize: "10px"
+    fontSize: "12px"
     fontWeight: 500
-    lineHeight: 1.4
+    lineHeight: 1.5
   dialog:
     fontFamily: "Inter, \"Pretendard\", \"Segoe UI\", \"Malgun Gothic\", sans-serif"
     fontSize: "22px"
@@ -259,8 +259,8 @@ ReplyTrack은 친근하고 정돈된 상담 작업 공간이다. 딥 그린의 �
 - **Headline:** 상담 제목. 기본 27px, 1200px 이하 25px, 960px 이하 23px, 650px 이하 22px, 1600px 이상 30px. 프런트매터는 기본 구간 값이다.
 - **Title:** 질문 제목. 기본 14px, 모바일 13px, 1600px 이상 15px. 질문의 번호와 상태 라벨이 제목보다 먼저 배치된다.
 - **Body / Supporting:** 기본 텍스트 14px. 원문과 판단 이유는 최종 보정으로 13px, 650px 이하 12px. 원문 줄 높이는 1.95, 판단 이유는 1.8이다.
-- **Evidence:** 인용 문장은 11px, 줄 높이 1.8. 모바일에서도 11px을 유지한다.
-- **Control / Badge:** 기본 버튼은 13px, 상태 라벨은 최종 10px이다. 모바일의 질문 선택 목록 안 상태 라벨만 9px이다. 작은 버튼·탭·보조 메타데이터에는 개별 크기가 있으므로 모든 라벨을 하나로 치환하지 않는다.
+- **Evidence:** 인용 문장은 14px, 줄 높이 1.8. 모바일에서도 14px을 유지한다.
+- **Control / Badge:** 기본 버튼은 13px, 상태 라벨은 질문 선택 목록과 모바일을 포함해 12px, 줄 높이 1.5이다. 작은 버튼·탭·보조 메타데이터에는 개별 크기가 있으므로 모든 라벨을 하나로 치환하지 않는다.
 - **Dialog / Eyebrow:** 기본 대화상자 제목은 22px, 모바일 20px. 짧은 영문 eyebrow는 넓은 자간으로 구분하되 한국어 본문에 적용하지 않는다.
 
 **The 최종 적용값 규칙 Rule.** 같은 선택자가 다시 선언되면 CSS 뒤쪽의 가독성 보정과 마지막 모바일 보정까지 적용한 값을 따른다.
@@ -276,7 +276,7 @@ ReplyTrack은 친근하고 정돈된 상담 작업 공간이다. 딥 그린의 �
 | 960px 이하 | 사이드바 190px, 메인 좌우 22px. 작업 영역 1열. 원문·질문 확인표 전환 버튼으로 한 영역씩 표시. 현황 수치 2열. 원문 내부 높이 제한 해제 |
 | 650px 이하 | 사이드바가 상단의 일반 흐름으로 전환. 메인 좌우 18px, 상담 목록은 가로 스크롤, 상단 바 52px. 질문 카드 패딩 15px 16px, 대화상자 패딩 23px 20px |
 
-폼의 제목·업체명은 모바일에서도 현재 2열이다. 새 입력 항목 추가 시 기존 반응형 동작을 임의로 단순화하지 않는다. 확인한 390px 상담 화면은 가로 넘침이 없었다. 이는 해당 예제·뷰포트 확인이며 모든 콘텐츠에 대한 보증은 아니다.
+폼의 제목·업체명은 모바일에서도 현재 2열이다. 검토 메시지의 날짜·시간은 별도 라벨이 있는 전체 너비 행에 배치한다. 추가 답변 폼은 모바일에서 발화자와 날짜를 세로로 배치한다. 실제 상담의 주요 행동인 `새 답변 추가`를 상담 상단에 두고 모바일에서는 전체 너비로 표시한다. 새 입력 항목 추가 시 기존 반응형 동작을 임의로 단순화하지 않는다. 확인한 390px 상담 화면은 가로 넘침이 없었다. 이는 해당 예제·뷰포트 확인이며 모든 콘텐츠에 대한 보증은 아니다.
 
 간격은 역할별 값이다. 프런트매터의 `spacing`은 재사용되는 값을 추출한 목록이며, 현재 코드에 없는 4px/8px 정규 척도가 존재한다고 해석하지 않는다. 패딩 조합은 각 `components` 토큰을 따른다.
 
@@ -336,7 +336,7 @@ ReplyTrack은 친근하고 정돈된 상담 작업 공간이다. 딥 그린의 �
 
 ### Dialogs and feedback
 
-네이티브 dialog에 제목·닫기·폼·행동 영역을 둔다. AI 작업 중에는 입력과 일반 행동을 비활성화하되 `작업 취소`는 활성 상태로 유지한다. 서버의 실제 처리 단계·경과 시간과 거친 단계를 표시하며 추정 완료율은 사용하지 않는다. 단계 변화는 상태 알림으로 전달하고 초 단위 타이머는 반복 낭독하지 않는다. 오류는 role=alert, 진행·토스트는 상태 알림으로 전달한다. 배경 blur와 내부 스크롤, 모바일 여백을 보존한다.
+네이티브 dialog에 제목·닫기·폼·행동 영역을 둔다. AI 작업 중에는 변경·저장 행동을 제한하되 상담 탐색, 탭·원문 조회, 기존 초안 복사·내려받기와 `작업 취소`를 허용한다. 진행 안내에 작업 대상 상담을 표시하고 다른 상담으로 이동해도 완료 결과가 현재 화면을 바꾸지 않는다. 생성 중 초안은 읽기 전용으로 선택·복사할 수 있다. 새 상담 입력은 탭 메모리에 보관해 설정·이전 단계·닫기 후 복원하며 브라우저 저장소에는 원문·캡처·키를 임시 저장하지 않는다. 서버의 실제 처리 단계·경과 시간과 거친 단계를 표시하며 추정 완료율은 사용하지 않는다. 단계 변화는 상태 알림으로 전달하고 초 단위 타이머는 반복 낭독하지 않는다. 오류는 role=alert, 진행·토스트는 상태 알림으로 전달한다. 배경 blur와 내부 스크롤, 모바일 여백을 보존한다.
 
 ## 웹 상담 홈과 편집 상태
 
