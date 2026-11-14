@@ -67,3 +67,17 @@ node --env-file=.env scripts/evaluate-handoff.mjs --only review-probes --out .ar
 생성·검증·검토·수정·저장을 포함한 완료 시간을 비교하고 실패 시간도 남긴다. 누락된 사용량이 있으면 전체 토큰 절감률은 계산하지 않는다. 비교 도구는 소스·자료·평가 코드 해시 불일치, 누락·중복·다른 모델을 거절한다. 현재 구현이 실패하면 종료 코드 1이며, 실행 성공과 별도로 모든 본문을 원문 및 고정 기준에 대조해야 한다. `--variant current`는 개선안만 실행하는 진단용이며 전후 비교 도구 입력으로 사용할 수 없다.
 
 `results/handoff/`에는 채택하지 않은 후보, 최종 전체 비교, 정상·오류 초안 검토 대조를 보관한다. `handoff-review-probes.json`의 9개 대조는 후보의 오류 5개와 정상 4개를 검사하며 생성 성능의 분모에 더하지 않는다. 각 정답은 검토 API 호출 전에 고정했다. 이전 `draft-probes` 7개도 실제 제품의 초안 종류에 맞는 검토 지침으로 실행한다. 모델의 내부 검토 통과만으로 독립적인 품질 점수를 주장하지 않는다. [인계 보고서](../docs/HANDOFF-PERFORMANCE.md)에 실제 측정과 원문 대조를 기록한다.
+
+## 50초 초과 인계 후속 비교
+
+`--suite tail`은 기준 main `67b8e5a`와 `handoff-tail-cases.json`을 사용한다. 이전과 같은 12개 기록에서 R03 6회, NR05 4회, 나머지 각 1회로 전후 20쌍이다. 새로운 상담 20개가 아니다. 별도 `--only repair-probes`는 보존한 실패 초안 4개를 각 2회 재생해 **수정·최종 검토만** 전후 8쌍 비교한다. 첫 실패 생성·검토는 재생값이며 시간·토큰에 넣지 않는다. 서버가 거절한 내부 ID 초안에는 가짜 검토 실패를 재생하지 않는다. 개선안에서 코드로 표기를 정리한 결과도 실제 AI 검토를 받는다.
+
+```powershell
+node scripts/prepare-handoff-tail-eval.mjs
+node --env-file=.env scripts/evaluate-handoff.mjs --suite tail --out .artifacts/eval/tail-new.json
+node scripts/compare-handoff.mjs .artifacts/eval/tail-new.json
+node --env-file=.env scripts/evaluate-handoff.mjs --suite tail --only repair-probes --out .artifacts/eval/repair-new.json
+node scripts/compare-handoff.mjs .artifacts/eval/repair-new.json
+```
+
+비교 도구는 suite·mode가 다른 전체 생성/수정 재생의 혼합을 거절한다. 실패 시간도 포함한 50초 초과 횟수를 집계한다. 최종 기록은 `results/handoff-tail/full.json`, 수정 재생은 `repairs.json`, 제외한 low 수정 후보는 `rejected-low-repairs.json`이다. 각 최종 집계는 `full-comparison.json`, `repair-comparison.json`에 보관했다. 실제 모델 버전·소스·평가 코드·자료 해시와 각 호출의 시도 번호·추론량·사용량을 남긴다. [후속 보고서](../docs/HANDOFF-TAIL-PERFORMANCE.md)에 전체 생성 20/20회와 수정 8/8회의 원문 대조, 느려진 쌍, 실패를 포함한 한계를 기록했다.

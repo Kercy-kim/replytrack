@@ -3,7 +3,7 @@ import { newCase, message, history, applyAnalysis, analysisValidationErrors, val
 import { createDemo, advanceDemo, demoAnalysis, demoDraft } from './demo.mjs';
 import { analysisSchemaFor, transcriptSchema, draftSchemaFor, draftReviewSchema, boundaryReviewSchemaFor } from './schema.mjs';
 import { ANALYSIS_PROMPT, TRANSCRIPT_PROMPT, DRAFT_PROMPT, DRAFT_REVIEW_PROMPT, BOUNDARY_REVIEW_PROMPT } from './prompts.mjs';
-import { HANDOFF_PROMPT, HANDOFF_REVIEW_PROMPT } from './handoff.mjs';
+import { HANDOFF_PROMPT, HANDOFF_REPAIR_PROMPT, HANDOFF_REVIEW_PROMPT, stripInternalCitations } from './handoff.mjs';
 
 // Derived reasoning and suggested follow-ups are not independent source facts.
 export const draftQuestionContext = questions => questions.map(({ id, title, source, status, evidence }) => ({ id, title, source, status, evidence }));
@@ -155,11 +155,14 @@ export class ReplyTrack {
       let revisionFeedback = '', previousDraft = null;
       // Bound paid calls: one generation + review, with at most one repair attempt.
       for (let attempt = 0; attempt < 2; attempt++) {
-        const result = await this.withAI(() => this.ai.structured({ name: 'replytrack_draft', schema: draftSchemaFor(c.messages), instructions: input.kind === 'handoff' ? HANDOFF_PROMPT : DRAFT_PROMPT, reasoningEffort: attempt === 0 ? 'low' : 'medium',
+        const result = await this.withAI(() => this.ai.structured({ name: 'replytrack_draft', schema: draftSchemaFor(c.messages), instructions: input.kind === 'handoff' ? (attempt === 0 ? HANDOFF_PROMPT : HANDOFF_REPAIR_PROMPT) : DRAFT_PROMPT, reasoningEffort: attempt === 0 ? 'low' : 'medium',
           data: { ...context, ...(revisionFeedback ? { revisionFeedback, previousDraft } : {}) } }));
         model = result.model; previousDraft = result.data;
         let candidate;
-        try { candidate = validateDraft(result.data, c); }
+        try {
+          candidate = validateDraft(input.kind === 'handoff' ? stripInternalCitations(result.data, c) : result.data, c);
+          if (input.kind === 'handoff') previousDraft = candidate;
+        }
         catch (error) {
           if (attempt === 1) throw error;
           revisionFeedback = error.message; continue;

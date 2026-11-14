@@ -4,7 +4,7 @@ import { CaseStore } from '../src/store.mjs';
 import { ReplyTrack, draftSourceContext } from '../src/service.mjs';
 import { createDemo } from '../src/demo.mjs';
 import { draftSchema, draftSchemaFor } from '../src/schema.mjs';
-import { HANDOFF_PROMPT, HANDOFF_REVIEW_PROMPT } from '../src/handoff.mjs';
+import { HANDOFF_PROMPT, HANDOFF_REPAIR_PROMPT, HANDOFF_REVIEW_PROMPT } from '../src/handoff.mjs';
 import { DRAFT_PROMPT, DRAFT_REVIEW_PROMPT } from '../src/prompts.mjs';
 
 function setup(respond) {
@@ -36,7 +36,7 @@ test('draft reference schema permits only message IDs from this conversation, ne
   } finally { t.store.close(); }
 });
 
-test('handoff uses its own instructions with a low first attempt and medium review/repair', async () => {
+test('handoff uses focused repair but preserves medium repair/review and full source', async () => {
   const t = setup((input, count, record) => input.name === 'replytrack_draft' ? draft(record) : { valid: count === 4, feedback: count === 2 ? '안내의 시간 순서를 확인하세요.' : '' });
   try {
     const saved = await t.service.draft(t.record.id, { ...t.input, kind: 'handoff' });
@@ -44,7 +44,12 @@ test('handoff uses its own instructions with a low first attempt and medium revi
     assert.equal(t.calls.length, 4);
     assert.deepEqual(t.calls.map(c => c.reasoningEffort), ['low', 'medium', 'medium', 'medium']);
     assert.equal(t.calls[0].instructions, HANDOFF_PROMPT);
-    assert.equal(t.calls[2].instructions, HANDOFF_PROMPT);
+    assert.equal(t.calls[2].instructions, HANDOFF_REPAIR_PROMPT);
+    assert.equal(t.calls[2].data.previousDraft.body, draft(t.record).body);
+    assert.equal(t.calls[2].data.revisionFeedback, '안내의 시간 순서를 확인하세요.');
+    assert.deepEqual(t.calls[2].data.messages, t.calls[0].data.messages);
+    assert.deepEqual(t.calls[2].data.questions, t.calls[0].data.questions);
+    assert.deepEqual(t.calls[2].data.promises, t.calls[0].data.promises);
     assert.equal(t.calls[1].instructions, HANDOFF_REVIEW_PROMPT);
     assert.equal(t.calls[3].instructions, HANDOFF_REVIEW_PROMPT);
     assert.notEqual(t.calls[0].instructions, DRAFT_PROMPT);
@@ -121,6 +126,42 @@ test('handoff speed settings do not bypass review or overwrite an edited draft a
     assert.deepEqual(t.store.get(saved.id).drafts, saved.drafts);
     assert.equal(t.store.get(saved.id).version, saved.version);
   } finally { t.store.close(); }
+});
+
+test('handoff pure internal citations are cleaned without regenerating and still reviewed', async () => {
+  const t = setup((input, count, record) => input.name === 'replytrack_draft'
+    ? draft(record, count === 1 ? `안내받은 내용(${record.messages[0].id})입니다.` : undefined)
+    : { valid: true, feedback: '' });
+  try {
+    const saved = await t.service.draft(t.record.id, { ...t.input, kind: 'handoff' });
+    assert.deepEqual(t.calls.map(c => c.name), ['replytrack_draft','replytrack_draft_review']);
+    assert.deepEqual(t.calls.map(c => c.reasoningEffort), ['low','medium']);
+    assert.equal(t.calls[1].data.draft.body,'안내받은 내용입니다.');
+    assert.deepEqual(t.calls[1].data.messages,t.calls[0].data.messages);
+    assert.equal(saved.drafts.handoff.body,'안내받은 내용입니다.');
+    assert.equal(saved.drafts.handoff.review.attempts,1);
+  } finally { t.store.close(); }
+});
+
+test('bare handoff IDs still trigger a medium repair, and cleaned prose cannot bypass a failed review', async () => {
+  const t = setup((input, count, record) => input.name === 'replytrack_draft'
+    ? draft(record, count === 1 ? `안내 근거는 ${record.messages[0].id}입니다.` : undefined)
+    : { valid: true, feedback: '' });
+  try {
+    await t.service.draft(t.record.id, { ...t.input, kind: 'handoff' });
+    assert.deepEqual(t.calls.map(c => c.reasoningEffort),['low','medium','medium']);
+    assert.equal(t.calls[1].instructions,HANDOFF_REPAIR_PROMPT);
+    assert(t.calls[1].data.revisionFeedback.includes('내부 메시지 ID'));
+  } finally { t.store.close(); }
+  const rejected = setup((input, count, record) => input.name === 'replytrack_draft'
+    ? draft(record, `처리 완료(${record.messages[0].id})입니다.`)
+    : { valid: false, feedback: '완료 근거 없음' });
+  try {
+    await assert.rejects(() => rejected.service.draft(rejected.record.id,{...rejected.input,kind:'handoff'}),{code:'DRAFT_REVIEW'});
+    assert.equal(rejected.calls.length,4);
+    assert.equal(rejected.store.get(rejected.record.id).drafts.handoff,undefined);
+    assert.equal(rejected.calls[2].data.previousDraft.body,'처리 완료입니다.');
+  } finally { rejected.store.close(); }
 });
 test('review provider errors and concurrent edits cannot overwrite stored work', async () => {
   for (const mode of ['offline', 'conflict']) {

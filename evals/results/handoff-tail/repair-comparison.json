@@ -1,0 +1,184 @@
+{
+  "sourceReports": [
+    {
+      "path": "evals/results/handoff-tail/repairs.json",
+      "sha256": "2f03b368ade0e4b2603cdc687b7297ea4522d62e60726f5319ffb8f802dfb7a0"
+    }
+  ],
+  "requestedModel": "gpt-5-mini-2025-08-07",
+  "mode": "paired repair-only replay; initial failed generation/review excluded",
+  "suite": "tail",
+  "fixtureHash": "55f31470ae6b87725004296af0c1242303edacb5ec165062251bd8fcf2e6ea06",
+  "pairCount": 8,
+  "over50Seconds": {
+    "before": 0,
+    "after": 0
+  },
+  "before": {
+    "inputTokens": 20721,
+    "cachedInputTokens": 16128,
+    "outputTokens": 11713,
+    "reasoningTokens": 10496,
+    "totalTokens": 32434,
+    "calls": 14,
+    "callsWithoutUsage": 0,
+    "analysisMs": {
+      "count": 0,
+      "median": null,
+      "p95": null
+    },
+    "draftMs": {
+      "count": 8,
+      "median": 21577,
+      "p95": 26495
+    },
+    "failedOperations": 2
+  },
+  "after": {
+    "inputTokens": 22891,
+    "cachedInputTokens": 13568,
+    "outputTokens": 11389,
+    "reasoningTokens": 10240,
+    "totalTokens": 34280,
+    "calls": 14,
+    "callsWithoutUsage": 0,
+    "analysisMs": {
+      "count": 0,
+      "median": null,
+      "p95": null
+    },
+    "draftMs": {
+      "count": 8,
+      "median": 22369,
+      "p95": 24617
+    },
+    "failedOperations": 0
+  },
+  "beforeSaved": 6,
+  "afterSaved": 8,
+  "beforeRepairs": 6,
+  "afterRepairs": 6,
+  "reductionPercent": {
+    "median": -3.67,
+    "p95": 7.09,
+    "totalTokens": -5.69
+  },
+  "completeUsagePairs": {
+    "note": "Successful paired subset only; not the full-run success rate or overall token saving.",
+    "count": 6,
+    "ids": [
+      "repair-R03#1",
+      "repair-R03#2",
+      "repair-NR05#1",
+      "repair-NR05#2",
+      "repair-H02#1",
+      "repair-H02#2"
+    ],
+    "before": {
+      "inputTokens": 17973,
+      "cachedInputTokens": 13568,
+      "outputTokens": 9888,
+      "reasoningTokens": 8960,
+      "totalTokens": 27861,
+      "calls": 12,
+      "callsWithoutUsage": 0,
+      "analysisMs": {
+        "count": 0,
+        "median": null,
+        "p95": null
+      },
+      "draftMs": {
+        "count": 6,
+        "median": 23585,
+        "p95": 26495
+      },
+      "failedOperations": 0
+    },
+    "after": {
+      "inputTokens": 16407,
+      "cachedInputTokens": 10624,
+      "outputTokens": 7888,
+      "reasoningTokens": 7168,
+      "totalTokens": 24295,
+      "calls": 10,
+      "callsWithoutUsage": 0,
+      "analysisMs": {
+        "count": 0,
+        "median": null,
+        "p95": null
+      },
+      "draftMs": {
+        "count": 6,
+        "median": 21858,
+        "p95": 22610
+      },
+      "failedOperations": 0
+    },
+    "tokenReductionPercent": 12.8
+  },
+  "paired": [
+    {
+      "id": "repair-R03#1",
+      "beforeMs": 26495,
+      "afterMs": 22369,
+      "beforeError": null,
+      "afterError": null
+    },
+    {
+      "id": "repair-R03#2",
+      "beforeMs": 24502,
+      "afterMs": 22610,
+      "beforeError": null,
+      "afterError": null
+    },
+    {
+      "id": "repair-NR05#1",
+      "beforeMs": 23585,
+      "afterMs": 12213,
+      "beforeError": null,
+      "afterError": null
+    },
+    {
+      "id": "repair-NR05#2",
+      "beforeMs": 21577,
+      "afterMs": 9259,
+      "beforeError": null,
+      "afterError": null
+    },
+    {
+      "id": "repair-U06#1",
+      "beforeMs": 10680,
+      "afterMs": 23581,
+      "beforeError": {
+        "code": "DRAFT_ACTOR",
+        "message": "원문에서 상담원이 같은 사람인지 다른 사람인지 확인되지 않습니다. 담당자 동일성을 추정하지 말고 이전 답변과 후속 답변으로 표현해 주세요."
+      },
+      "afterError": null
+    },
+    {
+      "id": "repair-U06#2",
+      "beforeMs": 13028,
+      "afterMs": 24617,
+      "beforeError": {
+        "code": "DRAFT_ACTOR",
+        "message": "원문에서 상담원이 같은 사람인지 다른 사람인지 확인되지 않습니다. 담당자 동일성을 추정하지 말고 이전 답변과 후속 답변으로 표현해 주세요."
+      },
+      "afterError": null
+    },
+    {
+      "id": "repair-H02#1",
+      "beforeMs": 18297,
+      "afterMs": 21858,
+      "beforeError": null,
+      "afterError": null
+    },
+    {
+      "id": "repair-H02#2",
+      "beforeMs": 15820,
+      "afterMs": 14773,
+      "beforeError": null,
+      "afterError": null
+    }
+  ],
+  "semanticReview": "Saved output is not an independent quality score. Review every before/after draft against frozen source and rubric."
+}
