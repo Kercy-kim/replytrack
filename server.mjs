@@ -16,6 +16,7 @@ const staticFiles = new Map([['/', ['index.html', 'text/html']], ['/app.js', ['a
 staticFiles.set('/workspace.js', ['workspace.js', 'text/javascript']);
 staticFiles.set('/operations.js', ['operations.js', 'text/javascript']);
 staticFiles.set('/onboarding.js', ['onboarding.js', 'text/javascript']);
+staticFiles.set('/next-actions.js', ['next-actions.js', 'text/javascript']);
 
 export function createApp({ store, ai, ocr } = {}) {
   const db = store ?? new CaseStore(resolve(root, process.env.REPLYTRACK_DATA_DIR || 'data', 'replytrack.sqlite'));
@@ -50,10 +51,10 @@ export function createApp({ store, ai, ocr } = {}) {
       if (method === 'PUT' && path === '/api/config') return json(service.configure(body));
       if (method === 'POST' && path === '/api/operations') {
         const { id, kind, caseId, input = {} } = body;
-        assert(['preflight', 'prepare', 'extract', 'analyze', 'draft'].includes(kind), '작업 종류를 확인해 주세요.');
+        assert(['preflight', 'prepare', 'extract', 'analyze', 'draft', 'actions'].includes(kind), '작업 종류를 확인해 주세요.');
         assert(input && typeof input === 'object' && !Array.isArray(input), '작업 입력을 확인해 주세요.');
         // Do optimistic-version validation before spending any provider tokens.
-        const record = ['analyze', 'draft'].includes(kind) ? service.getVersion(caseId, input.version) : null;
+        const record = ['analyze', 'draft', 'actions'].includes(kind) ? service.getVersion(caseId, input.version) : null;
         return json(operations.start(id, async context => {
           if (kind === 'preflight') return service.preflight(context);
           if (kind === 'prepare') return service.prepare(input, context);
@@ -61,6 +62,7 @@ export function createApp({ store, ai, ocr } = {}) {
           checkpoint(context);
           if (kind === 'extract') return service.extract(input, context);
           if (kind === 'analyze') return service.analyze(caseId, input.version, context);
+          if (kind === 'actions') return service.actions(caseId, input.version, context);
           return service.draft(caseId, input, context);
         }), 202);
       }
@@ -69,9 +71,9 @@ export function createApp({ store, ai, ocr } = {}) {
       if (operation && method === 'DELETE') return json(operations.cancel(operation[1]));
       if (method === 'GET' && path === '/api/cases') return json(db.list());
       if (method === 'POST' && path === '/api/cases') return json(service.create(body), 201);
-      if (method === 'POST' && path === '/api/demo') return json(service.demo(), 201);
+      if (method === 'POST' && path === '/api/demo') return json(service.demo(body), 201);
       if (method === 'POST' && path === '/api/extract') return json(await service.extract(body));
-      const match = path.match(/^\/api\/cases\/([\w-]+)(?:\/(analyze|messages|questions|promises|drafts|demo-next)(?:\/([\w-]+))?)?$/);
+      const match = path.match(/^\/api\/cases\/([\w-]+)(?:\/(analyze|messages|questions|promises|drafts|actions|demo-next)(?:\/([\w-]+))?)?$/);
       if (match) {
         const [, id, action, item] = match;
         if (!action && method === 'GET') return json(db.get(id));
@@ -82,6 +84,7 @@ export function createApp({ store, ai, ocr } = {}) {
         if (action === 'demo-next' && method === 'POST') return json(service.advance(id, body.version));
         if (action === 'questions' && item && method === 'PATCH') return json(service.question(id, item, body));
         if (action === 'promises' && item && method === 'PATCH') return json(service.promise(id, item, body));
+        if (action === 'actions' && item && method === 'PATCH') return json(service.completeAction(id, item, body));
         if (action === 'drafts' && method === 'POST') return json(await service.draft(id, body));
         if (action === 'drafts' && item && method === 'PATCH') return json(service.saveDraft(id, item, body));
       }

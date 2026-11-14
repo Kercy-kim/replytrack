@@ -98,7 +98,7 @@ try {
   results.push('Draft semantic-review cancellation preserves DB, saved draft and unsaved editor text; 390px layout has no horizontal overflow');
 
   await page.setViewportSize({ width: 1440, height: 1050 });
-  await page.locator('[data-action="append"]').click(); await modal.locator('[data-action="guard-continue"]').click();
+  await page.getByRole('button', { name: '새 답변 추가', exact: true }).click(); await modal.locator('[data-action="guard-continue"]').click();
   await page.locator('#append-form [name=text]').fill('전화번호 010-8765-4321로 배송 관련 안내를 드리겠습니다.');
   ai.hold('replytrack_analysis');
   await page.locator('#append-form button[type=submit]').click();
