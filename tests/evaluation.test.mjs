@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { cases } from '../evals/support-cases.mjs';
+import { boundaryCases } from '../evals/status-boundary-cases.mjs';
 import { grade, summarize } from '../evals/grade.mjs';
 
 const record = () => ({
@@ -47,7 +48,9 @@ test('frozen synthetic set covers 20 cases and every expected message exists', (
   assert.equal(cases.length, 20);
   assert.equal(new Set(cases.map(c => c.id)).size, 20);
   assert.deepEqual(['배송', '환불', '구독'].map(category => cases.filter(c => c.category === category).length), [7, 7, 6]);
-  for (const c of cases) {
+  assert.equal(boundaryCases.length, 8);
+  assert.equal(new Set([...cases, ...boundaryCases].map(c => c.id)).size, 28);
+  for (const c of [...cases, ...boundaryCases]) {
     for (const [messages, gold] of [[c.messages, c.expected], ...(c.next ? [[c.messages.concat(c.next), c.after]] : [])]) {
       for (const q of gold.questions) { assert.equal(messages[q.message].role, 'customer'); for (const i of q.evidence) assert.equal(messages[i].role, 'agent'); }
       for (const p of gold.promises) assert.equal(messages[p.message].role, 'agent');

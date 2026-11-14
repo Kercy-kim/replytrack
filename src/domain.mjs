@@ -78,6 +78,10 @@ export function applyAnalysis(record, raw, meta = {}) {
       status = 'review'; reason = 'AI가 제시한 답변 근거를 원문에서 확인하지 못했습니다. 직접 확인해 주세요.';
       warnings.push('일부 답변 근거가 검증되지 않아 확인 필요로 표시했습니다.');
     }
+    if (status === 'unanswered' && evidence.length) {
+      status = 'review'; reason = '미답변 판정과 답변 근거가 함께 제시되어 일치하지 않습니다. 인용된 안내를 직접 확인해 주세요.';
+      warnings.push('미답변 판정에 답변 근거가 있어 확인 필요로 표시했습니다.');
+    }
     const title = typeof q.title === 'string' && q.title.trim() ? q.title.slice(0, 200) : q.source.quote.slice(0, 200);
     questions.push({
       id, title: old?.manualTitle ?? title, source: old?.source ?? q.source,
