@@ -6,21 +6,22 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { cases } from '../evals/support-cases.mjs';
 import { boundaryCases } from '../evals/status-boundary-cases.mjs';
+import { unseenCases } from '../evals/unseen-cases.mjs';
 import { grade, summarize } from '../evals/grade.mjs';
 import { OpenAIClient } from '../src/openai.mjs';
 import { CaseStore } from '../src/store.mjs';
-import { ReplyTrack } from '../src/service.mjs';
+import { ReplyTrack, draftQuestionContext, draftSourceContext } from '../src/service.mjs';
 import { DRAFT_REVIEW_PROMPT } from '../src/prompts.mjs';
 import { draftReviewSchema } from '../src/schema.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const hash = value => createHash('sha256').update(value).digest('hex');
-const sourceFiles = ['evals/support-cases.mjs', 'evals/status-boundary-cases.mjs', 'evals/grade.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/domain.mjs', 'src/service.mjs', 'src/openai.mjs', 'src/analysis-changes.mjs', 'scripts/evaluate-ai.mjs'];
-const suites = { support: cases, boundary: boundaryCases, all: [...cases, ...boundaryCases] };
+const sourceFiles = ['evals/support-cases.mjs', 'evals/status-boundary-cases.mjs', 'evals/unseen-cases.mjs', 'evals/grade.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/domain.mjs', 'src/service.mjs', 'src/openai.mjs', 'src/analysis-changes.mjs', 'scripts/evaluate-ai.mjs'];
+const suites = { support: cases, boundary: boundaryCases, all: [...cases, ...boundaryCases], unseen: unseenCases };
 const args = process.argv.slice(2);
 const option = (name, fallback) => args.includes(name) ? args[args.indexOf(name) + 1] : fallback;
 if (args.includes('--help')) {
-  console.log('--suite support|boundary|all selects the frozen cases. --analysis-only skips draft generation/review. Interactive JSON also accepts suite and analysisOnly.');
+  console.log('--suite support|boundary|all|unseen selects the frozen cases. all preserves the original 28 cases; unseen selects the new 20. --analysis-only skips draft generation/review. Interactive JSON also accepts suite and analysisOnly.');
   console.log('Live evaluation (paid API calls): node --env-file=.env scripts/evaluate-ai.mjs --out .artifacts/eval/run.json [--only S01,R03] [--model gpt-5-mini]\n--key-stdin accepts one hidden line; --interactive keeps credentials in memory for another run after code changes. Never writes the key.\nScore saved output offline: node scripts/evaluate-ai.mjs --rescore path/to/run.json');
   process.exit(0);
 }
@@ -29,7 +30,8 @@ if (args.includes('--rescore')) {
   if (report.hashes['evals/support-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/support-cases.mjs')))) throw new Error('Dataset hash mismatch');
   const suiteCases = suites[report.suite || 'support'];
   if (!suiteCases) throw new Error('Unknown saved suite');
-  if (report.suite && report.suite !== 'support' && report.hashes['evals/status-boundary-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/status-boundary-cases.mjs')))) throw new Error('Boundary dataset hash mismatch');
+  if (['boundary', 'all'].includes(report.suite) && report.hashes['evals/status-boundary-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/status-boundary-cases.mjs')))) throw new Error('Boundary dataset hash mismatch');
+  if (report.suite === 'unseen' && report.hashes['evals/unseen-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/unseen-cases.mjs')))) throw new Error('Unseen dataset hash mismatch');
   for (const result of report.results) {
     const testCase = suiteCases.find(c => c.id === result.id);
     if (!testCase) throw new Error('Unknown saved case');
@@ -124,19 +126,23 @@ async function runDraftProbes({ out, model }) {
   // These are review-only calls, not additional generated/evaluated conversations.
   const path = resolve(root, out);
   if (existsSync(path)) throw new Error('Output already exists');
-  const probes = [['iteration-3', 'S02', '선택한 배송비 질문 누락'], ['iteration-3', 'S06', '원문에 없는 동일 상담원 추정'], ['baseline', 'R02', '상담원 입장으로 고객 정보 요구']];
+  const probes = [['iteration-3', 'S02', '선택한 배송비 질문 누락'], ['iteration-3', 'S06', '원문에 없는 동일 상담원 추정'], ['baseline', 'R02', '상담원 입장으로 고객 정보 요구'],
+    ['unseen/baseline', 'NR05', '중간의 계좌 안내를 초기 안내로 요약'], ['unseen/baseline', 'NS03', '장소 확인 뒤 안내를 정확히 전달한 정상 인계', true],
+    ['unseen/iteration-1', 'NS03', '역할명만 쓴 정상 인계를 동일인 주장으로 오인하지 않기', true, true],
+    ['unseen/regression-1', 'R02', '질문형 문장에서 원문에 없는 비용 차감 관계 전제']];
   const client = new OpenAIClient({ apiKey, model });
-  const report = { mode: 'live draft review negative probes', startedAt: new Date().toISOString(), requestedModel: model,
+  const report = { mode: 'live draft review control probes', startedAt: new Date().toISOString(), requestedModel: model,
     hashes: Object.fromEntries(sourceFiles.map(file => [file, hash(readFileSync(resolve(root, file)))])), results: [] };
   mkdirSync(dirname(path), { recursive: true });
-  for (const [run, id, expectedFailure] of probes) {
+  for (const [run, id, expectedFailure, expectedValid = false, lastAttempt = false] of probes) {
     const source = JSON.parse(readFileSync(resolve(root, `evals/results/${run}.json`), 'utf8'));
     const result = source.results.find(r => r.id === id), record = result.stages.at(-1).record;
+    const draft = lastAttempt ? result.calls.filter(c => c.name === 'replytrack_draft').at(-1).data : result.draft;
     const start = performance.now();
     try {
       const response = await client.structured({ name: 'replytrack_draft_review', schema: draftReviewSchema, instructions: DRAFT_REVIEW_PROMPT, reasoningEffort: 'medium',
-        data: { kind: result.draft.kind, messages: record.messages, questions: result.draft.kind === 'followup' ? record.questions.filter(q => q.status !== 'answered') : record.questions, promises: record.promises, draft: { body: result.draft.body, sourceMessageIds: result.draft.sourceMessageIds } } });
-      report.results.push({ source: `${run}/${id}`, expectedFailure, expectedValid: false, reasoningEffort: 'medium', pass: response.data.valid === false, ms: Math.round(performance.now() - start), ...response });
+        data: { kind: result.draft.kind, ...draftSourceContext(record), questions: draftQuestionContext(result.draft.kind === 'followup' ? record.questions.filter(q => q.status !== 'answered') : record.questions), draft: { body: draft.body, sourceMessageIds: draft.sourceMessageIds } } });
+      report.results.push({ source: `${run}/${id}`, expectedFailure, expectedValid, reasoningEffort: 'medium', pass: response.data.valid === expectedValid, ms: Math.round(performance.now() - start), ...response });
     } catch (error) { report.results.push({ source: `${run}/${id}`, expectedFailure, pass: false, error: { code: error.code, message: error.message } }); }
     writeFileSync(path, JSON.stringify(report, null, 2) + '\n');
   }

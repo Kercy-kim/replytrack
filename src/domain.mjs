@@ -43,6 +43,22 @@ function validEvidence(ref, messages, role) {
   const m = messages.find(m => m.id === ref?.messageId && m.role === role);
   return !!m && typeof ref?.quote === 'string' && ref.quote.trim().length >= 2 && m.text.includes(ref.quote);
 }
+function assertAnalysisShape(raw) {
+  if (!raw || !Array.isArray(raw.questions) || !Array.isArray(raw.promises) || raw.questions.length > 40 || raw.promises.length > 40) throw new AppError(502, 'AI 분석 형식이 올바르지 않습니다. 기존 기록은 유지됩니다.', 'AI_FORMAT');
+}
+export function analysisValidationErrors(raw, messages) {
+  assertAnalysisShape(raw);
+  const errors = [];
+  raw.questions.forEach((q, i) => {
+    if (!validEvidence(q?.source, messages, 'customer')) errors.push(`questions[${i}].source`);
+    if (q?.status === 'unanswered' && q.evidence?.length) errors.push(`questions[${i}].status/evidence: 미답변인데 답변 근거가 포함되어 모순입니다. 관련 안내가 없으면 근거를 비우고, 관련 안내가 있으면 그에 맞는 미해결 상태를 선택하세요`);
+    (Array.isArray(q?.evidence) ? q.evidence : []).forEach((ref, j) => {
+      if (!validEvidence(ref, messages, 'agent')) errors.push(`questions[${i}].evidence[${j}]`);
+    });
+  });
+  raw.promises.forEach((p, i) => { if (!validEvidence(p?.evidence, messages, 'agent')) errors.push(`promises[${i}].evidence`); });
+  return errors;
+}
 export function dueDate(dueText, sentAt) {
   if (!dueText) return null;
   let year, month, day;
@@ -60,7 +76,7 @@ export function dueDate(dueText, sentAt) {
   return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 export function applyAnalysis(record, raw, meta = {}) {
-  if (!raw || !Array.isArray(raw.questions) || !Array.isArray(raw.promises) || raw.questions.length > 40 || raw.promises.length > 40) throw new AppError(502, 'AI 분석 형식이 올바르지 않습니다. 기존 기록은 유지됩니다.', 'AI_FORMAT');
+  assertAnalysisShape(raw);
   const warnings = [], usedIds = new Set(), mapping = new Map();
   const oldQuestions = record.questions;
   const questions = [];
@@ -146,7 +162,7 @@ export function validateDraft(raw, record) {
   const references = raw.body.match(/\b[\da-f]{8}-(?:[\da-f]{4}-){3}[\da-f]{12}\b/gi) ?? [];
   if (references.some(id => !sourceText.includes(id))) throw new AppError(502, '본문에 내부 메시지 ID가 포함됐습니다. 괄호 안의 UUID 등 참조값은 본문에서 제거하고 sourceMessageIds 필드에만 넣어 주세요.', 'DRAFT_REFERENCE');
   // Messages identify roles, not individual agents. Do not invent actor identity from turn order.
-  const actors = raw.body.match(/(?:동일|같은|다른(?:\s*한)?|두(?:\s*[명분])?(?:의)?|여러)\s*(?:상담원|상담사|담당자)/g) ?? [];
+  const actors = raw.body.match(/(?:동일|같은|다른(?:\s*한)?|두(?:\s*[명분])?(?:의)?|여러)\s*(?:상담원|상담사|담당자)|(?:상담원|상담사|담당자)들/g) ?? [];
   if (actors.some(actor => !sourceText.replaceAll(/\s/g, '').includes(actor.replaceAll(/\s/g, '')))) throw new AppError(502, '원문에서 상담원이 같은 사람인지 다른 사람인지 확인되지 않습니다. 담당자 동일성을 추정하지 말고 이전 답변과 후속 답변으로 표현해 주세요.', 'DRAFT_ACTOR');
   const numbers = raw.body.match(/\d[\d,.]*(?:\s*(?:원|일|월|년|시간|분|%))?/g) ?? [];
   if (numbers.some(n => !sourceText.replaceAll(' ', '').includes(n.replaceAll(' ', '')))) throw new AppError(502, '원문에 없는 숫자나 기한이 초안에 포함되어 제외했습니다. 다시 작성해 주세요.', 'DRAFT_FACT');

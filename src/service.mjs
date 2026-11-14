@@ -1,8 +1,24 @@
 import { assert, AppError } from './errors.mjs';
-import { newCase, message, history, applyAnalysis, validateDraft, statuses, cleanText } from './domain.mjs';
+import { newCase, message, history, applyAnalysis, analysisValidationErrors, validateDraft, statuses, cleanText } from './domain.mjs';
 import { createDemo, advanceDemo, demoAnalysis, demoDraft } from './demo.mjs';
-import { analysisSchema, transcriptSchema, draftSchema, draftReviewSchema } from './schema.mjs';
-import { ANALYSIS_PROMPT, TRANSCRIPT_PROMPT, DRAFT_PROMPT, DRAFT_REVIEW_PROMPT } from './prompts.mjs';
+import { analysisSchemaFor, transcriptSchema, draftSchemaFor, draftReviewSchema, boundaryReviewSchemaFor } from './schema.mjs';
+import { ANALYSIS_PROMPT, TRANSCRIPT_PROMPT, DRAFT_PROMPT, DRAFT_REVIEW_PROMPT, BOUNDARY_REVIEW_PROMPT } from './prompts.mjs';
+
+// Derived reasoning and suggested follow-ups are not independent source facts.
+export const draftQuestionContext = questions => questions.map(({ id, title, source, status, evidence }) => ({ id, title, source, status, evidence }));
+export const draftSourceContext = record => ({
+  messages: record.messages.map(({ id, role, text }) => ({ id, role, text })),
+  promises: record.promises.map(({ id, title, questionIds, evidence, dueText, state, confirmedAt }) => ({ id, title, questionIds, evidence, dueText, state, ...(confirmedAt ? { confirmedByUser: true } : {}) })),
+});
+
+function analysisUsage(results) {
+  const usages = results.map(r => r.usage).filter(Boolean);
+  if (!usages.length) return null;
+  const sum = key => usages.reduce((n, u) => n + (u[key] || 0), 0);
+  return { input_tokens: sum('input_tokens'), output_tokens: sum('output_tokens'), total_tokens: sum('total_tokens'),
+    input_tokens_details: { cached_tokens: usages.reduce((n, u) => n + (u.input_tokens_details?.cached_tokens || 0), 0) },
+    output_tokens_details: { reasoning_tokens: usages.reduce((n, u) => n + (u.output_tokens_details?.reasoning_tokens || 0), 0) } };
+}
 
 export class ReplyTrack {
   constructor(store, ai) { this.store = store; this.ai = ai; this.busy = new Set(); this.activeAI = 0; }
@@ -63,9 +79,36 @@ export class ReplyTrack {
     this.busy.add(id);
     try {
       const c = this.getVersion(id, version);
-      const result = c.mode === 'demo' ? { data: demoAnalysis(c), model: '준비된 예제 · AI 호출 없음', usage: null } : await this.withAI(() => this.ai.structured({ name: 'replytrack_analysis', schema: analysisSchema, instructions: ANALYSIS_PROMPT,
-        data: { messages: c.messages, existingQuestions: c.questions, existingPromises: c.promises } }));
-      applyAnalysis(c, result.data, { model: result.model, usage: result.usage });
+      let result, attempts = 0, boundaryReview = null;
+      const results = [];
+      if (c.mode === 'demo') result = { data: demoAnalysis(c), model: '준비된 예제 · AI 호출 없음', usage: null };
+      else {
+        const data = { messages: c.messages, existingQuestions: c.questions, existingPromises: c.promises };
+        let revision = {};
+        for (let attempt = 0; attempt < 2; attempt++) {
+          if (attempt) this.getVersion(id, version);
+          result = await this.withAI(() => this.ai.structured({ name: 'replytrack_analysis', schema: analysisSchemaFor(c.messages), instructions: ANALYSIS_PROMPT, reasoningEffort: 'medium', data: { ...data, ...revision } }));
+          results.push(result); attempts++;
+          const validationErrors = analysisValidationErrors(result.data, c.messages);
+          if (!validationErrors.length) break;
+          if (attempt === 1) throw new AppError(502, '분석의 원문 인용과 상태를 다시 확인했지만 맞지 않아 저장하지 않았습니다. 기존 기록은 유지됩니다.', 'AI_EVIDENCE');
+          revision = { previousAnalysis: result.data, revisionFeedback: `다음 원문 인용 또는 상태·근거의 일관성 오류를 수정하세요: ${validationErrors.join(', ')}. source는 customer, evidence는 agent의 실제 ID와 정확한 원문 부분 문자열이어야 합니다. 동의어 치환·띄어쓰기 수정·요약을 하지 말고 원문을 그대로 복사하세요. 미답변인데 근거가 있다면 그 근거의 관련성을 다시 판단하고, 관련 안내가 있으면 맞는 상태를 선택하고 무관한 안내면 근거에서 제외하세요. 전체 분석을 다시 반환하세요.` };
+        }
+        const uncertain = result.data.questions.filter(q => q.status === 'review' && q.evidence.length);
+        if (uncertain.length) {
+          this.getVersion(id, version);
+          const checked = await this.withAI(() => this.ai.structured({ name: 'replytrack_boundary_review', schema: boundaryReviewSchemaFor(uncertain.map(q => q.id)), instructions: BOUNDARY_REVIEW_PROMPT, reasoningEffort: 'medium',
+            data: { messages: c.messages, questions: draftQuestionContext(uncertain) } }));
+          results.push(checked);
+          const decisions = checked.data?.questions;
+          if (!Array.isArray(decisions) || decisions.length !== uncertain.length || new Set(decisions.map(q => q.id)).size !== uncertain.length || decisions.some(q => !uncertain.some(u => u.id === q.id) || !['partial', 'review'].includes(q.status) || typeof q.reason !== 'string' || !q.reason.trim())) throw new AppError(502, '질문 상태 검토 결과가 맞지 않아 기존 기록을 유지했습니다.', 'AI_BOUNDARY');
+          const data = structuredClone(result.data);
+          for (const decision of decisions) Object.assign(data.questions.find(q => q.id === decision.id), { status: decision.status, reason: decision.reason });
+          result = { ...result, data }; // Preserve the original model output in evaluation logs.
+          boundaryReview = { model: checked.model, questions: uncertain.length };
+        }
+      }
+      applyAnalysis(c, result.data, { model: result.model, usage: analysisUsage(results), attempts, ...(boundaryReview ? { boundaryReview } : {}) });
       return this.store.save(c, version);
     } finally { this.busy.delete(id); }
   }
@@ -102,11 +145,11 @@ export class ReplyTrack {
     if (c.mode === 'demo') {
       draft = validateDraft(demoDraft(c, input.kind, ids), c); model = '준비된 예제';
     } else {
-      const context = { kind: input.kind, messages: c.messages, questions: input.kind === 'followup' ? selected : c.questions, promises: c.promises };
+      const context = { kind: input.kind, ...draftSourceContext(c), questions: draftQuestionContext(input.kind === 'followup' ? selected : c.questions) };
       let revisionFeedback = '', previousDraft = null;
       // Bound paid calls: one generation + review, with at most one repair attempt.
       for (let attempt = 0; attempt < 2; attempt++) {
-        const result = await this.withAI(() => this.ai.structured({ name: 'replytrack_draft', schema: draftSchema, instructions: DRAFT_PROMPT,
+        const result = await this.withAI(() => this.ai.structured({ name: 'replytrack_draft', schema: draftSchemaFor(c.messages), instructions: DRAFT_PROMPT, reasoningEffort: 'medium',
           data: { ...context, ...(revisionFeedback ? { revisionFeedback, previousDraft } : {}) } }));
         model = result.model; previousDraft = result.data;
         let candidate;
