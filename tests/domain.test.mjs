@@ -113,12 +113,14 @@ test('drafts reject invented source references and numbers', () => {
 });
 test('drafts cannot infer identical or different agents from anonymized message roles', () => {
   const c = createDemo(), sourceMessageIds = c.messages.map(m => m.id);
-  for (const actor of ['동일 상담원', '같은 담당자', '다른 한 상담원', '두 명의 상담사', '여러 담당자']) {
+  for (const actor of ['동일 상담원', '같은 담당자', '다른 한 상담원', '두 명의 상담사', '여러 담당자', '상담원들', '상담사들', '담당자들']) {
     assert.throws(() => validateDraft({ body: `${actor}의 안내가 달랐습니다.`, sourceMessageIds }, c), { code: 'DRAFT_ACTOR' });
   }
   assert.equal(validateDraft({ body: '이전 답변과 후속 답변의 안내가 달랐습니다.', sourceMessageIds }, c).body, '이전 답변과 후속 답변의 안내가 달랐습니다.');
   c.messages[0].text += ' 다른 상담원에게 연결됐어요.';
   assert.equal(validateDraft({ body: '다른 상담원에게 연결됐습니다.', sourceMessageIds: [c.messages[0].id] }, c).body, '다른 상담원에게 연결됐습니다.');
+  c.messages[0].text += ' 상담원들이 안내했습니다.';
+  assert.equal(validateDraft({ body: '상담원들의 안내를 받았습니다.', sourceMessageIds: [c.messages[0].id] }, c).body, '상담원들의 안내를 받았습니다.');
 });
 test('drafts reject internal message IDs in prose but allow identifiers actually present in the source', () => {
   const c = createDemo(), id = c.messages[0].id;

@@ -39,6 +39,22 @@ test('a completion notice without deadline retraction preserves the commitment d
   assert.equal(c.promises[0].state, 'reported'); assert.equal(c.promises[0].confirmedAt, null);
   assert(!c.analysis.comparison.promises[0].fields.includes('deadline'));
 });
+
+test('rescheduling replaces the date on the same commitment and preserves the old comparison', () => {
+  const c = fixture(), id = c.promises[0].id;
+  const initial = structuredClone(c.analysis.comparison);
+  c.messages.push(message({ role: 'agent', text: '기존 안내 기한을 변경합니다. 2026년 11월 19일까지 안내하겠습니다.' }));
+  const latest = c.messages.at(-1), evidence = { messageId: latest.id, quote: latest.text };
+  applyAnalysis(c, { summary: '안내 기한 연기', questions: c.questions.map(q => ({ ...q, evidence: [evidence] })),
+    promises: c.promises.map(p => ({ ...p, evidence, dueText: '2026년 11월 19일까지', deadlineCleared: false })) });
+  assert.equal(c.promises.length, 1); assert.equal(c.promises[0].id, id);
+  assert.equal(c.promises[0].dueAt, '2026-11-19'); assert.equal(c.promises[0].state, 'promised');
+  assert.equal(c.promises[0].confirmedAt, null); assert.deepEqual(c.warnings, []);
+  const change = c.analysis.comparison.promises[0];
+  assert.deepEqual(change.fields, ['deadline']);
+  assert.equal(change.before.dueAt, '2026-11-16'); assert.equal(change.after.dueAt, '2026-11-19');
+  assert.deepEqual(c.history[1].comparison, initial);
+});
 test('a deadline cannot be cleared using missing, fabricated, or older evidence', () => {
   for (const badEvidence of ['same', 'fabricated', 'customer']) {
     const c = fixture();

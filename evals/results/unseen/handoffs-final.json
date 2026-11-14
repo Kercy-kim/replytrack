@@ -1,0 +1,1977 @@
+{
+  "formatVersion": 1,
+  "startedAt": "2026-11-14T06:55:26.610Z",
+  "mode": "live OpenAI Responses API",
+  "requestedModel": "gpt-5-mini",
+  "suite": "unseen",
+  "analysisOnly": false,
+  "baseCommit": "37f2031a4d3c810da12448f7f357faee67096abb",
+  "hashes": {
+    "evals/support-cases.mjs": "ab86201457d670ffd62d4844fa66e72711bb4be91ea677260946b3c98a904b8d",
+    "evals/status-boundary-cases.mjs": "482f9f80fb7aaa5998faebed0f515f41c34e9ad20d6feedcc77310cd601a0d96",
+    "evals/unseen-cases.mjs": "c436aedb0dc0bd93528afe1f42ae18f6e066cc0958d00bf2e92ed4662f484f59",
+    "evals/grade.mjs": "ed6a5defa0212d1e473f9235dd8cd877fe046e8d017f80835c4ab9eaecd9145d",
+    "src/prompts.mjs": "6f5e2037e674e6562ae13d2c4281366fc1107dce6e9e8b4e550c706aaf6ffb22",
+    "src/schema.mjs": "8aa3460d8e2f81cb904689214bd76322a616291ac2172e9355744affe1eb031a",
+    "src/domain.mjs": "06176c09cadeed9f59024c16bde8a0f8d0fd044d73f6c17d530ce6ae9112c95e",
+    "src/service.mjs": "2ba690eea6491d57374bed3f646859fb183a7231097f9725bc50b022771ee1ba",
+    "src/openai.mjs": "b53726163300241f486299965e0567f1391c6bb8c714d041431659a54d05beac",
+    "src/analysis-changes.mjs": "36d13aaab3b180d7a2081dc22127a79e394ddb1e006136090a10945c88d94d73",
+    "scripts/evaluate-ai.mjs": "5c722cc120dcd68925584d3715742bfc7955e0fcf29d15aaa51c9b090194d72f"
+  },
+  "results": [
+    {
+      "id": "NS03",
+      "category": "배송",
+      "title": "오배송 사진 확인 뒤 실제 장소 안내",
+      "stages": [
+        {
+          "record": {
+            "id": "51c35f52-6a48-4530-9b62-a38f0c62f33e",
+            "title": "오배송 사진 확인 뒤 실제 장소 안내",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T06:55:26.651Z",
+            "updatedAt": "2026-11-14T06:55:44.888Z",
+            "messages": [
+              {
+                "id": "be6f2451-5e08-4b5f-86e5-52e272851470",
+                "role": "customer",
+                "text": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "c9617560-bf03-47a6-bda8-f23a5bc79860",
+                "role": "agent",
+                "text": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다.",
+                "sentAt": "2026-11-20T15:40:00.000Z"
+              }
+            ],
+            "questions": [
+              {
+                "id": "25f8da3b-e138-4194-855c-941ac400d70f",
+                "title": "택배를 실제로 놓은 정확한 장소(위치) 확인 요청",
+                "source": {
+                  "messageId": "be6f2451-5e08-4b5f-86e5-52e272851470",
+                  "quote": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?"
+                },
+                "status": "waiting",
+                "reason": "질문 대상은 '택배를 놓은 정확한 장소'의 확인이며, 상담원은 기사에게 확인해 '내일 알려 드리겠다'고 약속했으므로 위치 정보는 아직 미정이고 확인 후 통보하겠다는 약속이 있음.",
+                "evidence": [
+                  {
+                    "messageId": "c9617560-bf03-47a6-bda8-f23a5bc79860",
+                    "quote": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다."
+                  }
+                ],
+                "followUp": "기사님에게 확인하신 후 택배를 놓은 정확한 장소를 알려주시겠습니까?",
+                "aiStatus": "waiting",
+                "aiReason": "질문 대상은 '택배를 놓은 정확한 장소'의 확인이며, 상담원은 기사에게 확인해 '내일 알려 드리겠다'고 약속했으므로 위치 정보는 아직 미정이고 확인 후 통보하겠다는 약속이 있음.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [
+              {
+                "id": "57095286-e4f2-4cfd-b8a4-18eaffe09539",
+                "title": "기사 확인 후 택배 위치 통보하기",
+                "questionIds": [
+                  "25f8da3b-e138-4194-855c-941ac400d70f"
+                ],
+                "evidence": {
+                  "messageId": "c9617560-bf03-47a6-bda8-f23a5bc79860",
+                  "quote": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다."
+                },
+                "dueText": "내일",
+                "dueAt": "2026-11-22",
+                "state": "promised",
+                "confirmedAt": null
+              }
+            ],
+            "history": [
+              {
+                "id": "ae103f4d-b8a3-439e-ab2e-00391ca4df15",
+                "at": "2026-11-14T06:55:44.888Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 1개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T06:55:44.888Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "e2246234-aba2-4a7c-8240-95468192266d",
+                "at": "2026-11-14T06:55:26.651Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객은 배송 사진이 집이 아니라고 하며 택배를 놓은 '정확한 장소'를 물었고, 상담원은 기사에게 확인 후 '내일 알려 주겠다'고 약속함.",
+            "warnings": [],
+            "analyzedMessageCount": 2,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 3464,
+                "output_tokens": 1322,
+                "total_tokens": 4786,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 896
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-14T06:55:44.888Z",
+              "comparison": {
+                "at": "2026-11-14T06:55:44.888Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 2,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "장소|위치|택배",
+                  "status": "waiting",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "actual": {
+                  "id": "25f8da3b-e138-4194-855c-941ac400d70f",
+                  "title": "택배를 실제로 놓은 정확한 장소(위치) 확인 요청",
+                  "status": "waiting",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [
+              {
+                "gold": {
+                  "message": 1,
+                  "topic": "장소|확인|안내",
+                  "state": "promised",
+                  "dueAt": "2026-11-22",
+                  "deadline": "내일"
+                },
+                "actual": {
+                  "id": "57095286-e4f2-4cfd-b8a4-18eaffe09539",
+                  "title": "기사 확인 후 택배 위치 통보하기",
+                  "state": "promised",
+                  "dueAt": "2026-11-22",
+                  "dueText": "내일",
+                  "confirmedAt": null
+                },
+                "ok": true
+              }
+            ],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 1,
+              "expectedPromises": 1,
+              "correctPromises": 1,
+              "references": 3,
+              "grounded": 3
+            }
+          }
+        },
+        {
+          "record": {
+            "id": "51c35f52-6a48-4530-9b62-a38f0c62f33e",
+            "title": "오배송 사진 확인 뒤 실제 장소 안내",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T06:55:26.651Z",
+            "updatedAt": "2026-11-14T06:56:08.110Z",
+            "messages": [
+              {
+                "id": "be6f2451-5e08-4b5f-86e5-52e272851470",
+                "role": "customer",
+                "text": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "c9617560-bf03-47a6-bda8-f23a5bc79860",
+                "role": "agent",
+                "text": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다.",
+                "sentAt": "2026-11-20T15:40:00.000Z"
+              },
+              {
+                "id": "45bf5d44-0e90-409d-a16d-52a06a189f1f",
+                "role": "agent",
+                "text": "요청하신 장소 확인을 마쳤습니다. 택배를 둔 곳은 옆 동 1층 경비실입니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "25f8da3b-e138-4194-855c-941ac400d70f",
+                "title": "택배를 실제로 놓은 정확한 장소(위치) 확인 요청",
+                "source": {
+                  "messageId": "be6f2451-5e08-4b5f-86e5-52e272851470",
+                  "quote": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?"
+                },
+                "status": "answered",
+                "reason": "질문 대상은 '택배를 놓은 정확한 장소'이며, 상담원이 기사에게 확인 후 장소 확인을 마쳐 '옆 동 1층 경비실'이라고 안내했으므로 정보가 제시되었다.",
+                "evidence": [
+                  {
+                    "messageId": "c9617560-bf03-47a6-bda8-f23a5bc79860",
+                    "quote": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다."
+                  },
+                  {
+                    "messageId": "45bf5d44-0e90-409d-a16d-52a06a189f1f",
+                    "quote": "요청하신 장소 확인을 마쳤습니다. 택배를 둔 곳은 옆 동 1층 경비실입니다."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "answered",
+                "aiReason": "질문 대상은 '택배를 놓은 정확한 장소'이며, 상담원이 기사에게 확인 후 장소 확인을 마쳐 '옆 동 1층 경비실'이라고 안내했으므로 정보가 제시되었다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [
+              {
+                "id": "57095286-e4f2-4cfd-b8a4-18eaffe09539",
+                "title": "기사 확인 후 택배 위치 통보하기",
+                "questionIds": [
+                  "25f8da3b-e138-4194-855c-941ac400d70f"
+                ],
+                "evidence": {
+                  "messageId": "45bf5d44-0e90-409d-a16d-52a06a189f1f",
+                  "quote": "요청하신 장소 확인을 마쳤습니다. 택배를 둔 곳은 옆 동 1층 경비실입니다."
+                },
+                "dueText": "내일",
+                "dueAt": "2026-11-22",
+                "state": "reported",
+                "confirmedAt": null
+              }
+            ],
+            "history": [
+              {
+                "id": "3291387b-6b18-41ed-8bf8-eb93120b2177",
+                "at": "2026-11-14T06:56:08.110Z",
+                "type": "analysis",
+                "label": "새 답변을 확인표에 반영했어요",
+                "details": "택배를 실제로 놓은 정확한 장소(위치) 확인 요청: 답변 대기 → 답변 받음",
+                "comparison": {
+                  "at": "2026-11-14T06:56:08.110Z",
+                  "kind": "reply",
+                  "fromMessageCount": 2,
+                  "toMessageCount": 3,
+                  "messageIds": [
+                    "45bf5d44-0e90-409d-a16d-52a06a189f1f"
+                  ],
+                  "questions": [
+                    {
+                      "id": "25f8da3b-e138-4194-855c-941ac400d70f",
+                      "title": "택배를 실제로 놓은 정확한 장소(위치) 확인 요청",
+                      "before": {
+                        "status": "waiting",
+                        "aiStatus": "waiting",
+                        "manualStatus": null
+                      },
+                      "after": {
+                        "status": "answered",
+                        "aiStatus": "answered",
+                        "manualStatus": null
+                      },
+                      "evidenceMessageIds": [
+                        "c9617560-bf03-47a6-bda8-f23a5bc79860",
+                        "45bf5d44-0e90-409d-a16d-52a06a189f1f"
+                      ]
+                    }
+                  ],
+                  "promises": [
+                    {
+                      "id": "57095286-e4f2-4cfd-b8a4-18eaffe09539",
+                      "title": "기사 확인 후 택배 위치 통보하기",
+                      "before": {
+                        "title": "기사 확인 후 택배 위치 통보하기",
+                        "state": "promised",
+                        "dueAt": "2026-11-22",
+                        "dueText": "내일",
+                        "confirmedAt": null
+                      },
+                      "after": {
+                        "title": "기사 확인 후 택배 위치 통보하기",
+                        "state": "reported",
+                        "dueAt": "2026-11-22",
+                        "dueText": "내일",
+                        "confirmedAt": null
+                      },
+                      "fields": [
+                        "state"
+                      ],
+                      "evidenceMessageIds": [
+                        "45bf5d44-0e90-409d-a16d-52a06a189f1f"
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "4e271d80-6511-4bb1-a821-553b2d69f754",
+                "at": "2026-11-14T06:55:44.888Z",
+                "type": "message",
+                "label": "고객센터의 새 답변을 저장했어요",
+                "details": "분석 전에도 원문은 보존됩니다."
+              },
+              {
+                "id": "ae103f4d-b8a3-439e-ab2e-00391ca4df15",
+                "at": "2026-11-14T06:55:44.888Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 1개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T06:55:44.888Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "e2246234-aba2-4a7c-8240-95468192266d",
+                "at": "2026-11-14T06:55:26.651Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객은 택배가 사진 속 장소가 아닌데 실제로 어디에 놓였는지 문의했고, 상담원은 기사 확인 약속 후 확인을 완료하여 '옆 동 1층 경비실'이라고 안내했습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 3,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 4034,
+                "output_tokens": 1776,
+                "total_tokens": 5810,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 1280
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-14T06:56:08.110Z",
+              "comparison": {
+                "at": "2026-11-14T06:56:08.110Z",
+                "kind": "reply",
+                "fromMessageCount": 2,
+                "toMessageCount": 3,
+                "messageIds": [
+                  "45bf5d44-0e90-409d-a16d-52a06a189f1f"
+                ],
+                "questions": [
+                  {
+                    "id": "25f8da3b-e138-4194-855c-941ac400d70f",
+                    "title": "택배를 실제로 놓은 정확한 장소(위치) 확인 요청",
+                    "before": {
+                      "status": "waiting",
+                      "aiStatus": "waiting",
+                      "manualStatus": null
+                    },
+                    "after": {
+                      "status": "answered",
+                      "aiStatus": "answered",
+                      "manualStatus": null
+                    },
+                    "evidenceMessageIds": [
+                      "c9617560-bf03-47a6-bda8-f23a5bc79860",
+                      "45bf5d44-0e90-409d-a16d-52a06a189f1f"
+                    ]
+                  }
+                ],
+                "promises": [
+                  {
+                    "id": "57095286-e4f2-4cfd-b8a4-18eaffe09539",
+                    "title": "기사 확인 후 택배 위치 통보하기",
+                    "before": {
+                      "title": "기사 확인 후 택배 위치 통보하기",
+                      "state": "promised",
+                      "dueAt": "2026-11-22",
+                      "dueText": "내일",
+                      "confirmedAt": null
+                    },
+                    "after": {
+                      "title": "기사 확인 후 택배 위치 통보하기",
+                      "state": "reported",
+                      "dueAt": "2026-11-22",
+                      "dueText": "내일",
+                      "confirmedAt": null
+                    },
+                    "fields": [
+                      "state"
+                    ],
+                    "evidenceMessageIds": [
+                      "45bf5d44-0e90-409d-a16d-52a06a189f1f"
+                    ]
+                  }
+                ]
+              }
+            },
+            "version": 4
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "장소|위치|택배",
+                  "status": "answered",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "actual": {
+                  "id": "25f8da3b-e138-4194-855c-941ac400d70f",
+                  "title": "택배를 실제로 놓은 정확한 장소(위치) 확인 요청",
+                  "status": "answered",
+                  "evidence": [
+                    1,
+                    2
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [
+              {
+                "gold": {
+                  "message": 2,
+                  "topic": "장소|확인|안내",
+                  "state": "reported",
+                  "dueAt": "2026-11-22",
+                  "deadline": "내일"
+                },
+                "actual": {
+                  "id": "57095286-e4f2-4cfd-b8a4-18eaffe09539",
+                  "title": "기사 확인 후 택배 위치 통보하기",
+                  "state": "reported",
+                  "dueAt": "2026-11-22",
+                  "dueText": "내일",
+                  "confirmedAt": null
+                },
+                "ok": true
+              }
+            ],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 0,
+              "evidenceCorrect": 1,
+              "expectedPromises": 1,
+              "correctPromises": 1,
+              "references": 4,
+              "grounded": 4
+            }
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "medium",
+          "ms": 18235,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3464,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 1322,
+            "output_tokens_details": {
+              "reasoning_tokens": 896
+            },
+            "total_tokens": 4786
+          },
+          "data": {
+            "summary": "고객은 배송 사진이 집이 아니라고 하며 택배를 놓은 '정확한 장소'를 물었고, 상담원은 기사에게 확인 후 '내일 알려 주겠다'고 약속함.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "택배를 실제로 놓은 정확한 장소(위치) 확인 요청",
+                "source": {
+                  "messageId": "be6f2451-5e08-4b5f-86e5-52e272851470",
+                  "quote": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?"
+                },
+                "reason": "질문 대상은 '택배를 놓은 정확한 장소'의 확인이며, 상담원은 기사에게 확인해 '내일 알려 드리겠다'고 약속했으므로 위치 정보는 아직 미정이고 확인 후 통보하겠다는 약속이 있음.",
+                "status": "waiting",
+                "evidence": [
+                  {
+                    "messageId": "c9617560-bf03-47a6-bda8-f23a5bc79860",
+                    "quote": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다."
+                  }
+                ],
+                "followUp": "기사님에게 확인하신 후 택배를 놓은 정확한 장소를 알려주시겠습니까?"
+              }
+            ],
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "기사 확인 후 택배 위치 통보하기",
+                "questionIds": [
+                  "new-q-1"
+                ],
+                "evidence": {
+                  "messageId": "c9617560-bf03-47a6-bda8-f23a5bc79860",
+                  "quote": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다."
+                },
+                "dueText": "내일",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          }
+        },
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "medium",
+          "ms": 23222,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 4034,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 1776,
+            "output_tokens_details": {
+              "reasoning_tokens": 1280
+            },
+            "total_tokens": 5810
+          },
+          "data": {
+            "summary": "고객은 택배가 사진 속 장소가 아닌데 실제로 어디에 놓였는지 문의했고, 상담원은 기사 확인 약속 후 확인을 완료하여 '옆 동 1층 경비실'이라고 안내했습니다.",
+            "questions": [
+              {
+                "id": "25f8da3b-e138-4194-855c-941ac400d70f",
+                "title": "택배를 실제로 놓은 정확한 장소(위치) 확인 요청",
+                "source": {
+                  "messageId": "be6f2451-5e08-4b5f-86e5-52e272851470",
+                  "quote": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?"
+                },
+                "reason": "질문 대상은 '택배를 놓은 정확한 장소'이며, 상담원이 기사에게 확인 후 장소 확인을 마쳐 '옆 동 1층 경비실'이라고 안내했으므로 정보가 제시되었다.",
+                "status": "answered",
+                "evidence": [
+                  {
+                    "messageId": "c9617560-bf03-47a6-bda8-f23a5bc79860",
+                    "quote": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다."
+                  },
+                  {
+                    "messageId": "45bf5d44-0e90-409d-a16d-52a06a189f1f",
+                    "quote": "요청하신 장소 확인을 마쳤습니다. 택배를 둔 곳은 옆 동 1층 경비실입니다."
+                  }
+                ],
+                "followUp": ""
+              }
+            ],
+            "promises": [
+              {
+                "id": "57095286-e4f2-4cfd-b8a4-18eaffe09539",
+                "title": "기사 확인 후 택배 위치 통보하기",
+                "questionIds": [
+                  "25f8da3b-e138-4194-855c-941ac400d70f"
+                ],
+                "evidence": {
+                  "messageId": "45bf5d44-0e90-409d-a16d-52a06a189f1f",
+                  "quote": "요청하신 장소 확인을 마쳤습니다. 택배를 둔 곳은 옆 동 1층 경비실입니다."
+                },
+                "dueText": "",
+                "deadlineCleared": false,
+                "state": "reported"
+              }
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft",
+          "reasoningEffort": "medium",
+          "ms": 35129,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1771,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 1940,
+            "output_tokens_details": {
+              "reasoning_tokens": 1664
+            },
+            "total_tokens": 3711
+          },
+          "data": {
+            "body": "제가 배송 사진이 우리 집이 아니라 위치 확인을 요청했습니다. 고객센터의 이전 안내는 기사에게 확인해서 '내일' 알려주겠다고 했고, 이후 후속 안내로 요청하신 장소 확인을 마쳤으며 택배를 옆 동 1층 경비실에 둔 것으로 안내받았습니다.\n\n현재 남은 질문은 없습니다. 참고로 고객센터는 기사 확인 후 택배 위치를 통보하겠다고 약속(통보 시점: '내일')했고, 이후 최종 안내로 옆 동 1층 경비실에 두었다고 전달받았다는 점을 인계합니다.",
+            "sourceMessageIds": [
+              "be6f2451-5e08-4b5f-86e5-52e272851470",
+              "c9617560-bf03-47a6-bda8-f23a5bc79860",
+              "45bf5d44-0e90-409d-a16d-52a06a189f1f"
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "reasoningEffort": "medium",
+          "ms": 10809,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1558,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 869,
+            "output_tokens_details": {
+              "reasoning_tokens": 832
+            },
+            "total_tokens": 2427
+          },
+          "data": {
+            "valid": true,
+            "feedback": ""
+          }
+        }
+      ],
+      "draft": {
+        "kind": "handoff",
+        "body": "제가 배송 사진이 우리 집이 아니라 위치 확인을 요청했습니다. 고객센터의 이전 안내는 기사에게 확인해서 '내일' 알려주겠다고 했고, 이후 후속 안내로 요청하신 장소 확인을 마쳤으며 택배를 옆 동 1층 경비실에 둔 것으로 안내받았습니다.\n\n현재 남은 질문은 없습니다. 참고로 고객센터는 기사 확인 후 택배 위치를 통보하겠다고 약속(통보 시점: '내일')했고, 이후 최종 안내로 옆 동 1층 경비실에 두었다고 전달받았다는 점을 인계합니다.",
+        "sourceMessageIds": [
+          "be6f2451-5e08-4b5f-86e5-52e272851470",
+          "c9617560-bf03-47a6-bda8-f23a5bc79860",
+          "45bf5d44-0e90-409d-a16d-52a06a189f1f"
+        ],
+        "at": "2026-11-14T06:56:54.048Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 1
+        },
+        "semanticReview": "pending independent semantic review"
+      }
+    },
+    {
+      "id": "NR05",
+      "category": "환불",
+      "title": "환불 수단 충돌이 명시적 정정으로 해소",
+      "stages": [
+        {
+          "record": {
+            "id": "268af4ec-b263-41e6-ab78-7757d60a78f7",
+            "title": "환불 수단 충돌이 명시적 정정으로 해소",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T06:55:26.670Z",
+            "updatedAt": "2026-11-14T06:55:46.384Z",
+            "messages": [
+              {
+                "id": "45a4f6ec-276d-4816-8075-27fee676981b",
+                "role": "customer",
+                "text": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?",
+                "sentAt": null
+              },
+              {
+                "id": "6b46d37f-c2e3-4526-a979-c1bd70915ec8",
+                "role": "agent",
+                "text": "이 주문의 환불 수단은 카드입니다.",
+                "sentAt": null
+              },
+              {
+                "id": "f47bb832-2c22-4fd5-b9d8-f2a68f1b2995",
+                "role": "agent",
+                "text": "이 주문의 환불 수단은 계좌입니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "8bbb8a2b-65f9-4192-a8a2-5ff81f5baf58",
+                "title": "환불 수단(결제 수단) 확인",
+                "source": {
+                  "messageId": "45a4f6ec-276d-4816-8075-27fee676981b",
+                  "quote": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?"
+                },
+                "status": "review",
+                "reason": "제공된 응답은 하나가 환불 수단을 '카드'라고 하고 다른 하나가 '계좌'라고 하여 상충합니다. 실제로 어떤 결제 수단으로 환불되는지는 확인되지 않았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "6b46d37f-c2e3-4526-a979-c1bd70915ec8",
+                    "quote": "이 주문의 환불 수단은 카드입니다."
+                  },
+                  {
+                    "messageId": "f47bb832-2c22-4fd5-b9d8-f2a68f1b2995",
+                    "quote": "이 주문의 환불 수단은 계좌입니다."
+                  }
+                ],
+                "followUp": "이 주문의 환불 수단이 카드인지 계좌인지 확정해서 알려주시겠습니까?",
+                "aiStatus": "review",
+                "aiReason": "제공된 응답은 하나가 환불 수단을 '카드'라고 하고 다른 하나가 '계좌'라고 하여 상충합니다. 실제로 어떤 결제 수단으로 환불되는지는 확인되지 않았습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [],
+            "history": [
+              {
+                "id": "ecd44cab-e09f-46de-b867-bb555ad69bdd",
+                "at": "2026-11-14T06:55:46.384Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 0개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T06:55:46.384Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 3,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "b482823f-a222-4475-b235-1cd370c696d3",
+                "at": "2026-11-14T06:55:26.670Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "3개 메시지 등록"
+              }
+            ],
+            "summary": "환불금의 환불 수단을 묻는 질문에 대해 상담원들이 서로 다른 답변('카드' vs '계좌')을 제시하여 확정되지 않음.",
+            "warnings": [],
+            "analyzedMessageCount": 3,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 4221,
+                "output_tokens": 1424,
+                "total_tokens": 5645,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 960
+                }
+              },
+              "attempts": 1,
+              "boundaryReview": {
+                "model": "gpt-5-mini-2025-08-07",
+                "questions": 1
+              },
+              "at": "2026-11-14T06:55:46.384Z",
+              "comparison": {
+                "at": "2026-11-14T06:55:46.384Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 3,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "수단|환불",
+                  "status": "review",
+                  "evidence": [
+                    1,
+                    2
+                  ]
+                },
+                "actual": {
+                  "id": "8bbb8a2b-65f9-4192-a8a2-5ff81f5baf58",
+                  "title": "환불 수단(결제 수단) 확인",
+                  "status": "review",
+                  "evidence": [
+                    1,
+                    2
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 1,
+              "expectedPromises": 0,
+              "correctPromises": 0,
+              "references": 3,
+              "grounded": 3
+            }
+          }
+        },
+        {
+          "record": {
+            "id": "268af4ec-b263-41e6-ab78-7757d60a78f7",
+            "title": "환불 수단 충돌이 명시적 정정으로 해소",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T06:55:26.670Z",
+            "updatedAt": "2026-11-14T06:55:59.526Z",
+            "messages": [
+              {
+                "id": "45a4f6ec-276d-4816-8075-27fee676981b",
+                "role": "customer",
+                "text": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?",
+                "sentAt": null
+              },
+              {
+                "id": "6b46d37f-c2e3-4526-a979-c1bd70915ec8",
+                "role": "agent",
+                "text": "이 주문의 환불 수단은 카드입니다.",
+                "sentAt": null
+              },
+              {
+                "id": "f47bb832-2c22-4fd5-b9d8-f2a68f1b2995",
+                "role": "agent",
+                "text": "이 주문의 환불 수단은 계좌입니다.",
+                "sentAt": null
+              },
+              {
+                "id": "c9245467-7f29-4fa3-ac09-8e491da4c0d4",
+                "role": "agent",
+                "text": "앞서 계좌로 환불된다는 설명은 잘못된 안내였습니다. 정정합니다. 이 주문의 환불 수단은 카드입니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "8bbb8a2b-65f9-4192-a8a2-5ff81f5baf58",
+                "title": "환불 수단(결제 수단) 확인",
+                "source": {
+                  "messageId": "45a4f6ec-276d-4816-8075-27fee676981b",
+                  "quote": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?"
+                },
+                "status": "answered",
+                "reason": "초기에는 계좌라고 안내하였으나 이후 정정 답변으로 '카드'로 확정되어 환불 수단이 카드임이 명확히 제시됨.",
+                "evidence": [
+                  {
+                    "messageId": "6b46d37f-c2e3-4526-a979-c1bd70915ec8",
+                    "quote": "이 주문의 환불 수단은 카드입니다."
+                  },
+                  {
+                    "messageId": "f47bb832-2c22-4fd5-b9d8-f2a68f1b2995",
+                    "quote": "이 주문의 환불 수단은 계좌입니다."
+                  },
+                  {
+                    "messageId": "c9245467-7f29-4fa3-ac09-8e491da4c0d4",
+                    "quote": "앞서 계좌로 환불된다는 설명은 잘못된 안내였습니다. 정정합니다. 이 주문의 환불 수단은 카드입니다."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "answered",
+                "aiReason": "초기에는 계좌라고 안내하였으나 이후 정정 답변으로 '카드'로 확정되어 환불 수단이 카드임이 명확히 제시됨.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [],
+            "history": [
+              {
+                "id": "7807ddb0-3b39-4232-ae33-ee6781d3c16d",
+                "at": "2026-11-14T06:55:59.526Z",
+                "type": "analysis",
+                "label": "새 답변을 확인표에 반영했어요",
+                "details": "환불 수단(결제 수단) 확인: 확인 필요 → 답변 받음",
+                "comparison": {
+                  "at": "2026-11-14T06:55:59.526Z",
+                  "kind": "reply",
+                  "fromMessageCount": 3,
+                  "toMessageCount": 4,
+                  "messageIds": [
+                    "c9245467-7f29-4fa3-ac09-8e491da4c0d4"
+                  ],
+                  "questions": [
+                    {
+                      "id": "8bbb8a2b-65f9-4192-a8a2-5ff81f5baf58",
+                      "title": "환불 수단(결제 수단) 확인",
+                      "before": {
+                        "status": "review",
+                        "aiStatus": "review",
+                        "manualStatus": null
+                      },
+                      "after": {
+                        "status": "answered",
+                        "aiStatus": "answered",
+                        "manualStatus": null
+                      },
+                      "evidenceMessageIds": [
+                        "6b46d37f-c2e3-4526-a979-c1bd70915ec8",
+                        "f47bb832-2c22-4fd5-b9d8-f2a68f1b2995",
+                        "c9245467-7f29-4fa3-ac09-8e491da4c0d4"
+                      ]
+                    }
+                  ],
+                  "promises": []
+                }
+              },
+              {
+                "id": "03fe241a-7183-498b-b6e6-a21d00b874d1",
+                "at": "2026-11-14T06:55:46.384Z",
+                "type": "message",
+                "label": "고객센터의 새 답변을 저장했어요",
+                "details": "분석 전에도 원문은 보존됩니다."
+              },
+              {
+                "id": "ecd44cab-e09f-46de-b867-bb555ad69bdd",
+                "at": "2026-11-14T06:55:46.384Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 0개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T06:55:46.384Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 3,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "b482823f-a222-4475-b235-1cd370c696d3",
+                "at": "2026-11-14T06:55:26.670Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "3개 메시지 등록"
+              }
+            ],
+            "summary": "고객은 주문 환불의 결제 수단을 문의했고, 에이전트는 처음에 카드·계좌로 상충되는 안내를 했으나 최종 정정 응답으로 환불 수단이 카드임을 확정함.",
+            "warnings": [],
+            "analyzedMessageCount": 4,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 3986,
+                "output_tokens": 1285,
+                "total_tokens": 5271,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 832
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-14T06:55:59.526Z",
+              "comparison": {
+                "at": "2026-11-14T06:55:59.526Z",
+                "kind": "reply",
+                "fromMessageCount": 3,
+                "toMessageCount": 4,
+                "messageIds": [
+                  "c9245467-7f29-4fa3-ac09-8e491da4c0d4"
+                ],
+                "questions": [
+                  {
+                    "id": "8bbb8a2b-65f9-4192-a8a2-5ff81f5baf58",
+                    "title": "환불 수단(결제 수단) 확인",
+                    "before": {
+                      "status": "review",
+                      "aiStatus": "review",
+                      "manualStatus": null
+                    },
+                    "after": {
+                      "status": "answered",
+                      "aiStatus": "answered",
+                      "manualStatus": null
+                    },
+                    "evidenceMessageIds": [
+                      "6b46d37f-c2e3-4526-a979-c1bd70915ec8",
+                      "f47bb832-2c22-4fd5-b9d8-f2a68f1b2995",
+                      "c9245467-7f29-4fa3-ac09-8e491da4c0d4"
+                    ]
+                  }
+                ],
+                "promises": []
+              }
+            },
+            "version": 4
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "수단|환불",
+                  "status": "answered",
+                  "evidence": [
+                    3
+                  ]
+                },
+                "actual": {
+                  "id": "8bbb8a2b-65f9-4192-a8a2-5ff81f5baf58",
+                  "title": "환불 수단(결제 수단) 확인",
+                  "status": "answered",
+                  "evidence": [
+                    1,
+                    2,
+                    3
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 0,
+              "evidenceCorrect": 1,
+              "expectedPromises": 0,
+              "correctPromises": 0,
+              "references": 4,
+              "grounded": 4
+            }
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "medium",
+          "ms": 12087,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3538,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 997,
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            },
+            "total_tokens": 4535
+          },
+          "data": {
+            "summary": "환불금의 환불 수단을 묻는 질문에 대해 상담원들이 서로 다른 답변('카드' vs '계좌')을 제시하여 확정되지 않음.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "환불 수단(결제 수단) 확인",
+                "source": {
+                  "messageId": "45a4f6ec-276d-4816-8075-27fee676981b",
+                  "quote": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?"
+                },
+                "reason": "상담원 메시지 중 하나는 '이 주문의 환불 수단은 카드입니다.'라고 안내했고 다른 하나는 '이 주문의 환불 수단은 계좌입니다.'라고 상충되게 안내하여 환불 수단이 무엇인지 확정 정보가 제공되지 않았음(모순된 안내만 존재).",
+                "status": "review",
+                "evidence": [
+                  {
+                    "messageId": "6b46d37f-c2e3-4526-a979-c1bd70915ec8",
+                    "quote": "이 주문의 환불 수단은 카드입니다."
+                  },
+                  {
+                    "messageId": "f47bb832-2c22-4fd5-b9d8-f2a68f1b2995",
+                    "quote": "이 주문의 환불 수단은 계좌입니다."
+                  }
+                ],
+                "followUp": "이 주문의 환불 수단이 카드인지 계좌인지 확정해서 알려주시겠습니까?"
+              }
+            ],
+            "promises": []
+          }
+        },
+        {
+          "name": "replytrack_boundary_review",
+          "reasoningEffort": "medium",
+          "ms": 7627,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 683,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 427,
+            "output_tokens_details": {
+              "reasoning_tokens": 320
+            },
+            "total_tokens": 1110
+          },
+          "data": {
+            "questions": [
+              {
+                "id": "new-q-1",
+                "status": "review",
+                "reason": "제공된 응답은 하나가 환불 수단을 '카드'라고 하고 다른 하나가 '계좌'라고 하여 상충합니다. 실제로 어떤 결제 수단으로 환불되는지는 확인되지 않았습니다."
+              }
+            ]
+          }
+        },
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "medium",
+          "ms": 13142,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3986,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 1285,
+            "output_tokens_details": {
+              "reasoning_tokens": 832
+            },
+            "total_tokens": 5271
+          },
+          "data": {
+            "summary": "고객은 주문 환불의 결제 수단을 문의했고, 에이전트는 처음에 카드·계좌로 상충되는 안내를 했으나 최종 정정 응답으로 환불 수단이 카드임을 확정함.",
+            "questions": [
+              {
+                "id": "8bbb8a2b-65f9-4192-a8a2-5ff81f5baf58",
+                "title": "환불 수단(결제 수단) 확인",
+                "source": {
+                  "messageId": "45a4f6ec-276d-4816-8075-27fee676981b",
+                  "quote": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?"
+                },
+                "reason": "초기에는 계좌라고 안내하였으나 이후 정정 답변으로 '카드'로 확정되어 환불 수단이 카드임이 명확히 제시됨.",
+                "status": "answered",
+                "evidence": [
+                  {
+                    "messageId": "6b46d37f-c2e3-4526-a979-c1bd70915ec8",
+                    "quote": "이 주문의 환불 수단은 카드입니다."
+                  },
+                  {
+                    "messageId": "f47bb832-2c22-4fd5-b9d8-f2a68f1b2995",
+                    "quote": "이 주문의 환불 수단은 계좌입니다."
+                  },
+                  {
+                    "messageId": "c9245467-7f29-4fa3-ac09-8e491da4c0d4",
+                    "quote": "앞서 계좌로 환불된다는 설명은 잘못된 안내였습니다. 정정합니다. 이 주문의 환불 수단은 카드입니다."
+                  }
+                ],
+                "followUp": ""
+              }
+            ],
+            "promises": []
+          }
+        },
+        {
+          "name": "replytrack_draft",
+          "reasoningEffort": "medium",
+          "ms": 13860,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1724,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 1310,
+            "output_tokens_details": {
+              "reasoning_tokens": 1024
+            },
+            "total_tokens": 3034
+          },
+          "data": {
+            "body": "이 주문의 환불 수단을 문의했습니다. 고객센터의 이전 안내 순서는 다음과 같습니다. 처음에는 \"이 주문의 환불 수단은 카드입니다.\"라고 안내받았고, 그 다음에는 \"이 주문의 환불 수단은 계좌입니다.\"라는 상충되는 안내가 있었으며, 이후 \"앞서 계좌로 환불된다는 설명은 잘못된 안내였습니다. 정정합니다. 이 주문의 환불 수단은 카드입니다.\"라고 정정 안내받았습니다. 현재 최종 안내는 카드로 환불된다는 것입니다. 남은 질문은 없습니다.",
+            "sourceMessageIds": [
+              "45a4f6ec-276d-4816-8075-27fee676981b",
+              "6b46d37f-c2e3-4526-a979-c1bd70915ec8",
+              "f47bb832-2c22-4fd5-b9d8-f2a68f1b2995",
+              "c9245467-7f29-4fa3-ac09-8e491da4c0d4"
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "reasoningEffort": "medium",
+          "ms": 10208,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1499,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 721,
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            },
+            "total_tokens": 2220
+          },
+          "data": {
+            "valid": true,
+            "feedback": ""
+          }
+        }
+      ],
+      "draft": {
+        "kind": "handoff",
+        "body": "이 주문의 환불 수단을 문의했습니다. 고객센터의 이전 안내 순서는 다음과 같습니다. 처음에는 \"이 주문의 환불 수단은 카드입니다.\"라고 안내받았고, 그 다음에는 \"이 주문의 환불 수단은 계좌입니다.\"라는 상충되는 안내가 있었으며, 이후 \"앞서 계좌로 환불된다는 설명은 잘못된 안내였습니다. 정정합니다. 이 주문의 환불 수단은 카드입니다.\"라고 정정 안내받았습니다. 현재 최종 안내는 카드로 환불된다는 것입니다. 남은 질문은 없습니다.",
+        "sourceMessageIds": [
+          "45a4f6ec-276d-4816-8075-27fee676981b",
+          "6b46d37f-c2e3-4526-a979-c1bd70915ec8",
+          "f47bb832-2c22-4fd5-b9d8-f2a68f1b2995",
+          "c9245467-7f29-4fa3-ac09-8e491da4c0d4"
+        ],
+        "at": "2026-11-14T06:56:23.596Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 1
+        },
+        "semanticReview": "pending independent semantic review"
+      }
+    },
+    {
+      "id": "NU06",
+      "category": "구독",
+      "title": "할인 누락 확인 약속의 새 기한과 철회",
+      "stages": [
+        {
+          "record": {
+            "id": "b7834409-0cb6-4e18-815e-902c589fd1c5",
+            "title": "할인 누락 확인 약속의 새 기한과 철회",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T06:56:23.598Z",
+            "updatedAt": "2026-11-14T06:56:51.639Z",
+            "messages": [
+              {
+                "id": "72eff238-b66d-46d7-83b5-a18450e8b9d9",
+                "role": "customer",
+                "text": "연간 이용권 할인 코드가 적용됐는지 확인 부탁드려요.",
+                "sentAt": null
+              },
+              {
+                "id": "8263d804-286c-419a-b46f-95027de40a38",
+                "role": "agent",
+                "text": "할인 코드 적용 여부를 확인하고 2026년 11월 23일까지 안내하겠습니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "66d5bf2e-5958-4932-9bb1-d59ac601d5fb",
+                "title": "연간 이용권 할인 코드 적용 여부 확인",
+                "source": {
+                  "messageId": "72eff238-b66d-46d7-83b5-a18450e8b9d9",
+                  "quote": "연간 이용권 할인 코드가 적용됐는지 확인 부탁드려요."
+                },
+                "status": "waiting",
+                "reason": "요청 대상은 '연간 이용권에 할인 코드가 적용되었는지'이며, 업체는 해당 정보를 아직 제공하지 않았고 상담원이 명시적으로 확인 후 '2026년 11월 23일까지 안내하겠다'고 약속했으므로 정보는 미제공 상태이고 향후 안내 약속이 있음.",
+                "evidence": [
+                  {
+                    "messageId": "8263d804-286c-419a-b46f-95027de40a38",
+                    "quote": "할인 코드 적용 여부를 확인하고 2026년 11월 23일까지 안내하겠습니다."
+                  }
+                ],
+                "followUp": "확인에 필요한 추가 정보가 있으면 알려주세요.",
+                "aiStatus": "waiting",
+                "aiReason": "요청 대상은 '연간 이용권에 할인 코드가 적용되었는지'이며, 업체는 해당 정보를 아직 제공하지 않았고 상담원이 명시적으로 확인 후 '2026년 11월 23일까지 안내하겠다'고 약속했으므로 정보는 미제공 상태이고 향후 안내 약속이 있음.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [
+              {
+                "id": "a9d6426c-2898-4b36-8a1e-ed18abd2a110",
+                "title": "할인 코드 적용 여부 확인 및 안내",
+                "questionIds": [
+                  "66d5bf2e-5958-4932-9bb1-d59ac601d5fb"
+                ],
+                "evidence": {
+                  "messageId": "8263d804-286c-419a-b46f-95027de40a38",
+                  "quote": "할인 코드 적용 여부를 확인하고 2026년 11월 23일까지 안내하겠습니다."
+                },
+                "dueText": "2026년 11월 23일까지",
+                "dueAt": "2026-11-23",
+                "state": "promised",
+                "confirmedAt": null
+              }
+            ],
+            "history": [
+              {
+                "id": "8109b1bf-5b6b-4f96-af41-4c3cacaeb5aa",
+                "at": "2026-11-14T06:56:51.639Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 1개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T06:56:51.639Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "93043ffe-209d-49aa-abd9-5a0598a0af87",
+                "at": "2026-11-14T06:56:23.598Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객이 연간 이용권 할인 코드 적용 여부를 확인해 달라고 요청했으며, 상담원이 확인 후 2026년 11월 23일까지 안내하겠다고 약속함.",
+            "warnings": [],
+            "analyzedMessageCount": 2,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 3444,
+                "output_tokens": 1540,
+                "total_tokens": 4984,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 1152
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-14T06:56:51.639Z",
+              "comparison": {
+                "at": "2026-11-14T06:56:51.639Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 2,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "할인|코드|적용",
+                  "status": "waiting",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "actual": {
+                  "id": "66d5bf2e-5958-4932-9bb1-d59ac601d5fb",
+                  "title": "연간 이용권 할인 코드 적용 여부 확인",
+                  "status": "waiting",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [
+              {
+                "gold": {
+                  "message": 1,
+                  "topic": "할인|확인|안내",
+                  "state": "promised",
+                  "dueAt": "2026-11-23",
+                  "deadline": "2026년 11월 23일"
+                },
+                "actual": {
+                  "id": "a9d6426c-2898-4b36-8a1e-ed18abd2a110",
+                  "title": "할인 코드 적용 여부 확인 및 안내",
+                  "state": "promised",
+                  "dueAt": "2026-11-23",
+                  "dueText": "2026년 11월 23일까지",
+                  "confirmedAt": null
+                },
+                "ok": true
+              }
+            ],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 1,
+              "expectedPromises": 1,
+              "correctPromises": 1,
+              "references": 3,
+              "grounded": 3
+            }
+          }
+        },
+        {
+          "record": {
+            "id": "b7834409-0cb6-4e18-815e-902c589fd1c5",
+            "title": "할인 누락 확인 약속의 새 기한과 철회",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T06:56:23.598Z",
+            "updatedAt": "2026-11-14T06:57:17.885Z",
+            "messages": [
+              {
+                "id": "72eff238-b66d-46d7-83b5-a18450e8b9d9",
+                "role": "customer",
+                "text": "연간 이용권 할인 코드가 적용됐는지 확인 부탁드려요.",
+                "sentAt": null
+              },
+              {
+                "id": "8263d804-286c-419a-b46f-95027de40a38",
+                "role": "agent",
+                "text": "할인 코드 적용 여부를 확인하고 2026년 11월 23일까지 안내하겠습니다.",
+                "sentAt": null
+              },
+              {
+                "id": "e0a81d32-9a1e-4de4-8382-ee8dff0bc972",
+                "role": "agent",
+                "text": "안내드리기로 한 2026년 11월 23일 기한은 철회합니다. 할인 코드 적용 여부는 계속 확인해서 알려 드리겠지만 새 안내 날짜는 미정입니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "66d5bf2e-5958-4932-9bb1-d59ac601d5fb",
+                "title": "연간 이용권 할인 코드 적용 여부 확인",
+                "source": {
+                  "messageId": "72eff238-b66d-46d7-83b5-a18450e8b9d9",
+                  "quote": "연간 이용권 할인 코드가 적용됐는지 확인 부탁드려요."
+                },
+                "status": "waiting",
+                "reason": "요청 대상은 '연간 이용권에 할인 코드가 적용되었는지'이며, 업체는 적용 여부를 아직 제공하지 않았지만 계속 확인해서 알려주겠다고 명시적으로 약속했고(기존 기한 2026년 11월 23일은 철회됨) 새 안내 날짜는 미정이므로 정보는 미제공이며 향후 안내 약속이 있음.",
+                "evidence": [
+                  {
+                    "messageId": "e0a81d32-9a1e-4de4-8382-ee8dff0bc972",
+                    "quote": "안내드리기로 한 2026년 11월 23일 기한은 철회합니다. 할인 코드 적용 여부는 계속 확인해서 알려 드리겠지만 새 안내 날짜는 미정입니다."
+                  }
+                ],
+                "followUp": "확인에 필요한 추가 정보가 있으면 알려주세요.",
+                "aiStatus": "waiting",
+                "aiReason": "요청 대상은 '연간 이용권에 할인 코드가 적용되었는지'이며, 업체는 적용 여부를 아직 제공하지 않았지만 계속 확인해서 알려주겠다고 명시적으로 약속했고(기존 기한 2026년 11월 23일은 철회됨) 새 안내 날짜는 미정이므로 정보는 미제공이며 향후 안내 약속이 있음.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [
+              {
+                "id": "a9d6426c-2898-4b36-8a1e-ed18abd2a110",
+                "title": "할인 코드 적용 여부 확인 및 안내",
+                "questionIds": [
+                  "66d5bf2e-5958-4932-9bb1-d59ac601d5fb"
+                ],
+                "evidence": {
+                  "messageId": "e0a81d32-9a1e-4de4-8382-ee8dff0bc972",
+                  "quote": "안내드리기로 한 2026년 11월 23일 기한은 철회합니다. 할인 코드 적용 여부는 계속 확인해서 알려 드리겠지만 새 안내 날짜는 미정입니다."
+                },
+                "dueText": "",
+                "dueAt": null,
+                "state": "promised",
+                "confirmedAt": null
+              }
+            ],
+            "history": [
+              {
+                "id": "d8a82f84-e150-4eec-9c89-34af40b6afce",
+                "at": "2026-11-14T06:57:17.885Z",
+                "type": "analysis",
+                "label": "새 답변을 확인표에 반영했어요",
+                "details": "질문 변화 0건 · 약속 변화 1건",
+                "comparison": {
+                  "at": "2026-11-14T06:57:17.885Z",
+                  "kind": "reply",
+                  "fromMessageCount": 2,
+                  "toMessageCount": 3,
+                  "messageIds": [
+                    "e0a81d32-9a1e-4de4-8382-ee8dff0bc972"
+                  ],
+                  "questions": [],
+                  "promises": [
+                    {
+                      "id": "a9d6426c-2898-4b36-8a1e-ed18abd2a110",
+                      "title": "할인 코드 적용 여부 확인 및 안내",
+                      "before": {
+                        "title": "할인 코드 적용 여부 확인 및 안내",
+                        "state": "promised",
+                        "dueAt": "2026-11-23",
+                        "dueText": "2026년 11월 23일까지",
+                        "confirmedAt": null
+                      },
+                      "after": {
+                        "title": "할인 코드 적용 여부 확인 및 안내",
+                        "state": "promised",
+                        "dueAt": null,
+                        "dueText": "",
+                        "confirmedAt": null
+                      },
+                      "fields": [
+                        "deadline"
+                      ],
+                      "evidenceMessageIds": [
+                        "e0a81d32-9a1e-4de4-8382-ee8dff0bc972"
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "2d303d6f-1c52-49ea-a9d9-b0f9f8c06a7b",
+                "at": "2026-11-14T06:56:51.639Z",
+                "type": "message",
+                "label": "고객센터의 새 답변을 저장했어요",
+                "details": "분석 전에도 원문은 보존됩니다."
+              },
+              {
+                "id": "8109b1bf-5b6b-4f96-af41-4c3cacaeb5aa",
+                "at": "2026-11-14T06:56:51.639Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 1개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T06:56:51.639Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "93043ffe-209d-49aa-abd9-5a0598a0af87",
+                "at": "2026-11-14T06:56:23.598Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객이 '연간 이용권에 할인 코드가 적용되었는지'를 확인해 달라고 요청했고, 상담원은 확인 후 안내하겠다고 약속했으나 최초 안내기한(2026-11-23)을 철회하고 새 안내일은 미정이라고 밝혔습니다. 따라서 정보는 아직 제공되지 않았고, 업체가 계속 확인하여 추후 안내하겠다는 약속이 남아있습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 3,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 4056,
+                "output_tokens": 2370,
+                "total_tokens": 6426,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 1792
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-14T06:57:17.885Z",
+              "comparison": {
+                "at": "2026-11-14T06:57:17.885Z",
+                "kind": "reply",
+                "fromMessageCount": 2,
+                "toMessageCount": 3,
+                "messageIds": [
+                  "e0a81d32-9a1e-4de4-8382-ee8dff0bc972"
+                ],
+                "questions": [],
+                "promises": [
+                  {
+                    "id": "a9d6426c-2898-4b36-8a1e-ed18abd2a110",
+                    "title": "할인 코드 적용 여부 확인 및 안내",
+                    "before": {
+                      "title": "할인 코드 적용 여부 확인 및 안내",
+                      "state": "promised",
+                      "dueAt": "2026-11-23",
+                      "dueText": "2026년 11월 23일까지",
+                      "confirmedAt": null
+                    },
+                    "after": {
+                      "title": "할인 코드 적용 여부 확인 및 안내",
+                      "state": "promised",
+                      "dueAt": null,
+                      "dueText": "",
+                      "confirmedAt": null
+                    },
+                    "fields": [
+                      "deadline"
+                    ],
+                    "evidenceMessageIds": [
+                      "e0a81d32-9a1e-4de4-8382-ee8dff0bc972"
+                    ]
+                  }
+                ]
+              }
+            },
+            "version": 4
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "할인|코드|적용",
+                  "status": "waiting",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "actual": {
+                  "id": "66d5bf2e-5958-4932-9bb1-d59ac601d5fb",
+                  "title": "연간 이용권 할인 코드 적용 여부 확인",
+                  "status": "waiting",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [
+              {
+                "gold": {
+                  "message": 2,
+                  "topic": "할인|확인|안내",
+                  "state": "promised",
+                  "dueAt": null,
+                  "deadline": ""
+                },
+                "actual": {
+                  "id": "a9d6426c-2898-4b36-8a1e-ed18abd2a110",
+                  "title": "할인 코드 적용 여부 확인 및 안내",
+                  "state": "promised",
+                  "dueAt": null,
+                  "dueText": "",
+                  "confirmedAt": null
+                },
+                "ok": true
+              }
+            ],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 1,
+              "expectedPromises": 1,
+              "correctPromises": 1,
+              "references": 3,
+              "grounded": 3
+            }
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "medium",
+          "ms": 28041,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3444,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 1540,
+            "output_tokens_details": {
+              "reasoning_tokens": 1152
+            },
+            "total_tokens": 4984
+          },
+          "data": {
+            "summary": "고객이 연간 이용권 할인 코드 적용 여부를 확인해 달라고 요청했으며, 상담원이 확인 후 2026년 11월 23일까지 안내하겠다고 약속함.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "연간 이용권 할인 코드 적용 여부 확인",
+                "source": {
+                  "messageId": "72eff238-b66d-46d7-83b5-a18450e8b9d9",
+                  "quote": "연간 이용권 할인 코드가 적용됐는지 확인 부탁드려요."
+                },
+                "reason": "요청 대상은 '연간 이용권에 할인 코드가 적용되었는지'이며, 업체는 해당 정보를 아직 제공하지 않았고 상담원이 명시적으로 확인 후 '2026년 11월 23일까지 안내하겠다'고 약속했으므로 정보는 미제공 상태이고 향후 안내 약속이 있음.",
+                "status": "waiting",
+                "evidence": [
+                  {
+                    "messageId": "8263d804-286c-419a-b46f-95027de40a38",
+                    "quote": "할인 코드 적용 여부를 확인하고 2026년 11월 23일까지 안내하겠습니다."
+                  }
+                ],
+                "followUp": "확인에 필요한 추가 정보가 있으면 알려주세요."
+              }
+            ],
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "할인 코드 적용 여부 확인 및 안내",
+                "questionIds": [
+                  "new-q-1"
+                ],
+                "evidence": {
+                  "messageId": "8263d804-286c-419a-b46f-95027de40a38",
+                  "quote": "할인 코드 적용 여부를 확인하고 2026년 11월 23일까지 안내하겠습니다."
+                },
+                "dueText": "2026년 11월 23일까지",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          }
+        },
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "medium",
+          "ms": 26245,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 4056,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 2370,
+            "output_tokens_details": {
+              "reasoning_tokens": 1792
+            },
+            "total_tokens": 6426
+          },
+          "data": {
+            "summary": "고객이 '연간 이용권에 할인 코드가 적용되었는지'를 확인해 달라고 요청했고, 상담원은 확인 후 안내하겠다고 약속했으나 최초 안내기한(2026-11-23)을 철회하고 새 안내일은 미정이라고 밝혔습니다. 따라서 정보는 아직 제공되지 않았고, 업체가 계속 확인하여 추후 안내하겠다는 약속이 남아있습니다.",
+            "questions": [
+              {
+                "id": "66d5bf2e-5958-4932-9bb1-d59ac601d5fb",
+                "title": "연간 이용권 할인 코드 적용 여부 확인",
+                "source": {
+                  "messageId": "72eff238-b66d-46d7-83b5-a18450e8b9d9",
+                  "quote": "연간 이용권 할인 코드가 적용됐는지 확인 부탁드려요."
+                },
+                "reason": "요청 대상은 '연간 이용권에 할인 코드가 적용되었는지'이며, 업체는 적용 여부를 아직 제공하지 않았지만 계속 확인해서 알려주겠다고 명시적으로 약속했고(기존 기한 2026년 11월 23일은 철회됨) 새 안내 날짜는 미정이므로 정보는 미제공이며 향후 안내 약속이 있음.",
+                "status": "waiting",
+                "evidence": [
+                  {
+                    "messageId": "e0a81d32-9a1e-4de4-8382-ee8dff0bc972",
+                    "quote": "안내드리기로 한 2026년 11월 23일 기한은 철회합니다. 할인 코드 적용 여부는 계속 확인해서 알려 드리겠지만 새 안내 날짜는 미정입니다."
+                  }
+                ],
+                "followUp": "확인에 필요한 추가 정보가 있으면 알려주세요."
+              }
+            ],
+            "promises": [
+              {
+                "id": "a9d6426c-2898-4b36-8a1e-ed18abd2a110",
+                "title": "할인 코드 적용 여부 확인 및 안내",
+                "questionIds": [
+                  "66d5bf2e-5958-4932-9bb1-d59ac601d5fb"
+                ],
+                "evidence": {
+                  "messageId": "e0a81d32-9a1e-4de4-8382-ee8dff0bc972",
+                  "quote": "안내드리기로 한 2026년 11월 23일 기한은 철회합니다. 할인 코드 적용 여부는 계속 확인해서 알려 드리겠지만 새 안내 날짜는 미정입니다."
+                },
+                "dueText": "",
+                "deadlineCleared": true,
+                "state": "promised"
+              }
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft",
+          "reasoningEffort": "medium",
+          "ms": 13699,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1758,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 1319,
+            "output_tokens_details": {
+              "reasoning_tokens": 1088
+            },
+            "total_tokens": 3077
+          },
+          "data": {
+            "body": "연간 이용권 할인 코드가 적용됐는지 확인해 달라고 요청한 상태입니다. 고객센터의 이전 안내에서는 2026년 11월 23일까지 안내하겠다고 했으나, 이후 그 기한을 철회했고 할인 코드 적용 여부는 계속 확인하되 새 안내 날짜는 미정이라고 안내받았습니다. 남은 문의는 할인 코드가 실제로 적용되었는지의 최종 확인 및 안내입니다. 업체는 해당 내용을 확인해 안내하겠다고 약속한 상태이니, 확인 결과를 알려주시기 바랍니다.",
+            "sourceMessageIds": [
+              "72eff238-b66d-46d7-83b5-a18450e8b9d9",
+              "8263d804-286c-419a-b46f-95027de40a38",
+              "e0a81d32-9a1e-4de4-8382-ee8dff0bc972"
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "reasoningEffort": "medium",
+          "ms": 12769,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1525,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 1034,
+            "output_tokens_details": {
+              "reasoning_tokens": 960
+            },
+            "total_tokens": 2559
+          },
+          "data": {
+            "valid": true,
+            "feedback": ""
+          }
+        }
+      ],
+      "draft": {
+        "kind": "handoff",
+        "body": "연간 이용권 할인 코드가 적용됐는지 확인해 달라고 요청한 상태입니다. 고객센터의 이전 안내에서는 2026년 11월 23일까지 안내하겠다고 했으나, 이후 그 기한을 철회했고 할인 코드 적용 여부는 계속 확인하되 새 안내 날짜는 미정이라고 안내받았습니다. 남은 문의는 할인 코드가 실제로 적용되었는지의 최종 확인 및 안내입니다. 업체는 해당 내용을 확인해 안내하겠다고 약속한 상태이니, 확인 결과를 알려주시기 바랍니다.",
+        "sourceMessageIds": [
+          "72eff238-b66d-46d7-83b5-a18450e8b9d9",
+          "8263d804-286c-419a-b46f-95027de40a38",
+          "e0a81d32-9a1e-4de4-8382-ee8dff0bc972"
+        ],
+        "at": "2026-11-14T06:57:44.353Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 1
+        },
+        "semanticReview": "pending independent semantic review"
+      }
+    }
+  ],
+  "summary": {
+    "cases": 3,
+    "completedCases": 3,
+    "passedCases": 3,
+    "stages": 6,
+    "passedStages": 6,
+    "totals": {
+      "expectedQuestions": 6,
+      "found": 6,
+      "correct": 6,
+      "falseAnswered": 0,
+      "expectedUnresolved": 4,
+      "evidenceCorrect": 6,
+      "expectedPromises": 4,
+      "correctPromises": 4,
+      "references": 20,
+      "grounded": 20
+    },
+    "calls": 13,
+    "apiErrors": 0,
+    "draftErrors": 0,
+    "inputTokens": 33040,
+    "outputTokens": 16910,
+    "latencyMs": {
+      "median": 13699,
+      "p95": 35129,
+      "max": 35129
+    }
+  },
+  "completedAt": "2026-11-14T06:57:44.355Z",
+  "complete": true
+}

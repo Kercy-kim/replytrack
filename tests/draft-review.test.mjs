@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { CaseStore } from '../src/store.mjs';
-import { ReplyTrack } from '../src/service.mjs';
+import { ReplyTrack, draftSourceContext } from '../src/service.mjs';
 import { createDemo } from '../src/demo.mjs';
+import { draftSchema, draftSchemaFor } from '../src/schema.mjs';
 
 function setup(respond) {
   const store = new CaseStore(':memory:'), calls = [];
@@ -15,6 +16,48 @@ function setup(respond) {
   return { store, record, service, calls, input };
 }
 const draft = (record, body = '수리비 안내 시점과 왕복 배송비 부담 주체를 알려주세요.') => ({ body, sourceMessageIds: [record.messages[0].id, record.messages[1].id] });
+
+test('draft reference schema permits only message IDs from this conversation, never question IDs', async () => {
+  const t = setup((input, count, record) => input.name === 'replytrack_draft' ? draft(record) : { valid: true, feedback: '' });
+  try {
+    await t.service.draft(t.record.id, t.input);
+    const sources = t.calls[0].schema.properties.sourceMessageIds;
+    assert.deepEqual(sources.items.enum, t.record.messages.map(m => m.id));
+    assert.equal(sources.minItems, 1);
+    assert(!sources.items.enum.includes(t.record.questions[0].id));
+    assert.deepEqual(draftSchemaFor([{ id: 'another-message' }]).properties.sourceMessageIds.items.enum, ['another-message']);
+    assert.equal(draftSchema.properties.sourceMessageIds.items.enum, undefined);
+    assert.deepEqual(sources.items.enum, t.record.messages.map(m => m.id));
+  } finally { t.store.close(); }
+});
+
+test('draft generation and review cannot treat AI reasoning or follow-up suggestions as source facts', async () => {
+  const t = setup((input, count, record) => input.name === 'replytrack_draft' ? draft(record) : { valid: true, feedback: '' });
+  try {
+    const c = t.store.get(t.record.id);
+    for (const q of c.questions) { q.reason = q.aiReason = '근거 없는 비용 차감'; q.followUp = '새로운 산출 내역을 요구하세요'; }
+    const saved = t.store.save(c, c.version);
+    await t.service.draft(c.id, { ...t.input, version: saved.version });
+    assert.equal(t.calls.length, 2);
+    for (const call of t.calls) {
+      for (const q of call.data.questions) assert.deepEqual(Object.keys(q).sort(), ['evidence', 'id', 'source', 'status', 'title']);
+      assert.deepEqual(call.data.messages, c.messages.map(({ id, role, text }) => ({ id, role, text })));
+    }
+  } finally { t.store.close(); }
+});
+
+test('draft sources omit metadata dates and unknown confirmation while preserving explicit user confirmation', () => {
+  const record = createDemo(), before = structuredClone(record);
+  record.promises[0].confirmedAt = '2026-11-14T00:00:00Z';
+  const context = draftSourceContext(record);
+  for (const m of context.messages) assert.deepEqual(Object.keys(m).sort(), ['id', 'role', 'text']);
+  for (const p of context.promises) { assert(!('dueAt' in p)); assert(!('confirmedAt' in p)); }
+  assert.equal(context.promises[0].confirmedByUser, true);
+  assert(context.promises.slice(1).every(p => !('confirmedByUser' in p)));
+  assert.deepEqual(context.promises.map(p => p.evidence), record.promises.map(p => p.evidence));
+  assert.deepEqual(context.promises.map(p => p.dueText), record.promises.map(p => p.dueText));
+  assert.deepEqual(record.messages, before.messages);
+});
 
 test('live drafts are reviewed for all selected questions and repaired once before saving', async () => {
   const t = setup((input, count, record) => input.name === 'replytrack_draft' ? draft(record, count === 1 ? '배송비를 알려주세요.' : undefined) : { valid: count === 4, feedback: count === 2 ? '선택한 수리비 질문이 빠졌습니다.' : '' });

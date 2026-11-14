@@ -1,0 +1,418 @@
+{
+  "formatVersion": 1,
+  "startedAt": "2026-11-14T06:40:24.901Z",
+  "mode": "live OpenAI Responses API",
+  "requestedModel": "gpt-5-mini",
+  "suite": "all",
+  "analysisOnly": false,
+  "baseCommit": "37f2031a4d3c810da12448f7f357faee67096abb",
+  "hashes": {
+    "evals/support-cases.mjs": "ab86201457d670ffd62d4844fa66e72711bb4be91ea677260946b3c98a904b8d",
+    "evals/status-boundary-cases.mjs": "482f9f80fb7aaa5998faebed0f515f41c34e9ad20d6feedcc77310cd601a0d96",
+    "evals/unseen-cases.mjs": "c436aedb0dc0bd93528afe1f42ae18f6e066cc0958d00bf2e92ed4662f484f59",
+    "evals/grade.mjs": "ed6a5defa0212d1e473f9235dd8cd877fe046e8d017f80835c4ab9eaecd9145d",
+    "src/prompts.mjs": "974b849fb46503e43b838840c20bc33a17a388eaedf53e620edd5b653ebfd379",
+    "src/schema.mjs": "f3c11a31091762ee34ef806a09c5411669bac739f8ec48f4037f59513eb5f2b6",
+    "src/domain.mjs": "06176c09cadeed9f59024c16bde8a0f8d0fd044d73f6c17d530ce6ae9112c95e",
+    "src/service.mjs": "231ceddaab31b08ff0c1deb967a1a2ff866293a4a2eb6705da6dcce3638d4871",
+    "src/openai.mjs": "b53726163300241f486299965e0567f1391c6bb8c714d041431659a54d05beac",
+    "src/analysis-changes.mjs": "36d13aaab3b180d7a2081dc22127a79e394ddb1e006136090a10945c88d94d73",
+    "scripts/evaluate-ai.mjs": "db554b1c82c3a44592eaf020ab34378f7e90b1455eb50fa6c8fd80358b54a440"
+  },
+  "results": [
+    {
+      "id": "R02",
+      "category": "환불",
+      "title": "반품비만 안내하고 환불액 누락",
+      "stages": [
+        {
+          "record": {
+            "id": "c81ceab4-afe9-4b52-a24f-867f4576aaac",
+            "title": "반품비만 안내하고 환불액 누락",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-14T06:40:24.940Z",
+            "updatedAt": "2026-11-14T06:40:50.672Z",
+            "messages": [
+              {
+                "id": "1cee07ba-be42-41a1-aef7-a40f66e73cc5",
+                "role": "customer",
+                "text": "반품비는 얼마인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "6ddb20d6-f0a0-4a56-bcde-50f9f64b5c3c",
+                "role": "customer",
+                "text": "최종 환불액은 얼마인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "52bdf545-6f15-4639-bde3-6616a1074a46",
+                "role": "agent",
+                "text": "반품비는 5,000원입니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "78f25a79-35f3-48f5-b13b-8535c8f7e0a0",
+                "title": "반품비는 얼마인가요?",
+                "source": {
+                  "messageId": "1cee07ba-be42-41a1-aef7-a40f66e73cc5",
+                  "quote": "반품비는 얼마인가요?"
+                },
+                "status": "answered",
+                "reason": "질문 대상은 반품비의 금액입니다. 상담원이 '반품비는 5,000원입니다.'라고 명확히 금액을 제시했으므로 해당 정보는 제공되었습니다.",
+                "evidence": [
+                  {
+                    "messageId": "52bdf545-6f15-4639-bde3-6616a1074a46",
+                    "quote": "반품비는 5,000원입니다."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "answered",
+                "aiReason": "질문 대상은 반품비의 금액입니다. 상담원이 '반품비는 5,000원입니다.'라고 명확히 금액을 제시했으므로 해당 정보는 제공되었습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              },
+              {
+                "id": "ef9235f9-ebbb-4445-8d4b-c268951695ee",
+                "title": "최종 환불액은 얼마인가요?",
+                "source": {
+                  "messageId": "6ddb20d6-f0a0-4a56-bcde-50f9f64b5c3c",
+                  "quote": "최종 환불액은 얼마인가요?"
+                },
+                "status": "unanswered",
+                "reason": "질문 대상은 환불 시 고객에게 지급될 최종 환불액의 금액입니다. 상담원은 반품비만 안내했을 뿐(반품비 관련 안내만 존재) 최종 환불액에 대해서는 언급하지 않아 관련 안내가 없습니다.",
+                "evidence": [],
+                "followUp": "제 주문의 최종 환불액(환불 시 입금될 금액)을 알려주세요.",
+                "aiStatus": "unanswered",
+                "aiReason": "질문 대상은 환불 시 고객에게 지급될 최종 환불액의 금액입니다. 상담원은 반품비만 안내했을 뿐(반품비 관련 안내만 존재) 최종 환불액에 대해서는 언급하지 않아 관련 안내가 없습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [],
+            "history": [
+              {
+                "id": "3c4c2d2e-af99-4ef7-b1a2-83dfa762fe50",
+                "at": "2026-11-14T06:40:50.672Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "2개 질문 · 0개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-14T06:40:50.672Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 3,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "f52da195-072f-4aef-b1fd-9692d231d1c6",
+                "at": "2026-11-14T06:40:24.941Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "3개 메시지 등록"
+              }
+            ],
+            "summary": "고객이 반품비와 최종 환불액을 각각 문의했습니다. 상담원은 반품비(5,000원)를 명확히 안내했으나 최종 환불액에 대해서는 별도 안내가 없어 답변이 없습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 3,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 3507,
+                "output_tokens": 2102,
+                "total_tokens": 5609,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 1664
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-14T06:40:50.672Z",
+              "comparison": {
+                "at": "2026-11-14T06:40:50.672Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 3,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "반품비",
+                  "status": "answered",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "actual": {
+                  "id": "78f25a79-35f3-48f5-b13b-8535c8f7e0a0",
+                  "title": "반품비는 얼마인가요?",
+                  "status": "answered",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "evidenceOK": true
+              },
+              {
+                "gold": {
+                  "message": 1,
+                  "topic": "환불",
+                  "status": "unanswered",
+                  "evidence": []
+                },
+                "actual": {
+                  "id": "ef9235f9-ebbb-4445-8d4b-c268951695ee",
+                  "title": "최종 환불액은 얼마인가요?",
+                  "status": "unanswered",
+                  "evidence": []
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [],
+            "metrics": {
+              "expectedQuestions": 2,
+              "found": 2,
+              "correct": 2,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 2,
+              "expectedPromises": 0,
+              "correctPromises": 0,
+              "references": 3,
+              "grounded": 3
+            }
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "medium",
+          "ms": 25730,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3507,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 2102,
+            "output_tokens_details": {
+              "reasoning_tokens": 1664
+            },
+            "total_tokens": 5609
+          },
+          "data": {
+            "summary": "고객이 반품비와 최종 환불액을 각각 문의했습니다. 상담원은 반품비(5,000원)를 명확히 안내했으나 최종 환불액에 대해서는 별도 안내가 없어 답변이 없습니다.",
+            "questions": [
+              {
+                "id": "1cee07ba-be42-41a1-aef7-a40f66e73cc5",
+                "title": "반품비는 얼마인가요?",
+                "source": {
+                  "messageId": "1cee07ba-be42-41a1-aef7-a40f66e73cc5",
+                  "quote": "반품비는 얼마인가요?"
+                },
+                "reason": "질문 대상은 반품비의 금액입니다. 상담원이 '반품비는 5,000원입니다.'라고 명확히 금액을 제시했으므로 해당 정보는 제공되었습니다.",
+                "status": "answered",
+                "evidence": [
+                  {
+                    "messageId": "52bdf545-6f15-4639-bde3-6616a1074a46",
+                    "quote": "반품비는 5,000원입니다."
+                  }
+                ],
+                "followUp": ""
+              },
+              {
+                "id": "6ddb20d6-f0a0-4a56-bcde-50f9f64b5c3c",
+                "title": "최종 환불액은 얼마인가요?",
+                "source": {
+                  "messageId": "6ddb20d6-f0a0-4a56-bcde-50f9f64b5c3c",
+                  "quote": "최종 환불액은 얼마인가요?"
+                },
+                "reason": "질문 대상은 환불 시 고객에게 지급될 최종 환불액의 금액입니다. 상담원은 반품비만 안내했을 뿐(반품비 관련 안내만 존재) 최종 환불액에 대해서는 언급하지 않아 관련 안내가 없습니다.",
+                "status": "unanswered",
+                "evidence": [],
+                "followUp": "제 주문의 최종 환불액(환불 시 입금될 금액)을 알려주세요."
+              }
+            ],
+            "promises": []
+          }
+        },
+        {
+          "name": "replytrack_draft",
+          "reasoningEffort": "medium",
+          "ms": 22483,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1180,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 1780,
+            "output_tokens_details": {
+              "reasoning_tokens": 1600
+            },
+            "total_tokens": 2960
+          },
+          "data": {
+            "body": "안내 감사합니다. 반품비가 5,000원이라고 안내받았습니다. 이를 반영한 최종 환불액이 얼마인지 알려주시기 바랍니다.",
+            "sourceMessageIds": [
+              "1cee07ba-be42-41a1-aef7-a40f66e73cc5",
+              "6ddb20d6-f0a0-4a56-bcde-50f9f64b5c3c",
+              "52bdf545-6f15-4639-bde3-6616a1074a46"
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "reasoningEffort": "medium",
+          "ms": 16731,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1122,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 1241,
+            "output_tokens_details": {
+              "reasoning_tokens": 1088
+            },
+            "total_tokens": 2363
+          },
+          "data": {
+            "valid": false,
+            "feedback": "초안은 ‘이를 반영한 최종 환불액’이라고 하여 반품비(5,000원)가 환불액에서 차감된다는 전제를 포함하고 있습니다. 원문에는 차감 여부가 명시되어 있지 않으므로 이 전제를 제거하고, 반품비의 차감 여부를 명확히 묻거나(예: 반품비를 차감한 최종 환불액인지 여부를 포함해) 차감 여부를 전제로 하지 않은 일반적인 ‘최종 환불액이 얼마인지’ 질의로 고치세요."
+          }
+        },
+        {
+          "name": "replytrack_draft",
+          "reasoningEffort": "medium",
+          "ms": 9870,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1424,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 1024
+            },
+            "output_tokens": 869,
+            "output_tokens_details": {
+              "reasoning_tokens": 704
+            },
+            "total_tokens": 2293
+          },
+          "data": {
+            "body": "안내 감사합니다. 반품비가 5,000원이라고 안내받았습니다. 최종 환불액이 얼마인지 알려주십시오. 또한 안내하신 반품비 5,000원이 최종 환불액에서 차감된 금액인지, 차감 여부도 함께 알려주시기 바랍니다.",
+            "sourceMessageIds": [
+              "1cee07ba-be42-41a1-aef7-a40f66e73cc5",
+              "6ddb20d6-f0a0-4a56-bcde-50f9f64b5c3c",
+              "52bdf545-6f15-4639-bde3-6616a1074a46"
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "reasoningEffort": "medium",
+          "ms": 15541,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1152,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 1163,
+            "output_tokens_details": {
+              "reasoning_tokens": 1024
+            },
+            "total_tokens": 2315
+          },
+          "data": {
+            "valid": false,
+            "feedback": "실패 사유: followup인데 질문 목록에 없는 항목(‘반품비가 최종 환불액에서 차감되는지 여부’)을 새로 추가했습니다. 수정 방향: 초안에서 해당 차감 여부 질문을 제거하고 질문 목록에 있는 미해결 문항(‘최종 환불액’)만 묻거나, 차감 여부를 반드시 묻고자 한다면 그 항목을 questions에 추가한 뒤 다시 작성하십시오."
+          }
+        }
+      ],
+      "draft": {
+        "kind": "followup",
+        "error": {
+          "code": "DRAFT_REVIEW",
+          "message": "초안을 검토했지만 선택한 질문이나 원문과 맞지 않는 부분이 남아 저장하지 않았습니다. 다시 작성해 주세요."
+        }
+      }
+    }
+  ],
+  "summary": {
+    "cases": 1,
+    "completedCases": 1,
+    "passedCases": 1,
+    "stages": 1,
+    "passedStages": 1,
+    "totals": {
+      "expectedQuestions": 2,
+      "found": 2,
+      "correct": 2,
+      "falseAnswered": 0,
+      "expectedUnresolved": 1,
+      "evidenceCorrect": 2,
+      "expectedPromises": 0,
+      "correctPromises": 0,
+      "references": 3,
+      "grounded": 3
+    },
+    "calls": 5,
+    "apiErrors": 0,
+    "draftErrors": 1,
+    "inputTokens": 8385,
+    "outputTokens": 7155,
+    "latencyMs": {
+      "median": 16731,
+      "p95": 25730,
+      "max": 25730
+    }
+  },
+  "completedAt": "2026-11-14T06:41:55.299Z",
+  "complete": true
+}
