@@ -41,6 +41,8 @@ node server.mjs
 
 실행·검증 방법은 [개발 안내](docs/DEVELOPMENT.md), 발표 순서는 [시연 안내](docs/DEMO.md), 검증 범위와 결과는 [검증 기록](docs/VALIDATION.md)에 정리했습니다. 초기 MVP는 [Issue #1](https://github.com/Kercy-kim/tripsketch-ai/issues/1), 웹 사용성 개선은 [Issue #2](https://github.com/Kercy-kim/tripsketch-ai/issues/2)에서 추적합니다.
 
+최신 웹에서 실제 OpenAI API로 상담 등록부터 새 답변 반영·재문의·인계까지 확인한 결과와 기한·질문 연결·인계 표현 수정은 [실제 API 전체 흐름 검증](docs/LIVE-WEB-FLOW.md)에 정리했습니다.
+
 배송·환불·구독 가상 상담 20건의 실제 API 평가와 수정 전후 결과는 [AI 품질 평가 보고서](docs/AI-EVALUATION.md)에 있습니다. 입력·정답·원본 응답·중간 실패 결과와 재실행 도구도 함께 보관합니다.
 
 이전 [상태 기준 재평가](docs/STATUS-BOUNDARY-EVALUATION.md)에서는 남았던 두 사례의 기준을 명확히 하고, 기존 20건과 추가 경계 8건의 분석 기준을 모두 통과했습니다.

@@ -105,6 +105,30 @@ test('deadlines use known source date in Korea, never analysis time', () => {
   assert.equal(dueDate('2026-12-20까지',null),'2026-12-20');
   assert.equal(dueDate('3~5영업일','2026-11-14T00:00:00Z'),null);
 });
+test('month/day deadlines use the source year only when unambiguous', () => {
+  assert.equal(dueDate('11월 16일 오후 3시까지 안내드리겠습니다.', '2026-11-14T01:02:00Z'), '2026-11-16');
+  assert.equal(dueDate('1월 2일까지', '2026-12-31T16:00:00Z'), '2027-01-02');
+  assert.equal(dueDate('2월 29일까지', '2028-02-01T00:00:00+09:00'), '2028-02-29');
+  assert.equal(dueDate('2월 29일까지', '2026-02-01T00:00:00+09:00'), null);
+  assert.equal(dueDate('11월 16일까지', null), null);
+  assert.equal(dueDate('11월 16일까지', 'invalid'), null);
+  assert.equal(dueDate('1월 2일까지', '2026-12-31T10:00:00+09:00'), null);
+  assert.equal(dueDate('11월 13일까지', '2026-11-14T10:00:00+09:00'), null);
+  assert.equal(dueDate('내년 11월 16일까지', '2026-11-14T10:00:00+09:00'), null);
+});
+test('a real-flow month/day promise is dated without confirming actual fulfillment', () => {
+  const c = createDemo();
+  const text = '배송 예정일과 환불 소요 기간은 확인해서 11월 16일 오후 3시까지 안내드리겠습니다.';
+  c.messages[1].text += ` ${text}`;
+  c.messages[1].sentAt = '2026-11-14T01:02:00Z';
+  const raw = demoAnalysis(c);
+  raw.promises[0].dueText = '11월 16일 오후 3시까지';
+  raw.promises[0].evidence = { messageId: c.messages[1].id, quote: text };
+  applyAnalysis(c, raw);
+  assert.equal(c.promises[0].dueAt, '2026-11-16');
+  assert.equal(c.promises[0].confirmedAt, null);
+  assert.equal(c.promises[0].state, 'promised');
+});
 test('drafts reject invented source references and numbers', () => {
   const c=createDemo();
   assert.throws(()=>validateDraft({body:'환불은 50,000원입니다.',sourceMessageIds:[c.messages[1].id]},c),{code:'DRAFT_FACT'});
