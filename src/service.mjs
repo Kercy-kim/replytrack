@@ -1,6 +1,8 @@
 import { assert, AppError } from './errors.mjs';
 import { newCase, message, history, applyAnalysis, analysisValidationErrors, validateDraft, statuses, cleanText } from './domain.mjs';
-import { createDemo, advanceDemo, demoAnalysis, demoDraft } from './demo.mjs';
+import { createDemo, createRefundDemo, advanceDemo, demoAnalysis, demoDraft, demoActions } from './demo.mjs';
+import { actionsSchemaFor, ACTIONS_PROMPT, ACTIONS_REVIEW_PROMPT, validateActions, applyActions } from './next-actions.mjs';
+import { actionsFresh } from '../public/next-actions.js';
 import { analysisSchemaFor, transcriptSchema, draftSchemaFor, draftReviewSchema, boundaryReviewSchemaFor } from './schema.mjs';
 import { ANALYSIS_PROMPT, TRANSCRIPT_PROMPT, DRAFT_PROMPT, DRAFT_REVIEW_PROMPT, BOUNDARY_REVIEW_PROMPT } from './prompts.mjs';
 import { HANDOFF_PROMPT, HANDOFF_REPAIR_PROMPT, HANDOFF_REVIEW_PROMPT, stripInternalCitations, normalizeHandoffAttribution } from './handoff.mjs';
@@ -86,7 +88,36 @@ export class ReplyTrack {
     c.messages.forEach((m, i) => { m.text = masked.texts[i]; });
     return this.store.create(c);
   }
-  demo() { return this.store.create(createDemo()); }
+  demo(input = {}) { return this.store.create(input.scenario === 'refund' ? createRefundDemo() : createDemo()); }
+  async actions(id, version, context = {}) {
+    checkpoint(context);
+    const c = this.getVersion(id, version);
+    const data = { messages: c.messages, existingItems: (c.nextActions?.items || []).map(({ id, title, source, condition, dueText, state, update }) => ({ id, title, source, condition, dueText, state, update })) };
+    let result, checked;
+    if (c.mode === 'demo') result = { data: demoActions(c), model: '준비된 예제 · AI 호출 없음' };
+    else {
+      result = await this.ask({ name: 'replytrack_actions', schema: actionsSchemaFor(c), instructions: ACTIONS_PROMPT, reasoningEffort: 'medium', data }, context, 'actions');
+      checkpoint(context, 'validation');
+      validateActions(result.data, c);
+      this.getVersion(id, version);
+      checked = await this.ask({ name: 'replytrack_actions_review', schema: draftReviewSchema, instructions: ACTIONS_REVIEW_PROMPT, reasoningEffort: 'medium', data: { ...data, items: result.data.items } }, context, 'actions_review');
+      if (checked.data?.valid !== true) throw new AppError(502, '업체 요청에 누락되거나 원문과 맞지 않는 부분이 있어 저장하지 않았어요. 원문을 확인하고 다시 시도해 주세요. 이전 할 일은 유지됩니다.', 'ACTIONS_REVIEW');
+    }
+    checkpoint(context, 'saving');
+    applyActions(c, result.data, { model: result.model, usage: analysisUsage([result, checked].filter(Boolean)), reviewed: !!checked });
+    return this.store.save(c, version);
+  }
+  completeAction(id, actionId, input) {
+    const c = this.getVersion(id, input.version);
+    assert(actionsFresh(c), '새 대화가 있어요. 업체 요청을 먼저 다시 확인해 주세요.', 409);
+    const item = c.nextActions.items.find(a => a.id === actionId);
+    assert(item, '할 일을 찾을 수 없습니다.', 404);
+    assert(typeof input.completed === 'boolean', '수행 여부를 확인해 주세요.');
+    assert(!input.completed || ['requested', 'reported_done'].includes(item.state), '철회되거나 다시 확인이 필요한 요청은 완료로 바꿀 수 없어요.');
+    item.completedAt = input.completed ? new Date().toISOString() : null;
+    history(c, 'action_confirmation', input.completed ? '요청받은 행동을 직접 수행했다고 표시했어요' : '할 일 수행 표시를 취소했어요', item.title);
+    return this.store.save(c, input.version);
+  }
   metadata(id, input) {
     const c = this.getVersion(id, input.version);
     assert(['title', 'company', 'archived'].some(key => input[key] !== undefined), '수정할 내용을 입력해 주세요.');

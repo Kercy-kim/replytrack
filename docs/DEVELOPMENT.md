@@ -35,6 +35,7 @@ API 요청은 [Responses API의 Structured Outputs](https://developers.openai.co
 server.mjs            HTTP 라우팅, 로컬 출처 확인, 정적 화면
 src/store.mjs         SQLite 저장, 레코드 버전 검사
 src/service.mjs       상담·분석·사용자 수정·초안 유스케이스
+src/next-actions.mjs  업체 요청 추출·검토 스키마, 근거 검증, 수행 기록 병합
 src/domain.mjs        원문 검증, 날짜 계산, 상태 병합
 src/openai.mjs        Responses API 호출과 오류 처리
 src/operation.mjs     메모리 작업 상태, 실제 단계, 취소·전체 시간 제한

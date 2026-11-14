@@ -3,6 +3,7 @@ import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { AppError } from './errors.mjs';
 import { summarizeDeadlines } from '../public/workspace.js';
+import { actionsFresh } from '../public/next-actions.js';
 
 export class CaseStore {
   constructor(filename) {
@@ -24,6 +25,8 @@ export class CaseStore {
         unanswered: c.questions.filter(q => q.status !== 'answered').length,
         promises: c.promises.filter(p => !p.confirmedAt).length,
         pendingAnalysis: c.analyzedMessageCount < c.messages.length,
+        customerActions: (c.nextActions?.items || []).filter(a => !a.completedAt && ['requested', 'review'].includes(a.state)).length,
+        actionsNeedRefresh: c.messages.some(m => m.role === 'agent') && !actionsFresh(c),
         archivedAt: c.archivedAt || null,
         deadlines: summarizeDeadlines(c.promises),
       };

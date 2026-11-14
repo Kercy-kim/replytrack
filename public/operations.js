@@ -1,4 +1,5 @@
 export const stages = {
+  actions: '업체가 요청한 할 일 읽는 중', actions_review: '할 일의 조건·누락·이후 안내 검토 중',
   starting: '작업 접수 중', connection: 'AI 연결 확인 중', ocr: '로컬 캡처 인식 준비 중', ocr_reading: '기기에서 캡처 글자 읽는 중',
   masking: '전화번호·주소 가리는 중', reading: '대화와 발화자 정리 중', analysis: '질문·답변·약속 분석 중',
   analysis_repair: '원문에 맞춰 분석 수정 중', validation: '원문 근거 검증 중', boundary_review: '불명확한 질문 상태 검토 중',
