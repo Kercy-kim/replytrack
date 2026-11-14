@@ -1,4 +1,4 @@
-import { deadlineState, filterCases, dirtyDraftKinds, savedDraft } from './workspace.js';
+import { deadlineState, filterCases, dirtyDraftKinds, savedDraft, selectedQuestionIds } from './workspace.js';
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const names = { unanswered: '미답변', partial: '부분 답변', waiting: '답변 대기', answered: '답변 받음', review: '확인 필요' };
@@ -18,6 +18,7 @@ const icon = (name, cls = '') => `<svg class="icon ${cls}" width="20" height="20
 const state = { cases: [], current: null, config: { configured: false, model: 'gpt-5-mini' }, busy: '', tab: 'questions', mobile: 'analysis', filter: 'all', selected: new Set(), draftEdits: {}, error: '', onboarding: null, query: '', caseFilter: 'active', sort: 'priority' };
 const dirtyKinds = () => dirtyDraftKinds(state.current?.drafts || {}, state.draftEdits);
 let guardResolve;
+let modalReturnFocus;
 function guardEdits(invalidates = false, kind) {
   const savedEdits = invalidates && Object.entries(state.current?.drafts || {}).some(([key, draft]) => (!kind || key === kind) && draft.editedBody !== undefined);
   if (!dirtyKinds().some(key => !kind || key === kind) && !savedEdits) return Promise.resolve(true);
@@ -36,6 +37,7 @@ async function api(path, method = 'GET', data) {
 }
 async function work(label, fn) {
   if (state.busy) return;
+  const focus = focusBookmark();
   state.busy = label; state.error = ''; render(); setModalBusy(true);
   try { await fn(); }
   catch (e) {
@@ -45,7 +47,7 @@ async function work(label, fn) {
       await loadCase(state.current.id).catch(() => {});
       state.error += ' 편집 중인 초안은 화면에 유지했어요. 최신 내용과 비교한 뒤 다시 저장해 주세요.';
     }
-  } finally { state.busy = ''; render(); setModalBusy(false); }
+  } finally { state.busy = ''; render(); setModalBusy(false); restoreFocus(focus); }
 }
 function setModalBusy(busy) {
   $('#modal').querySelectorAll('button, input, select, textarea').forEach(el => { el.disabled = busy; });
@@ -56,7 +58,8 @@ function setCase(c) {
   // Retain local edits during conflict recovery, even if another window invalidated a draft.
   const edits = state.current?.id === c.id ? { ...state.draftEdits } : {};
   if (state.current?.id !== c.id) state.mobile = 'analysis';
-  state.current = c; state.selected = new Set(c.questions.filter(q => q.status !== 'answered').map(q => q.id)); state.draftEdits = edits;
+  state.selected = new Set(selectedQuestionIds(state.current, c, state.selected));
+  state.current = c; state.draftEdits = edits;
   localStorage.setItem('replytrack:last-case', c.id);
   window.history.replaceState(null, '', `?case=${encodeURIComponent(c.id)}`);
 }
@@ -64,7 +67,36 @@ async function loadCase(id) { setCase(await api(`/api/cases/${id}`)); await refr
 const date = value => value ? new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(value)) : '날짜 미입력';
 const badge = status => `<span class="badge ${status}"><span class="status-dot"></span>${names[status]}</span>`;
 const button = (action, label, type = 'secondary', symbol = '', attrs = '') => `<button class="btn ${type}" data-action="${action}" ${state.busy ? 'disabled' : ''} ${attrs}>${symbol ? icon(symbol) : ''}${label}</button>`;
+function focusBookmark() {
+  const el = document.activeElement;
+  const scope = el?.closest('#app, #modal');
+  if (!scope) return null;
+  let selector = el.id ? `#${CSS.escape(el.id)}` : null;
+  if (!selector && el.dataset.action) {
+    selector = ['action', 'id', 'kind', 'value'].filter(key => el.dataset[key] !== undefined)
+      .map(key => `[data-${key}="${CSS.escape(el.dataset[key])}"]`).join('');
+  }
+  if (!selector && el.name) selector = `[name="${CSS.escape(el.name)}"]${el.type === 'checkbox' ? `[value="${CSS.escape(el.value)}"]` : ''}`;
+  if (!selector) return null;
+  return { scope: scope.id, selector, caseId: state.current?.id, start: el.selectionStart, end: el.selectionEnd,
+    fallback: el.dataset.action === 'save-draft' ? `#draft-${el.dataset.kind}` : null };
+}
+function restoreFocus(bookmark) {
+  if (!bookmark || state.busy) return;
+  const modal = $('#modal');
+  if (modal.open && bookmark.scope !== 'modal') return;
+  const scope = modal.open ? modal : $('#app');
+  const available = el => el && !el.disabled && el.getClientRects().length;
+  let target = bookmark.caseId === state.current?.id ? scope.querySelector(bookmark.selector) : null;
+  if (!available(target)) target = bookmark.fallback ? scope.querySelector(bookmark.fallback) : null;
+  if (!available(target)) target = scope.querySelector(modal.open ? 'h2' : 'h1') || $('#main');
+  if (!available(target)) return;
+  if (!target.matches('button,input,textarea,select,a,[tabindex]')) target.tabIndex = -1;
+  target.focus({ preventScroll: true });
+  if (target.matches('textarea,input[type=text],input:not([type])') && Number.isInteger(bookmark.start)) target.setSelectionRange(bookmark.start, bookmark.end);
+}
 function render() {
+  const focus = $('#app').contains(document.activeElement) ? focusBookmark() : null;
   const c = state.current;
   $('#app').innerHTML = `<a class="skip" href="#main">본문으로 이동</a>
     <aside class="sidebar">
@@ -85,6 +117,7 @@ function render() {
       ${c ? detail(c) : landing()}
       <footer class="footer">ReplyTrack <span>대화는 이어지고, 기록은 남으니까.</span><span>AI 판단은 원문과 함께 확인해 주세요.</span></footer>
     </main>`;
+  restoreFocus(focus);
 }
 function landing() {
   if (state.cases.length) return dashboard();
@@ -128,7 +161,7 @@ function detail(c) {
     <section class="stats" aria-label="상담 현황"><div><span class="stat-icon neutral">${icon('chat')}</span><span>전체 질문<strong>${c.questions.length}<small>개</small></strong></span></div><div><span class="stat-icon green">${icon('check')}</span><span>답변 받은 질문<strong>${answered}<small>개</small></strong></span></div><div><span class="stat-icon orange">${icon('clock')}</span><span>아직 남은 질문<strong>${unresolved}<small>개</small></strong></span></div><div><span class="stat-icon violet">${icon('file')}</span><span>확인할 처리 약속<strong>${c.promises.filter(p => !p.confirmedAt).length}<small>개</small></strong></span></div></section>
     <div class="mobile-switch" role="group" aria-label="보기 선택"><button data-action="mobile" data-value="source" class="${state.mobile === 'source' ? 'active' : ''}">상담 원문</button><button data-action="mobile" data-value="analysis" class="${state.mobile === 'analysis' ? 'active' : ''}">질문 확인표</button></div>
     <div class="workspace mobile-${state.mobile}"><section class="source-panel panel"><div class="panel-header"><div>${icon('chat')}<h2>상담 원문</h2><span class="count">${c.messages.length}</span></div><span class="subtle">${c.mode === 'demo' ? '가상 상담' : '검토한 텍스트'}</span></div><div class="source-messages">${c.messages.map(m => `<article class="message ${m.role}" id="message-${m.id}"><div class="message-meta"><span class="speaker-avatar">${m.role === 'customer' ? '나' : 'CS'}</span><strong>${m.role === 'customer' ? '나' : esc(c.company)}</strong><time>${date(m.sentAt)}</time></div><div class="message-text">${esc(m.text)}</div></article>`).join('')}</div><div class="source-bottom"><span>${icon('link')}근거를 누르면 해당 원문으로 이동해요</span>${c.mode === 'live' ? button('append', '새 답변 / 질문 추가', 'secondary wide', 'plus') : ''}</div></section>
-    <section class="analysis-panel"><div class="tabs" role="tablist" aria-label="분석 보기">${[['questions','질문 확인표', c.questions.length],['drafts','재문의 · 인계', null],['history','변경 이력', null]].map(([id,label,count]) => `<button role="tab" aria-selected="${state.tab === id}" class="${state.tab === id ? 'active' : ''}" data-action="tab" data-value="${id}">${label}${count !== null ? `<span>${count}</span>` : ''}</button>`).join('')}</div>${c.warnings.map(w => `<div class="warning-note">${esc(w)}</div>`).join('')}${state.tab === 'questions' ? questionPanel(c) : state.tab === 'drafts' ? draftPanel(c) : historyPanel(c)}</section></div>`;
+    <section class="analysis-panel"><div class="tabs" role="tablist" aria-label="분석 보기">${[['questions','질문 확인표', c.questions.length],['drafts','재문의 · 인계', null],['history','변경 이력', null]].map(([id,label,count]) => `<button id="tab-${id}" role="tab" aria-controls="panel-${id}" tabindex="${state.tab === id ? 0 : -1}" ${state.busy ? 'disabled' : ''} aria-selected="${state.tab === id}" class="${state.tab === id ? 'active' : ''}" data-action="tab" data-value="${id}">${label}${count !== null ? `<span>${count}</span>` : ''}</button>`).join('')}</div>${c.warnings.map(w => `<div class="warning-note">${esc(w)}</div>`).join('')}<div id="panel-${state.tab}" role="tabpanel" aria-labelledby="tab-${state.tab}" tabindex="0">${state.tab === 'questions' ? questionPanel(c) : state.tab === 'drafts' ? draftPanel(c) : historyPanel(c)}</div></section></div>`;
 }
 function questionPanel(c) {
   const visible = c.questions.filter(q => state.filter !== 'remaining' || q.status !== 'answered');
@@ -140,7 +173,7 @@ function questionPanel(c) {
 }
 function draftPanel(c) {
   const remaining = c.questions.filter(q => q.status !== 'answered');
-  return `<div class="section-tools"><div><h2>필요한 이야기만 이어가세요</h2><p>초안을 확인하고 수정한 뒤, 원하는 채널에 붙여넣어요.</p></div></div><section class="draft-section"><div class="section-title"><div>${icon('chat')}<h2>남은 질문 재문의</h2></div><span>${remaining.length}개 남음</span></div><div class="question-choices">${remaining.map(q => `<label><input type="checkbox" name="draft-question" value="${q.id}" ${state.selected.has(q.id) ? 'checked' : ''}><span>${esc(q.title)}</span>${badge(q.status)}</label>`).join('') || '<p class="quiet-empty">모든 질문에 답변을 받았어요. 상담 인계 요약을 만들 수 있어요.</p>'}</div>${button('generate-draft', c.drafts.followup ? '초안 다시 만들기' : '선택한 질문으로 초안 만들기', 'primary', 'spark', `data-kind="followup" ${!remaining.length ? 'disabled' : ''}`)}${draftEditor(c,'followup')}</section><section class="draft-section"><div class="section-title"><div>${icon('file')}<h2>다른 상담원에게 이어 설명하기</h2></div></div><p class="section-description">상황, 받은 답변, 남은 질문과 약속을 하나의 요약으로 정리해요.</p>${button('generate-draft', c.drafts.handoff ? '인계 요약 다시 만들기' : '상담 인계 요약 만들기', 'secondary', 'spark', 'data-kind="handoff"')}${draftEditor(c,'handoff')}</section>`;
+  return `<div class="section-tools"><div><h2>필요한 이야기만 이어가세요</h2><p>초안을 확인하고 수정한 뒤, 원하는 채널에 붙여넣어요.</p></div></div><section class="draft-section"><div class="section-title"><div>${icon('chat')}<h2>남은 질문 재문의</h2></div><span>${remaining.length}개 남음</span></div><div class="question-choices">${remaining.map(q => `<label><input type="checkbox" name="draft-question" value="${q.id}" ${state.selected.has(q.id) ? 'checked' : ''}><span>${esc(q.title)}</span>${badge(q.status)}</label>`).join('') || '<p class="quiet-empty">모든 질문에 답변을 받았어요. 상담 인계 요약을 만들 수 있어요.</p>'}</div>${button('generate-draft', c.drafts.followup ? '초안 다시 만들기' : '선택한 질문으로 초안 만들기', 'primary', 'spark', `data-kind="followup" ${!state.selected.size || c.analyzedMessageCount < c.messages.length ? 'disabled' : ''}`)}${draftEditor(c,'followup')}</section><section class="draft-section"><div class="section-title"><div>${icon('file')}<h2>다른 상담원에게 이어 설명하기</h2></div></div><p class="section-description">상황, 받은 답변, 남은 질문과 약속을 하나의 요약으로 정리해요.</p>${button('generate-draft', c.drafts.handoff ? '인계 요약 다시 만들기' : '상담 인계 요약 만들기', 'secondary', 'spark', 'data-kind="handoff"')}${draftEditor(c,'handoff')}</section>`;
 }
 function draftEditor(c, kind) {
   const draft = c.drafts[kind];
@@ -157,6 +190,7 @@ function historyPanel(c) {
 }
 function showModal(title, content, wide = false) {
   const modal = $('#modal'); modal.className = wide ? 'modal wide-modal' : 'modal';
+  if (!modal.open) modalReturnFocus = focusBookmark();
   modal.innerHTML = `<div class="modal-head"><div><span class="eyebrow">REPLYTRACK</span><h2>${title}</h2></div><button class="btn icon-btn" data-action="close-modal" aria-label="닫기">${icon('close')}</button></div>${content}<p id="modal-error" class="modal-error" role="alert"></p><p id="modal-status" role="status"></p>`;
   if (!modal.open) modal.showModal();
 }
@@ -264,7 +298,23 @@ document.addEventListener('click', async event => {
 document.addEventListener('change', event => {
   if (event.target.id === 'case-sort') { state.sort = event.target.value; $('#workspace-results').innerHTML = caseResults(); }
   if (event.target.id === 'question-filter') { state.filter = event.target.value; render(); }
-  if (event.target.name === 'draft-question') { if (event.target.checked) state.selected.add(event.target.value); else state.selected.delete(event.target.value); }
+  if (event.target.name === 'draft-question') {
+    if (event.target.checked) state.selected.add(event.target.value); else state.selected.delete(event.target.value);
+    const generate = $('[data-action="generate-draft"][data-kind="followup"]');
+    if (generate) generate.disabled = !!state.busy || !state.selected.size || state.current.analyzedMessageCount < state.current.messages.length;
+  }
+});
+document.addEventListener('keydown', event => {
+  const tab = event.target.closest('[role="tab"][data-action="tab"]');
+  if (!tab || state.busy || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  event.preventDefault();
+  const tabs = [...tab.closest('[role="tablist"]').querySelectorAll('[role="tab"]')];
+  const index = tabs.indexOf(tab);
+  const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1
+    : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+  state.tab = tabs[next].dataset.value;
+  render();
+  $(`#tab-${state.tab}`).focus();
 });
 document.addEventListener('input', event => {
   if (event.target.id === 'case-search') { state.query = event.target.value; $('#workspace-results').innerHTML = caseResults(); }
@@ -316,6 +366,10 @@ document.addEventListener('submit', async event => {
   }
 });
 $('#modal').addEventListener('cancel', event => { if(state.busy) event.preventDefault(); else if (guardResolve) { event.preventDefault(); resolveGuard(false); } });
+$('#modal').addEventListener('close', () => {
+  if ($('#modal').open) return;
+  restoreFocus(modalReturnFocus); modalReturnFocus = null;
+});
 async function init() {
   render();
   try {

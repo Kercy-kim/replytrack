@@ -6,7 +6,30 @@ import { join } from 'node:path';
 import { CaseStore } from '../src/store.mjs';
 import { ReplyTrack } from '../src/service.mjs';
 import { createApp } from '../server.mjs';
-import { koreaDay, deadlineState, summarizeDeadlines, filterCases, savedDraft, dirtyDraftKinds } from '../public/workspace.js';
+import { koreaDay, deadlineState, summarizeDeadlines, filterCases, savedDraft, dirtyDraftKinds, selectedQuestionIds } from '../public/workspace.js';
+
+test('same-case saves and reanalysis preserve excluded questions, including an empty selection', async () => {
+  const store = new CaseStore(':memory:');
+  try {
+    const service = new ReplyTrack(store, {});
+    const original = service.demo();
+    const [cost, , shipping] = original.questions;
+    let selected = new Set([cost.id]);
+    let next = await service.draft(original.id, {version:original.version, kind:'followup', questionIds:[...selected]});
+    assert.deepEqual(selectedQuestionIds(original, next, selected), [cost.id]);
+    const generated = next;
+    next = service.saveDraft(next.id, 'followup', {version:next.version, body:'수리 견적 안내 일정을 확인해 주세요.'});
+    assert.deepEqual(selectedQuestionIds(generated, next, selected), [cost.id]);
+    assert(!selectedQuestionIds(generated, next, selected).includes(shipping.id));
+    assert.deepEqual(selectedQuestionIds(generated, next, new Set()), []);
+    const previous = next;
+    next = {...next, questions:[{...cost, status:'answered'}, shipping, {id:'new', status:'unanswered'}]};
+    assert.deepEqual(selectedQuestionIds(previous, next, selected), []);
+    assert.deepEqual(selectedQuestionIds(null, next, selected), [shipping.id, 'new']);
+    assert.deepEqual(selectedQuestionIds({...previous, id:'other'}, next, selected), [shipping.id, 'new']);
+    assert.deepEqual(selectedQuestionIds({...previous, questions:[]}, next, new Set()), [shipping.id, 'new']);
+  } finally { store.close(); }
+});
 
 test('deadline urgency follows Korean calendar boundaries and never flags confirmed or unknown dates', () => {
   assert.equal(koreaDay('2026-11-13T14:59:59Z'), '2026-11-13');

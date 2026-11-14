@@ -7,6 +7,7 @@ import { extensionOrigin } from '../src/extension-access.mjs';
 import { ReplyTrackApi } from '../extension/api.js';
 import { readSelection, selectionPayload } from '../extension/selection.js';
 import { ExtensionFixtureAI, fixtureText } from './helpers/extension-fixture.mjs';
+import { applyRecord } from '../extension/record-state.js';
 
 test('selection import reads only highlighted text, excludes password fields and strips URL credentials', () => {
   const run = (element, selected = '') => vm.runInNewContext(`(${readSelection.toString()})()`, {
@@ -58,6 +59,23 @@ test('extension transport: exact origin, preflight, live-case workflow, persiste
     assert.match(record.drafts.followup.body, /배송비/);
     assert.doesNotMatch(record.drafts.followup.body, /견적을 언제/);
     await assert.rejects(() => api.request(`/api/cases/${record.id}/drafts`, 'POST', { version: record.version - 1, kind: 'followup', questionIds: selected }), { status: 409 });
+    const panel = { selected:[], selectionInitialized:false, recordVersion:null, draftDirty:false };
+    applyRecord(panel, record);
+    assert.equal(panel.draft, record.drafts.followup.body);
+    const edited = '웹에서 저장한 편집 초안: 배송비 부담 여부를 확인해 주세요.';
+    const saved = await fetch(`${base}/api/cases/${record.id}/drafts/followup`, {method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({version:record.version, body:edited})});
+    assert.equal(saved.status, 200);
+    record = await api.request(`/api/cases/${record.id}`);
+    applyRecord(panel, record);
+    assert.equal(panel.draft, edited, 'panel reload displays the web edit instead of the generated original');
+    const reopened = { ...panel, record:null };
+    applyRecord(reopened, record);
+    assert.equal(reopened.draft, edited, 'a reopened clean session also uses the saved edit');
+    panel.draft = '패널에서 아직 저장하지 않은 편집'; panel.draftDirty = true;
+    const newer = {...record, version:record.version + 1, drafts:{followup:{...record.drafts.followup, editedBody:'다른 창에서 편집'}}};
+    applyRecord(panel, newer);
+    assert.equal(panel.draft, '패널에서 아직 저장하지 않은 편집');
+    assert.equal(panel.draftStale, true);
     await assert.rejects(() => api.request(`/api/cases/${record.id}`, 'DELETE', { version: record.version }), { status: 403 });
     const web = await fetch(base + '/api/cases', { headers: { Origin: base } });
     assert.equal(web.status, 200); assert.equal((await web.json())[0].id, record.id);

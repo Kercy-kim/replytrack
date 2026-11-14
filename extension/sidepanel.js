@@ -1,5 +1,6 @@
 import { ReplyTrackApi, SERVER_URL } from './api.js';
 import { MAX_SELECTION } from './selection.js';
+import { applyRecord } from './record-state.js';
 
 const api = new ReplyTrackApi();
 const $ = selector => document.querySelector(selector);
@@ -136,13 +137,7 @@ async function receiveCapture(capture) {
   if (!state.busy) render();
 }
 function setRecord(record) {
-  const changed = record.id === state.recordId && state.recordVersion !== null && record.version !== state.recordVersion;
-  const remaining = record.questions.filter(q => q.status !== 'answered').map(q => q.id);
-  state.selected = state.selectionInitialized ? state.selected.filter(id => remaining.includes(id)) : remaining;
-  if (record.questions.length) state.selectionInitialized = true;
-  if (state.draftDirty) { if (changed) state.draftStale = true; }
-  else { state.draft = record.drafts.followup?.body || ''; state.draftStale = false; }
-  state.record = record; state.recordId = record.id; state.recordVersion = record.version; state.phase = 'result';
+  applyRecord(state, record);
 }
 
 document.addEventListener('input', event => {

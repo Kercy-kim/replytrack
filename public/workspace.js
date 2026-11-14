@@ -42,3 +42,9 @@ export const savedDraft = draft => draft?.editedBody ?? draft?.body ?? '';
 export function dirtyDraftKinds(drafts, edits) {
   return Object.keys(edits).filter(kind => edits[kind] !== savedDraft(drafts[kind]));
 }
+export function selectedQuestionIds(previous, next, selected) {
+  const remaining = next.questions.filter(q => q.status !== 'answered').map(q => q.id);
+  // Select all on first analysis/open; same-case updates preserve deliberate exclusions.
+  if (previous?.id !== next.id || !previous.questions.length) return remaining;
+  return remaining.filter(id => selected.has(id));
+}
