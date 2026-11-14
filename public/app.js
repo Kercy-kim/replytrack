@@ -1,3 +1,4 @@
+import { deadlineState, filterCases, dirtyDraftKinds, savedDraft } from './workspace.js';
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const names = { unanswered: '미답변', partial: '부분 답변', waiting: '답변 대기', answered: '답변 받음', review: '확인 필요' };
@@ -14,7 +15,17 @@ const icons = {
   download: '<path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/>',
 };
 const icon = (name, cls = '') => `<svg class="icon ${cls}" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.chat}</svg>`;
-const state = { cases: [], current: null, config: { configured: false, model: 'gpt-5-mini' }, busy: '', tab: 'questions', mobile: 'analysis', filter: 'all', selected: new Set(), draftEdits: {}, error: '', onboarding: null };
+const state = { cases: [], current: null, config: { configured: false, model: 'gpt-5-mini' }, busy: '', tab: 'questions', mobile: 'analysis', filter: 'all', selected: new Set(), draftEdits: {}, error: '', onboarding: null, query: '', caseFilter: 'active', sort: 'priority' };
+const dirtyKinds = () => dirtyDraftKinds(state.current?.drafts || {}, state.draftEdits);
+let guardResolve;
+function guardEdits(invalidates = false, kind) {
+  const savedEdits = invalidates && Object.entries(state.current?.drafts || {}).some(([key, draft]) => (!kind || key === kind) && draft.editedBody !== undefined);
+  if (!dirtyKinds().some(key => !kind || key === kind) && !savedEdits) return Promise.resolve(true);
+  showModal(invalidates ? '편집한 초안을 바꾸기 전에' : '아직 저장하지 않은 초안이 있어요', `<p class="modal-intro">${invalidates ? '상담 상태가 바뀌거나 초안을 다시 생성하면 기존 초안이 초기화돼요. 필요한 편집 내용은 먼저 복사하거나 기록을 내려받아 주세요.' : '이동하면 저장하지 않은 편집 내용이 사라져요. 돌아가서 편집 내용을 저장할 수 있어요.'}</p><div class="modal-actions"><button class="btn secondary" data-action="guard-cancel">편집으로 돌아가기</button><button class="btn primary" data-action="guard-continue">${invalidates ? '초기화하고 계속' : '저장하지 않고 계속'}</button></div>`);
+  return new Promise(resolve => { guardResolve = resolve; });
+}
+function resolveGuard(allowed) { const resolve = guardResolve; guardResolve = null; $('#modal').close(); resolve?.(allowed); }
+window.addEventListener('beforeunload', event => { if (dirtyKinds().length) { event.preventDefault(); event.returnValue = ''; } });
 let toastTimer;
 function toast(text) { $('#toast').textContent = text; $('#toast').classList.add('visible'); clearTimeout(toastTimer); toastTimer = setTimeout(() => $('#toast').classList.remove('visible'), 4500); }
 async function api(path, method = 'GET', data) {
@@ -30,7 +41,10 @@ async function work(label, fn) {
   catch (e) {
     state.error = e.message; toast(e.message);
     const error = $('#modal-error'); if (error) error.textContent = e.message;
-    if (e.status === 409 && state.current) await loadCase(state.current.id).catch(() => {});
+    if (e.status === 409 && state.current) {
+      await loadCase(state.current.id).catch(() => {});
+      state.error += ' 편집 중인 초안은 화면에 유지했어요. 최신 내용과 비교한 뒤 다시 저장해 주세요.';
+    }
   } finally { state.busy = ''; render(); setModalBusy(false); }
 }
 function setModalBusy(busy) {
@@ -39,18 +53,15 @@ function setModalBusy(busy) {
 }
 async function refreshList() { state.cases = await api('/api/cases'); }
 function setCase(c) {
-  const edits = {};
-  if (state.current?.id === c.id) {
-    for (const [kind, text] of Object.entries(state.draftEdits)) {
-      if (c.drafts[kind] && c.drafts[kind].body === state.current.drafts[kind]?.body) edits[kind] = text;
-    }
-  }
+  // Retain local edits during conflict recovery, even if another window invalidated a draft.
+  const edits = state.current?.id === c.id ? { ...state.draftEdits } : {};
   if (state.current?.id !== c.id) state.mobile = 'analysis';
   state.current = c; state.selected = new Set(c.questions.filter(q => q.status !== 'answered').map(q => q.id)); state.draftEdits = edits;
   localStorage.setItem('replytrack:last-case', c.id);
+  window.history.replaceState(null, '', `?case=${encodeURIComponent(c.id)}`);
 }
 async function loadCase(id) { setCase(await api(`/api/cases/${id}`)); await refreshList(); }
-const date = value => value ? new Intl.DateTimeFormat('ko-KR', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(value)) : '날짜 미입력';
+const date = value => value ? new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(value)) : '날짜 미입력';
 const badge = status => `<span class="badge ${status}"><span class="status-dot"></span>${names[status]}</span>`;
 const button = (action, label, type = 'secondary', symbol = '', attrs = '') => `<button class="btn ${type}" data-action="${action}" ${state.busy ? 'disabled' : ''} ${attrs}>${symbol ? icon(symbol) : ''}${label}</button>`;
 function render() {
@@ -60,14 +71,15 @@ function render() {
       <a href="/" class="brand" data-action="home" aria-label="ReplyTrack 홈"><img src="/favicon.svg" width="35" height="35" alt=""><span>ReplyTrack<span class="brand-dot">.</span></span></a>
       <div class="workspace-label">나의 상담 워크스페이스</div>
       ${button('new', '새 상담 시작하기', 'primary wide', 'plus')}
-      <div class="nav-heading"><span>내 상담</span><span>${state.cases.length.toString().padStart(2, '0')}</span></div>
-      <nav class="case-list" aria-label="상담 목록">${state.cases.length ? state.cases.map(item => `<button class="case-item ${c?.id === item.id ? 'active' : ''}" data-action="open" data-id="${item.id}" ${state.busy ? 'disabled' : ''}>${icon('chat')}<span><strong>${esc(item.title)}</strong><small>${esc(item.company)}${item.mode === 'demo' ? ' · 예제' : ''}</small></span>${item.unanswered ? `<b>${item.unanswered}</b>` : icon('check')}</button>`).join('') : '<p class="sidebar-empty">새 상담을 시작하면<br>이곳에 기록이 쌓여요.</p>'}</nav>
+      ${button('home', '상담 전체 보기', 'secondary wide workspace-home', 'file')}
+      <div class="nav-heading"><span>내 상담</span><span>${state.cases.filter(item => !item.archivedAt || item.id === c?.id).length.toString().padStart(2, '0')}</span></div>
+      <nav class="case-list" aria-label="상담 목록">${state.cases.length ? state.cases.filter(item => !item.archivedAt || item.id === c?.id).map(item => `<button class="case-item ${c?.id === item.id ? 'active' : ''}" data-action="open" data-id="${item.id}" ${state.busy ? 'disabled' : ''}>${icon('chat')}<span><strong>${esc(item.title)}</strong><small>${esc(item.company)}${item.mode === 'demo' ? ' · 예제' : ''}</small></span>${item.unanswered ? `<b>${item.unanswered}</b>` : icon('check')}</button>`).join('') : '<p class="sidebar-empty">새 상담을 시작하면<br>이곳에 기록이 쌓여요.</p>'}</nav>
       <div class="sidebar-bottom"><div class="demo-promo"><span class="eyebrow">FIRST TIME HERE?</span><strong>어떻게 이어주는지 궁금하다면</strong><p>가상의 A/S 상담으로<br>전체 흐름을 체험해 보세요.</p>${button('demo', '예제 상담 열기', 'text', 'arrow')}</div>
       <button class="connection" data-action="settings"><span class="connection-dot ${state.config.configured ? 'connected' : ''}"></span><span>${state.config.configured ? 'OpenAI 연결됨' : 'AI 연결 설정'}<small>${state.config.configured ? esc(state.config.model) : '실제 상담 분석에 사용해요'}</small></span>${icon('settings')}</button>
       <div class="local-note">로컬 워크스페이스 · 이 기기에 저장</div></div>
     </aside>
     <main id="main" class="main">
-      <header class="topbar"><div>워크스페이스 <span>/</span> <strong>${c ? '상담 기록' : '시작하기'}</strong></div><span class="topbar-note">놓친 답변 없이, 다음 이야기로</span><button class="avatar" data-action="settings" aria-label="AI 연결 설정">R</button></header>
+      <header class="topbar"><div>워크스페이스 <span>/</span> <strong>${c ? '상담 기록' : state.cases.length ? '상담 전체 보기' : '시작하기'}</strong></div><span class="topbar-note">놓친 답변 없이, 다음 이야기로</span><button class="avatar" data-action="settings" aria-label="AI 연결 설정">R</button></header>
       ${state.busy ? `<div class="busy-bar" role="status"><span class="spinner"></span>${esc(state.busy)}<small>화면을 닫지 않고 잠시 기다려 주세요</small></div>` : ''}
       ${state.error ? `<div class="error-banner" role="alert">${esc(state.error)}<button data-action="dismiss-error" aria-label="오류 안내 닫기">${icon('close')}</button></div>` : ''}
       ${c ? detail(c) : landing()}
@@ -75,15 +87,42 @@ function render() {
     </main>`;
 }
 function landing() {
+  if (state.cases.length) return dashboard();
   return `<section class="welcome"><div class="welcome-copy"><span class="eyebrow">YOUR CONVERSATION, CONTINUED</span><h1>답변은 받았는데,<br><span>다 해결된 걸까요?</span></h1><p>빠진 답변부터 아직 남은 약속까지.<br>고객센터와의 대화를 한눈에 정리하고,<br>필요한 이야기만 이어가세요.</p><div class="welcome-actions">${button('new', '내 상담 정리하기', 'primary', 'plus')}${button('demo', '예제로 먼저 둘러보기', 'secondary', 'arrow')}</div><div class="welcome-footnote">텍스트 붙여넣기 · 대화 캡처 · 질문별 원문 근거</div></div>
     <div class="welcome-visual" aria-label="질문과 답변 상태 예시"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="visual-label">FROM CONVERSATION TO CLARITY</div><div class="sample-message">${icon('chat')}<p>“수리비, 수리 기간, 배송비가 궁금해요.”</p></div><div class="sample-card"><div class="sample-card-head"><span class="tiny-logo">${icon('spark')}</span><strong>세 가지 질문, 놓치지 않도록</strong><span class="sample-tag">예시</span></div><div class="sample-row"><span>01</span><strong>수리비 안내</strong>${badge('waiting')}</div><div class="sample-row"><span>02</span><strong>수리 소요 기간</strong>${badge('answered')}</div><div class="sample-row"><span>03</span><strong>왕복 배송비</strong>${badge('unanswered')}</div><div class="sample-bottom">${icon('link')}모든 판단은 원문으로 연결돼요</div></div><div class="sample-follow">${icon('arrow')}남은 질문만 담아, 다음 문의로.</div></div></section>
     <section class="benefits"><article><span>01 / COLLECT</span><h2>대화는 한곳에</h2><p>메신저, 이메일, 고객센터 채팅.<br>흩어진 상담을 붙여넣어 주세요.</p></article><article><span>02 / CHECK</span><h2>빠진 답변은 선명하게</h2><p>질문별 답변 상태와 실제 처리 약속을<br>원문 근거와 함께 확인해요.</p></article><article><span>03 / CONTINUE</span><h2>다음 문의는 간결하게</h2><p>아직 필요한 질문만 담은 초안으로<br>같은 설명을 반복하지 않아요.</p></article></section>`;
+}
+const caseFilters = [['active','진행 중'],['remaining','남은 질문'],['due','기한 확인'],['analysis','분석 필요'],['archived','보관함']];
+function dashboard() {
+  const active = state.cases.filter(c => !c.archivedAt);
+  const due = active.reduce((n, c) => n + c.deadlines.overdue + c.deadlines.today, 0);
+  return `<section class="dashboard"><div class="dashboard-heading"><div><h1>다음 이야기를 이어가세요</h1><p>${active.length}개의 진행 중 상담 · ${due ? `오늘까지 확인할 약속 ${due}건` : '기한이 정해지지 않은 약속도 한 번 확인해 주세요.'}</p></div>${button('refresh', '목록 새로고침', 'secondary compact', 'clock')}</div><div class="workspace-toolbar"><label class="search-field">상담 검색<input type="search" id="case-search" value="${esc(state.query)}" placeholder="상담 제목 또는 업체명" maxlength="100"></label><label class="sort-field">정렬<select id="case-sort"><option value="priority" ${state.sort === 'priority' ? 'selected' : ''}>확인 우선순위</option><option value="recent" ${state.sort === 'recent' ? 'selected' : ''}>최근 수정순</option></select></label></div><div class="case-filters" role="group" aria-label="상담 필터">${caseFilters.map(([id,label]) => `<button data-action="case-filter" data-value="${id}" aria-pressed="${state.caseFilter === id}">${label}<span>${filterCases(state.cases,{filter:id}).length}</span></button>`).join('')}</div><div id="workspace-results">${caseResults()}</div><p class="dashboard-note">한국 시간 기준 · 기한 지남은 처리 실패를 뜻하지 않아요. 실제 결과를 직접 확인해 주세요.</p></section>`;
+}
+function caseResults() {
+  const cases = filterCases(state.cases, {query:state.query, filter:state.caseFilter, sort:state.sort});
+  return `<p class="result-count" role="status">${state.query ? `“${esc(state.query)}” 검색 결과` : caseFilters.find(([id]) => id === state.caseFilter)[1]} ${cases.length}건</p>${cases.length ? `<div class="workspace-list">${cases.map(c => `<article class="workspace-row"><div class="workspace-case"><p>${esc(c.company)}${c.mode === 'demo' ? ' · 예제' : ''}</p><h2><button data-action="open" data-id="${c.id}">${esc(c.title)}${icon('arrow')}</button></h2><div class="case-counts"><span>남은 질문 <strong>${c.unanswered}</strong></span><span>확인할 약속 <strong>${c.promises}</strong></span><time>수정 ${date(c.updatedAt)}</time></div></div><div class="case-next">${nextAction(c)}</div></article>`).join('')}</div>` : `<div class="empty-panel"><h2>${state.query ? '검색 결과가 없어요' : state.caseFilter === 'archived' ? '보관한 상담이 없어요' : '이 조건에 해당하는 상담이 없어요'}</h2><p>${state.query ? '상담 제목이나 업체명의 다른 단어로 찾아보세요.' : '다른 필터에서 상담을 확인할 수 있어요.'}</p>${button('reset-search','진행 중 상담 보기','secondary compact')}</div>`}`;
+}
+function nextAction(c) {
+  if (c.archivedAt) return '<span class="deadline-chip">보관한 상담</span><small>열어서 진행 목록으로 복원할 수 있어요</small>';
+  const d = c.deadlines;
+  if (d.overdue) return `<span class="deadline-chip overdue">기한 지남 ${d.overdue}건</span><small>${esc(d.nextDueAt)}까지 · 실제 처리 확인 필요</small>`;
+  if (d.today) return `<span class="deadline-chip today">오늘까지 ${d.today}건</span><small>약속한 결과가 도착했는지 확인해요</small>`;
+  if (c.pendingAnalysis) return '<span class="deadline-chip today">새 대화 분석 필요</span><small>저장한 원문을 질문 확인표에 반영해요</small>';
+  if (c.unanswered) return '<span class="deadline-chip">답변을 이어 받을 차례</span><small>남은 질문으로 재문의 초안을 만들어요</small>';
+  if (c.promises) return `<span class="deadline-chip">실제 처리 확인 필요</span><small>${d.nextDueAt ? `${esc(d.nextDueAt)}까지` : '기한이 정해지지 않은 약속이 있어요'}</small>`;
+  return '<span class="deadline-chip confirmed">남은 확인 항목 없음</span><small>필요할 때 상담을 보관할 수 있어요</small>';
+}
+function deadlineLabel(p) {
+  const status = deadlineState(p);
+  const text = {overdue:'기한 지남 · 실제 처리 확인 필요',today:'오늘까지 · 실제 처리 확인 필요',upcoming:'기한 예정',unknown:'기한 미정',confirmed:'직접 확인 완료'}[status];
+  return `<span class="deadline-chip ${status}">${text}</span>`;
 }
 function detail(c) {
   const unresolved = c.questions.filter(q => q.status !== 'answered').length;
   const answered = c.questions.length - unresolved;
   const pending = c.analyzedMessageCount < c.messages.length;
-  return `<section class="case-heading"><div><div class="eyebrow">${esc(c.company)} <span class="middle-dot">·</span> ${c.mode === 'demo' ? 'DEMO CASE' : 'MY CASE'}</div><h1>${esc(c.title)}</h1><p>${esc(c.summary || '상담은 안전하게 저장됐어요. 질문을 분석하면 확인표가 만들어져요.')}</p></div><div class="heading-actions">${button('export', '기록 저장', 'secondary compact', 'download')}${button('delete', '', 'icon-btn', 'close', 'aria-label="상담 삭제"')}</div></section>
+  return `<section class="case-heading"><div><div class="eyebrow">${esc(c.company)} <span class="middle-dot">·</span> ${c.mode === 'demo' ? 'DEMO CASE' : 'MY CASE'}</div><h1>${esc(c.title)}</h1><p>${esc(c.summary || '상담은 안전하게 저장됐어요. 질문을 분석하면 확인표가 만들어져요.')}</p></div><div class="heading-actions">${button('case-settings', '상담 관리', 'secondary compact', 'settings')}${button('export', '내려받기', 'secondary compact', 'download')}${button('delete', '', 'icon-btn', 'close', 'aria-label="상담 삭제"')}</div></section>
+    ${c.archivedAt ? `<div class="archive-banner"><span>보관한 상담이에요. 보관은 실제 처리 완료를 의미하지 않아요.</span>${button('restore','진행 목록으로 복원','secondary compact')}</div>` : ''}
     ${c.mode === 'demo' ? `<div class="demo-banner"><span>${icon('spark')}<strong>예제 상담</strong> 준비된 가상 데이터예요. AI API를 호출하지 않아요.</span>${c.demoStep < 2 ? button('demo-next', c.demoStep === 0 ? '예제 답변 추가하기' : '견적 도착 시연하기', 'text', 'arrow') : '<span class="demo-complete">모든 예제 답변을 확인했어요</span>'}</div>` : ''}
     ${pending ? `<div class="pending-banner"><span>새 메시지가 저장됐어요. 분석하면 질문과 약속에 반영돼요.</span>${button('analyze', c.questions.length ? '새 답변 분석' : '질문 분석하기', 'primary compact', 'spark')}</div>` : ''}
     <section class="stats" aria-label="상담 현황"><div><span class="stat-icon neutral">${icon('chat')}</span><span>전체 질문<strong>${c.questions.length}<small>개</small></strong></span></div><div><span class="stat-icon green">${icon('check')}</span><span>답변 받은 질문<strong>${answered}<small>개</small></strong></span></div><div><span class="stat-icon orange">${icon('clock')}</span><span>아직 남은 질문<strong>${unresolved}<small>개</small></strong></span></div><div><span class="stat-icon violet">${icon('file')}</span><span>확인할 처리 약속<strong>${c.promises.filter(p => !p.confirmedAt).length}<small>개</small></strong></span></div></section>
@@ -95,7 +134,7 @@ function questionPanel(c) {
   const visible = c.questions.filter(q => state.filter !== 'remaining' || q.status !== 'answered');
   return `<div class="section-tools"><div><h2>어떤 답변이 아직 남아 있나요?</h2><p>답변 수신과 실제 처리 완료는 따로 확인해요.</p></div><select id="question-filter" aria-label="질문 필터"><option value="all" ${state.filter === 'all' ? 'selected' : ''}>모든 질문</option><option value="remaining" ${state.filter === 'remaining' ? 'selected' : ''}>남은 질문만</option></select></div>
     <div class="question-list">${visible.length ? visible.map(q => `<article class="question-card ${q.status}"><div class="question-top"><span class="question-number">Q${String(c.questions.indexOf(q) + 1).padStart(2, '0')}</span>${badge(q.status)}<button class="edit-button" data-action="edit-question" data-id="${q.id}" aria-label="${esc(q.title)} 수정">${icon('edit')}</button></div><h3>${esc(q.title)}</h3><p class="reason">${esc(q.reason)}</p>${q.manualStatus ? `<p class="manual-note">직접 수정한 상태 · AI 제안: ${names[q.aiStatus]}</p>` : ''}<div class="evidence">${q.evidence.length ? q.evidence.map(e => `<button data-action="source" data-id="${e.messageId}" class="quote">${icon('link')}<span>“${esc(e.quote)}”</span>${icon('arrow')}</button>`).join('') : `<button class="quote empty-quote" data-action="source" data-id="${q.source.messageId}">${icon('link')}<span>이 질문에 연결된 답변이 아직 없어요. 질문 원문 보기</span>${icon('arrow')}</button>`}</div></article>`).join('') : `<div class="empty-panel">${icon('check')}<h3>${c.questions.length ? '모든 질문에 답변을 받았어요' : '첫 확인표를 만들어 볼까요?'}</h3><p>${c.questions.length ? '아래 처리 약속도 실제로 이행됐는지 확인해 주세요.' : '위의 질문 분석하기를 누르면 원문과 연결된 질문 카드가 생겨요.'}</p></div>`}</div>
-    <section class="promise-section"><div class="section-title"><div>${icon('clock')}<h2>답변 뒤에 남은 약속</h2></div><span>${c.promises.length}건</span></div><p class="section-description">안내받은 약속과 실제로 확인한 결과를 구분해요.</p>${c.promises.length ? c.promises.map(p => `<article class="promise-card ${p.confirmedAt ? 'confirmed' : ''}"><div><span class="promise-label">${p.confirmedAt ? '사용자 확인 완료' : p.state === 'reported' ? '업체의 처리 안내 · 직접 확인 전' : '처리 약속 · 직접 확인 전'}</span><h3>${esc(p.title)}</h3><div class="due">${icon('clock')}${p.dueAt ? `${esc(p.dueAt)}까지` : '기한 미정'}${p.dueText ? ` <span>(${esc(p.dueText)}${!p.dueAt ? ' · 기준 날짜 확인 필요' : ''})</span>` : ''}</div><button class="promise-source" data-action="source" data-id="${p.evidence.messageId}">“${esc(p.evidence.quote)}” ${icon('link')}</button>${p.confirmedAt ? `<small class="confirmed-time">${date(p.confirmedAt)} 직접 확인</small>` : ''}</div>${button('confirm-promise', p.confirmedAt ? '확인 취소' : '직접 확인했어요', p.confirmedAt ? 'text' : 'secondary compact', p.confirmedAt ? 'check' : '', `data-id="${p.id}"`)}</article>`).join('') : '<p class="quiet-empty">명시적인 처리 약속이 나오면 여기에 모아 둘게요.</p>'}</section>
+    <section class="promise-section"><div class="section-title"><div>${icon('clock')}<h2>답변 뒤에 남은 약속</h2></div><span>${c.promises.length}건</span></div><p class="section-description">안내받은 약속과 실제로 확인한 결과를 구분해요.</p>${c.promises.length ? c.promises.map(p => `<article class="promise-card ${p.confirmedAt ? 'confirmed' : ''}"><div><span class="promise-label">${p.confirmedAt ? '사용자 확인 완료' : p.state === 'reported' ? '업체의 처리 안내 · 직접 확인 전' : '처리 약속 · 직접 확인 전'}</span><h3>${esc(p.title)}</h3>${deadlineLabel(p)}<div class="due">${icon('clock')}${p.dueAt ? `${esc(p.dueAt)}까지` : '기한 미정'}${p.dueText ? ` <span>(${esc(p.dueText)}${!p.dueAt ? ' · 기준 날짜 확인 필요' : ''})</span>` : ''}</div><button class="promise-source" data-action="source" data-id="${p.evidence.messageId}">“${esc(p.evidence.quote)}” ${icon('link')}</button>${p.confirmedAt ? `<small class="confirmed-time">${date(p.confirmedAt)} 직접 확인</small>` : ''}</div>${button('confirm-promise', p.confirmedAt ? '확인 취소' : '직접 확인했어요', p.confirmedAt ? 'text' : 'secondary compact', p.confirmedAt ? 'check' : '', `data-id="${p.id}"`)}</article>`).join('') : '<p class="quiet-empty">명시적인 처리 약속이 나오면 여기에 모아 둘게요.</p>'}</section>
     ${c.questions.length ? `<div class="next-step"><span>${icon('spark')}남은 질문을 다시 설명할 필요 없어요.</span>${button('draft-tab', '재문의 초안 만들기', 'primary compact', 'arrow')}</div>` : ''}
     ${c.analysis ? `<p class="analysis-meta">${esc(c.analysis.model)} · ${date(c.analysis.at)} 분석${c.analysis.usage?.total_tokens ? ` · ${c.analysis.usage.total_tokens.toLocaleString()} tokens` : ''}${c.mode === 'live' ? ' · 생성형 AI의 판단은 원문과 대조해 주세요.' : ''}</p>` : ''}`;
 }
@@ -105,7 +144,13 @@ function draftPanel(c) {
 }
 function draftEditor(c, kind) {
   const draft = c.drafts[kind];
-  return draft ? `<div class="draft-editor"><label for="draft-${kind}">${kind === 'followup' ? '재문의 초안' : '상담 인계 요약'} <span>직접 수정할 수 있어요</span></label><textarea id="draft-${kind}" data-draft="${kind}" rows="7">${esc(state.draftEdits[kind] ?? draft.body)}</textarea><div class="draft-editor-bottom"><span>자동 전송되지 않아요 · 편집 내용은 현재 화면에 유지돼요</span>${button('copy', '복사하기', 'secondary compact', 'copy', `data-kind="${kind}"`)}</div><details class="draft-sources"><summary>초안의 원문 근거 ${draft.sourceMessageIds.length}개</summary>${draft.sourceMessageIds.map(id => `<button class="quote" data-action="source" data-id="${id}">${icon('link')}${esc(c.messages.find(m => m.id === id)?.text)}</button>`).join('')}</details></div>` : '';
+  const dirty = dirtyKinds().includes(kind);
+  if (!draft && state.draftEdits[kind] === undefined) return '';
+  return `<div class="draft-editor"><label for="draft-${kind}">${kind === 'followup' ? '재문의 초안' : '상담 인계 요약'} <span>직접 수정할 수 있어요</span></label>${!draft ? '<p class="warning-note">다른 작업에서 원래 초안이 초기화됐어요. 편집 내용은 아래에 보존했으니 먼저 복사한 뒤 최신 상담으로 초안을 다시 만들어 주세요.</p>' : ''}<textarea id="draft-${kind}" data-draft="${kind}" rows="7" maxlength="8000" ${state.busy ? 'disabled' : ''}>${esc(state.draftEdits[kind] ?? savedDraft(draft))}</textarea><div class="draft-editor-bottom"><span id="draft-status-${kind}" role="status">${draftStatus(kind)}</span><div class="draft-actions">${draft ? button('save-draft','편집 저장','primary compact','check',`data-kind="${kind}" ${!dirty ? 'disabled' : ''}`) : ''}${button('copy','복사하기','secondary compact','copy',`data-kind="${kind}"`)}</div></div><p class="draft-note">자동 전송되지 않아요. 직접 편집한 문장은 원문과 대조해 주세요.</p>${draft ? `<details class="draft-sources"><summary>생성 당시 원문 근거 ${draft.sourceMessageIds.length}개</summary>${draft.sourceMessageIds.map(id => `<button class="quote" data-action="source" data-id="${id}">${icon('link')}${esc(c.messages.find(m => m.id === id)?.text)}</button>`).join('')}</details>${draft.editedAt ? `<details class="draft-sources"><summary>편집 전 생성 초안 보기</summary><p class="original-draft">${esc(draft.body)}</p></details>` : ''}` : ''}</div>`;
+}
+function draftStatus(kind) {
+  const draft = state.current?.drafts[kind];
+  return dirtyKinds().includes(kind) ? '저장하지 않은 편집 내용' : draft?.editedAt ? `${date(draft.editedAt)} 편집 저장됨` : '생성 초안 저장됨';
 }
 function historyPanel(c) {
   return `<div class="section-tools"><div><h2>상담이 이어진 발자취</h2><p>새 답변, AI 분석, 직접 확인한 내용을 기록해요.</p></div></div><ol class="timeline">${c.history.map(h => `<li><span class="timeline-dot">${icon(h.type === 'confirmation' ? 'check' : h.type === 'analysis' ? 'spark' : 'chat')}</span><div><time>${date(h.at)}</time><h3>${esc(h.label)}</h3>${h.details ? `<p>${esc(h.details)}</p>` : ''}</div></li>`).join('')}</ol>`;
@@ -117,6 +162,10 @@ function showModal(title, content, wide = false) {
 }
 function showSettings() {
   showModal('실제 AI 분석 연결', `<p class="modal-intro">키는 이 서버의 메모리에만 보관돼요. 서버를 다시 시작하면 재등록해 주세요. AI 분석 시 입력한 상담 자료가 OpenAI로 전송됩니다.</p><form id="settings-form"><label class="field">OpenAI API 키<input id="api-key" type="password" autocomplete="off" placeholder="${state.config.configured ? '연결됨 · 변경할 때만 입력' : 'sk-…'}" ${state.config.configured ? '' : 'required'}></label><label class="field">모델<input id="api-model" value="${esc(state.config.model)}" required></label><div class="form-note">로컬 .env의 OPENAI_API_KEY로 설정할 수도 있어요. 키는 기록이나 내보내기에 포함하지 않아요.</div><div class="modal-actions"><button class="btn secondary" type="button" data-action="close-modal">취소</button><button class="btn primary" type="submit">연결 설정 저장</button></div></form>`);
+}
+function showCaseSettings() {
+  const c = state.current;
+  showModal('상담 관리', `<form id="case-settings-form"><label class="field">상담 제목<input name="title" maxlength="100" value="${esc(c.title)}" required></label><label class="field">업체명<input name="company" maxlength="60" value="${esc(c.company)}"></label><div class="modal-actions"><button class="btn secondary" type="button" data-action="close-modal">취소</button><button class="btn primary" type="submit">상담 정보 저장</button></div></form><div class="archive-controls"><h3>${c.archivedAt ? '보관한 상담' : '상담 보관하기'}</h3><p>진행 목록에서 잠시 빼 둘 수 있어요. 원문과 질문·약속 상태는 그대로 유지하며, 보관함에서 언제든 복원할 수 있어요.</p>${button(c.archivedAt ? 'restore' : 'archive',c.archivedAt ? '진행 목록으로 복원' : '보관함으로 이동','secondary compact')}</div>`);
 }
 function showNew() {
   state.onboarding = { title: '', company: '', messages: [], notes: [] };
@@ -143,7 +192,11 @@ function showEdit(id) {
 }
 async function updateCase(path, method, data) {
   const c = state.current;
-  setCase(await api(`/api/cases/${c.id}/${path}`, method, { ...data, version: c.version }));
+  const result = await api(`/api/cases/${c.id}${path ? `/${path}` : ''}`, method, { ...data, version: c.version });
+  if (['analyze','demo-next','messages'].includes(path) || /^(questions|promises)\//.test(path)) state.draftEdits = {};
+  if (path === 'drafts' && method === 'POST') delete state.draftEdits[data.kind];
+  if (path.startsWith('drafts/') && method === 'PATCH') delete state.draftEdits[path.split('/')[1]];
+  setCase(result);
   await refreshList();
   render();
 }
@@ -154,7 +207,7 @@ function highlightSource(id) {
 }
 function downloadRecord() {
   const c = state.current;
-  const text = `# ${c.title}\n\n${c.company} · ${c.mode === 'demo' ? '가상 예제' : '실제 AI 분석'}\n\n${c.summary}\n\n## 질문 확인표\n\n${c.questions.map(q => `- ${q.title}: ${names[q.status]}\n  - ${q.reason}\n${q.evidence.map(e => `  - 근거: ${e.quote}`).join('\n')}`).join('\n')}\n\n## 처리 약속\n\n${c.promises.map(p => `- ${p.title}: ${p.confirmedAt ? '사용자 확인 완료' : p.state === 'reported' ? '업체 처리 안내 / 직접 확인 전' : '처리 약속 / 직접 확인 전'} · ${p.dueAt || '기한 미정'}\n  - ${p.evidence.quote}`).join('\n')}\n\n## 상담 원문\n\n${c.messages.map(m => `### ${m.role === 'customer' ? '나' : c.company} · ${date(m.sentAt)}\n\n${m.text}`).join('\n\n')}\n\n${Object.entries(c.drafts).map(([kind,d]) => `## ${kind === 'followup' ? '재문의 초안' : '인계 요약'}\n\n${state.draftEdits[kind] ?? d.body}`).join('\n\n')}`;
+  const text = `# ${c.title}\n\n${c.company} · ${c.mode === 'demo' ? '가상 예제' : '실제 AI 분석'}\n\n${c.summary}\n\n## 질문 확인표\n\n${c.questions.map(q => `- ${q.title}: ${names[q.status]}\n  - ${q.reason}\n${q.evidence.map(e => `  - 근거: ${e.quote}`).join('\n')}`).join('\n')}\n\n## 처리 약속\n\n${c.promises.map(p => `- ${p.title}: ${p.confirmedAt ? '사용자 확인 완료' : p.state === 'reported' ? '업체 처리 안내 / 직접 확인 전' : '처리 약속 / 직접 확인 전'} · ${p.dueAt || '기한 미정'}\n  - ${p.evidence.quote}`).join('\n')}\n\n## 상담 원문\n\n${c.messages.map(m => `### ${m.role === 'customer' ? '나' : c.company} · ${date(m.sentAt)}\n\n${m.text}`).join('\n\n')}\n\n${Object.keys({ ...c.drafts, ...state.draftEdits }).map(kind => `## ${kind === 'followup' ? '재문의 초안' : '인계 요약'}\n\n${state.draftEdits[kind] ?? savedDraft(c.drafts[kind])}`).join('\n\n')}`;
   const url = URL.createObjectURL(new Blob([text], { type: 'text/markdown;charset=utf-8' }));
   const a = document.createElement('a'); a.href = url; a.download = `ReplyTrack-${c.title.replace(/[<>:"/\\|?*]/g,'_')}.md`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
@@ -162,10 +215,21 @@ document.addEventListener('click', async event => {
   const target = event.target.closest('[data-action]'); if (!target) return;
   event.preventDefault(); if (state.busy) return;
   const action = target.dataset.action;
-  if (action === 'home') { state.current = null; state.error = ''; render(); }
+  if (action === 'guard-cancel') return resolveGuard(false);
+  if (action === 'guard-continue') return resolveGuard(true);
+  const navigating = ['home','new','demo'].includes(action) || (action === 'open' && target.dataset.id !== state.current?.id);
+  const invalidating = ['demo-next','analyze','append','edit-question','apply-ai','confirm-promise','generate-draft'].includes(action);
+  if ((navigating || invalidating) && !await guardEdits(invalidating, action === 'generate-draft' ? target.dataset.kind : undefined)) return;
+  if (action === 'home') { state.current = null; state.draftEdits = {}; state.error = ''; window.history.replaceState(null,'','/'); await work('상담 목록을 불러오고 있어요', refreshList); }
+  if (action === 'refresh') await work('상담 목록을 새로 불러오고 있어요', refreshList);
+  if (action === 'case-filter') { state.caseFilter = target.dataset.value; render(); }
+  if (action === 'reset-search') { state.query = ''; state.caseFilter = 'active'; render(); }
+  if (action === 'case-settings') showCaseSettings();
+  if (['archive','restore'].includes(action)) await work('상담 목록을 정리하고 있어요', async () => { await updateCase('','PATCH',{archived:action === 'archive'}); $('#modal').close(); toast(action === 'archive' ? '보관함으로 이동했어요. 언제든 복원할 수 있어요.' : '진행 목록으로 복원했어요.'); });
+  if (action === 'save-draft') await work('편집한 초안을 저장하고 있어요', async () => { await updateCase(`drafts/${target.dataset.kind}`,'PATCH',{body:state.draftEdits[target.dataset.kind]}); toast('편집 내용을 이 기기에 저장했어요.'); });
   if (action === 'new') showNew();
   if (action === 'settings') showSettings();
-  if (action === 'close-modal') $('#modal').close();
+  if (action === 'close-modal') { if (guardResolve) resolveGuard(false); else $('#modal').close(); }
   if (action === 'dismiss-error') { state.error = ''; render(); }
   if (action === 'open') await work('상담 기록을 불러오고 있어요', () => loadCase(target.dataset.id));
   if (action === 'demo') await work('예제 상담을 준비하고 있어요', async () => { setCase(await api('/api/demo','POST',{})); state.tab = 'questions'; state.filter = 'all'; await refreshList(); });
@@ -184,12 +248,7 @@ document.addEventListener('click', async event => {
     else showModal('실제 결과를 확인하셨나요?', `<p class="modal-intro"><strong>${esc(p.title)}</strong><br><br>업체의 안내와 별개로, 견적 수신이나 처리 결과를 직접 확인했을 때 완료로 표시해 주세요.</p><div class="modal-actions"><button class="btn secondary" data-action="close-modal">아직 확인 전이에요</button><button class="btn primary" data-action="confirm-yes" data-id="${p.id}">직접 확인했어요</button></div>`);
   }
   if (action === 'confirm-yes') await work('직접 확인한 결과를 기록하고 있어요', async () => { await updateCase(`promises/${target.dataset.id}`, 'PATCH', { confirmed: true }); $('#modal').close(); toast('사용자 확인 완료로 기록했어요.'); });
-  if (action === 'generate-draft') await work('확인된 사실로 초안을 작성하고 있어요', async () => {
-    const previousEdit = state.draftEdits[target.dataset.kind];
-    delete state.draftEdits[target.dataset.kind];
-    try { await updateCase('drafts','POST',{kind:target.dataset.kind, questionIds:[...state.selected]}); }
-    catch (error) { if (previousEdit !== undefined) state.draftEdits[target.dataset.kind] = previousEdit; throw error; }
-  });
+  if (action === 'generate-draft') await work('확인된 사실로 초안을 작성하고 있어요', () => updateCase('drafts','POST',{kind:target.dataset.kind, questionIds:[...state.selected]}));
   if (action === 'copy') {
     const area = $(`#draft-${target.dataset.kind}`);
     try { await navigator.clipboard.writeText(area.value); toast('초안을 복사했어요.'); }
@@ -197,18 +256,33 @@ document.addEventListener('click', async event => {
   }
   if (action === 'export') downloadRecord();
   if (action === 'delete') showModal('상담 기록을 삭제할까요?', `<p class="modal-intro">‘${esc(state.current.title)}’의 원문과 분석 기록이 이 기기에서 삭제돼요. 삭제 후에는 되돌릴 수 없어요.</p><div class="modal-actions"><button class="btn secondary" data-action="close-modal">취소</button><button class="btn danger" data-action="delete-yes">상담 삭제</button></div>`);
-  if (action === 'delete-yes') await work('상담 기록을 삭제하고 있어요', async () => { await api(`/api/cases/${state.current.id}`, 'DELETE', {version:state.current.version}); state.current=null; localStorage.removeItem('replytrack:last-case'); await refreshList(); $('#modal').close(); });
+  if (action === 'delete-yes') await work('상담 기록을 삭제하고 있어요', async () => { await api(`/api/cases/${state.current.id}`, 'DELETE', {version:state.current.version}); state.current=null; state.draftEdits={}; window.history.replaceState(null,'','/'); localStorage.removeItem('replytrack:last-case'); await refreshList(); $('#modal').close(); });
   if (action === 'manual') { readNewMetadata(); state.onboarding.messages = [{role:'customer',text:'',sentAt:null},{role:'agent',text:'',sentAt:null}]; showReview(); }
   if (action === 'add-row') { const rows = $('#review-rows'); if(rows.children.length < 60) rows.insertAdjacentHTML('beforeend',reviewRow({role:'agent',text:'',sentAt:null},rows.children.length)); }
   if (action === 'remove-row') target.closest('.review-row').remove();
 });
 document.addEventListener('change', event => {
+  if (event.target.id === 'case-sort') { state.sort = event.target.value; $('#workspace-results').innerHTML = caseResults(); }
   if (event.target.id === 'question-filter') { state.filter = event.target.value; render(); }
   if (event.target.name === 'draft-question') { if (event.target.checked) state.selected.add(event.target.value); else state.selected.delete(event.target.value); }
 });
-document.addEventListener('input', event => { if (event.target.dataset.draft) state.draftEdits[event.target.dataset.draft] = event.target.value; });
+document.addEventListener('input', event => {
+  if (event.target.id === 'case-search') { state.query = event.target.value; $('#workspace-results').innerHTML = caseResults(); }
+  const kind = event.target.dataset.draft;
+  if (kind) {
+    state.draftEdits[kind] = event.target.value;
+    $(`#draft-status-${kind}`).textContent = draftStatus(kind);
+    const save = $(`[data-action="save-draft"][data-kind="${kind}"]`);
+    if (save) save.disabled = state.busy || !dirtyKinds().includes(kind) || !event.target.value.trim();
+  }
+});
 document.addEventListener('submit', async event => {
   event.preventDefault(); const form = event.target;
+  if (state.busy) return;
+  if (form.id === 'case-settings-form') {
+    const data = {title:form.elements.title.value,company:form.elements.company.value};
+    await work('상담 정보를 저장하고 있어요',async () => { await updateCase('','PATCH',data); $('#modal').close(); toast('상담 정보를 수정했어요.'); });
+  }
   if (form.id === 'settings-form') {
     const key = $('#api-key').value.trim(), model = $('#api-model').value.trim(); $('#api-key').value = '';
     await work('AI 연결 설정을 저장하고 있어요', async () => { state.config = await api('/api/config','PUT',{...(key ? {apiKey:key} : {}),model}); $('#modal').close(); toast('AI 연결 설정을 저장했어요. 분석할 때 연결을 확인합니다.'); });
@@ -241,12 +315,12 @@ document.addEventListener('submit', async event => {
     await work('수정 내용을 저장하고 있어요', async () => { await updateCase(`questions/${form.dataset.id}`,'PATCH',body); $('#modal').close(); });
   }
 });
-$('#modal').addEventListener('cancel', event => { if(state.busy) event.preventDefault(); });
+$('#modal').addEventListener('cancel', event => { if(state.busy) event.preventDefault(); else if (guardResolve) { event.preventDefault(); resolveGuard(false); } });
 async function init() {
   render();
   try {
     [state.config, state.cases] = await Promise.all([api('/api/config'),api('/api/cases')]);
-    const last = new URLSearchParams(location.search).get('case') || localStorage.getItem('replytrack:last-case');
+    const last = new URLSearchParams(location.search).get('case');
     if (last && state.cases.some(c => c.id === last)) setCase(await api(`/api/cases/${last}`));
   } catch(e) { state.error=e.message; }
   render();

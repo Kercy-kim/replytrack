@@ -2,6 +2,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { AppError } from './errors.mjs';
+import { summarizeDeadlines } from '../public/workspace.js';
 
 export class CaseStore {
   constructor(filename) {
@@ -23,6 +24,8 @@ export class CaseStore {
         unanswered: c.questions.filter(q => q.status !== 'answered').length,
         promises: c.promises.filter(p => !p.confirmedAt).length,
         pendingAnalysis: c.analyzedMessageCount < c.messages.length,
+        archivedAt: c.archivedAt || null,
+        deadlines: summarizeDeadlines(c.promises),
       };
     });
   }

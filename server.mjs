@@ -12,6 +12,7 @@ import { allowExtensionRequest } from './src/extension-access.mjs';
 const root = dirname(fileURLToPath(import.meta.url));
 try { process.loadEnvFile(join(root, '.env')); } catch (error) { if (error.code !== 'ENOENT') throw error; }
 const staticFiles = new Map([['/', ['index.html', 'text/html']], ['/app.js', ['app.js', 'text/javascript']], ['/styles.css', ['styles.css', 'text/css']], ['/favicon.svg', ['favicon.svg', 'image/svg+xml']]]);
+staticFiles.set('/workspace.js', ['workspace.js', 'text/javascript']);
 
 export function createApp({ store, ai } = {}) {
   const db = store ?? new CaseStore(resolve(root, process.env.REPLYTRACK_DATA_DIR || 'data', 'replytrack.sqlite'));
@@ -51,6 +52,7 @@ export function createApp({ store, ai } = {}) {
       if (match) {
         const [, id, action, item] = match;
         if (!action && method === 'GET') return json(db.get(id));
+        if (!action && method === 'PATCH') return json(service.metadata(id, body));
         if (!action && method === 'DELETE') { service.getVersion(id, body.version); db.delete(id, body.version); return json({ deleted: true }); }
         if (action === 'analyze' && method === 'POST') return json(await service.analyze(id, body.version));
         if (action === 'messages' && method === 'POST') return json(service.append(id, body));
@@ -58,6 +60,7 @@ export function createApp({ store, ai } = {}) {
         if (action === 'questions' && item && method === 'PATCH') return json(service.question(id, item, body));
         if (action === 'promises' && item && method === 'PATCH') return json(service.promise(id, item, body));
         if (action === 'drafts' && method === 'POST') return json(await service.draft(id, body));
+        if (action === 'drafts' && item && method === 'PATCH') return json(service.saveDraft(id, item, body));
       }
       if (method === 'GET' && staticFiles.has(path)) {
         const [file, mime] = staticFiles.get(path);
