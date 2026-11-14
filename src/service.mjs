@@ -3,7 +3,7 @@ import { newCase, message, history, applyAnalysis, analysisValidationErrors, val
 import { createDemo, advanceDemo, demoAnalysis, demoDraft } from './demo.mjs';
 import { analysisSchemaFor, transcriptSchema, draftSchemaFor, draftReviewSchema, boundaryReviewSchemaFor } from './schema.mjs';
 import { ANALYSIS_PROMPT, TRANSCRIPT_PROMPT, DRAFT_PROMPT, DRAFT_REVIEW_PROMPT, BOUNDARY_REVIEW_PROMPT } from './prompts.mjs';
-import { HANDOFF_PROMPT, HANDOFF_REPAIR_PROMPT, HANDOFF_REVIEW_PROMPT, stripInternalCitations } from './handoff.mjs';
+import { HANDOFF_PROMPT, HANDOFF_REPAIR_PROMPT, HANDOFF_REVIEW_PROMPT, stripInternalCitations, normalizeHandoffAttribution } from './handoff.mjs';
 
 // Derived reasoning and suggested follow-ups are not independent source facts.
 export const draftQuestionContext = questions => questions.map(({ id, title, source, status, evidence }) => ({ id, title, source, status, evidence }));
@@ -160,7 +160,7 @@ export class ReplyTrack {
         model = result.model; previousDraft = result.data;
         let candidate;
         try {
-          candidate = validateDraft(input.kind === 'handoff' ? stripInternalCitations(result.data, c) : result.data, c);
+          candidate = validateDraft(input.kind === 'handoff' ? normalizeHandoffAttribution(stripInternalCitations(result.data, c), c) : result.data, c);
           if (input.kind === 'handoff') previousDraft = candidate;
         }
         catch (error) {

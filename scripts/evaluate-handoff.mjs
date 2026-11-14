@@ -9,7 +9,7 @@ import { performanceSummary } from '../evals/performance.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const args = process.argv.slice(2), option = (key, fallback) => args.includes(key) ? args[args.indexOf(key)+1] : fallback;
 const suite = option('--suite', 'handoff');
-const profiles = { handoff: { dataset: 'evals/handoff-cases.json', baseline: '.artifacts/handoff-baseline' }, tail: { dataset: 'evals/handoff-tail-cases.json', baseline: '.artifacts/handoff-tail-baseline' } };
+const profiles = { handoff: { dataset: 'evals/handoff-cases.json', baseline: '.artifacts/handoff-baseline' }, tail: { dataset: 'evals/handoff-tail-cases.json', baseline: '.artifacts/handoff-tail-baseline' }, attribution: { dataset: 'evals/handoff-attribution-final-cases.json', baseline: '.artifacts/handoff-attribution-baseline' } };
 if (!profiles[suite]) throw Error('Unknown handoff suite');
 const profile = profiles[suite];
 const hash = value => createHash('sha256').update(value).digest('hex');

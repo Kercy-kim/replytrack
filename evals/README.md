@@ -81,3 +81,17 @@ node scripts/compare-handoff.mjs .artifacts/eval/repair-new.json
 ```
 
 비교 도구는 suite·mode가 다른 전체 생성/수정 재생의 혼합을 거절한다. 실패 시간도 포함한 50초 초과 횟수를 집계한다. 최종 기록은 `results/handoff-tail/full.json`, 수정 재생은 `repairs.json`, 제외한 low 수정 후보는 `rejected-low-repairs.json`이다. 각 최종 집계는 `full-comparison.json`, `repair-comparison.json`에 보관했다. 실제 모델 버전·소스·평가 코드·자료 해시와 각 호출의 시도 번호·추론량·사용량을 남긴다. [후속 보고서](../docs/HANDOFF-TAIL-PERFORMANCE.md)에 전체 생성 20/20회와 수정 8/8회의 원문 대조, 느려진 쌍, 실패를 포함한 한계를 기록했다.
+
+## 45초 초과 인계와 담당자 표현 비교
+
+`--suite attribution`은 기준 main `e7717f8`과 `handoff-attribution-final-cases.json`을 사용한다. 기존 12개 기록에서 U06 6회, NR05 3회, R03 2회, 나머지 각 1회로 전후 20쌍이다. `--only repair-probes`는 실패 초안 6개를 두 번씩 재생해 별도 12쌍을 비교한다. 원래 45.575초 사례, 표현 변형, 중간 후보에서 관측한 복수형·간접 안내, R03·H02가 포함된다. 중간 후보 자료 `handoff-attribution-cases.json`과 분리해 최종 실행 전에 고정했으며 전체 생성 입력·기준은 동일하다.
+
+```powershell
+node scripts/prepare-handoff-attribution-eval.mjs
+node --env-file=.env scripts/evaluate-handoff.mjs --suite attribution --out .artifacts/eval/attribution-new.json
+node scripts/compare-handoff.mjs .artifacts/eval/attribution-new.json
+node --env-file=.env scripts/evaluate-handoff.mjs --suite attribution --only repair-probes --out .artifacts/eval/attribution-repair-new.json
+node scripts/compare-handoff.mjs .artifacts/eval/attribution-repair-new.json
+```
+
+비교 도구는 실패를 포함한 `>45000ms` 횟수와 최댓값도 출력한다. 최종 전체 비교는 `results/handoff-attribution/final.json`, `final-comparison.json`이다. 중간 후보·중단한 부분 실행도 보존하지만 최종 집계에 섞지 않는다. 전체 생성에서 표현 정리가 실제 적용됐는지 따로 확인하고, 호출 절감 효과는 동일 초안 재생으로 검증한다. [후속 보고서](../docs/HANDOFF-ATTRIBUTION-PERFORMANCE.md)에 p95 악화·비결정성·원문 대조와 재생 측정의 한계를 기록한다.
