@@ -66,7 +66,8 @@ test('analysis service sends fresh reference constraints after a reply without c
     const refs = request => request.schema.properties.questions.items.properties.evidence.items.properties.messageId.enum;
     assert.deepEqual(refs(requests[0]), [c.messages[1].id]);
     assert.deepEqual(refs(requests[1]), [c.messages[1].id, c.messages[2].id]);
-    assert.deepEqual(requests.map(request => request.reasoningEffort), ['low', 'medium']);
+    // A short fact correction with no prior dated promise can use the compact route.
+    assert.deepEqual(requests.map(request => request.reasoningEffort), ['low', 'low']);
     assert.equal(c.questions[0].id, originalQuestionId); assert.deepEqual(c.questions[0].source, originalSource);
     assert.equal(c.questions[0].evidence[0].messageId, c.messages[2].id);
     assert.deepEqual(c.warnings, []);

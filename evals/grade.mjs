@@ -13,6 +13,7 @@ export function grade(record, expected, previous = null) {
     if (actual.status === gold.status) correct++;
     else issues.push(`status:${gold.topic}: expected ${gold.status}, got ${actual.status}`);
     if (gold.status !== 'answered' && actual.status === 'answered') falseAnswered++;
+    if (gold.reasonPattern && !new RegExp(gold.reasonPattern).test(actual.reason)) issues.push(`reason:${gold.topic}: missing required answer detail`);
     const indexes = actual.evidence.map(e => record.messages.findIndex(m => m.id === e.messageId));
     // All required reply messages must be cited; the separate review checks semantic quote relevance.
     const evidenceOK = gold.evidence.every(i => indexes.includes(i)) && (gold.status !== 'unanswered' || indexes.length === 0);

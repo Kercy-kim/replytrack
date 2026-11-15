@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { ReplyTrack, fastInitialAnalysis, futureAnswerNeedsReview, partialScopeNeedsReview, durationPromiseNeedsReview } from '../src/service.mjs';
 import { CaseStore } from '../src/store.mjs';
 import { timingCases } from '../evals/timing-cases.mjs';
+import { FOCUSED_ANALYSIS_PROMPT } from '../src/analysis-focus.mjs';
 
 test('fast initial routing excludes email, corrections, conditional and long histories', () => {
   const base = { messages: timingCases[0].messages, questions: [], analysis: null };
@@ -17,7 +18,7 @@ test('suspect duration-only promises trigger semantic repair without dropping re
     const service = new ReplyTrack(store, { async structured(args) {
       calls.push(args);
       const ref = { messageId: args.data.messages[1].id, quote: args.data.messages[1].text };
-      return { model: 'fixture', data: { summary: '자료 수신 및 심사 기간', questions: [{ id: 'q', title: '심사 소요 기간', source: { messageId: args.data.messages[0].id, quote: args.data.messages[0].text }, status: 'answered', reason: '심사는 3영업일 걸린다고 안내받았습니다.', evidence: [ref], followUp: '' }], promises: [{ id: 'receipt', title: '자료 수신', state: 'reported', questionIds: [], dueText: '', evidence: { ...ref, quote: 'We received your transaction ID.' } }, ...(calls.length === 1 ? [{ id: 'duration', title: '심사 기간 안내', state: 'promised', questionIds: ['q'], dueText: '3 business days', evidence: ref }] : [])] } };
+      return { model: 'fixture', data: { summary: '자료 수신 및 심사 기간', questions: calls.length === 1 ? [{ id: 'q', title: '심사 소요 기간', source: { messageId: args.data.messages[0].id, quote: args.data.messages[0].text }, status: 'answered', reason: '심사는 3영업일 걸린다고 안내받았습니다.', evidence: [ref], followUp: '' }] : [], promises: [{ id: 'receipt', title: '자료 수신', state: 'reported', questionIds: [], dueText: '', evidence: { ...ref, quote: 'We received your transaction ID.' } }, ...(calls.length === 1 ? [{ id: 'duration', title: '심사 기간 안내', state: 'promised', questionIds: ['q'], dueText: '3 business days', evidence: ref }] : [])] } };
     } });
     const c = service.create({ title: '심사', channel: 'email', messages: [{ role: 'customer', text: 'How long will the review take?' }, { role: 'agent', text: 'We received your transaction ID. The review will take 3 business days.' }] });
     const saved = await service.analyze(c.id, c.version);
@@ -31,6 +32,7 @@ for (const [name, first, final, question] of [
   ['correct waiting needs only one request', 'waiting', 'waiting', 0],
   ['future information misread as answered gets medium reanalysis', 'answered', 'waiting', 0],
   ['question about notification date can remain answered after review', 'answered', 'answered', 1],
+  ['notification timing misread as waiting gets medium review without automatic status changes', 'waiting', 'answered', 1],
 ]) test(name, async () => {
   const store = new CaseStore(':memory:');
   try {
@@ -44,8 +46,17 @@ for (const [name, first, final, question] of [
     const result = await service.analyze(c.id, c.version);
     assert.equal(result.questions[0].status, final);
     assert.equal(calls[0].reasoningEffort, 'low');
-    assert.equal(calls.length, first === 'waiting' ? 1 : 2);
-    if (calls.length === 2) { assert.equal(calls[1].reasoningEffort, 'medium'); assert.match(calls[1].data.revisionFeedback, /자동/); }
+    assert.equal(calls.length, first === 'waiting' && question === 0 ? 1 : 2);
+    assert(!calls[0].instructions.startsWith(FOCUSED_ANALYSIS_PROMPT));
+    if (calls.length === 2) {
+      assert.equal(calls[1].reasoningEffort, 'medium'); assert.match(calls[1].data.revisionFeedback, /자동/);
+      assert(calls[1].instructions.startsWith(FOCUSED_ANALYSIS_PROMPT));
+      assert.deepEqual(calls[1].data.messages, calls[0].data.messages);
+      assert(!calls[1].schema.properties.questions.items.properties.followUp);
+      assert(!calls[1].schema.properties.questions.items.properties.source);
+      assert.deepEqual(calls[1].data.review.questionIds, ['q']);
+      assert.deepEqual(result.questions[0].source, { messageId: c.messages[0].id, quote: c.messages[0].text });
+    }
   } finally { store.close(); }
 });
 

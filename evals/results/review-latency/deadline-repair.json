@@ -1,0 +1,637 @@
+{
+  "at": "2026-11-15T16:46:46.719Z",
+  "scope": "Observed bad output replayed; only repair is live. Two repeats.",
+  "hashes": {
+    "src/service.mjs": "c605f7afcb146f40b9d4e2225a0ba0956b35790fc5e21407c2d025009d5bb83e",
+    "src/analysis-focus.mjs": "a93174458865addf7cabdda0db62b7e606711dcd4c8c59b21b6bb7d0e603c207"
+  },
+  "results": [
+    {
+      "repeat": 1,
+      "passed": true,
+      "calls": [
+        {
+          "simulated": true
+        },
+        {
+          "effort": "medium",
+          "data": {
+            "summary": "기사에게 장소 확인을 약속(내일 안내)했고, 확인을 마쳐 택배 보관 장소가 '옆 동 1층 경비실'이라고 안내했습니다.",
+            "promises": [
+              {
+                "id": "023d9b86-14dd-4bec-b11e-ba7fd9e755d2",
+                "title": "사진 속 장소 확인 후 안내",
+                "questionIds": [
+                  "0d2afbe5-6455-4811-8144-4c3e9321160d"
+                ],
+                "evidence": {
+                  "messageId": "781cc2ba-ea76-44f0-b4fc-922dd6c66c94",
+                  "quote": "요청하신 장소 확인을 마쳤습니다. 택배를 둔 곳은 옆 동 1층 경비실입니다."
+                },
+                "dueText": "",
+                "deadlineCleared": false,
+                "state": "reported"
+              }
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 13141,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 12839,
+                "httpStatus": 200,
+                "bodyMs": 301,
+                "usage": {
+                  "input_tokens": 1340,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 1629,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1472
+                  },
+                  "total_tokens": 2969
+                },
+                "elapsedMs": 13141
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1340,
+            "output_tokens": 1629,
+            "total_tokens": 2969,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1472
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "result": {
+        "id": "c03aa08d-f3a7-4782-9045-7fb8ef7bbf47",
+        "title": "오배송 사진 확인 뒤 실제 장소 안내",
+        "company": "가상 고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T16:44:25.864Z",
+        "updatedAt": "2026-11-15T16:46:59.866Z",
+        "messages": [
+          {
+            "id": "377379e6-f002-4a53-899e-c028f4fae918",
+            "role": "customer",
+            "text": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "f4c5b697-efde-41bc-9515-aaa73dfa5ace",
+            "role": "agent",
+            "text": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다.",
+            "sentAt": "2026-11-20T15:40:00.000Z"
+          },
+          {
+            "id": "781cc2ba-ea76-44f0-b4fc-922dd6c66c94",
+            "role": "agent",
+            "text": "요청하신 장소 확인을 마쳤습니다. 택배를 둔 곳은 옆 동 1층 경비실입니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "0d2afbe5-6455-4811-8144-4c3e9321160d",
+            "title": "사진 속 장소의 정확한 택배 보관 위치",
+            "source": {
+              "messageId": "377379e6-f002-4a53-899e-c028f4fae918",
+              "quote": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?"
+            },
+            "status": "answered",
+            "reason": "업체가 기사에게 확인해 '택배를 둔 곳은 옆 동 1층 경비실'이라고 답변했으므로 질문이 해결되었습니다.",
+            "evidence": [
+              {
+                "messageId": "f4c5b697-efde-41bc-9515-aaa73dfa5ace",
+                "quote": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다."
+              },
+              {
+                "messageId": "781cc2ba-ea76-44f0-b4fc-922dd6c66c94",
+                "quote": "요청하신 장소 확인을 마쳤습니다. 택배를 둔 곳은 옆 동 1층 경비실입니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "업체가 기사에게 확인해 '택배를 둔 곳은 옆 동 1층 경비실'이라고 답변했으므로 질문이 해결되었습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "023d9b86-14dd-4bec-b11e-ba7fd9e755d2",
+            "title": "사진 속 장소 확인 후 안내",
+            "questionIds": [
+              "0d2afbe5-6455-4811-8144-4c3e9321160d"
+            ],
+            "evidence": {
+              "messageId": "781cc2ba-ea76-44f0-b4fc-922dd6c66c94",
+              "quote": "요청하신 장소 확인을 마쳤습니다. 택배를 둔 곳은 옆 동 1층 경비실입니다."
+            },
+            "dueText": "내일",
+            "dueAt": "2026-11-22",
+            "state": "reported",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "9ea11060-b73d-4fbb-821e-241574324280",
+            "at": "2026-11-15T16:46:59.866Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "사진 속 장소의 정확한 택배 보관 위치: 답변 대기 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T16:46:59.866Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "781cc2ba-ea76-44f0-b4fc-922dd6c66c94"
+              ],
+              "questions": [
+                {
+                  "id": "0d2afbe5-6455-4811-8144-4c3e9321160d",
+                  "title": "사진 속 장소의 정확한 택배 보관 위치",
+                  "before": {
+                    "status": "waiting",
+                    "aiStatus": "waiting",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "f4c5b697-efde-41bc-9515-aaa73dfa5ace",
+                    "781cc2ba-ea76-44f0-b4fc-922dd6c66c94"
+                  ]
+                }
+              ],
+              "promises": [
+                {
+                  "id": "023d9b86-14dd-4bec-b11e-ba7fd9e755d2",
+                  "title": "사진 속 장소 확인 후 안내",
+                  "before": {
+                    "title": "사진 속 장소 확인 후 안내",
+                    "state": "promised",
+                    "dueAt": "2026-11-22",
+                    "dueText": "내일",
+                    "confirmedAt": null
+                  },
+                  "after": {
+                    "title": "사진 속 장소 확인 후 안내",
+                    "state": "reported",
+                    "dueAt": "2026-11-22",
+                    "dueText": "내일",
+                    "confirmedAt": null
+                  },
+                  "fields": [
+                    "state"
+                  ],
+                  "evidenceMessageIds": [
+                    "781cc2ba-ea76-44f0-b4fc-922dd6c66c94"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "a13a1725-cf54-4895-b67d-60f0818ad9a7",
+            "at": "2026-11-15T16:44:33.167Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "1개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T16:44:33.167Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "831f27cc-69e8-4a0c-aa7a-c5661de63e45",
+            "at": "2026-11-15T16:44:25.864Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "기사에게 장소 확인을 약속(내일 안내)했고, 확인을 마쳐 택배 보관 장소가 '옆 동 1층 경비실'이라고 안내했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1340,
+            "output_tokens": 1629,
+            "total_tokens": 2969,
+            "unobserved_requests": 1,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1472
+            }
+          },
+          "attempts": 2,
+          "at": "2026-11-15T16:46:59.866Z",
+          "comparison": {
+            "at": "2026-11-15T16:46:59.866Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "781cc2ba-ea76-44f0-b4fc-922dd6c66c94"
+            ],
+            "questions": [
+              {
+                "id": "0d2afbe5-6455-4811-8144-4c3e9321160d",
+                "title": "사진 속 장소의 정확한 택배 보관 위치",
+                "before": {
+                  "status": "waiting",
+                  "aiStatus": "waiting",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "f4c5b697-efde-41bc-9515-aaa73dfa5ace",
+                  "781cc2ba-ea76-44f0-b4fc-922dd6c66c94"
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "023d9b86-14dd-4bec-b11e-ba7fd9e755d2",
+                "title": "사진 속 장소 확인 후 안내",
+                "before": {
+                  "title": "사진 속 장소 확인 후 안내",
+                  "state": "promised",
+                  "dueAt": "2026-11-22",
+                  "dueText": "내일",
+                  "confirmedAt": null
+                },
+                "after": {
+                  "title": "사진 속 장소 확인 후 안내",
+                  "state": "reported",
+                  "dueAt": "2026-11-22",
+                  "dueText": "내일",
+                  "confirmedAt": null
+                },
+                "fields": [
+                  "state"
+                ],
+                "evidenceMessageIds": [
+                  "781cc2ba-ea76-44f0-b4fc-922dd6c66c94"
+                ]
+              }
+            ]
+          }
+        },
+        "version": 2
+      }
+    },
+    {
+      "repeat": 2,
+      "passed": true,
+      "calls": [
+        {
+          "simulated": true
+        },
+        {
+          "effort": "medium",
+          "data": {
+            "summary": "기사님에게 장소 확인 후 알려주겠다고 약속했고, 이후 확인을 마쳐 택배는 옆 동 1층 경비실에 두었다고 안내함.",
+            "promises": [
+              {
+                "id": "023d9b86-14dd-4bec-b11e-ba7fd9e755d2",
+                "title": "사진 속 장소 확인 후 안내",
+                "questionIds": [
+                  "0d2afbe5-6455-4811-8144-4c3e9321160d"
+                ],
+                "evidence": {
+                  "messageId": "781cc2ba-ea76-44f0-b4fc-922dd6c66c94",
+                  "quote": "요청하신 장소 확인을 마쳤습니다. 택배를 둔 곳은 옆 동 1층 경비실입니다."
+                },
+                "dueText": "",
+                "deadlineCleared": false,
+                "state": "reported"
+              }
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 20254,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 20252,
+                "httpStatus": 200,
+                "bodyMs": 2,
+                "usage": {
+                  "input_tokens": 1340,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 1280
+                  },
+                  "output_tokens": 1933,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1792
+                  },
+                  "total_tokens": 3273
+                },
+                "elapsedMs": 20254
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1340,
+            "output_tokens": 1933,
+            "total_tokens": 3273,
+            "input_tokens_details": {
+              "cached_tokens": 1280
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1792
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "result": {
+        "id": "c03aa08d-f3a7-4782-9045-7fb8ef7bbf47",
+        "title": "오배송 사진 확인 뒤 실제 장소 안내",
+        "company": "가상 고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T16:44:25.864Z",
+        "updatedAt": "2026-11-15T16:47:20.123Z",
+        "messages": [
+          {
+            "id": "377379e6-f002-4a53-899e-c028f4fae918",
+            "role": "customer",
+            "text": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "f4c5b697-efde-41bc-9515-aaa73dfa5ace",
+            "role": "agent",
+            "text": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다.",
+            "sentAt": "2026-11-20T15:40:00.000Z"
+          },
+          {
+            "id": "781cc2ba-ea76-44f0-b4fc-922dd6c66c94",
+            "role": "agent",
+            "text": "요청하신 장소 확인을 마쳤습니다. 택배를 둔 곳은 옆 동 1층 경비실입니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "0d2afbe5-6455-4811-8144-4c3e9321160d",
+            "title": "사진 속 장소의 정확한 택배 보관 위치",
+            "source": {
+              "messageId": "377379e6-f002-4a53-899e-c028f4fae918",
+              "quote": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?"
+            },
+            "status": "answered",
+            "reason": "업체가 기사에게 확인해 '택배를 둔 곳은 옆 동 1층 경비실'이라고 답변했으므로 질문이 해결되었습니다.",
+            "evidence": [
+              {
+                "messageId": "f4c5b697-efde-41bc-9515-aaa73dfa5ace",
+                "quote": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다."
+              },
+              {
+                "messageId": "781cc2ba-ea76-44f0-b4fc-922dd6c66c94",
+                "quote": "요청하신 장소 확인을 마쳤습니다. 택배를 둔 곳은 옆 동 1층 경비실입니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "업체가 기사에게 확인해 '택배를 둔 곳은 옆 동 1층 경비실'이라고 답변했으므로 질문이 해결되었습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "023d9b86-14dd-4bec-b11e-ba7fd9e755d2",
+            "title": "사진 속 장소 확인 후 안내",
+            "questionIds": [
+              "0d2afbe5-6455-4811-8144-4c3e9321160d"
+            ],
+            "evidence": {
+              "messageId": "781cc2ba-ea76-44f0-b4fc-922dd6c66c94",
+              "quote": "요청하신 장소 확인을 마쳤습니다. 택배를 둔 곳은 옆 동 1층 경비실입니다."
+            },
+            "dueText": "내일",
+            "dueAt": "2026-11-22",
+            "state": "reported",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "7926526c-5ddb-44b8-adf5-c2c2e95483fb",
+            "at": "2026-11-15T16:47:20.123Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "사진 속 장소의 정확한 택배 보관 위치: 답변 대기 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T16:47:20.123Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "781cc2ba-ea76-44f0-b4fc-922dd6c66c94"
+              ],
+              "questions": [
+                {
+                  "id": "0d2afbe5-6455-4811-8144-4c3e9321160d",
+                  "title": "사진 속 장소의 정확한 택배 보관 위치",
+                  "before": {
+                    "status": "waiting",
+                    "aiStatus": "waiting",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "f4c5b697-efde-41bc-9515-aaa73dfa5ace",
+                    "781cc2ba-ea76-44f0-b4fc-922dd6c66c94"
+                  ]
+                }
+              ],
+              "promises": [
+                {
+                  "id": "023d9b86-14dd-4bec-b11e-ba7fd9e755d2",
+                  "title": "사진 속 장소 확인 후 안내",
+                  "before": {
+                    "title": "사진 속 장소 확인 후 안내",
+                    "state": "promised",
+                    "dueAt": "2026-11-22",
+                    "dueText": "내일",
+                    "confirmedAt": null
+                  },
+                  "after": {
+                    "title": "사진 속 장소 확인 후 안내",
+                    "state": "reported",
+                    "dueAt": "2026-11-22",
+                    "dueText": "내일",
+                    "confirmedAt": null
+                  },
+                  "fields": [
+                    "state"
+                  ],
+                  "evidenceMessageIds": [
+                    "781cc2ba-ea76-44f0-b4fc-922dd6c66c94"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "a13a1725-cf54-4895-b67d-60f0818ad9a7",
+            "at": "2026-11-15T16:44:33.167Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "1개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T16:44:33.167Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "831f27cc-69e8-4a0c-aa7a-c5661de63e45",
+            "at": "2026-11-15T16:44:25.864Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "기사님에게 장소 확인 후 알려주겠다고 약속했고, 이후 확인을 마쳐 택배는 옆 동 1층 경비실에 두었다고 안내함.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 1340,
+            "output_tokens": 1933,
+            "total_tokens": 3273,
+            "unobserved_requests": 1,
+            "input_tokens_details": {
+              "cached_tokens": 1280
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1792
+            }
+          },
+          "attempts": 2,
+          "at": "2026-11-15T16:47:20.123Z",
+          "comparison": {
+            "at": "2026-11-15T16:47:20.123Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "781cc2ba-ea76-44f0-b4fc-922dd6c66c94"
+            ],
+            "questions": [
+              {
+                "id": "0d2afbe5-6455-4811-8144-4c3e9321160d",
+                "title": "사진 속 장소의 정확한 택배 보관 위치",
+                "before": {
+                  "status": "waiting",
+                  "aiStatus": "waiting",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "f4c5b697-efde-41bc-9515-aaa73dfa5ace",
+                  "781cc2ba-ea76-44f0-b4fc-922dd6c66c94"
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "023d9b86-14dd-4bec-b11e-ba7fd9e755d2",
+                "title": "사진 속 장소 확인 후 안내",
+                "before": {
+                  "title": "사진 속 장소 확인 후 안내",
+                  "state": "promised",
+                  "dueAt": "2026-11-22",
+                  "dueText": "내일",
+                  "confirmedAt": null
+                },
+                "after": {
+                  "title": "사진 속 장소 확인 후 안내",
+                  "state": "reported",
+                  "dueAt": "2026-11-22",
+                  "dueText": "내일",
+                  "confirmedAt": null
+                },
+                "fields": [
+                  "state"
+                ],
+                "evidenceMessageIds": [
+                  "781cc2ba-ea76-44f0-b4fc-922dd6c66c94"
+                ]
+              }
+            ]
+          }
+        },
+        "version": 2
+      }
+    }
+  ],
+  "passed": true
+}

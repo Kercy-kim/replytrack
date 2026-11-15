@@ -10,7 +10,7 @@ import { OpenAIClient } from '../src/openai.mjs';
 import { emailReplyPlan } from '../src/email-reply.mjs';
 assert(process.argv.includes('--run')); process.loadEnvFile('.env');
 const output = process.env.EMAIL_REPLY_REPORT || 'evals/results/email-reply/final.json'; assert(!existsSync(output));
-const report = { at: new Date().toISOString(), scope: '20 synthetic saved-question/new-agent-reply cases', hashes: Object.fromEntries(['src/service.mjs','src/email-reply.mjs','src/prompts.mjs','evals/email-reply-cases.mjs'].map(p=>[p,createHash('sha256').update(readFileSync(p)).digest('hex')])), cases: [] };
+const report = { at: new Date().toISOString(), scope: '20 synthetic saved-question/new-agent-reply cases', hashes: Object.fromEntries(['src/service.mjs','src/email-reply.mjs','src/email.mjs','src/analysis-focus.mjs','src/prompts.mjs','evals/email-reply-cases.mjs'].map(p=>[p,createHash('sha256').update(readFileSync(p)).digest('hex')])), cases: [] };
 const save=()=>{mkdirSync(dirname(output),{recursive:true});writeFileSync(output,JSON.stringify(report,null,2));};
 const queue=[...emailReplyCases];
 async function worker(){while(queue.length){
