@@ -13,6 +13,12 @@ export const guideChecks = {
   noPersonalCompletion:'개인 주문의 실제 승인·입금·카드 반영을 확인했다고 단정하지 않는가. 사용자가 취소됐다고 해도 카드 환불 반영 완료를 AI가 단정하면 false.',
   relevantUnknowns:'unknowns가 실제로 남은 정보만 묻는가. 사용자가 말하지 않은 주문 더하기·기존 교환 접수·선출고를 묻거나 알려준 사유를 다시 물으면 false.',
 };
+export const draftChecks = {
+  consumerVoice:'소비자가 고객센터에 보내는 글인가. 고객님에게 배송지·계정 정보를 요구하거나 상담원처럼 답하면 false.',
+  selectedQuestionsCovered:'사용자가 선택한 questions의 답을 빠짐없이 요청하는가. 배송비를 물었는데 배송지 여부만 물으면 false.',
+  sourceFactsOnly:'개별 사실·조건·상태는 원문에 있는가. 정책의 예시를 사용자 사실로 바꾸거나 미확인 배송지를 확정하면 false.',
+  noExtraRequests:'questions 밖의 새로운 요청·전제를 추가하지 않는가. 배송비만 물었는데 제주도인지도 확인해 달라고 덧붙이면 false. 선택 질문만 정중히 반복하는 것은 통과다.',
+};
 export function featureReviewSchema(checks) {
   return object({checks:object(Object.fromEntries(Object.entries(checks).map(([key,description])=>[key,{type:'boolean',description}]))),feedback:{type:'string'},valid:{type:'boolean'}});
 }

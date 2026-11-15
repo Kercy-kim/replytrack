@@ -5,18 +5,29 @@ import { ReplyTrack, draftSourceContext } from '../src/service.mjs';
 import { createDemo } from '../src/demo.mjs';
 import { draftSchema, draftSchemaFor } from '../src/schema.mjs';
 import { DRAFT_PROMPT, DRAFT_REVIEW_PROMPT } from '../src/prompts.mjs';
+import { draftChecks } from '../src/feature-review.mjs';
 
 function setup(respond) {
   const store = new CaseStore(':memory:'), calls = [];
   const seed = createDemo(); seed.mode = 'live';
   const record = store.create(seed);
   const service = new ReplyTrack(store, { async structured(input) {
-    calls.push(input); return { data: await respond(input, calls.length, record, service), model: 'fixture' };
+    calls.push(input); const data = await respond(input, calls.length, record, service);
+    if (input.name === 'replytrack_draft_review' && data?.valid === true && !('checks' in data)) data.checks = Object.fromEntries(Object.keys(draftChecks).map(k => [k, true]));
+    return { data, model: 'fixture' };
   } });
   const input = { version: record.version, kind: 'followup', questionIds: [record.questions[0].id, record.questions[2].id] };
   return { store, record, service, calls, input };
 }
 const draft = (record, body = '수리비 안내 시점과 왕복 배송비 부담 주체를 알려주세요.') => ({ body, sourceMessageIds: [record.messages[0].id, record.messages[1].id] });
+
+test('a global approval cannot override missing or rejected draft checks', async () => {
+  for (const checks of [{}, ...Object.keys(draftChecks).map(failed => Object.fromEntries(Object.keys(draftChecks).map(k => [k, k !== failed])))]) {
+    const t = setup((input, count, record) => input.name === 'replytrack_draft' ? draft(record) : { valid: true, checks, feedback: '' });
+    try { await assert.rejects(() => t.service.draft(t.record.id, t.input), { code: 'DRAFT_REVIEW' }); assert.equal(t.store.get(t.record.id).drafts.followup, undefined); }
+    finally { t.store.close(); }
+  }
+});
 
 test('draft reference schema permits only message IDs from this conversation, never question IDs', async () => {
   const t = setup((input, count, record) => input.name === 'replytrack_draft' ? draft(record) : { valid: true, feedback: '' });
@@ -73,9 +84,25 @@ test('live drafts are reviewed for all selected questions and repaired once befo
     assert.equal(t.calls[1].reasoningEffort, 'medium');
     assert.equal(t.calls[2].reasoningEffort, 'medium');
     assert.equal(t.calls[3].reasoningEffort, 'medium');
-    assert(t.calls[2].data.revisionFeedback.includes('수리비'));
+    assert.deepEqual(t.calls[2].data.questions, t.calls[0].data.questions);
+    assert.equal(t.calls[2].data.previousDraft, null);
     assert.equal(saved.drafts.followup.body, draft(t.record).body);
     assert.equal(saved.drafts.followup.review.attempts, 2);
+  } finally { t.store.close(); }
+});
+
+test('semantic retry cannot promote reviewer-invented requirements or rejected text to source facts', async () => {
+  const invented = '배송지는 제주도입니다';
+  const t = setup((input, count, record) => input.name === 'replytrack_draft'
+    ? draft(record, count === 1 ? invented : undefined)
+    : { valid: count === 4, feedback: count === 2 ? `${invented}라는 문장을 반드시 추가하세요.` : '' });
+  try {
+    await t.service.draft(t.record.id, t.input);
+    assert.equal(t.calls.length, 4);
+    assert.equal(t.calls[2].data.previousDraft, null);
+    assert(!JSON.stringify(t.calls[2].data).includes(invented));
+    assert.deepEqual(t.calls[2].data.messages, t.calls[0].data.messages);
+    assert.deepEqual(t.calls[2].data.questions, t.calls[0].data.questions);
   } finally { t.store.close(); }
 });
 test('repeated review failure is bounded and preserves the previously saved draft', async () => {

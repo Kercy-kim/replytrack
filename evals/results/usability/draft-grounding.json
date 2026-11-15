@@ -1,0 +1,1660 @@
+{
+  "mode": "Live draft regeneration and reviewer controls, saved synthetic analyses",
+  "sourcePath": "evals/results/usability/full48.json",
+  "sourceHash": "9200bb033b231f8a17bc48c16b4b183b3a967c95c207a4a1f7a948b7e6c35692",
+  "hashes": {
+    "src/prompts.mjs": "c6516d01b3c4d27ce8292963f28ad9c46a75733295a540bfbfb2a1d1302ba2b8",
+    "src/service.mjs": "d4df659c79f9380eb786b0ce7c2b5aa49d48c1d6b39144637ec0bc7bb1ce56a0",
+    "scripts/check-draft-grounding-live.mjs": "01b66b2951b24695cc7c94a153f224543b9e729918d1dd13d3742a3103416bf7"
+  },
+  "results": [
+    {
+      "name": "invented-location",
+      "kind": "review-control",
+      "expectedValid": false,
+      "response": {
+        "data": {
+          "valid": false,
+          "feedback": "초안이 원문에 없는 사실을 단정하고 있습니다. 상담원이 '고객님의 배송 지역은 아직 확인하지 못했습니다'라고 했으므로 ‘배송지는 제주도입니다’는 근거 없는 주장입니다 — 해당 문장을 삭제하세요. 또한 questions가 partial이므로 미해결 항목(주문별 추가 배송비)을 빠짐없이 묻도록 하세요(예: 추가 배송비 금액만 직접 문의)."
+        },
+        "model": "gpt-5-mini-2025-08-07",
+        "transport": {
+          "elapsedMs": 15018,
+          "hedged": false,
+          "hedgeSkipped": false,
+          "unobservedRequests": 0,
+          "attempts": [
+            {
+              "attempt": 1,
+              "startedMs": 0,
+              "state": "completed",
+              "headersMs": 15014,
+              "httpStatus": 200,
+              "bodyMs": 4,
+              "usage": {
+                "input_tokens": 1491,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cache_write_tokens_details": {
+                    "ttl_12h_tokens": 0,
+                    "ttl_30m_tokens": 0
+                  },
+                  "cached_tokens": 0
+                },
+                "output_tokens": 1414,
+                "output_tokens_details": {
+                  "reasoning_tokens": 1280
+                },
+                "total_tokens": 2905
+              },
+              "elapsedMs": 15018
+            }
+          ]
+        },
+        "usage": {
+          "input_tokens": 1491,
+          "output_tokens": 1414,
+          "total_tokens": 2905,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens_details": {
+            "reasoning_tokens": 1280
+          },
+          "unobserved_requests": 0
+        }
+      },
+      "passed": true
+    },
+    {
+      "name": "question-only",
+      "kind": "review-control",
+      "expectedValid": true,
+      "response": {
+        "data": {
+          "valid": true,
+          "feedback": ""
+        },
+        "model": "gpt-5-mini-2025-08-07",
+        "transport": {
+          "elapsedMs": 5816,
+          "hedged": false,
+          "hedgeSkipped": false,
+          "unobservedRequests": 0,
+          "attempts": [
+            {
+              "attempt": 1,
+              "startedMs": 0,
+              "state": "completed",
+              "headersMs": 5814,
+              "httpStatus": 200,
+              "bodyMs": 1,
+              "usage": {
+                "input_tokens": 1486,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cache_write_tokens_details": {
+                    "ttl_12h_tokens": 0,
+                    "ttl_30m_tokens": 0
+                  },
+                  "cached_tokens": 1408
+                },
+                "output_tokens": 491,
+                "output_tokens_details": {
+                  "reasoning_tokens": 448
+                },
+                "total_tokens": 1977
+              },
+              "elapsedMs": 5816
+            }
+          ]
+        },
+        "usage": {
+          "input_tokens": 1486,
+          "output_tokens": 491,
+          "total_tokens": 1977,
+          "input_tokens_details": {
+            "cached_tokens": 1408
+          },
+          "output_tokens_details": {
+            "reasoning_tokens": 448
+          },
+          "unobserved_requests": 0
+        }
+      },
+      "passed": true
+    },
+    {
+      "name": "customer-confirmed-location",
+      "kind": "review-control",
+      "expectedValid": true,
+      "response": {
+        "data": {
+          "valid": true,
+          "feedback": ""
+        },
+        "model": "gpt-5-mini-2025-08-07",
+        "transport": {
+          "elapsedMs": 15090,
+          "hedged": false,
+          "hedgeSkipped": false,
+          "unobservedRequests": 0,
+          "attempts": [
+            {
+              "attempt": 1,
+              "startedMs": 0,
+              "state": "completed",
+              "headersMs": 15088,
+              "httpStatus": 200,
+              "bodyMs": 2,
+              "usage": {
+                "input_tokens": 1497,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cache_write_tokens_details": {
+                    "ttl_12h_tokens": 0,
+                    "ttl_30m_tokens": 0
+                  },
+                  "cached_tokens": 0
+                },
+                "output_tokens": 1457,
+                "output_tokens_details": {
+                  "reasoning_tokens": 1408
+                },
+                "total_tokens": 2954
+              },
+              "elapsedMs": 15090
+            }
+          ]
+        },
+        "usage": {
+          "input_tokens": 1497,
+          "output_tokens": 1457,
+          "total_tokens": 2954,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens_details": {
+            "reasoning_tokens": 1408
+          },
+          "unobserved_requests": 0
+        }
+      },
+      "passed": true
+    },
+    {
+      "name": "wrong-speaker",
+      "kind": "review-control",
+      "expectedValid": false,
+      "response": {
+        "data": {
+          "valid": false,
+          "feedback": "초안은 미해결 항목을 묻지 않습니다. 현재 질문은 ‘주문별 추가 배송비 금액 확인’(얼마인지)이 미해결인데, 초안은 배송지가 제주도인지 여부만 묻고 있어 followup으로서의 모든 미해결 항목을 포함하지 않습니다. 해결 방법: 원문 질문인 ‘제 주문의 추가 배송비가 얼마인지 알려주세요’처럼 추가 배송비 금액을 직접 요청하도록 수정하세요."
+        },
+        "model": "gpt-5-mini-2025-08-07",
+        "transport": {
+          "elapsedMs": 17169,
+          "hedged": false,
+          "hedgeSkipped": false,
+          "unobservedRequests": 0,
+          "attempts": [
+            {
+              "attempt": 1,
+              "startedMs": 0,
+              "state": "completed",
+              "headersMs": 17168,
+              "httpStatus": 200,
+              "bodyMs": 1,
+              "usage": {
+                "input_tokens": 1482,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cache_write_tokens_details": {
+                    "ttl_12h_tokens": 0,
+                    "ttl_30m_tokens": 0
+                  },
+                  "cached_tokens": 1408
+                },
+                "output_tokens": 2073,
+                "output_tokens_details": {
+                  "reasoning_tokens": 1920
+                },
+                "total_tokens": 3555
+              },
+              "elapsedMs": 17169
+            }
+          ]
+        },
+        "usage": {
+          "input_tokens": 1482,
+          "output_tokens": 2073,
+          "total_tokens": 3555,
+          "input_tokens_details": {
+            "cached_tokens": 1408
+          },
+          "output_tokens_details": {
+            "reasoning_tokens": 1920
+          },
+          "unobserved_requests": 0
+        }
+      },
+      "passed": true
+    },
+    {
+      "name": "S02",
+      "kind": "product draft regeneration",
+      "calls": [
+        {
+          "name": "replytrack_draft",
+          "ms": 3391,
+          "data": {
+            "body": "도착일은 언제인가요?\n\n배송비는 얼마인가요?",
+            "sourceMessageIds": [
+              "49bbc774-391c-4eeb-b08c-fac2f0120209",
+              "fe298191-36f0-4cb9-a509-f14214a669ca"
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 3390,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 3389,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 1701,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 219,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 128
+                  },
+                  "total_tokens": 1920
+                },
+                "elapsedMs": 3390
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1701,
+            "output_tokens": 219,
+            "total_tokens": 1920,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 128
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "ms": 3602,
+          "data": {
+            "valid": true,
+            "feedback": ""
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 3602,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 3601,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 1483,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 320,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 256
+                  },
+                  "total_tokens": 1803
+                },
+                "elapsedMs": 3602
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1483,
+            "output_tokens": 320,
+            "total_tokens": 1803,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "draft": {
+        "body": "도착일은 언제인가요?\n\n배송비는 얼마인가요?",
+        "sourceMessageIds": [
+          "49bbc774-391c-4eeb-b08c-fac2f0120209",
+          "fe298191-36f0-4cb9-a509-f14214a669ca"
+        ],
+        "questionIds": [
+          "be6bff39-528a-431c-bd7c-c3191852feb9",
+          "eb92f160-a7e1-4a7c-86f4-619727606d6a"
+        ],
+        "language": "ko",
+        "at": "2026-11-15T15:19:37.664Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 1
+        }
+      },
+      "passed": true
+    },
+    {
+      "name": "S04",
+      "kind": "product draft regeneration",
+      "calls": [
+        {
+          "name": "replytrack_draft",
+          "ms": 8186,
+          "data": {
+            "body": "제 주문의 추가 배송비는 얼마인지 알려주시기 바랍니다.",
+            "sourceMessageIds": [
+              "c8cbc899-ced6-44a2-816a-43f4dad2d474",
+              "2c46aa3b-4363-4870-8dce-098d74c4dac6"
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 8186,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 8184,
+                "httpStatus": 200,
+                "bodyMs": 2,
+                "usage": {
+                  "input_tokens": 1707,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 595,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 512
+                  },
+                  "total_tokens": 2302
+                },
+                "elapsedMs": 8186
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1707,
+            "output_tokens": 595,
+            "total_tokens": 2302,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 512
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "ms": 5359,
+          "data": {
+            "valid": true,
+            "feedback": ""
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 5359,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 5357,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 1485,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 1408
+                  },
+                  "output_tokens": 511,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 448
+                  },
+                  "total_tokens": 1996
+                },
+                "elapsedMs": 5358
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1485,
+            "output_tokens": 511,
+            "total_tokens": 1996,
+            "input_tokens_details": {
+              "cached_tokens": 1408
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 448
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "draft": {
+        "body": "제 주문의 추가 배송비는 얼마인지 알려주시기 바랍니다.",
+        "sourceMessageIds": [
+          "c8cbc899-ced6-44a2-816a-43f4dad2d474",
+          "2c46aa3b-4363-4870-8dce-098d74c4dac6"
+        ],
+        "questionIds": [
+          "0e8e7657-eff2-41f5-927d-e586f20191cd"
+        ],
+        "language": "ko",
+        "at": "2026-11-15T15:19:44.217Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 1
+        }
+      },
+      "passed": true
+    },
+    {
+      "name": "R02",
+      "kind": "product draft regeneration",
+      "calls": [
+        {
+          "name": "replytrack_draft",
+          "ms": 3401,
+          "data": {
+            "body": "최종 환불액이 얼마인지 안내해 주세요.",
+            "sourceMessageIds": [
+              "5b6acdbd-dd51-4cbd-88af-558e2fce485a",
+              "14dd6b4f-186b-4c73-9c29-3a6e5c991e19"
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 3400,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 3400,
+                "httpStatus": 200,
+                "bodyMs": 0,
+                "usage": {
+                  "input_tokens": 1667,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 234,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 192
+                  },
+                  "total_tokens": 1901
+                },
+                "elapsedMs": 3400
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1667,
+            "output_tokens": 234,
+            "total_tokens": 1901,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "ms": 3772,
+          "data": {
+            "valid": true,
+            "feedback": ""
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 3772,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 3771,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 1439,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 350,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 320
+                  },
+                  "total_tokens": 1789
+                },
+                "elapsedMs": 3772
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1439,
+            "output_tokens": 350,
+            "total_tokens": 1789,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 320
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "draft": {
+        "body": "최종 환불액이 얼마인지 안내해 주세요.",
+        "sourceMessageIds": [
+          "5b6acdbd-dd51-4cbd-88af-558e2fce485a",
+          "14dd6b4f-186b-4c73-9c29-3a6e5c991e19"
+        ],
+        "questionIds": [
+          "3fbf15bb-0e53-47ae-9566-3e9dbb26a3a6"
+        ],
+        "language": "ko",
+        "at": "2026-11-15T15:19:44.839Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 1
+        }
+      },
+      "passed": true
+    },
+    {
+      "name": "U02",
+      "kind": "product draft regeneration",
+      "calls": [
+        {
+          "name": "replytrack_draft",
+          "ms": 4234,
+          "data": {
+            "body": "구독이 이미 해지되었는지 확인해 주세요.",
+            "sourceMessageIds": [
+              "961b95aa-6c58-4cfa-b61b-8bf9e8fbd345",
+              "88ae0e5a-bc06-463c-9c53-fc51802a29c1"
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 4234,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 4233,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 1678,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 299,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 256
+                  },
+                  "total_tokens": 1977
+                },
+                "elapsedMs": 4234
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1678,
+            "output_tokens": 299,
+            "total_tokens": 1977,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "ms": 3710,
+          "data": {
+            "valid": true,
+            "feedback": ""
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 3709,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 3708,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 1456,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 327,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 256
+                  },
+                  "total_tokens": 1783
+                },
+                "elapsedMs": 3709
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1456,
+            "output_tokens": 327,
+            "total_tokens": 1783,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "draft": {
+        "body": "구독이 이미 해지되었는지 확인해 주세요.",
+        "sourceMessageIds": [
+          "961b95aa-6c58-4cfa-b61b-8bf9e8fbd345",
+          "88ae0e5a-bc06-463c-9c53-fc51802a29c1"
+        ],
+        "questionIds": [
+          "dc45a737-920d-4258-862f-f6f047793a8b"
+        ],
+        "language": "ko",
+        "at": "2026-11-15T15:19:52.162Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 1
+        }
+      },
+      "passed": true
+    },
+    {
+      "name": "NS01",
+      "kind": "product draft regeneration",
+      "calls": [
+        {
+          "name": "replytrack_draft",
+          "ms": 4145,
+          "data": {
+            "body": "접시 상자의 운송장 번호를 알려주세요.",
+            "sourceMessageIds": [
+              "a3e86a02-205f-48d7-9970-ae221f752ce1"
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 4144,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 4143,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 1708,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 350,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 256
+                  },
+                  "total_tokens": 2058
+                },
+                "elapsedMs": 4144
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1708,
+            "output_tokens": 350,
+            "total_tokens": 2058,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "ms": 3344,
+          "data": {
+            "valid": true,
+            "feedback": ""
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 3344,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 3343,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 1476,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 260,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 192
+                  },
+                  "total_tokens": 1736
+                },
+                "elapsedMs": 3344
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1476,
+            "output_tokens": 260,
+            "total_tokens": 1736,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "draft": {
+        "body": "접시 상자의 운송장 번호를 알려주세요.",
+        "sourceMessageIds": [
+          "a3e86a02-205f-48d7-9970-ae221f752ce1"
+        ],
+        "questionIds": [
+          "8135324d-cf58-4d9a-a505-0c89bcb3fcf3"
+        ],
+        "language": "ko",
+        "at": "2026-11-15T15:19:52.329Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 1
+        }
+      },
+      "passed": true
+    },
+    {
+      "name": "NR02",
+      "kind": "product draft regeneration",
+      "calls": [
+        {
+          "name": "replytrack_draft",
+          "ms": 3331,
+          "data": {
+            "body": "보낸 신발의 검수 통과 여부를 알려주시기 바랍니다.",
+            "sourceMessageIds": [
+              "7459b44b-b5cd-4e4f-9e96-bff720e644ba",
+              "0d31c093-16dd-48d9-938b-0849fe7327db"
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 3330,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 3329,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 1706,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 240,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 192
+                  },
+                  "total_tokens": 1946
+                },
+                "elapsedMs": 3330
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1706,
+            "output_tokens": 240,
+            "total_tokens": 1946,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "ms": 3148,
+          "data": {
+            "valid": true,
+            "feedback": ""
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 3148,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 3148,
+                "httpStatus": 200,
+                "bodyMs": 0,
+                "usage": {
+                  "input_tokens": 1486,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 241,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 192
+                  },
+                  "total_tokens": 1727
+                },
+                "elapsedMs": 3148
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1486,
+            "output_tokens": 241,
+            "total_tokens": 1727,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "draft": {
+        "body": "보낸 신발의 검수 통과 여부를 알려주시기 바랍니다.",
+        "sourceMessageIds": [
+          "7459b44b-b5cd-4e4f-9e96-bff720e644ba",
+          "0d31c093-16dd-48d9-938b-0849fe7327db"
+        ],
+        "questionIds": [
+          "2b25e26e-e30b-4797-94d4-5c573e372e90"
+        ],
+        "language": "ko",
+        "at": "2026-11-15T15:19:58.642Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 1
+        }
+      },
+      "passed": true
+    },
+    {
+      "name": "NU03",
+      "kind": "product draft regeneration",
+      "calls": [
+        {
+          "name": "replytrack_draft",
+          "ms": 3942,
+          "data": {
+            "body": "제 계정이 다음 결제일부터 기본 요금제로 변경 예약되어 있나요?",
+            "sourceMessageIds": [
+              "11ea4c4c-c0ea-4a7c-96af-7ab31a8828a0",
+              "e6ebafc1-40dc-4111-9172-5764b4078ecc"
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 3942,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 3941,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 1710,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 1408
+                  },
+                  "output_tokens": 295,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 192
+                  },
+                  "total_tokens": 2005
+                },
+                "elapsedMs": 3942
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1710,
+            "output_tokens": 295,
+            "total_tokens": 2005,
+            "input_tokens_details": {
+              "cached_tokens": 1408
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "ms": 2932,
+          "data": {
+            "valid": true,
+            "feedback": ""
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 2931,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 2931,
+                "httpStatus": 200,
+                "bodyMs": 0,
+                "usage": {
+                  "input_tokens": 1493,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 232,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 192
+                  },
+                  "total_tokens": 1725
+                },
+                "elapsedMs": 2931
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1493,
+            "output_tokens": 232,
+            "total_tokens": 1725,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "draft": {
+        "body": "제 계정이 다음 결제일부터 기본 요금제로 변경 예약되어 있나요?",
+        "sourceMessageIds": [
+          "11ea4c4c-c0ea-4a7c-96af-7ab31a8828a0",
+          "e6ebafc1-40dc-4111-9172-5764b4078ecc"
+        ],
+        "questionIds": [
+          "081019af-2609-4d06-920b-b3fac0bc90c2"
+        ],
+        "language": "ko",
+        "at": "2026-11-15T15:19:59.204Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 1
+        }
+      },
+      "passed": true
+    },
+    {
+      "name": "S04-repeat-1",
+      "kind": "product draft regeneration",
+      "calls": [
+        {
+          "name": "replytrack_draft",
+          "ms": 4078,
+          "data": {
+            "body": "제 주문의 추가 배송비 금액을 확인해 알려주세요.",
+            "sourceMessageIds": [
+              "c8cbc899-ced6-44a2-816a-43f4dad2d474",
+              "2c46aa3b-4363-4870-8dce-098d74c4dac6"
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 4079,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 4078,
+                "httpStatus": 200,
+                "bodyMs": 0,
+                "usage": {
+                  "input_tokens": 1707,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 1664
+                  },
+                  "output_tokens": 254,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 192
+                  },
+                  "total_tokens": 1961
+                },
+                "elapsedMs": 4079
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1707,
+            "output_tokens": 254,
+            "total_tokens": 1961,
+            "input_tokens_details": {
+              "cached_tokens": 1664
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "ms": 4420,
+          "data": {
+            "valid": true,
+            "feedback": ""
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 4419,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 4418,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 1485,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 1408
+                  },
+                  "output_tokens": 412,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 384
+                  },
+                  "total_tokens": 1897
+                },
+                "elapsedMs": 4419
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1485,
+            "output_tokens": 412,
+            "total_tokens": 1897,
+            "input_tokens_details": {
+              "cached_tokens": 1408
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 384
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "draft": {
+        "body": "제 주문의 추가 배송비 금액을 확인해 알려주세요.",
+        "sourceMessageIds": [
+          "c8cbc899-ced6-44a2-816a-43f4dad2d474",
+          "2c46aa3b-4363-4870-8dce-098d74c4dac6"
+        ],
+        "questionIds": [
+          "0e8e7657-eff2-41f5-927d-e586f20191cd"
+        ],
+        "language": "ko",
+        "at": "2026-11-15T15:20:07.142Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 1
+        }
+      },
+      "passed": true
+    },
+    {
+      "name": "S04-repeat-2",
+      "kind": "product draft regeneration",
+      "calls": [
+        {
+          "name": "replytrack_draft",
+          "ms": 4363,
+          "data": {
+            "body": "제 주문의 추가 배송비 금액을 알려 주세요.",
+            "sourceMessageIds": [
+              "c8cbc899-ced6-44a2-816a-43f4dad2d474",
+              "2c46aa3b-4363-4870-8dce-098d74c4dac6"
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 4362,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 4361,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 1707,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 1664
+                  },
+                  "output_tokens": 324,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 256
+                  },
+                  "total_tokens": 2031
+                },
+                "elapsedMs": 4362
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1707,
+            "output_tokens": 324,
+            "total_tokens": 2031,
+            "input_tokens_details": {
+              "cached_tokens": 1664
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "ms": 7597,
+          "data": {
+            "valid": true,
+            "feedback": ""
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 7597,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 7596,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 1483,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 1408
+                  },
+                  "output_tokens": 823,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 768
+                  },
+                  "total_tokens": 2306
+                },
+                "elapsedMs": 7597
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1483,
+            "output_tokens": 823,
+            "total_tokens": 2306,
+            "input_tokens_details": {
+              "cached_tokens": 1408
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 768
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "draft": {
+        "body": "제 주문의 추가 배송비 금액을 알려 주세요.",
+        "sourceMessageIds": [
+          "c8cbc899-ced6-44a2-816a-43f4dad2d474",
+          "2c46aa3b-4363-4870-8dce-098d74c4dac6"
+        ],
+        "questionIds": [
+          "0e8e7657-eff2-41f5-927d-e586f20191cd"
+        ],
+        "language": "ko",
+        "at": "2026-11-15T15:20:11.165Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 1
+        }
+      },
+      "passed": true
+    },
+    {
+      "name": "S04-wrong-feedback-replay",
+      "kind": "controlled erroneous-review replay with live generation and final review",
+      "calls": [
+        {
+          "name": "replytrack_draft",
+          "ms": 3198,
+          "data": {
+            "body": "제 주문의 추가 배송비 금액을 알려주시기 바랍니다.",
+            "sourceMessageIds": [
+              "c8cbc899-ced6-44a2-816a-43f4dad2d474",
+              "2c46aa3b-4363-4870-8dce-098d74c4dac6"
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 3198,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 3197,
+                "httpStatus": 200,
+                "bodyMs": 0,
+                "usage": {
+                  "input_tokens": 1707,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 1664
+                  },
+                  "output_tokens": 235,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 192
+                  },
+                  "total_tokens": 1942
+                },
+                "elapsedMs": 3198
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1707,
+            "output_tokens": 235,
+            "total_tokens": 1942,
+            "input_tokens_details": {
+              "cached_tokens": 1664
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "syntheticReplay": true,
+          "data": {
+            "valid": false,
+            "feedback": "초안이 질문 목록의 미해결 항목을 모두 묻고 있지 않습니다. 상담원은 \"고객님의 배송 지역은 아직 확인하지 못했습니다\"라고 밝혔으므로, 초안에는 배송 지역(예: 제주도 여부 또는 정확한 배송지)을 묻거나 제공해 달라는 문구가 반드시 포함되어야 합니다. 현재 초안은 단순히 추가 배송비 금액만 재요청하고 있어 미해결 항목을 누락합니다."
+          }
+        },
+        {
+          "name": "replytrack_draft",
+          "ms": 12859,
+          "data": {
+            "body": "제 주문의 추가 배송비 금액을 알려주시고, 제 배송지가 제주도인지 확인해 주세요.",
+            "sourceMessageIds": [
+              "c8cbc899-ced6-44a2-816a-43f4dad2d474",
+              "2c46aa3b-4363-4870-8dce-098d74c4dac6"
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 12859,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 12858,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 1845,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 1313,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1216
+                  },
+                  "total_tokens": 3158
+                },
+                "elapsedMs": 12859
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1845,
+            "output_tokens": 1313,
+            "total_tokens": 3158,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1216
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "ms": 14606,
+          "data": {
+            "valid": true,
+            "feedback": ""
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 14606,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 14605,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 1494,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 1408
+                  },
+                  "output_tokens": 1561,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1536
+                  },
+                  "total_tokens": 3055
+                },
+                "elapsedMs": 14606
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1494,
+            "output_tokens": 1561,
+            "total_tokens": 3055,
+            "input_tokens_details": {
+              "cached_tokens": 1408
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1536
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "draft": {
+        "body": "제 주문의 추가 배송비 금액을 알려주시고, 제 배송지가 제주도인지 확인해 주세요.",
+        "sourceMessageIds": [
+          "c8cbc899-ced6-44a2-816a-43f4dad2d474",
+          "2c46aa3b-4363-4870-8dce-098d74c4dac6"
+        ],
+        "questionIds": [
+          "0e8e7657-eff2-41f5-927d-e586f20191cd"
+        ],
+        "language": "ko",
+        "at": "2026-11-15T15:20:37.806Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 2
+        }
+      },
+      "passed": false,
+      "error": "The expression evaluated to a falsy value:\n\n  assert(!/제주|배송지\\s*(?:는|가|:)|고객님의/.test(r.draft.body))\n"
+    }
+  ],
+  "passed": false
+}

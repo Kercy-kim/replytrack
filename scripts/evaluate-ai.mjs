@@ -8,6 +8,7 @@ import { cases } from '../evals/support-cases.mjs';
 import { boundaryCases } from '../evals/status-boundary-cases.mjs';
 import { unseenCases } from '../evals/unseen-cases.mjs';
 import { reasonCases } from '../evals/reason-cases.mjs';
+import { timingCases } from '../evals/timing-cases.mjs';
 import { gradeReasons } from '../evals/reason-quality.mjs';
 import { grade, summarize } from '../evals/grade.mjs';
 import { performanceSummary } from '../evals/performance.mjs';
@@ -17,6 +18,7 @@ import { ReplyTrack, draftQuestionContext, draftSourceContext } from '../src/ser
 import { DRAFT_REVIEW_PROMPT } from '../src/prompts.mjs';
 import { HANDOFF_REVIEW_PROMPT } from '../src/handoff.mjs';
 import { draftReviewSchema } from '../src/schema.mjs';
+import { draftChecks, reviewPassed } from '../src/feature-review.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -24,16 +26,18 @@ const sourceFiles = ['evals/support-cases.mjs', 'evals/status-boundary-cases.mjs
 sourceFiles.push('evals/performance.mjs');
 sourceFiles.push('src/privacy.mjs');
 sourceFiles.push('evals/reason-cases.mjs', 'evals/reason-quality.mjs');
+sourceFiles.push('evals/timing-cases.mjs');
+sourceFiles.push('src/feature-review.mjs');
 if (existsSync(resolve(root, 'src/ai-wire.mjs'))) sourceFiles.push('src/ai-wire.mjs');
 if (existsSync(resolve(root, 'src/handoff.mjs'))) sourceFiles.push('src/handoff.mjs');
 if (existsSync(resolve(root, 'src/ai-race.mjs'))) sourceFiles.push('src/ai-race.mjs');
-const suites = { support: cases, boundary: boundaryCases, all: [...cases, ...boundaryCases], unseen: unseenCases, full: [...cases, ...boundaryCases, ...unseenCases], reasons: reasonCases };
+const suites = { support: cases, boundary: boundaryCases, all: [...cases, ...boundaryCases], unseen: unseenCases, full: [...cases, ...boundaryCases, ...unseenCases], reasons: reasonCases, timing: timingCases };
 const args = process.argv.slice(2);
 const option = (name, fallback) => args.includes(name) ? args[args.indexOf(name) + 1] : fallback;
 const analysisEffort = option('--analysis-effort', 'product');
 if (!['product', 'low', 'medium'].includes(analysisEffort)) throw new Error('Unknown analysis effort');
 if (args.includes('--help')) {
-  console.log('--suite support|boundary|all|unseen|full|reasons selects frozen cases. full runs the existing 48; reasons runs 4 additional contrast controls. --analysis-only skips draft generation/review. Interactive JSON also accepts suite and analysisOnly.');
+  console.log('--suite support|boundary|all|unseen|full|reasons|timing selects frozen cases. full runs the existing 48; reasons and timing each run 4 additional contrast controls. --analysis-only skips draft generation/review. Interactive JSON also accepts suite and analysisOnly.');
   console.log('--analysis-effort product|low|medium overrides only the first analysis for controlled experiments; repairs/reviews keep product settings.');
   console.log('Live evaluation (paid API calls): node --env-file=.env scripts/evaluate-ai.mjs --out .artifacts/eval/run.json [--only S01,R03] [--model gpt-5-mini]\n--key-stdin accepts one hidden line; --interactive keeps credentials in memory for another run after code changes. Never writes the key.\nScore saved output offline: node scripts/evaluate-ai.mjs --rescore path/to/run.json');
   process.exit(0);
@@ -46,6 +50,7 @@ if (args.includes('--rescore')) {
   if (['boundary', 'all', 'full'].includes(report.suite) && report.hashes['evals/status-boundary-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/status-boundary-cases.mjs')))) throw new Error('Boundary dataset hash mismatch');
   if (['unseen', 'full'].includes(report.suite) && report.hashes['evals/unseen-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/unseen-cases.mjs')))) throw new Error('Unseen dataset hash mismatch');
   if (report.suite === 'reasons' && report.hashes['evals/reason-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/reason-cases.mjs')))) throw new Error('Reason dataset hash mismatch');
+  if (report.suite === 'timing' && report.hashes['evals/timing-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/timing-cases.mjs')))) throw new Error('Timing dataset hash mismatch');
   for (const result of report.results) {
     const testCase = suiteCases.find(c => c.id === result.id);
     if (!testCase) throw new Error('Unknown saved case');
@@ -172,7 +177,7 @@ async function runDraftProbes({ out, model }) {
     try {
       const response = await client.structured({ name: 'replytrack_draft_review', schema: draftReviewSchema, instructions: result.draft.kind === 'handoff' ? HANDOFF_REVIEW_PROMPT : DRAFT_REVIEW_PROMPT, reasoningEffort: 'medium',
         data: { kind: result.draft.kind, ...draftSourceContext(record, result.draft.kind), questions: draftQuestionContext(result.draft.kind === 'followup' ? record.questions.filter(q => q.status !== 'answered') : record.questions), draft: { body: draft.body, sourceMessageIds: draft.sourceMessageIds } } });
-      report.results.push({ source: `${run}/${id}`, expectedFailure, expectedValid, reasoningEffort: 'medium', pass: response.data.valid === expectedValid, ms: Math.round(performance.now() - start), ...response });
+      report.results.push({ source: `${run}/${id}`, expectedFailure, expectedValid, reasoningEffort: 'medium', pass: reviewPassed(response.data,draftChecks) === expectedValid, ms: Math.round(performance.now() - start), ...response });
     } catch (error) { report.results.push({ source: `${run}/${id}`, expectedFailure, pass: false, error: { code: error.code, message: error.message } }); }
     writeFileSync(path, JSON.stringify(report, null, 2) + '\n');
   }

@@ -1,3 +1,4 @@
+import { draftChecks, featureReviewSchema } from './feature-review.mjs';
 const text = { type: 'string' };
 const nullableText = { type: ['string', 'null'] };
 const array = items => ({ type: 'array', items });
@@ -56,7 +57,7 @@ export const draftSchema = object({ body: text, sourceMessageIds: array(text) })
 export function draftSchemaFor(messages) {
   return object({ body: text, sourceMessageIds: { type: 'array', minItems: 1, maxItems: messages.length, items: { type: 'string', enum: messages.map(m => m.id) } } });
 }
-export const draftReviewSchema = object({ valid: { type: 'boolean' }, feedback: text });
+export const draftReviewSchema = featureReviewSchema(draftChecks);
 export function boundaryReviewSchemaFor(ids, messages) {
   const evidence = analysisSchemaFor(messages).properties.questions.items.properties.evidence;
   return object({ questions: { ...array(object({ id: { type: 'string', enum: ids }, status: { type: 'string', enum: ['partial', 'review'] }, reason: questionReason, evidence: { ...evidence, minItems: 1 } })), minItems: ids.length, maxItems: ids.length } });
