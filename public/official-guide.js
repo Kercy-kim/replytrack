@@ -14,7 +14,7 @@ export function renderGuide(g, { busy, configured, hasDraft }) {
   const disabled = busy ? 'disabled' : '';
   const select = (key, label) => `<label class="field">${esc(label)}<select name="${key}" data-guide-answer="${key}" required ${disabled}><option value="">선택해 주세요</option>${Object.entries(fields[key].options).map(([value, text]) => `<option value="${value}" ${g.answers[key] === value ? 'selected' : ''}>${esc(text)}</option>`).join('')}</select></label>`;
   const result = g.result;
-  const changed = result && ((result.request || result.input).goal !== g.goal || JSON.stringify((result.request || result.input).answers) !== JSON.stringify(g.answers));
+  const changed = result && (g.question || g.message || (result.request || result.input).goal !== g.goal || JSON.stringify((result.request || result.input).answers) !== JSON.stringify(g.answers));
   const claim = item => `<li><p>${esc(item.text)}</p><details><summary>공식 근거 보기</summary><blockquote>${esc(item.quote)}</blockquote><a href="${esc(result.sources.find(s => s.id === item.sourceId)?.url)}" target="_blank" rel="noopener noreferrer">${esc(result.sources.find(s => s.id === item.sourceId)?.title)} · 원문 열기</a></details></li>`;
   return `<section class="guide-page" aria-labelledby="guide-heading"><div class="guide-heading"><h1 id="guide-heading">무엇을 도와드릴까요?</h1><p>SSG의 취소·반품·교환·환불 안내를 찾아, 지금 할 일을 정리해 드려요.</p></div>
     <form id="guide-form"><label class="field">쇼핑몰<select name="store" ${disabled}><option value="ssg">SSG.COM</option></select></label><p class="form-note">현재 SSG 일반 상품만 지원해요. 로그인이나 주문 조회 없이 공식 FAQ를 검색합니다.</p>

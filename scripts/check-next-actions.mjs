@@ -6,13 +6,14 @@ import assert from 'node:assert/strict';
 import { createApp } from '../server.mjs';
 import { CaseStore } from '../src/store.mjs';
 import { createRefundDemo, demoActions } from '../src/demo.mjs';
+import { actionChecks } from '../src/feature-review.mjs';
 const require=createRequire(import.meta.url);
 const { chromium }=require(process.env.REPLYTRACK_PLAYWRIGHT_MODULE || 'playwright');
 const out=resolve('.artifacts/next-actions'); await mkdir(out,{recursive:true});
 let hold=false, release, reviewValid=true, called=0;
 const ai={configured:true,model:'browser-fixture',structured:async p=>{
   if(p.name==='replytrack_connection') return {data:{ok:true}};
-  if(p.name==='replytrack_actions_review') return {data:{valid:reviewValid,feedback:reviewValid?'':'검증 실패 시연'}};
+  if(p.name==='replytrack_actions_review') return {data:{checks:Object.fromEntries(Object.keys(actionChecks).map(key=>[key,reviewValid])),valid:reviewValid,feedback:reviewValid?'':'검증 실패 시연'}};
   if(p.name==='replytrack_actions') {
     called++;
     if(hold) await new Promise(r=>{release=r;});

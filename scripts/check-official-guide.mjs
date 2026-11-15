@@ -6,15 +6,16 @@ import assert from 'node:assert/strict';
 import { createApp } from '../server.mjs';
 import { CaseStore } from '../src/store.mjs';
 import { OfficialFaq } from '../src/official-guide.mjs';
+import { guideChecks } from '../src/feature-review.mjs';
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.REPLYTRACK_PLAYWRIGHT_MODULE || 'playwright');
 const out = resolve('.artifacts/official-guide'); await mkdir(out, { recursive: true });
-let offline = false, valid = true, hold = false, generated = 0;
+let offline = false, valid = true, hold = false, generated = 0, conflict = false, rejectOnce = false;
 const checks = [], errors = [];
 const ai = { configured: true, model: 'browser-fixture', structured: async p => {
   if (p.name === 'replytrack_connection') return { data: { ok: true } };
-  if (p.name === 'replytrack_guide_intent') return { data: { intent: 'exchange' } };
-  if (p.name === 'replytrack_guide_review') return { data: { valid, feedback: '' } };
+  if (p.name === 'replytrack_guide_intent') return { data: { intent: 'exchange', conflictingField:conflict && p.data.answers.received==='week'?'received':null } };
+  if (p.name === 'replytrack_guide_review') {const decision=rejectOnce?false:valid;rejectOnce=false;return { data: { checks:Object.fromEntries(Object.keys(guideChecks).map(key=>[key,decision])),valid:decision, feedback:decision?'':'조건을 다시 확인하세요.' } };}
   if (p.name === 'replytrack_guide') {
     generated++;
     if (hold) await new Promise((resolve, reject) => { p.signal.addEventListener('abort', () => reject(p.signal.reason), { once: true }); });
@@ -49,10 +50,18 @@ try {
   assert((await page.locator('.guide-steps a').first().getAttribute('href')).startsWith('https://www.ssg.com/'));
   await page.screenshot({ path: resolve(out, 'desktop.png'), fullPage: true });
   checks.push('Natural language input, two clarification steps, live provenance, source expansion');
+  conflict=true;await submit();
+  assert.match(await page.locator('.guide-question').innerText(),/설명과 선택한 상황이 달라/);
+  assert(await page.locator('[data-action=guide-handoff]').isDisabled());
+  const beforeRepair=generated;rejectOnce=true;
+  await page.locator('[data-guide-answer=received]').selectOption('older');await submit();
+  assert.equal(generated,beforeRepair+2);assert.equal(await page.locator('.guide-question').count(),0);
+  assert(!(await page.locator('[data-action=guide-handoff]').isDisabled()));conflict=false;
+  checks.push('Conflicting input blocks handoff, corrected choice continues, one repair is re-reviewed');
   offline = true; await submit(); assert.match(await page.locator('.guide-result').innerText(), /검색 실패 · 확인된 자료 사용/);
   await page.locator('.guide-sources summary').click(); assert.match(await page.locator('.guide-sources').innerText(), /2026-11-15/);
   const prior = await page.locator('.guide-request').innerText();
-  valid = false; await submit(); assert.match(await page.locator('.error-banner').innerText(), /검증하지 못했어요/); assert.equal(await page.locator('.guide-request').innerText(), prior);
+  valid = false; await submit(); assert.match(await page.locator('.error-banner').innerText(), /재검토했지만 확인하지 못했어요/); assert.equal(await page.locator('.guide-request').innerText(), prior);
   valid = true; hold = true;
   await page.locator('#guide-form button[type=submit]').click();
   await page.getByText('내 상황에 맞는 안내 작성 중', { exact: true }).waitFor();
