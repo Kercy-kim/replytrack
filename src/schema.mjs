@@ -21,11 +21,12 @@ export const analysisSchema = object({
 });
 // Bind references to this conversation and role before constrained generation.
 // Keep server-side quote/role validation: an allowed ID alone is not evidence.
-export function analysisSchemaFor(messages) {
+export function analysisSchemaFor(messages, channel) {
   const schema = structuredClone(analysisSchema);
   const ids = role => messages.filter(m => m.role === role).map(m => m.id);
   const reference = role => object({ messageId: { type: 'string', ...(ids(role).length ? { enum: ids(role) } : {}) }, quote: text });
   const question = schema.properties.questions.items.properties;
+  if (channel === 'email') question.title = { type: 'string', pattern: '[가-힣]', description: '한국어 사용자가 읽을 질문 제목. 영문 질문도 의미를 보존해 한국어로 쓴다. 원문 인용은 번역하지 않는다.' };
   question.source = reference('customer');
   question.evidence.items = reference('agent');
   schema.properties.promises.items.properties.evidence = reference('agent');
@@ -56,6 +57,7 @@ export function draftSchemaFor(messages) {
   return object({ body: text, sourceMessageIds: { type: 'array', minItems: 1, maxItems: messages.length, items: { type: 'string', enum: messages.map(m => m.id) } } });
 }
 export const draftReviewSchema = object({ valid: { type: 'boolean' }, feedback: text });
-export function boundaryReviewSchemaFor(ids) {
-  return object({ questions: { ...array(object({ id: { type: 'string', enum: ids }, status: { type: 'string', enum: ['partial', 'review'] }, reason: questionReason })), minItems: ids.length, maxItems: ids.length } });
+export function boundaryReviewSchemaFor(ids, messages) {
+  const evidence = analysisSchemaFor(messages).properties.questions.items.properties.evidence;
+  return object({ questions: { ...array(object({ id: { type: 'string', enum: ids }, status: { type: 'string', enum: ['partial', 'review'] }, reason: questionReason, evidence: { ...evidence, minItems: 1 } })), minItems: ids.length, maxItems: ids.length } });
 }

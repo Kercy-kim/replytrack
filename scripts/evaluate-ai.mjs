@@ -29,8 +29,11 @@ if (existsSync(resolve(root, 'src/handoff.mjs'))) sourceFiles.push('src/handoff.
 const suites = { support: cases, boundary: boundaryCases, all: [...cases, ...boundaryCases], unseen: unseenCases, full: [...cases, ...boundaryCases, ...unseenCases], reasons: reasonCases };
 const args = process.argv.slice(2);
 const option = (name, fallback) => args.includes(name) ? args[args.indexOf(name) + 1] : fallback;
+const analysisEffort = option('--analysis-effort', 'product');
+if (!['product', 'low', 'medium'].includes(analysisEffort)) throw new Error('Unknown analysis effort');
 if (args.includes('--help')) {
   console.log('--suite support|boundary|all|unseen|full|reasons selects frozen cases. full runs the existing 48; reasons runs 4 additional contrast controls. --analysis-only skips draft generation/review. Interactive JSON also accepts suite and analysisOnly.');
+  console.log('--analysis-effort product|low|medium overrides only the first analysis for controlled experiments; repairs/reviews keep product settings.');
   console.log('Live evaluation (paid API calls): node --env-file=.env scripts/evaluate-ai.mjs --out .artifacts/eval/run.json [--only S01,R03] [--model gpt-5-mini]\n--key-stdin accepts one hidden line; --interactive keeps credentials in memory for another run after code changes. Never writes the key.\nScore saved output offline: node scripts/evaluate-ai.mjs --rescore path/to/run.json');
   process.exit(0);
 }
@@ -76,6 +79,7 @@ async function run({ out, only = '', model = process.env.OPENAI_MODEL || 'gpt-5-
   const outputPath = resolve(root, out);
   if (existsSync(outputPath)) throw new Error('Output already exists; use a new filename to preserve prior results');
   const report = { formatVersion: 1, startedAt: new Date().toISOString(), mode: 'live OpenAI Responses API', requestedModel: model, suite, analysisOnly,
+    analysisEffort,
     baseCommit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
     hashes: Object.fromEntries(sourceFiles.map(file => [file, hash(readFileSync(resolve(root, file)))])), results: [] };
   mkdirSync(dirname(outputPath), { recursive: true });
@@ -88,6 +92,8 @@ async function run({ out, only = '', model = process.env.OPENAI_MODEL || 'gpt-5-
       const testCase = selected[cursor++], store = new CaseStore(':memory:');
       const result = { id: testCase.id, category: testCase.category, title: testCase.title, stages: [], calls: [], operations: [] };
       const ai = { async structured(input) {
+        // Evaluation-only override: keep repairs and every semantic review unchanged.
+        if (analysisEffort !== 'product' && input.name === 'replytrack_analysis' && !input.data.revisionFeedback) input = { ...input, reasoningEffort: analysisEffort };
         const start = performance.now();
         try {
           const response = await client.structured(input);
@@ -132,7 +138,7 @@ async function run({ out, only = '', model = process.env.OPENAI_MODEL || 'gpt-5-
       } catch (error) { result.error = { code: error.code || 'UNKNOWN', message: error.message }; }
       finally { store.close(); }
       report.results.push(result); report.results.sort((a,b) => suiteCases.findIndex(c => c.id === a.id) - suiteCases.findIndex(c => c.id === b.id)); save();
-      console.log(`${testCase.id}: ${result.error ? result.error.code : result.stages.every(s => s.grade.pass) ? 'PASS' : 'REVIEW'}${result.draft?.error ? ' / ' + result.draft.error.code : ''} (${report.results.length}/${selected.length})`);
+      console.log(`${testCase.id}: ${result.error ? result.error.code : result.stages.every(s => s.grade.pass && s.reasonGrade.pass) ? 'PASS' : 'REVIEW'}${result.draft?.error ? ' / ' + result.draft.error.code : ''} (${report.results.length}/${selected.length})`);
       if (result.error?.code === 'AI_AUTH' || result.error?.code === 'AI_LIMIT') cursor = selected.length;
     }
   }
@@ -173,7 +179,7 @@ async function runDraftProbes({ out, model }) {
   if (report.results.some(r => !r.pass)) process.exitCode = 1;
 }
 const runFresh = options => new Promise((resolve, reject) => {
-  const child = fork(fileURLToPath(import.meta.url), ['--internal-ipc', '--out', options.out, '--only', options.only || '', '--model', options.model || process.env.OPENAI_MODEL || 'gpt-5-mini', '--suite', options.suite || 'support', ...(options.analysisOnly ? ['--analysis-only'] : [])], { stdio: ['ignore', 'inherit', 'inherit', 'ipc'] });
+  const child = fork(fileURLToPath(import.meta.url), ['--internal-ipc', '--analysis-effort', analysisEffort, '--out', options.out, '--only', options.only || '', '--model', options.model || process.env.OPENAI_MODEL || 'gpt-5-mini', '--suite', options.suite || 'support', ...(options.analysisOnly ? ['--analysis-only'] : [])], { stdio: ['ignore', 'inherit', 'inherit', 'ipc'] });
   child.on('error', reject);
   child.on('exit', code => { if (code) process.exitCode = code; resolve(); });
   child.send({ apiKey });

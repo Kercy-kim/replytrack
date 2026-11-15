@@ -27,6 +27,14 @@ export const analysisContext = record => ({
   existingPromises: record.promises.map(({ id, title, questionIds, evidence, dueText, state }) => ({ id, title, questionIds, evidence, dueText, state })),
 });
 
+// These cues select computation effort, never a question status or a new fact.
+// Email interpretation, corrections, conditional policies and long threads keep medium.
+export function analysisReasoningEffort(record) {
+  const correction = /정정|철회|번복|변경|잘못|앞서|앞선|기한.{0,20}취소|취소.{0,20}기한|\b(correct(?:ion|ed|ing)?|incorrect|revis(?:e|ed|ion)|retract(?:ed|ion)?|instead|supersed\w*|disregard|previous(?:ly)?|chang(?:e|ed))\b/i;
+  const conditional = /면|경우|조건|원칙|예외|다만|하지만|\b(if|unless|only|except|provided)\b/i;
+  return record.channel === 'email' || record.messages.length > 8 || record.messages.reduce((n, m) => n + m.text.length, 0) > 8000 || record.messages.some(m => m.role === 'agent' && (correction.test(m.text) || conditional.test(m.text))) ? 'medium' : 'low';
+}
+
 function analysisUsage(results) {
   const usages = results.map(r => r.usage).filter(Boolean);
   if (!usages.length) return null;
@@ -207,10 +215,14 @@ export class ReplyTrack {
         let revision = {};
         for (let attempt = 0; attempt < 2; attempt++) {
           if (attempt) this.getVersion(id, version);
-          result = await this.ask({ name: 'replytrack_analysis', schema: analysisSchemaFor(c.messages), instructions: ANALYSIS_PROMPT + (c.channel === 'email' ? `\n${EMAIL_ANALYSIS_PROMPT}` : ''), reasoningEffort: 'medium', data: { ...data, ...revision } }, context, attempt ? 'analysis_repair' : 'analysis');
+          // Keep complex histories, semantic reviews and evidence repair at medium.
+          result = await this.ask({ name: 'replytrack_analysis', schema: analysisSchemaFor(c.messages, c.channel), instructions: ANALYSIS_PROMPT + (c.channel === 'email' ? `\n${EMAIL_ANALYSIS_PROMPT}` : ''), reasoningEffort: attempt ? 'medium' : analysisReasoningEffort(c), data: { ...data, ...revision } }, context, attempt ? 'analysis_repair' : 'analysis');
           results.push(result); attempts++;
           checkpoint(context, 'validation');
           const validationErrors = analysisValidationErrors(result.data, c.messages);
+          if (c.channel === 'email') result.data.questions.forEach((q, i) => {
+            if (typeof q.title !== 'string' || !/[가-힣]/.test(q.title)) validationErrors.push(`questions[${i}].title: 원문 질문의 의미를 보존한 한국어 제목으로 작성하세요. source/evidence 인용은 원문 언어 그대로 유지하세요`);
+          });
           if (!validationErrors.length) break;
           if (attempt === 1) throw new AppError(502, '분석의 원문 인용과 상태를 다시 확인했지만 맞지 않아 저장하지 않았습니다. 기존 기록은 유지됩니다.', 'AI_EVIDENCE');
           revision = { revisionFeedback: `앞선 생성에서 다음 원문 인용 또는 상태·근거의 일관성 오류가 있었습니다: ${validationErrors.join(', ')}. source는 customer, evidence는 agent의 실제 ID와 정확한 원문 부분 문자열이어야 합니다. 동의어 치환·조사 생략·띄어쓰기 수정·요약을 하지 말고 원문을 그대로 복사하세요. 미답변인데 근거가 있다면 그 근거의 관련성을 다시 판단하고, 관련 안내가 있으면 맞는 상태를 선택하고 무관한 안내면 근거에서 제외하세요. 최종 상태를 답하지 않았어도 같은 처리의 실행 방법을 안내했다면 partial이며 방법 안내를 근거에 보존하세요. 미답변 형식에 맞추려고 관련 근거만 삭제하지 마세요. 잘못된 출력을 재사용하지 말고 제공된 원문과 기존 기록에서 전체 분석을 다시 반환하세요.` };
@@ -232,13 +244,14 @@ export class ReplyTrack {
         const uncertain = result.data.questions.filter(q => q.status === 'review' && q.evidence.length);
         if (uncertain.length) {
           this.getVersion(id, version);
-          const checked = await this.ask({ name: 'replytrack_boundary_review', schema: boundaryReviewSchemaFor(uncertain.map(q => q.id)), instructions: BOUNDARY_REVIEW_PROMPT, reasoningEffort: 'medium',
+          const checked = await this.ask({ name: 'replytrack_boundary_review', schema: boundaryReviewSchemaFor(uncertain.map(q => q.id), c.messages), instructions: BOUNDARY_REVIEW_PROMPT, reasoningEffort: 'medium',
             data: { messages: c.messages, questions: uncertain.map(({ id, title, source }) => ({ id, title, source })), otherQuestions: result.data.questions.filter(q => !uncertain.includes(q)).map(({ id, title, source }) => ({ id, title, source })) } }, context, 'boundary_review');
           results.push(checked);
           const decisions = checked.data?.questions;
-          if (!Array.isArray(decisions) || decisions.length !== uncertain.length || new Set(decisions.map(q => q.id)).size !== uncertain.length || decisions.some(q => !uncertain.some(u => u.id === q.id) || !['partial', 'review'].includes(q.status) || typeof q.reason !== 'string' || !q.reason.trim())) throw new AppError(502, '질문 상태 검토 결과가 맞지 않아 기존 기록을 유지했습니다.', 'AI_BOUNDARY');
+          if (!Array.isArray(decisions) || decisions.length !== uncertain.length || new Set(decisions.map(q => q.id)).size !== uncertain.length || decisions.some(q => !uncertain.some(u => u.id === q.id) || !['partial', 'review'].includes(q.status) || typeof q.reason !== 'string' || !q.reason.trim() || !Array.isArray(q.evidence) || !q.evidence.length)) throw new AppError(502, '질문 상태 검토 결과가 맞지 않아 기존 기록을 유지했습니다.', 'AI_BOUNDARY');
           const data = structuredClone(result.data);
-          for (const decision of decisions) Object.assign(data.questions.find(q => q.id === decision.id), { status: decision.status, reason: decision.reason });
+          for (const decision of decisions) Object.assign(data.questions.find(q => q.id === decision.id), { status: decision.status, reason: decision.reason, evidence: decision.evidence });
+          if (analysisValidationErrors(data, c.messages).length) throw new AppError(502, '질문 상태 검토의 원문 근거가 맞지 않아 기존 기록을 유지했습니다.', 'AI_BOUNDARY');
           result = { ...result, data }; // Preserve the original model output in evaluation logs.
           boundaryReview = { model: checked.model, questions: uncertain.length };
         }

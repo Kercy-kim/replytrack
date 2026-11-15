@@ -5,7 +5,7 @@ import { ReplyTrack } from '../src/service.mjs';
 import { analysisValidationErrors } from '../src/domain.mjs';
 
 function output(data, broken = false) {
-  if (!data.existingQuestions) return { model: 'test', usage: { input_tokens: 10, output_tokens: 5, total_tokens: 15 }, data: { questions: data.questions.map(q => ({ id: q.id, status: 'review', reason: '실질 정보 없이 결과 미정' })) } };
+  if (!data.existingQuestions) return { model: 'test', usage: { input_tokens: 10, output_tokens: 5, total_tokens: 15 }, data: { questions: data.questions.map(q => ({ id: q.id, status: 'review', reason: '실질 정보 없이 결과 미정', evidence: [{ messageId: data.messages[1].id, quote: data.messages[1].text }] })) } };
   const [customer, agent] = data.messages;
   return { model: 'test', usage: { input_tokens: 10, output_tokens: 5, total_tokens: 15 }, data: {
     summary: '결과 미정', questions: [{ id: data.existingQuestions[0]?.id || 'new-q-1', title: '검수 결과',
@@ -48,6 +48,7 @@ test('analysis repairs invalid quotes once, validates them, and counts repair pl
     const service = new ReplyTrack(store, { async structured(request) { requests.push(request); return output(request.data, requests.length === 1); } });
     const c = service.create(input), saved = await service.analyze(c.id, c.version);
     assert.equal(requests.length, 3); assert.match(requests[1].data.revisionFeedback, /questions\[0\].source/);
+    assert.deepEqual(requests.map(r => r.reasoningEffort), ['low', 'medium', 'medium']);
     assert.match(requests[1].data.revisionFeedback, /questions\[0\].evidence\[0\]/);
     assert.equal(requests[1].data.previousAnalysis, undefined);
     assert(requests[1].data.revisionFeedback.includes(input.messages[0].text));

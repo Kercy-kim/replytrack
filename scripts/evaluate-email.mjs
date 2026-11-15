@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdirSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { dirname } from 'node:path';
 import { ReplyTrack } from '../src/service.mjs';
 import { CaseStore } from '../src/store.mjs';
@@ -10,7 +11,8 @@ process.loadEnvFile('.env');
 assert(process.env.OPENAI_API_KEY, 'Local API configuration required.');
 const output = process.env.EMAIL_EVAL_REPORT || 'evals/results/email-inquiries/initial.json';
 assert(!existsSync(output), 'Preserve previous reports; choose a new EMAIL_EVAL_REPORT.');
-const report = { at: new Date().toISOString(), cases: [] };
+const analysisOnly = process.argv.includes('--analysis-only');
+const report = { at: new Date().toISOString(), analysisOnly, cases: [], hashes: Object.fromEntries(['src/service.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/openai.mjs', 'evals/email-cases.mjs', 'scripts/evaluate-email.mjs'].map(f => [f, createHash('sha256').update(readFileSync(f)).digest('hex')])) };
 // Line wrapping is allowed by email import; words, punctuation and order are not.
 const normalizedText = text => text.replace(/\s+/g, ' ').trim();
 const save = () => { mkdirSync(dirname(output), { recursive: true }); writeFileSync(output, JSON.stringify(report, null, 2)); };
@@ -21,6 +23,22 @@ await Promise.all(emailCases.filter(f => !process.env.EMAIL_EVAL_CASE || f.id ==
   const store = new CaseStore(':memory:'); const svc = new ReplyTrack(store, ai);
   async function step(label, task) { const start = Date.now(); const r = await task(); entry.steps.push({ label, ms: Date.now() - start }); save(); console.log(`${f.id}: ${label}`); return r; }
   try {
+    if (analysisOnly) {
+      let c = svc.create({ channel: 'email', title: f.id, messages: [{ role: 'customer', text: f.customer }, { role: 'agent', text: f.agent }] });
+      c = await step('analyze', () => svc.analyze(c.id, c.version)); entry.initial = structuredClone(c);
+      assert.deepEqual(c.questions.map(q => q.status).sort(), [...f.initial].sort());
+      c = svc.appendEmail(c.id, { version: c.version, messages: [{ role: 'agent', text: f.reply }] });
+      c = await step('reanalyze', () => svc.analyze(c.id, c.version)); entry.final = structuredClone(c);
+      assert.deepEqual(c.questions.map(q => q.status).sort(), [...f.updated].sort());
+      assert.deepEqual(c.questions.map(q => q.id).sort(), entry.initial.questions.map(q => q.id).sort());
+      for (const record of [entry.initial, entry.final]) {
+        assert(record.questions.every(q => /[가-힣]/.test(q.title)));
+        assert.deepEqual(record.warnings, []);
+        assert(record.promises.every(p => !p.confirmedAt));
+        for (const q of record.questions) for (const e of q.evidence) assert(record.messages.some(m => m.role === 'agent' && m.id === e.messageId && m.text.includes(e.quote)));
+      }
+      entry.passed = true; return;
+    }
     const read = await step('extract', () => svc.extract({ channel: 'email', myAddress: 'me@example.test', text: emailThread(f) }));
     assert.deepEqual(read.messages.map(m => normalizedText(m.text)), [f.customer, f.agent].map(normalizedText));
     const expectedRoles = ['customer', 'agent'];

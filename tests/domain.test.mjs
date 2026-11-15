@@ -1,12 +1,24 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { newCase, applyAnalysis, dueDate, validateDraft } from '../src/domain.mjs';
+import { newCase, applyAnalysis, dueDate, validateDraft, normalizeAnalysisReason } from '../src/domain.mjs';
 import { createDemo, demoAnalysis } from '../src/demo.mjs';
 import { CaseStore } from '../src/store.mjs';
 import { ReplyTrack } from '../src/service.mjs';
 import { mkdtempSync, readdirSync, unlinkSync, rmdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
+test('a copied schema label is removed from displayed reasons without rewriting facts or evidence', () => {
+  const sentence = "'7,000원 차감은 안내받았지만 최종 금액은 확인되지 않았습니다.'";
+  assert.equal(normalizeAnalysisReason(`partial: ${sentence}`), sentence);
+  for (const text of [sentence, '상태 문자열 partial: 은 원문에 있습니다.', '제품명 review: A', 'partial:']) assert.equal(normalizeAnalysisReason(text), text);
+  const record = createDemo(), raw = demoAnalysis(record), before = structuredClone(raw);
+  raw.questions[0].reason = `waiting: ${sentence}`;
+  applyAnalysis(record, raw);
+  assert.equal(record.questions[0].reason, sentence); assert.equal(record.questions[0].aiReason, sentence);
+  assert.deepEqual(raw.questions[0].evidence, before.questions[0].evidence);
+  assert.equal(raw.questions[0].reason, `waiting: ${sentence}`);
+});
 
 test('questions are grounded in customer text, answers in agent text', () => {
   const c = createDemo(), raw = demoAnalysis(c);

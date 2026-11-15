@@ -1,0 +1,57 @@
+{
+  "scope": "Core browser flows. Refund successful case from mixed run; failed email and later email safeguard are preserved separately. Final email run uses medium for both analyses and skips unchanged explanation/action extras.",
+  "sources": [
+    "browser-final-attempt.json",
+    "browser-email-final.json"
+  ],
+  "cases": [
+    {
+      "name": "refund",
+      "source": "browser-final-attempt.json",
+      "steps": [
+        {
+          "label": "register-and-analyze",
+          "beforeMs": 24274,
+          "afterMs": 17667,
+          "reductionPercent": 27.22
+        },
+        {
+          "label": "append-and-compare",
+          "beforeMs": 26325,
+          "afterMs": 13226,
+          "reductionPercent": 49.76
+        },
+        {
+          "label": "followup-edit-save-copy-reload",
+          "beforeMs": 15909,
+          "afterMs": 19465,
+          "reductionPercent": -22.35
+        }
+      ]
+    },
+    {
+      "name": "email",
+      "source": "browser-email-final.json",
+      "steps": [
+        {
+          "label": "register-and-analyze",
+          "beforeMs": 19046,
+          "afterMs": 23229,
+          "reductionPercent": -21.96
+        },
+        {
+          "label": "append-and-compare",
+          "beforeMs": 30094,
+          "afterMs": 34774,
+          "reductionPercent": -15.55
+        },
+        {
+          "label": "followup-edit-save-copy-reload",
+          "beforeMs": 8410,
+          "afterMs": 8886,
+          "reductionPercent": -5.66
+        }
+      ]
+    }
+  ]
+}

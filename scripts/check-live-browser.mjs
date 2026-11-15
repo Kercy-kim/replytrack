@@ -1,6 +1,8 @@
 // Opt-in real OpenAI + Chrome test. Synthetic input, isolated memory DB, no mailbox or user records.
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { createApp } from '../server.mjs';
 import { CaseStore } from '../src/store.mjs';
@@ -12,14 +14,19 @@ const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.REPLYTRACK_PLAYWRIGHT_MODULE || 'playwright');
 const dir = `.artifacts/live-browser/${new Date().toISOString().replace(/[:.]/g, '-')}`;
 await mkdir(dir, { recursive: true });
-const report = { at: new Date().toISOString(), passed: false, cases: [], calls: [], browserErrors: [] };
+const analysisEffort = process.argv.find(arg => arg.startsWith('--analysis-effort='))?.split('=')[1] || 'product';
+const coreOnly = process.argv.includes('--core-only');
+assert(['product', 'low', 'medium'].includes(analysisEffort), 'Use product, low or medium analysis effort.');
+const report = { at: new Date().toISOString(), analysisEffort, coreOnly, passed: false, cases: [], calls: [], browserErrors: [],
+  hashes: Object.fromEntries(['src/service.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/openai.mjs', 'public/app.js', 'scripts/check-live-browser.mjs'].map(f => [f, createHash('sha256').update(readFileSync(f)).digest('hex')])) };
 const save = () => writeFile(`${dir}/result.json`, JSON.stringify(report, null, 2));
 class MeasuredOpenAI extends OpenAIClient {
   async structured(args) {
+    if (analysisEffort !== 'product' && args.name === 'replytrack_analysis' && !args.data.revisionFeedback) args = { ...args, reasoningEffort: analysisEffort };
     const started = Date.now();
     try {
       const result = await super.structured(args);
-      report.calls.push({ name: args.name, model: result.model, elapsedMs: Date.now() - started, tokens: result.usage?.total_tokens || 0 });
+      report.calls.push({ name: args.name, reasoningEffort: args.reasoningEffort || 'low', model: result.model, elapsedMs: Date.now() - started, tokens: result.usage?.total_tokens || 0, usage: result.usage });
       console.log(`${args.name}: ${Date.now() - started} ms`);
       await save(); return result;
     } catch (error) {
@@ -87,9 +94,10 @@ try {
       await page.locator('#review-form button[type=submit]').click(); await idle();
       const c = current(); result.initial = c; grounded(c);
       assert.deepEqual(c.questions.map(q => q.status).sort(), fixture.initial);
+      if (fixture.channel === 'email') assert(c.questions.every(q => /[가-힣]/.test(q.title)), 'Email question titles must be understandable in Korean.');
       await page.screenshot({ path: `${dir}/${fixture.name}-initial.png`, fullPage: true });
     });
-    if (fixture.channel === 'email') await step('korean-explanation-and-actions', async () => {
+    if (fixture.channel === 'email' && !coreOnly) await step('korean-explanation-and-actions', async () => {
       await page.locator('[data-action=explain-email]').click(); await idle();
       assert.match(await page.locator('.email-explanation').innerText(), /비밀번호/);
       await page.locator('[data-action=read-actions]').click(); await idle();
@@ -115,10 +123,11 @@ try {
       await idle(); const c = current(); result.updated = c; grounded(c);
       assert.deepEqual(c.questions.map(q => q.id).sort(), result.initial.questions.map(q => q.id).sort());
       assert.deepEqual(c.questions.map(q => q.status).sort(), fixture.updated);
+      if (fixture.channel === 'email') assert(c.questions.every(q => /[가-힣]/.test(q.title)));
       assert(c.analysis.comparison.questions.some(q => q.before?.status !== q.after.status));
       assert(await page.locator('#analysis-changes').isVisible());
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-      if (fixture.channel === 'email') assert.match(await page.locator('.email-explanation').innerText(), /이전 답변 기준/);
+      if (fixture.channel === 'email' && !coreOnly) assert.match(await page.locator('.email-explanation').innerText(), /이전 답변 기준/);
       await page.screenshot({ path: `${dir}/${fixture.name}-updated-mobile.png`, fullPage: true });
     });
     await step('followup-edit-save-copy-reload', async () => {

@@ -21,6 +21,7 @@ test('missing completion review preserves raw output and user confirmation, vali
   const store = new CaseStore(':memory:'); t.after(() => store.close()); const calls = [], raw = [];
   const svc = new ReplyTrack(store, { async structured(request) {
     calls.push(request.name);
+    assert.equal(request.reasoningEffort, request.name === 'replytrack_analysis' ? 'low' : 'medium');
     const data = request.name === 'replytrack_analysis' ? initial(request.data) : { promises: [completion(request.data)] };
     raw.push(data); return { data, model: 'fixture', usage: { input_tokens: 10, output_tokens: 5, total_tokens: 15 } };
   } });
