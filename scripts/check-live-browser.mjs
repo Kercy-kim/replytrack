@@ -157,6 +157,12 @@ try {
       await idle(); const c = current(); result.updated = c; grounded(c);
       assert.deepEqual(c.questions.map(q => q.id).sort(), result.initial.questions.map(q => q.id).sort());
       assert.deepEqual(c.questions.map(q => q.status).sort(), fixture.updated);
+      if (fixture.channel === 'email') {
+        assert.equal(c.promises.length, 1, 'General review duration must not create an extra promise.');
+        assert.equal(c.promises[0].state, 'reported');
+        assert.equal(c.promises[0].dueText, '');
+        assert.match(c.promises[0].evidence.quote, /received your transaction ID/);
+      }
       if (fixture.channel === 'email') assert(c.questions.every(q => /[가-힣]/.test(q.title)));
       assert(c.analysis.comparison.questions.some(q => q.before?.status !== q.after.status));
       assert(await page.locator('#analysis-changes').isVisible());

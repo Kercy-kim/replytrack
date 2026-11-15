@@ -1,0 +1,20 @@
+{
+  "source": "evals/results/registration-latency/browser-after.json",
+  "sourceSha256": "3c9abe76e7de3a660db899eea389115392aebf5f1ca620d781d48ae85bbd084a",
+  "functionalChecksPassed": true,
+  "semanticChecksPassed": false,
+  "issue": "Email update invented an extra review-duration promise; only the receipt report should remain.",
+  "observedPromises": [
+    {
+      "title": "transaction ID 접수 통보",
+      "state": "reported",
+      "quote": "We received your transaction ID."
+    },
+    {
+      "title": "검토 소요 안내",
+      "state": "promised",
+      "quote": "The review will take 3 business days."
+    }
+  ],
+  "action": "Add duration-promise semantic repair, strengthen browser expectations, run final live recheck."
+}

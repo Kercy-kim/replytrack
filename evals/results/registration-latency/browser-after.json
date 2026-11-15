@@ -1,0 +1,2809 @@
+{
+  "at": "2026-11-15T16:00:30.339Z",
+  "analysisEffort": "product",
+  "coreOnly": true,
+  "passed": true,
+  "cases": [
+    {
+      "name": "refund",
+      "steps": [
+        {
+          "label": "register-and-analyze",
+          "elapsedMs": 17360
+        },
+        {
+          "label": "append-and-compare",
+          "elapsedMs": 14323
+        },
+        {
+          "label": "followup-edit-save-copy-reload",
+          "elapsedMs": 10843
+        }
+      ],
+      "passed": true,
+      "initialExtractedRoles": [
+        "customer",
+        "agent"
+      ],
+      "initial": {
+        "id": "28e52114-6a44-45a2-b841-3af2ae5cfb65",
+        "title": "가상 환불 문의 — 실제 API 웹 검증",
+        "company": "가상 테스트 상점",
+        "mode": "live",
+        "createdAt": "2026-11-15T16:00:38.200Z",
+        "updatedAt": "2026-11-15T16:00:47.744Z",
+        "messages": [
+          {
+            "id": "0b5f203e-2451-45da-b29a-057992da3004",
+            "role": "customer",
+            "text": "반품한 이어폰의 환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+            "role": "agent",
+            "text": "환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "2c93b4e2-f311-4500-b3bf-cb7302e4e10c",
+            "title": "환불 금액",
+            "source": {
+              "messageId": "0b5f203e-2451-45da-b29a-057992da3004",
+              "quote": "반품한 이어폰의 환불 금액은 얼마인가요?"
+            },
+            "status": "answered",
+            "reason": "79,000원이라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+                "quote": "환불 금액은 79,000원입니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "79,000원이라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "b5f67310-abcf-418d-9069-104fe17a6027",
+            "title": "환불 결제수단",
+            "source": {
+              "messageId": "0b5f203e-2451-45da-b29a-057992da3004",
+              "quote": "어떤 결제수단으로 환불되나요?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "evidence": [],
+            "followUp": "",
+            "aiStatus": "unanswered",
+            "aiReason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "c9307f91-9616-4de1-90c0-305bf3fa9561",
+            "title": "환불 예정일(안내 시점)",
+            "source": {
+              "messageId": "0b5f203e-2451-45da-b29a-057992da3004",
+              "quote": "환불 예정일은 언제인가요?"
+            },
+            "status": "waiting",
+            "reason": "환불 예정일을 확인해 안내하겠다는 약속을 받았습니다.",
+            "evidence": [
+              {
+                "messageId": "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+                "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "waiting",
+            "aiReason": "환불 예정일을 확인해 안내하겠다는 약속을 받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "716825d3-0adf-45aa-93b2-a2e49800d40f",
+            "title": "환불 예정일 확인 후 안내",
+            "questionIds": [
+              "c9307f91-9616-4de1-90c0-305bf3fa9561"
+            ],
+            "evidence": {
+              "messageId": "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+              "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+            },
+            "dueText": "11월 18일까지 안내하겠습니다.",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "a2fc9d8d-8cd9-4c9f-ab75-15206b307225",
+            "at": "2026-11-15T16:00:47.744Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T16:00:47.744Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "ad1c5401-01b1-4c6f-9dc6-67be0b0e417a",
+            "at": "2026-11-15T16:00:38.200Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "환불 금액은 안내받았고, 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠다는 약속을 받았습니다. 환불 수단 안내는 없습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 4821,
+            "output_tokens": 915,
+            "total_tokens": 5736,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 512
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T16:00:47.744Z",
+          "comparison": {
+            "at": "2026-11-15T16:00:47.744Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "version": 2
+      },
+      "overviews": [
+        {
+          "stage": "initial",
+          "expected": {
+            "followups": 1,
+            "waitingAnswers": 1,
+            "waitingPromises": 1,
+            "confirmations": 0,
+            "requests": null
+          },
+          "cards": [
+            "1개 · 답변이 부족하거나 확인이 필요해요",
+            "답변 대기 질문 1개 · 처리 약속 1개",
+            "업체 요청은 별도로 확인할 수 있어요"
+          ]
+        },
+        {
+          "stage": "updated",
+          "expected": {
+            "followups": 0,
+            "waitingAnswers": 1,
+            "waitingPromises": 1,
+            "confirmations": 0,
+            "requests": null
+          },
+          "cards": [
+            "추가로 확인할 질문 없음",
+            "답변 대기 질문 1개 · 처리 약속 1개",
+            "업체 요청은 별도로 확인할 수 있어요"
+          ]
+        }
+      ],
+      "updated": {
+        "id": "28e52114-6a44-45a2-b841-3af2ae5cfb65",
+        "title": "가상 환불 문의 — 실제 API 웹 검증",
+        "company": "가상 테스트 상점",
+        "mode": "live",
+        "createdAt": "2026-11-15T16:00:38.200Z",
+        "updatedAt": "2026-11-15T16:01:01.851Z",
+        "messages": [
+          {
+            "id": "0b5f203e-2451-45da-b29a-057992da3004",
+            "role": "customer",
+            "text": "반품한 이어폰의 환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+            "role": "agent",
+            "text": "환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          },
+          {
+            "id": "275cd456-a408-4e31-9641-742f6b881144",
+            "role": "agent",
+            "text": "환불은 원래 결제하신 카드로 진행됩니다. 환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "2c93b4e2-f311-4500-b3bf-cb7302e4e10c",
+            "title": "환불 금액",
+            "source": {
+              "messageId": "0b5f203e-2451-45da-b29a-057992da3004",
+              "quote": "반품한 이어폰의 환불 금액은 얼마인가요?"
+            },
+            "status": "answered",
+            "reason": "환불 금액은 79,000원이라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+                "quote": "환불 금액은 79,000원입니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "환불 금액은 79,000원이라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "b5f67310-abcf-418d-9069-104fe17a6027",
+            "title": "환불 결제수단",
+            "source": {
+              "messageId": "0b5f203e-2451-45da-b29a-057992da3004",
+              "quote": "어떤 결제수단으로 환불되나요?"
+            },
+            "status": "answered",
+            "reason": "환불은 원래 결제하신 카드로 진행된다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "275cd456-a408-4e31-9641-742f6b881144",
+                "quote": "환불은 원래 결제하신 카드로 진행됩니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "환불은 원래 결제하신 카드로 진행된다고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "c9307f91-9616-4de1-90c0-305bf3fa9561",
+            "title": "환불 예정일(안내 시점)",
+            "source": {
+              "messageId": "0b5f203e-2451-45da-b29a-057992da3004",
+              "quote": "환불 예정일은 언제인가요?"
+            },
+            "status": "waiting",
+            "reason": "환불 예정일을 확인해 11월 18일까지 안내하겠다는 약속을 받았습니다.",
+            "evidence": [
+              {
+                "messageId": "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+                "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+              },
+              {
+                "messageId": "275cd456-a408-4e31-9641-742f6b881144",
+                "quote": "환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "waiting",
+            "aiReason": "환불 예정일을 확인해 11월 18일까지 안내하겠다는 약속을 받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "716825d3-0adf-45aa-93b2-a2e49800d40f",
+            "title": "환불 예정일 확인 후 안내",
+            "questionIds": [
+              "c9307f91-9616-4de1-90c0-305bf3fa9561"
+            ],
+            "evidence": {
+              "messageId": "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+              "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+            },
+            "dueText": "11월 18일까지 안내하겠습니다.",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "e719fcde-1fd6-4e5d-8351-26cbad6e5244",
+            "at": "2026-11-15T16:01:01.851Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "환불 결제수단: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T16:01:01.851Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "275cd456-a408-4e31-9641-742f6b881144"
+              ],
+              "questions": [
+                {
+                  "id": "b5f67310-abcf-418d-9069-104fe17a6027",
+                  "title": "환불 결제수단",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "275cd456-a408-4e31-9641-742f6b881144"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "f5898d5d-f09b-4932-8f97-c36209ee8b28",
+            "at": "2026-11-15T16:00:48.055Z",
+            "type": "message",
+            "label": "고객센터의 새 답변을 저장했어요",
+            "details": "분석 전에도 원문은 보존됩니다."
+          },
+          {
+            "id": "a2fc9d8d-8cd9-4c9f-ab75-15206b307225",
+            "at": "2026-11-15T16:00:47.744Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T16:00:47.744Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "ad1c5401-01b1-4c6f-9dc6-67be0b0e417a",
+            "at": "2026-11-15T16:00:38.200Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "환불 금액과 환불 결제수단은 안내받았고, 환불 예정일은 담당부서 확인 후 11월 18일까지 안내하겠다는 약속을 받았습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 5288,
+            "output_tokens": 1388,
+            "total_tokens": 6676,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 896
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T16:01:01.851Z",
+          "comparison": {
+            "at": "2026-11-15T16:01:01.851Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "275cd456-a408-4e31-9641-742f6b881144"
+            ],
+            "questions": [
+              {
+                "id": "b5f67310-abcf-418d-9069-104fe17a6027",
+                "title": "환불 결제수단",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "275cd456-a408-4e31-9641-742f6b881144"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "version": 4
+      },
+      "generated": {
+        "id": "28e52114-6a44-45a2-b841-3af2ae5cfb65",
+        "title": "가상 환불 문의 — 실제 API 웹 검증",
+        "company": "가상 테스트 상점",
+        "mode": "live",
+        "createdAt": "2026-11-15T16:00:38.200Z",
+        "updatedAt": "2026-11-15T16:01:12.742Z",
+        "messages": [
+          {
+            "id": "0b5f203e-2451-45da-b29a-057992da3004",
+            "role": "customer",
+            "text": "반품한 이어폰의 환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+            "role": "agent",
+            "text": "환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          },
+          {
+            "id": "275cd456-a408-4e31-9641-742f6b881144",
+            "role": "agent",
+            "text": "환불은 원래 결제하신 카드로 진행됩니다. 환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "2c93b4e2-f311-4500-b3bf-cb7302e4e10c",
+            "title": "환불 금액",
+            "source": {
+              "messageId": "0b5f203e-2451-45da-b29a-057992da3004",
+              "quote": "반품한 이어폰의 환불 금액은 얼마인가요?"
+            },
+            "status": "answered",
+            "reason": "환불 금액은 79,000원이라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+                "quote": "환불 금액은 79,000원입니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "환불 금액은 79,000원이라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "b5f67310-abcf-418d-9069-104fe17a6027",
+            "title": "환불 결제수단",
+            "source": {
+              "messageId": "0b5f203e-2451-45da-b29a-057992da3004",
+              "quote": "어떤 결제수단으로 환불되나요?"
+            },
+            "status": "answered",
+            "reason": "환불은 원래 결제하신 카드로 진행된다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "275cd456-a408-4e31-9641-742f6b881144",
+                "quote": "환불은 원래 결제하신 카드로 진행됩니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "환불은 원래 결제하신 카드로 진행된다고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "c9307f91-9616-4de1-90c0-305bf3fa9561",
+            "title": "환불 예정일(안내 시점)",
+            "source": {
+              "messageId": "0b5f203e-2451-45da-b29a-057992da3004",
+              "quote": "환불 예정일은 언제인가요?"
+            },
+            "status": "waiting",
+            "reason": "환불 예정일을 확인해 11월 18일까지 안내하겠다는 약속을 받았습니다.",
+            "evidence": [
+              {
+                "messageId": "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+                "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+              },
+              {
+                "messageId": "275cd456-a408-4e31-9641-742f6b881144",
+                "quote": "환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "waiting",
+            "aiReason": "환불 예정일을 확인해 11월 18일까지 안내하겠다는 약속을 받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "716825d3-0adf-45aa-93b2-a2e49800d40f",
+            "title": "환불 예정일 확인 후 안내",
+            "questionIds": [
+              "c9307f91-9616-4de1-90c0-305bf3fa9561"
+            ],
+            "evidence": {
+              "messageId": "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+              "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+            },
+            "dueText": "11월 18일까지 안내하겠습니다.",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "dfa617c9-6102-4a0f-a754-75ecb93d3c53",
+            "at": "2026-11-15T16:01:12.742Z",
+            "type": "draft",
+            "label": "남은 질문으로 재문의 초안을 만들었어요",
+            "details": ""
+          },
+          {
+            "id": "e719fcde-1fd6-4e5d-8351-26cbad6e5244",
+            "at": "2026-11-15T16:01:01.851Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "환불 결제수단: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T16:01:01.851Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "275cd456-a408-4e31-9641-742f6b881144"
+              ],
+              "questions": [
+                {
+                  "id": "b5f67310-abcf-418d-9069-104fe17a6027",
+                  "title": "환불 결제수단",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "275cd456-a408-4e31-9641-742f6b881144"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "f5898d5d-f09b-4932-8f97-c36209ee8b28",
+            "at": "2026-11-15T16:00:48.055Z",
+            "type": "message",
+            "label": "고객센터의 새 답변을 저장했어요",
+            "details": "분석 전에도 원문은 보존됩니다."
+          },
+          {
+            "id": "a2fc9d8d-8cd9-4c9f-ab75-15206b307225",
+            "at": "2026-11-15T16:00:47.744Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T16:00:47.744Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "ad1c5401-01b1-4c6f-9dc6-67be0b0e417a",
+            "at": "2026-11-15T16:00:38.200Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "환불 금액과 환불 결제수단은 안내받았고, 환불 예정일은 담당부서 확인 후 11월 18일까지 안내하겠다는 약속을 받았습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {
+          "followup": {
+            "body": "환불 예정일(안내 시점)은 언제인지 알려주시기 바랍니다.",
+            "sourceMessageIds": [
+              "0b5f203e-2451-45da-b29a-057992da3004",
+              "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+              "275cd456-a408-4e31-9641-742f6b881144"
+            ],
+            "questionIds": [
+              "c9307f91-9616-4de1-90c0-305bf3fa9561"
+            ],
+            "language": "ko",
+            "at": "2026-11-15T16:01:12.742Z",
+            "model": "gpt-5-mini-2025-08-07",
+            "review": {
+              "model": "gpt-5-mini-2025-08-07",
+              "attempts": 1
+            }
+          }
+        },
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 5288,
+            "output_tokens": 1388,
+            "total_tokens": 6676,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 896
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T16:01:01.851Z",
+          "comparison": {
+            "at": "2026-11-15T16:01:01.851Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "275cd456-a408-4e31-9641-742f6b881144"
+            ],
+            "questions": [
+              {
+                "id": "b5f67310-abcf-418d-9069-104fe17a6027",
+                "title": "환불 결제수단",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "275cd456-a408-4e31-9641-742f6b881144"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "version": 5
+      },
+      "final": {
+        "id": "28e52114-6a44-45a2-b841-3af2ae5cfb65",
+        "title": "가상 환불 문의 — 실제 API 웹 검증",
+        "company": "가상 테스트 상점",
+        "mode": "live",
+        "createdAt": "2026-11-15T16:00:38.200Z",
+        "updatedAt": "2026-11-15T16:01:12.967Z",
+        "messages": [
+          {
+            "id": "0b5f203e-2451-45da-b29a-057992da3004",
+            "role": "customer",
+            "text": "반품한 이어폰의 환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+            "role": "agent",
+            "text": "환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          },
+          {
+            "id": "275cd456-a408-4e31-9641-742f6b881144",
+            "role": "agent",
+            "text": "환불은 원래 결제하신 카드로 진행됩니다. 환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "2c93b4e2-f311-4500-b3bf-cb7302e4e10c",
+            "title": "환불 금액",
+            "source": {
+              "messageId": "0b5f203e-2451-45da-b29a-057992da3004",
+              "quote": "반품한 이어폰의 환불 금액은 얼마인가요?"
+            },
+            "status": "answered",
+            "reason": "환불 금액은 79,000원이라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+                "quote": "환불 금액은 79,000원입니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "환불 금액은 79,000원이라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "b5f67310-abcf-418d-9069-104fe17a6027",
+            "title": "환불 결제수단",
+            "source": {
+              "messageId": "0b5f203e-2451-45da-b29a-057992da3004",
+              "quote": "어떤 결제수단으로 환불되나요?"
+            },
+            "status": "answered",
+            "reason": "환불은 원래 결제하신 카드로 진행된다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "275cd456-a408-4e31-9641-742f6b881144",
+                "quote": "환불은 원래 결제하신 카드로 진행됩니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "환불은 원래 결제하신 카드로 진행된다고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "c9307f91-9616-4de1-90c0-305bf3fa9561",
+            "title": "환불 예정일(안내 시점)",
+            "source": {
+              "messageId": "0b5f203e-2451-45da-b29a-057992da3004",
+              "quote": "환불 예정일은 언제인가요?"
+            },
+            "status": "waiting",
+            "reason": "환불 예정일을 확인해 11월 18일까지 안내하겠다는 약속을 받았습니다.",
+            "evidence": [
+              {
+                "messageId": "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+                "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+              },
+              {
+                "messageId": "275cd456-a408-4e31-9641-742f6b881144",
+                "quote": "환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "waiting",
+            "aiReason": "환불 예정일을 확인해 11월 18일까지 안내하겠다는 약속을 받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "716825d3-0adf-45aa-93b2-a2e49800d40f",
+            "title": "환불 예정일 확인 후 안내",
+            "questionIds": [
+              "c9307f91-9616-4de1-90c0-305bf3fa9561"
+            ],
+            "evidence": {
+              "messageId": "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+              "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+            },
+            "dueText": "11월 18일까지 안내하겠습니다.",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "84559e24-c67e-4882-bf3b-28342a47ee01",
+            "at": "2026-11-15T16:01:12.967Z",
+            "type": "draft",
+            "label": "편집한 재문의 초안을 저장했어요",
+            "details": ""
+          },
+          {
+            "id": "dfa617c9-6102-4a0f-a754-75ecb93d3c53",
+            "at": "2026-11-15T16:01:12.742Z",
+            "type": "draft",
+            "label": "남은 질문으로 재문의 초안을 만들었어요",
+            "details": ""
+          },
+          {
+            "id": "e719fcde-1fd6-4e5d-8351-26cbad6e5244",
+            "at": "2026-11-15T16:01:01.851Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "환불 결제수단: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T16:01:01.851Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "275cd456-a408-4e31-9641-742f6b881144"
+              ],
+              "questions": [
+                {
+                  "id": "b5f67310-abcf-418d-9069-104fe17a6027",
+                  "title": "환불 결제수단",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "275cd456-a408-4e31-9641-742f6b881144"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "f5898d5d-f09b-4932-8f97-c36209ee8b28",
+            "at": "2026-11-15T16:00:48.055Z",
+            "type": "message",
+            "label": "고객센터의 새 답변을 저장했어요",
+            "details": "분석 전에도 원문은 보존됩니다."
+          },
+          {
+            "id": "a2fc9d8d-8cd9-4c9f-ab75-15206b307225",
+            "at": "2026-11-15T16:00:47.744Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T16:00:47.744Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "ad1c5401-01b1-4c6f-9dc6-67be0b0e417a",
+            "at": "2026-11-15T16:00:38.200Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "환불 금액과 환불 결제수단은 안내받았고, 환불 예정일은 담당부서 확인 후 11월 18일까지 안내하겠다는 약속을 받았습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {
+          "followup": {
+            "body": "환불 예정일(안내 시점)은 언제인지 알려주시기 바랍니다.",
+            "sourceMessageIds": [
+              "0b5f203e-2451-45da-b29a-057992da3004",
+              "e4354a33-c87d-4e16-bb2b-3eb00e751321",
+              "275cd456-a408-4e31-9641-742f6b881144"
+            ],
+            "questionIds": [
+              "c9307f91-9616-4de1-90c0-305bf3fa9561"
+            ],
+            "language": "ko",
+            "at": "2026-11-15T16:01:12.742Z",
+            "model": "gpt-5-mini-2025-08-07",
+            "review": {
+              "model": "gpt-5-mini-2025-08-07",
+              "attempts": 1
+            },
+            "editedBody": "환불 예정일(안내 시점)은 언제인지 알려주시기 바랍니다.\n확인 부탁드립니다.",
+            "editedAt": "2026-11-15T16:01:12.966Z"
+          }
+        },
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 5288,
+            "output_tokens": 1388,
+            "total_tokens": 6676,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 896
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T16:01:01.851Z",
+          "comparison": {
+            "at": "2026-11-15T16:01:01.851Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "275cd456-a408-4e31-9641-742f6b881144"
+            ],
+            "questions": [
+              {
+                "id": "b5f67310-abcf-418d-9069-104fe17a6027",
+                "title": "환불 결제수단",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "275cd456-a408-4e31-9641-742f6b881144"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "version": 6
+      }
+    },
+    {
+      "name": "email",
+      "steps": [
+        {
+          "label": "register-and-analyze",
+          "elapsedMs": 22616
+        },
+        {
+          "label": "append-and-compare",
+          "elapsedMs": 20238
+        },
+        {
+          "label": "followup-edit-save-copy-reload",
+          "elapsedMs": 8362
+        }
+      ],
+      "passed": true,
+      "initialExtractedRoles": [
+        "customer",
+        "agent"
+      ],
+      "initial": {
+        "id": "4d668d72-a0af-410e-8b10-b3bf13995b00",
+        "title": "가상 계정 복구 — 실제 API 웹 검증",
+        "company": "Example Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T16:01:18.001Z",
+        "updatedAt": "2026-11-15T16:01:35.570Z",
+        "messages": [
+          {
+            "id": "beb30fb9-c070-47e1-93c3-ca9ddfe0550b",
+            "role": "customer",
+            "text": "From: me@example.test\nWhat documents do I need to recover my account? How long will the review take? What is my case reference number?",
+            "sentAt": null
+          },
+          {
+            "id": "986f56aa-e09a-44a3-a301-6bc0f994657e",
+            "role": "agent",
+            "text": "From: support@example.test\nPlease provide the transaction ID from your purchase receipt. Do not send your password or verification codes.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "370db586-6cc9-40d4-bfee-a65e1af27e4a",
+            "title": "계정 복구에 필요한 서류",
+            "source": {
+              "messageId": "beb30fb9-c070-47e1-93c3-ca9ddfe0550b",
+              "quote": "What documents do I need to recover my account?"
+            },
+            "status": "answered",
+            "reason": "구매 영수증의 거래 ID를 제출하라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "986f56aa-e09a-44a3-a301-6bc0f994657e",
+                "quote": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "구매 영수증의 거래 ID를 제출하라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "504c3173-10b5-44ac-aff7-fcfecb807f4c",
+            "title": "검토 소요 기간",
+            "source": {
+              "messageId": "beb30fb9-c070-47e1-93c3-ca9ddfe0550b",
+              "quote": "How long will the review take?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "evidence": [],
+            "followUp": "검토 소요 기간을 알려주세요.",
+            "aiStatus": "unanswered",
+            "aiReason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "20d11b52-51a8-40fe-af81-3cb993050dc5",
+            "title": "사건 참조 번호",
+            "source": {
+              "messageId": "beb30fb9-c070-47e1-93c3-ca9ddfe0550b",
+              "quote": "What is my case reference number?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "evidence": [],
+            "followUp": "사건 참조 번호를 알려주세요.",
+            "aiStatus": "unanswered",
+            "aiReason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "1d047f18-f253-43c0-8a26-88626a645c23",
+            "at": "2026-11-15T16:01:35.570Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 0개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T16:01:35.570Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "0921fb95-3a7e-4a32-a338-687adb51a9e8",
+            "at": "2026-11-15T16:01:18.001Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객은 계정 복구에 필요한 서류·검토 기간·사건 참조번호를 문의했고, 안내는 구매 영수증의 거래 ID 제출 요청뿐 있었습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 5177,
+            "output_tokens": 1831,
+            "total_tokens": 7008,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 4864
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1472
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T16:01:35.570Z",
+          "comparison": {
+            "at": "2026-11-15T16:01:35.570Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "overviews": [
+        {
+          "stage": "initial",
+          "expected": {
+            "followups": 2,
+            "waitingAnswers": 0,
+            "waitingPromises": 0,
+            "confirmations": 0,
+            "requests": null
+          },
+          "cards": [
+            "2개 · 답변이 부족하거나 확인이 필요해요",
+            "기록된 대기 항목 없음",
+            "업체 요청은 별도로 확인할 수 있어요"
+          ]
+        },
+        {
+          "stage": "updated",
+          "expected": {
+            "followups": 1,
+            "waitingAnswers": 0,
+            "waitingPromises": 1,
+            "confirmations": 1,
+            "requests": null
+          },
+          "cards": [
+            "1개 · 답변이 부족하거나 확인이 필요해요",
+            "처리 약속 1개",
+            "업체 요청은 별도로 확인할 수 있어요실제 처리 결과 확인 1개"
+          ]
+        }
+      ],
+      "replyExtractedRole": "agent",
+      "updated": {
+        "id": "4d668d72-a0af-410e-8b10-b3bf13995b00",
+        "title": "가상 계정 복구 — 실제 API 웹 검증",
+        "company": "Example Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T16:01:18.001Z",
+        "updatedAt": "2026-11-15T16:01:55.689Z",
+        "messages": [
+          {
+            "id": "beb30fb9-c070-47e1-93c3-ca9ddfe0550b",
+            "role": "customer",
+            "text": "From: me@example.test\nWhat documents do I need to recover my account? How long will the review take? What is my case reference number?",
+            "sentAt": null
+          },
+          {
+            "id": "986f56aa-e09a-44a3-a301-6bc0f994657e",
+            "role": "agent",
+            "text": "From: support@example.test\nPlease provide the transaction ID from your purchase receipt. Do not send your password or verification codes.",
+            "sentAt": null
+          },
+          {
+            "id": "05cbf000-da0f-490b-9b18-e778bfa0db1c",
+            "role": "agent",
+            "text": "We received your transaction ID. The review will take 3 business days. Your account has not been restored yet.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "370db586-6cc9-40d4-bfee-a65e1af27e4a",
+            "title": "계정 복구에 필요한 서류",
+            "source": {
+              "messageId": "beb30fb9-c070-47e1-93c3-ca9ddfe0550b",
+              "quote": "What documents do I need to recover my account?"
+            },
+            "status": "answered",
+            "reason": "거래 영수증의 transaction ID를 제공하라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "986f56aa-e09a-44a3-a301-6bc0f994657e",
+                "quote": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "거래 영수증의 transaction ID를 제공하라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "504c3173-10b5-44ac-aff7-fcfecb807f4c",
+            "title": "검토 소요 기간",
+            "source": {
+              "messageId": "beb30fb9-c070-47e1-93c3-ca9ddfe0550b",
+              "quote": "How long will the review take?"
+            },
+            "status": "answered",
+            "reason": "검토가 3 business days 걸린다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "05cbf000-da0f-490b-9b18-e778bfa0db1c",
+                "quote": "The review will take 3 business days."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "검토가 3 business days 걸린다고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "20d11b52-51a8-40fe-af81-3cb993050dc5",
+            "title": "사건 참조 번호",
+            "source": {
+              "messageId": "beb30fb9-c070-47e1-93c3-ca9ddfe0550b",
+              "quote": "What is my case reference number?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "evidence": [],
+            "followUp": "",
+            "aiStatus": "unanswered",
+            "aiReason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "245ffd2d-951c-498d-8882-7485ac6d92d4",
+            "title": "transaction ID 접수 통보",
+            "questionIds": [
+              "370db586-6cc9-40d4-bfee-a65e1af27e4a"
+            ],
+            "evidence": {
+              "messageId": "05cbf000-da0f-490b-9b18-e778bfa0db1c",
+              "quote": "We received your transaction ID."
+            },
+            "dueText": "",
+            "dueAt": null,
+            "state": "reported",
+            "confirmedAt": null
+          },
+          {
+            "id": "ea22af95-e4d2-40cb-9867-ea999eb5b95a",
+            "title": "검토 소요 안내",
+            "questionIds": [
+              "504c3173-10b5-44ac-aff7-fcfecb807f4c"
+            ],
+            "evidence": {
+              "messageId": "05cbf000-da0f-490b-9b18-e778bfa0db1c",
+              "quote": "The review will take 3 business days."
+            },
+            "dueText": "3 business days",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "dc170231-4e28-49ee-9cc0-db3190f3a111",
+            "at": "2026-11-15T16:01:55.689Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "검토 소요 기간: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T16:01:55.689Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+              ],
+              "questions": [
+                {
+                  "id": "504c3173-10b5-44ac-aff7-fcfecb807f4c",
+                  "title": "검토 소요 기간",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                  ]
+                }
+              ],
+              "promises": [
+                {
+                  "id": "245ffd2d-951c-498d-8882-7485ac6d92d4",
+                  "title": "transaction ID 접수 통보",
+                  "before": null,
+                  "after": {
+                    "title": "transaction ID 접수 통보",
+                    "state": "reported",
+                    "dueAt": null,
+                    "dueText": "",
+                    "confirmedAt": null
+                  },
+                  "fields": [
+                    "added"
+                  ],
+                  "evidenceMessageIds": [
+                    "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                  ]
+                },
+                {
+                  "id": "ea22af95-e4d2-40cb-9867-ea999eb5b95a",
+                  "title": "검토 소요 안내",
+                  "before": null,
+                  "after": {
+                    "title": "검토 소요 안내",
+                    "state": "promised",
+                    "dueAt": null,
+                    "dueText": "3 business days",
+                    "confirmedAt": null
+                  },
+                  "fields": [
+                    "added"
+                  ],
+                  "evidenceMessageIds": [
+                    "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "851e3893-4ea7-4e03-a680-b7d60fe2029e",
+            "at": "2026-11-15T16:01:41.779Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "1d047f18-f253-43c0-8a26-88626a645c23",
+            "at": "2026-11-15T16:01:35.570Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 0개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T16:01:35.570Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "0921fb95-3a7e-4a32-a338-687adb51a9e8",
+            "at": "2026-11-15T16:01:18.001Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "기업이 거래 영수증의 transaction ID 제출을 요청했고, 검토 소요 기간은 3 business days로 안내했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 5393,
+            "output_tokens": 1440,
+            "total_tokens": 6833,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 4864
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1088
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T16:01:55.689Z",
+          "comparison": {
+            "at": "2026-11-15T16:01:55.689Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+            ],
+            "questions": [
+              {
+                "id": "504c3173-10b5-44ac-aff7-fcfecb807f4c",
+                "title": "검토 소요 기간",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "245ffd2d-951c-498d-8882-7485ac6d92d4",
+                "title": "transaction ID 접수 통보",
+                "before": null,
+                "after": {
+                  "title": "transaction ID 접수 통보",
+                  "state": "reported",
+                  "dueAt": null,
+                  "dueText": "",
+                  "confirmedAt": null
+                },
+                "fields": [
+                  "added"
+                ],
+                "evidenceMessageIds": [
+                  "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                ]
+              },
+              {
+                "id": "ea22af95-e4d2-40cb-9867-ea999eb5b95a",
+                "title": "검토 소요 안내",
+                "before": null,
+                "after": {
+                  "title": "검토 소요 안내",
+                  "state": "promised",
+                  "dueAt": null,
+                  "dueText": "3 business days",
+                  "confirmedAt": null
+                },
+                "fields": [
+                  "added"
+                ],
+                "evidenceMessageIds": [
+                  "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                ]
+              }
+            ]
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "generated": {
+        "id": "4d668d72-a0af-410e-8b10-b3bf13995b00",
+        "title": "가상 계정 복구 — 실제 API 웹 검증",
+        "company": "Example Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T16:01:18.001Z",
+        "updatedAt": "2026-11-15T16:02:03.853Z",
+        "messages": [
+          {
+            "id": "beb30fb9-c070-47e1-93c3-ca9ddfe0550b",
+            "role": "customer",
+            "text": "From: me@example.test\nWhat documents do I need to recover my account? How long will the review take? What is my case reference number?",
+            "sentAt": null
+          },
+          {
+            "id": "986f56aa-e09a-44a3-a301-6bc0f994657e",
+            "role": "agent",
+            "text": "From: support@example.test\nPlease provide the transaction ID from your purchase receipt. Do not send your password or verification codes.",
+            "sentAt": null
+          },
+          {
+            "id": "05cbf000-da0f-490b-9b18-e778bfa0db1c",
+            "role": "agent",
+            "text": "We received your transaction ID. The review will take 3 business days. Your account has not been restored yet.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "370db586-6cc9-40d4-bfee-a65e1af27e4a",
+            "title": "계정 복구에 필요한 서류",
+            "source": {
+              "messageId": "beb30fb9-c070-47e1-93c3-ca9ddfe0550b",
+              "quote": "What documents do I need to recover my account?"
+            },
+            "status": "answered",
+            "reason": "거래 영수증의 transaction ID를 제공하라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "986f56aa-e09a-44a3-a301-6bc0f994657e",
+                "quote": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "거래 영수증의 transaction ID를 제공하라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "504c3173-10b5-44ac-aff7-fcfecb807f4c",
+            "title": "검토 소요 기간",
+            "source": {
+              "messageId": "beb30fb9-c070-47e1-93c3-ca9ddfe0550b",
+              "quote": "How long will the review take?"
+            },
+            "status": "answered",
+            "reason": "검토가 3 business days 걸린다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "05cbf000-da0f-490b-9b18-e778bfa0db1c",
+                "quote": "The review will take 3 business days."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "검토가 3 business days 걸린다고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "20d11b52-51a8-40fe-af81-3cb993050dc5",
+            "title": "사건 참조 번호",
+            "source": {
+              "messageId": "beb30fb9-c070-47e1-93c3-ca9ddfe0550b",
+              "quote": "What is my case reference number?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "evidence": [],
+            "followUp": "",
+            "aiStatus": "unanswered",
+            "aiReason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "245ffd2d-951c-498d-8882-7485ac6d92d4",
+            "title": "transaction ID 접수 통보",
+            "questionIds": [
+              "370db586-6cc9-40d4-bfee-a65e1af27e4a"
+            ],
+            "evidence": {
+              "messageId": "05cbf000-da0f-490b-9b18-e778bfa0db1c",
+              "quote": "We received your transaction ID."
+            },
+            "dueText": "",
+            "dueAt": null,
+            "state": "reported",
+            "confirmedAt": null
+          },
+          {
+            "id": "ea22af95-e4d2-40cb-9867-ea999eb5b95a",
+            "title": "검토 소요 안내",
+            "questionIds": [
+              "504c3173-10b5-44ac-aff7-fcfecb807f4c"
+            ],
+            "evidence": {
+              "messageId": "05cbf000-da0f-490b-9b18-e778bfa0db1c",
+              "quote": "The review will take 3 business days."
+            },
+            "dueText": "3 business days",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "a7f8e843-1d76-4bdf-9385-e96e6f03b998",
+            "at": "2026-11-15T16:02:03.853Z",
+            "type": "draft",
+            "label": "남은 질문으로 재문의 초안을 만들었어요",
+            "details": ""
+          },
+          {
+            "id": "dc170231-4e28-49ee-9cc0-db3190f3a111",
+            "at": "2026-11-15T16:01:55.689Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "검토 소요 기간: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T16:01:55.689Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+              ],
+              "questions": [
+                {
+                  "id": "504c3173-10b5-44ac-aff7-fcfecb807f4c",
+                  "title": "검토 소요 기간",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                  ]
+                }
+              ],
+              "promises": [
+                {
+                  "id": "245ffd2d-951c-498d-8882-7485ac6d92d4",
+                  "title": "transaction ID 접수 통보",
+                  "before": null,
+                  "after": {
+                    "title": "transaction ID 접수 통보",
+                    "state": "reported",
+                    "dueAt": null,
+                    "dueText": "",
+                    "confirmedAt": null
+                  },
+                  "fields": [
+                    "added"
+                  ],
+                  "evidenceMessageIds": [
+                    "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                  ]
+                },
+                {
+                  "id": "ea22af95-e4d2-40cb-9867-ea999eb5b95a",
+                  "title": "검토 소요 안내",
+                  "before": null,
+                  "after": {
+                    "title": "검토 소요 안내",
+                    "state": "promised",
+                    "dueAt": null,
+                    "dueText": "3 business days",
+                    "confirmedAt": null
+                  },
+                  "fields": [
+                    "added"
+                  ],
+                  "evidenceMessageIds": [
+                    "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "851e3893-4ea7-4e03-a680-b7d60fe2029e",
+            "at": "2026-11-15T16:01:41.779Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "1d047f18-f253-43c0-8a26-88626a645c23",
+            "at": "2026-11-15T16:01:35.570Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 0개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T16:01:35.570Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "0921fb95-3a7e-4a32-a338-687adb51a9e8",
+            "at": "2026-11-15T16:01:18.001Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "기업이 거래 영수증의 transaction ID 제출을 요청했고, 검토 소요 기간은 3 business days로 안내했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {
+          "followup": {
+            "body": "Please provide my case reference number.",
+            "sourceMessageIds": [
+              "beb30fb9-c070-47e1-93c3-ca9ddfe0550b"
+            ],
+            "questionIds": [
+              "20d11b52-51a8-40fe-af81-3cb993050dc5"
+            ],
+            "language": "en",
+            "at": "2026-11-15T16:02:03.853Z",
+            "model": "gpt-5-mini-2025-08-07",
+            "review": {
+              "model": "gpt-5-mini-2025-08-07",
+              "attempts": 1
+            }
+          }
+        },
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 5393,
+            "output_tokens": 1440,
+            "total_tokens": 6833,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 4864
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1088
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T16:01:55.689Z",
+          "comparison": {
+            "at": "2026-11-15T16:01:55.689Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+            ],
+            "questions": [
+              {
+                "id": "504c3173-10b5-44ac-aff7-fcfecb807f4c",
+                "title": "검토 소요 기간",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "245ffd2d-951c-498d-8882-7485ac6d92d4",
+                "title": "transaction ID 접수 통보",
+                "before": null,
+                "after": {
+                  "title": "transaction ID 접수 통보",
+                  "state": "reported",
+                  "dueAt": null,
+                  "dueText": "",
+                  "confirmedAt": null
+                },
+                "fields": [
+                  "added"
+                ],
+                "evidenceMessageIds": [
+                  "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                ]
+              },
+              {
+                "id": "ea22af95-e4d2-40cb-9867-ea999eb5b95a",
+                "title": "검토 소요 안내",
+                "before": null,
+                "after": {
+                  "title": "검토 소요 안내",
+                  "state": "promised",
+                  "dueAt": null,
+                  "dueText": "3 business days",
+                  "confirmedAt": null
+                },
+                "fields": [
+                  "added"
+                ],
+                "evidenceMessageIds": [
+                  "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                ]
+              }
+            ]
+          }
+        },
+        "channel": "email",
+        "version": 5
+      },
+      "final": {
+        "id": "4d668d72-a0af-410e-8b10-b3bf13995b00",
+        "title": "가상 계정 복구 — 실제 API 웹 검증",
+        "company": "Example Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T16:01:18.001Z",
+        "updatedAt": "2026-11-15T16:02:04.157Z",
+        "messages": [
+          {
+            "id": "beb30fb9-c070-47e1-93c3-ca9ddfe0550b",
+            "role": "customer",
+            "text": "From: me@example.test\nWhat documents do I need to recover my account? How long will the review take? What is my case reference number?",
+            "sentAt": null
+          },
+          {
+            "id": "986f56aa-e09a-44a3-a301-6bc0f994657e",
+            "role": "agent",
+            "text": "From: support@example.test\nPlease provide the transaction ID from your purchase receipt. Do not send your password or verification codes.",
+            "sentAt": null
+          },
+          {
+            "id": "05cbf000-da0f-490b-9b18-e778bfa0db1c",
+            "role": "agent",
+            "text": "We received your transaction ID. The review will take 3 business days. Your account has not been restored yet.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "370db586-6cc9-40d4-bfee-a65e1af27e4a",
+            "title": "계정 복구에 필요한 서류",
+            "source": {
+              "messageId": "beb30fb9-c070-47e1-93c3-ca9ddfe0550b",
+              "quote": "What documents do I need to recover my account?"
+            },
+            "status": "answered",
+            "reason": "거래 영수증의 transaction ID를 제공하라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "986f56aa-e09a-44a3-a301-6bc0f994657e",
+                "quote": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "거래 영수증의 transaction ID를 제공하라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "504c3173-10b5-44ac-aff7-fcfecb807f4c",
+            "title": "검토 소요 기간",
+            "source": {
+              "messageId": "beb30fb9-c070-47e1-93c3-ca9ddfe0550b",
+              "quote": "How long will the review take?"
+            },
+            "status": "answered",
+            "reason": "검토가 3 business days 걸린다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "05cbf000-da0f-490b-9b18-e778bfa0db1c",
+                "quote": "The review will take 3 business days."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "검토가 3 business days 걸린다고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "20d11b52-51a8-40fe-af81-3cb993050dc5",
+            "title": "사건 참조 번호",
+            "source": {
+              "messageId": "beb30fb9-c070-47e1-93c3-ca9ddfe0550b",
+              "quote": "What is my case reference number?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "evidence": [],
+            "followUp": "",
+            "aiStatus": "unanswered",
+            "aiReason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "245ffd2d-951c-498d-8882-7485ac6d92d4",
+            "title": "transaction ID 접수 통보",
+            "questionIds": [
+              "370db586-6cc9-40d4-bfee-a65e1af27e4a"
+            ],
+            "evidence": {
+              "messageId": "05cbf000-da0f-490b-9b18-e778bfa0db1c",
+              "quote": "We received your transaction ID."
+            },
+            "dueText": "",
+            "dueAt": null,
+            "state": "reported",
+            "confirmedAt": null
+          },
+          {
+            "id": "ea22af95-e4d2-40cb-9867-ea999eb5b95a",
+            "title": "검토 소요 안내",
+            "questionIds": [
+              "504c3173-10b5-44ac-aff7-fcfecb807f4c"
+            ],
+            "evidence": {
+              "messageId": "05cbf000-da0f-490b-9b18-e778bfa0db1c",
+              "quote": "The review will take 3 business days."
+            },
+            "dueText": "3 business days",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "c5e3b31c-b376-4e17-a93b-2f65688f8fc3",
+            "at": "2026-11-15T16:02:04.157Z",
+            "type": "draft",
+            "label": "편집한 재문의 초안을 저장했어요",
+            "details": ""
+          },
+          {
+            "id": "a7f8e843-1d76-4bdf-9385-e96e6f03b998",
+            "at": "2026-11-15T16:02:03.853Z",
+            "type": "draft",
+            "label": "남은 질문으로 재문의 초안을 만들었어요",
+            "details": ""
+          },
+          {
+            "id": "dc170231-4e28-49ee-9cc0-db3190f3a111",
+            "at": "2026-11-15T16:01:55.689Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "검토 소요 기간: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T16:01:55.689Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+              ],
+              "questions": [
+                {
+                  "id": "504c3173-10b5-44ac-aff7-fcfecb807f4c",
+                  "title": "검토 소요 기간",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                  ]
+                }
+              ],
+              "promises": [
+                {
+                  "id": "245ffd2d-951c-498d-8882-7485ac6d92d4",
+                  "title": "transaction ID 접수 통보",
+                  "before": null,
+                  "after": {
+                    "title": "transaction ID 접수 통보",
+                    "state": "reported",
+                    "dueAt": null,
+                    "dueText": "",
+                    "confirmedAt": null
+                  },
+                  "fields": [
+                    "added"
+                  ],
+                  "evidenceMessageIds": [
+                    "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                  ]
+                },
+                {
+                  "id": "ea22af95-e4d2-40cb-9867-ea999eb5b95a",
+                  "title": "검토 소요 안내",
+                  "before": null,
+                  "after": {
+                    "title": "검토 소요 안내",
+                    "state": "promised",
+                    "dueAt": null,
+                    "dueText": "3 business days",
+                    "confirmedAt": null
+                  },
+                  "fields": [
+                    "added"
+                  ],
+                  "evidenceMessageIds": [
+                    "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "851e3893-4ea7-4e03-a680-b7d60fe2029e",
+            "at": "2026-11-15T16:01:41.779Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "1d047f18-f253-43c0-8a26-88626a645c23",
+            "at": "2026-11-15T16:01:35.570Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 0개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T16:01:35.570Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "0921fb95-3a7e-4a32-a338-687adb51a9e8",
+            "at": "2026-11-15T16:01:18.001Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "기업이 거래 영수증의 transaction ID 제출을 요청했고, 검토 소요 기간은 3 business days로 안내했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {
+          "followup": {
+            "body": "Please provide my case reference number.",
+            "sourceMessageIds": [
+              "beb30fb9-c070-47e1-93c3-ca9ddfe0550b"
+            ],
+            "questionIds": [
+              "20d11b52-51a8-40fe-af81-3cb993050dc5"
+            ],
+            "language": "en",
+            "at": "2026-11-15T16:02:03.853Z",
+            "model": "gpt-5-mini-2025-08-07",
+            "review": {
+              "model": "gpt-5-mini-2025-08-07",
+              "attempts": 1
+            },
+            "editedBody": "Please provide my case reference number.\nThank you for your help.",
+            "editedAt": "2026-11-15T16:02:04.157Z"
+          }
+        },
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 5393,
+            "output_tokens": 1440,
+            "total_tokens": 6833,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 4864
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1088
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T16:01:55.689Z",
+          "comparison": {
+            "at": "2026-11-15T16:01:55.689Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+            ],
+            "questions": [
+              {
+                "id": "504c3173-10b5-44ac-aff7-fcfecb807f4c",
+                "title": "검토 소요 기간",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "245ffd2d-951c-498d-8882-7485ac6d92d4",
+                "title": "transaction ID 접수 통보",
+                "before": null,
+                "after": {
+                  "title": "transaction ID 접수 통보",
+                  "state": "reported",
+                  "dueAt": null,
+                  "dueText": "",
+                  "confirmedAt": null
+                },
+                "fields": [
+                  "added"
+                ],
+                "evidenceMessageIds": [
+                  "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                ]
+              },
+              {
+                "id": "ea22af95-e4d2-40cb-9867-ea999eb5b95a",
+                "title": "검토 소요 안내",
+                "before": null,
+                "after": {
+                  "title": "검토 소요 안내",
+                  "state": "promised",
+                  "dueAt": null,
+                  "dueText": "3 business days",
+                  "confirmedAt": null
+                },
+                "fields": [
+                  "added"
+                ],
+                "evidenceMessageIds": [
+                  "05cbf000-da0f-490b-9b18-e778bfa0db1c"
+                ]
+              }
+            ]
+          }
+        },
+        "channel": "email",
+        "version": 6
+      }
+    }
+  ],
+  "calls": [
+    {
+      "name": "replytrack_connection",
+      "reasoningEffort": "low",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 1797,
+      "tokens": 179,
+      "usage": {
+        "input_tokens": 117,
+        "output_tokens": 62,
+        "total_tokens": 179,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 1796,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 1794,
+            "httpStatus": 200,
+            "bodyMs": 2,
+            "usage": {
+              "input_tokens": 117,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 0
+              },
+              "output_tokens": 62,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 179
+            },
+            "elapsedMs": 1796
+          }
+        ]
+      }
+    },
+    {
+      "name": "replytrack_transcript",
+      "reasoningEffort": "low",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 4316,
+      "tokens": 867,
+      "usage": {
+        "input_tokens": 449,
+        "output_tokens": 418,
+        "total_tokens": 867,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 256
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 4316,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 4314,
+            "httpStatus": 200,
+            "bodyMs": 1,
+            "usage": {
+              "input_tokens": 449,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 0
+              },
+              "output_tokens": 418,
+              "output_tokens_details": {
+                "reasoning_tokens": 256
+              },
+              "total_tokens": 867
+            },
+            "elapsedMs": 4316
+          }
+        ]
+      }
+    },
+    {
+      "name": "replytrack_analysis",
+      "reasoningEffort": "low",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 9530,
+      "tokens": 5736,
+      "usage": {
+        "input_tokens": 4821,
+        "output_tokens": 915,
+        "total_tokens": 5736,
+        "input_tokens_details": {
+          "cached_tokens": 3840
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 512
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 9529,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 9527,
+            "httpStatus": 200,
+            "bodyMs": 2,
+            "usage": {
+              "input_tokens": 4821,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 3840
+              },
+              "output_tokens": 915,
+              "output_tokens_details": {
+                "reasoning_tokens": 512
+              },
+              "total_tokens": 5736
+            },
+            "elapsedMs": 9529
+          }
+        ]
+      }
+    },
+    {
+      "name": "replytrack_analysis",
+      "reasoningEffort": "low",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 13785,
+      "tokens": 6676,
+      "usage": {
+        "input_tokens": 5288,
+        "output_tokens": 1388,
+        "total_tokens": 6676,
+        "input_tokens_details": {
+          "cached_tokens": 3840
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 896
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 13784,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 13782,
+            "httpStatus": 200,
+            "bodyMs": 1,
+            "usage": {
+              "input_tokens": 5288,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 3840
+              },
+              "output_tokens": 1388,
+              "output_tokens_details": {
+                "reasoning_tokens": 896
+              },
+              "total_tokens": 6676
+            },
+            "elapsedMs": 13784
+          }
+        ]
+      }
+    },
+    {
+      "name": "replytrack_draft",
+      "reasoningEffort": "low",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 4768,
+      "tokens": 2425,
+      "usage": {
+        "input_tokens": 1876,
+        "output_tokens": 549,
+        "total_tokens": 2425,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 448
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 4767,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 4767,
+            "httpStatus": 200,
+            "bodyMs": 0,
+            "usage": {
+              "input_tokens": 1876,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 0
+              },
+              "output_tokens": 549,
+              "output_tokens_details": {
+                "reasoning_tokens": 448
+              },
+              "total_tokens": 2425
+            },
+            "elapsedMs": 4767
+          }
+        ]
+      }
+    },
+    {
+      "name": "replytrack_draft_review",
+      "reasoningEffort": "medium",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 5605,
+      "tokens": 3044,
+      "usage": {
+        "input_tokens": 2464,
+        "output_tokens": 580,
+        "total_tokens": 3044,
+        "input_tokens_details": {
+          "cached_tokens": 1792
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 512
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 5605,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 5604,
+            "httpStatus": 200,
+            "bodyMs": 1,
+            "usage": {
+              "input_tokens": 2464,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 1792
+              },
+              "output_tokens": 580,
+              "output_tokens_details": {
+                "reasoning_tokens": 512
+              },
+              "total_tokens": 3044
+            },
+            "elapsedMs": 5605
+          }
+        ]
+      }
+    },
+    {
+      "name": "replytrack_transcript",
+      "reasoningEffort": "low",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 3997,
+      "tokens": 1124,
+      "usage": {
+        "input_tokens": 759,
+        "output_tokens": 365,
+        "total_tokens": 1124,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 192
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 3996,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 3995,
+            "httpStatus": 200,
+            "bodyMs": 1,
+            "usage": {
+              "input_tokens": 759,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 0
+              },
+              "output_tokens": 365,
+              "output_tokens_details": {
+                "reasoning_tokens": 192
+              },
+              "total_tokens": 1124
+            },
+            "elapsedMs": 3996
+          }
+        ]
+      }
+    },
+    {
+      "name": "replytrack_analysis",
+      "reasoningEffort": "medium",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 17557,
+      "tokens": 7008,
+      "usage": {
+        "input_tokens": 5177,
+        "output_tokens": 1831,
+        "total_tokens": 7008,
+        "input_tokens_details": {
+          "cached_tokens": 4864
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 1472
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 17556,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 17555,
+            "httpStatus": 200,
+            "bodyMs": 1,
+            "usage": {
+              "input_tokens": 5177,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 4864
+              },
+              "output_tokens": 1831,
+              "output_tokens_details": {
+                "reasoning_tokens": 1472
+              },
+              "total_tokens": 7008
+            },
+            "elapsedMs": 17556
+          }
+        ]
+      }
+    },
+    {
+      "name": "replytrack_transcript",
+      "reasoningEffort": "low",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 4850,
+      "tokens": 1196,
+      "usage": {
+        "input_tokens": 818,
+        "output_tokens": 378,
+        "total_tokens": 1196,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 320
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 4850,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 4849,
+            "httpStatus": 200,
+            "bodyMs": 1,
+            "usage": {
+              "input_tokens": 818,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 0
+              },
+              "output_tokens": 378,
+              "output_tokens_details": {
+                "reasoning_tokens": 320
+              },
+              "total_tokens": 1196
+            },
+            "elapsedMs": 4850
+          }
+        ]
+      }
+    },
+    {
+      "name": "replytrack_analysis",
+      "reasoningEffort": "low",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 13899,
+      "tokens": 6833,
+      "usage": {
+        "input_tokens": 5393,
+        "output_tokens": 1440,
+        "total_tokens": 6833,
+        "input_tokens_details": {
+          "cached_tokens": 4864
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 1088
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 13898,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 13896,
+            "httpStatus": 200,
+            "bodyMs": 2,
+            "usage": {
+              "input_tokens": 5393,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 4864
+              },
+              "output_tokens": 1440,
+              "output_tokens_details": {
+                "reasoning_tokens": 1088
+              },
+              "total_tokens": 6833
+            },
+            "elapsedMs": 13898
+          }
+        ]
+      }
+    },
+    {
+      "name": "replytrack_draft",
+      "reasoningEffort": "low",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 2693,
+      "tokens": 2166,
+      "usage": {
+        "input_tokens": 1906,
+        "output_tokens": 260,
+        "total_tokens": 2166,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 192
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 2693,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 2693,
+            "httpStatus": 200,
+            "bodyMs": 0,
+            "usage": {
+              "input_tokens": 1906,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 0
+              },
+              "output_tokens": 260,
+              "output_tokens_details": {
+                "reasoning_tokens": 192
+              },
+              "total_tokens": 2166
+            },
+            "elapsedMs": 2693
+          }
+        ]
+      }
+    },
+    {
+      "name": "replytrack_draft_review",
+      "reasoningEffort": "medium",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 5098,
+      "tokens": 3060,
+      "usage": {
+        "input_tokens": 2476,
+        "output_tokens": 584,
+        "total_tokens": 3060,
+        "input_tokens_details": {
+          "cached_tokens": 1792
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 512
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 5098,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 5097,
+            "httpStatus": 200,
+            "bodyMs": 1,
+            "usage": {
+              "input_tokens": 2476,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 1792
+              },
+              "output_tokens": 584,
+              "output_tokens_details": {
+                "reasoning_tokens": 512
+              },
+              "total_tokens": 3060
+            },
+            "elapsedMs": 5098
+          }
+        ]
+      }
+    }
+  ],
+  "browserErrors": [],
+  "hashes": {
+    "src/service.mjs": "a485aeea774135c0194c1c965a373933e75b31a81bba826d3797e43caa57d697",
+    "src/email-reply.mjs": "196bf28e892c302e6dc69a67d282a24846f6ac7995a1e6064d62d757d02ef1ea",
+    "src/official-context.mjs": "f037b480c398315236f87f03d319a87f5507124dc0dc418caa96b09602f8fbcc",
+    "src/prompts.mjs": "ee61948e6e199c64c0ef4f008c20ae97f29ee6d070f5f408f3bbedc6365c1b63",
+    "src/schema.mjs": "6076ecdb794744d3fd30522c729b3b15c22d7194b32f3cb0e23e17f91256f94d",
+    "src/openai.mjs": "e33740fd56e8e9963e7206b474669422845fc93ce03a2ae7af90f537cf33d6d6",
+    "src/ai-race.mjs": "4cae88270203093c2d5ba8e4ce9b6c9c5dc91eff38d224c54b14f9f4bd44e977",
+    "src/store.mjs": "4f6aba7799e1b176069b24a9bf16dab74f82936fe3e1347eda241485d25a1f15",
+    "public/app.js": "d190d85fa5cf1db18b3454799b994e1a5755392fe04020308dc7ff94f443382a",
+    "public/inquiry-overview.js": "3245c20e8ef40b52c63314a85945508cfa52272a6a6bd936629e02a33bd694d6",
+    "public/workspace.js": "46868f7747a882201343f6085401c483e87753176798f27443213e73f95a71d7",
+    "public/styles.css": "6abfbc46be491221b7b41e5a5c84bfda00eb3efe541ee99b845b0a66112a2e9b",
+    "scripts/check-live-browser.mjs": "436a46c43d901212372465dfc6ea5b9a0d4a79e38d3d0d1553546653340e6b0f"
+  },
+  "totalTokens": 40314
+}
