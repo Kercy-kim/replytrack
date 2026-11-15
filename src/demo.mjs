@@ -1,11 +1,13 @@
 import { newCase, applyAnalysis, message, history } from './domain.mjs';
 import { applyActions } from './next-actions.mjs';
+import { emailDemoAnalysis, emailDemoActions, emailDemoDraft, advanceEmailDemo } from './email-demo.mjs';
 
 export const demoReplies = [
   '왕복 배송비는 업체에서 부담하며, 내일까지 견적을 안내하겠습니다.',
   '점검 결과 수리비는 25,000원입니다. 견적 안내를 완료했습니다. 수리 진행 여부를 알려 주세요.',
 ];
 export function demoAnalysis(c) {
+  if (c.demoScenario === 'email') return emailDemoAnalysis(c);
   if (c.demoScenario === 'refund') return refundAnalysis(c);
   const [customer, first, second, third] = c.messages;
   const ref = (m, quote) => ({ messageId: m.id, quote });
@@ -31,6 +33,7 @@ export function createDemo() {
 }
 export function advanceDemo(c) {
   if (c.demoStep >= demoReplies.length) return c;
+  if (c.demoScenario === 'email') return advanceEmailDemo(c);
   c.messages.push(message({ role: 'agent', text: (c.demoScenario === 'refund' ? refundReplies : demoReplies)[c.demoStep++], sentAt: new Date().toISOString() }));
   history(c, 'message', '예제 답변을 추가했어요');
   applyAnalysis(c, demoAnalysis(c), { model: '준비된 예제 · AI 호출 없음', usage: null });
@@ -38,6 +41,7 @@ export function advanceDemo(c) {
   return c;
 }
 export function demoDraft(c, kind, ids) {
+  if (c.demoScenario === 'email') return emailDemoDraft(c, kind);
   const questions = c.questions.filter(q => ids.includes(q.id) && q.status !== 'answered');
   if (c.demoScenario === 'refund') return {
     body: kind === 'handoff' ? `불량 이어폰 환불 문의를 이어서 상담받고 싶습니다. ${c.summary} ${c.questions.map(q => `${q.title} — ${q.reason}`).join(' ')}${c.promises.some(p => p.confirmedAt) ? '처리 결과는 제가 직접 확인했습니다.' : '실제 환불 결과는 아직 직접 확인하지 않았습니다.'}`
@@ -83,6 +87,7 @@ function refundAnalysis(c) {
   };
 }
 export function demoActions(c) {
+  if (c.demoScenario === 'email') return emailDemoActions(c);
   if (c.demoScenario === 'refund') return { items: [{ id: c.nextActions?.items[0]?.id ?? 'photo-request', title: '불량 사진 보내기', source: { messageId: c.messages[1].id, quote: refundRequest }, condition: '', dueText: '내일까지', state: c.demoStep ? 'reported_done' : 'requested', update: c.demoStep ? { messageId: c.messages[2].id, quote: '보내 주신 불량 사진을 확인했습니다.' } : null }] };
   return { items: c.demoStep === 2 ? [{ id: c.nextActions?.items[0]?.id ?? 'repair-reply', title: '수리 진행 여부 답하기', source: { messageId: c.messages[3].id, quote: '수리 진행 여부를 알려 주세요.' }, condition: '', dueText: '', state: 'requested', update: null }] : [] };
 }

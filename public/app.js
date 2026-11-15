@@ -1,4 +1,5 @@
 import { emailExplanationPanel } from './email.js';
+import { renderEmailDemo } from './email-demo.js';
 import { deadlineState, filterCases, dirtyDraftKinds, savedDraft, selectedQuestionIds, CaseNavigation } from './workspace.js';
 import { WebOperation, stages, elapsedLabel } from './operations.js';
 import { newOnboarding, hasOnboardingInput, manualMessages } from './onboarding.js';
@@ -23,6 +24,7 @@ const icon = (name, cls = '') => `<svg class="icon ${cls}" width="20" height="20
 const state = { cases: [], current: null, config: { configured: false, model: 'gpt-5-mini' }, busy: '', tab: 'questions', mobile: 'analysis', filter: 'all', selected: new Set(), draftEdits: {}, error: '', onboarding: null, query: '', caseFilter: 'active', sort: 'priority' };
 const dirtyKinds = () => dirtyDraftKinds(state.current?.drafts || {}, state.draftEdits);
 state.replyLanguages = {};
+state.emailDemoFocus = {};
 state.guide = newGuide();
 state.guideOpen = false;
 const views = new CaseNavigation();
@@ -172,7 +174,7 @@ function render() {
       <a href="/" class="brand" data-action="home" aria-label="ReplyTrack 홈"><img src="/favicon.svg" width="35" height="35" alt=""><span>ReplyTrack<span class="brand-dot">.</span></span></a>
       <div class="workspace-label">나의 상담 워크스페이스</div>
       ${button('new', '새 상담 시작하기', 'primary wide', 'plus')}
-      ${button('guide', 'SSG 공식 안내 찾기', 'secondary wide workspace-home', 'spark')}
+      ${button('email-demo', '이메일 30초 시연', 'secondary wide', 'arrow')}${button('guide', 'SSG 공식 안내 찾기', 'secondary wide workspace-home', 'spark')}
       ${button('home', '상담 전체 보기', 'secondary wide workspace-home', 'file')}
       <div class="nav-heading"><span>내 상담</span><span>${state.cases.filter(item => !item.archivedAt || item.id === c?.id).length.toString().padStart(2, '0')}</span></div>
       <nav class="case-list" aria-label="상담 목록">${state.cases.length ? state.cases.filter(item => !item.archivedAt || item.id === c?.id).map(item => `<button class="case-item ${c?.id === item.id ? 'active' : ''}" data-action="open" data-id="${item.id}" ${blocked('open') ? 'disabled' : ''}>${icon('chat')}<span><strong>${esc(item.title)}</strong><small>${esc(item.company)}${item.mode === 'demo' ? ' · 예제' : ''}</small></span>${item.unanswered ? `<b>${item.unanswered}</b>` : icon('check')}</button>`).join('') : '<p class="sidebar-empty">새 상담을 시작하면<br>이곳에 기록이 쌓여요.</p>'}</nav>
@@ -257,12 +259,13 @@ function comparisonPanel(c) {
     ${comparisonContents(comparison)}</section>`;
 }
 function detail(c) {
+  if (c.demoScenario === 'email' && state.emailDemoFocus[c.id] !== null) return renderEmailDemo(c, state.emailDemoFocus[c.id] ?? 0, { esc, button, badge, comparisonPanel });
   const unresolved = c.questions.filter(q => q.status !== 'answered').length;
   const answered = c.questions.length - unresolved;
   const pending = c.analyzedMessageCount < c.messages.length;
   return `<section class="case-heading"><div><div class="eyebrow">${esc(c.company)} <span class="middle-dot">·</span> ${c.mode === 'demo' ? 'DEMO CASE' : 'MY CASE'}</div><h1>${esc(c.title)}</h1><p>${esc(c.summary || '상담은 안전하게 저장됐어요. 질문을 분석하면 확인표가 만들어져요.')}</p></div><div class="heading-actions">${c.mode === 'live' ? button('append', '새 답변 추가', 'primary compact append-primary', 'plus') : ''}${button('case-settings', '상담 관리', 'secondary compact', 'settings')}${button('export', '내려받기', 'secondary compact', 'download')}${button('delete', '', 'icon-btn', 'close', 'aria-label="상담 삭제"')}</div></section>
     ${c.archivedAt ? `<div class="archive-banner"><span>보관한 상담이에요. 보관은 실제 처리 완료를 의미하지 않아요.</span>${button('restore','진행 목록으로 복원','secondary compact')}</div>` : ''}
-    ${c.mode === 'demo' ? `<div class="demo-banner"><span>${icon('spark')}<strong>예제 상담</strong> 준비된 가상 데이터예요. AI API를 호출하지 않아요.</span>${c.demoStep < 2 ? button('demo-next', c.demoStep === 0 ? '예제 답변 추가하기' : c.demoScenario === 'refund' ? '환불 안내 시연하기' : '견적 도착 시연하기', 'text', 'arrow') : '<span class="demo-complete">모든 예제 답변을 확인했어요</span>'}</div>` : ''}
+    ${c.mode === 'demo' ? `<div class="demo-banner"><span>${icon('spark')}<strong>예제 상담</strong> 준비된 가상 데이터예요. AI API를 호출하지 않아요.</span>${c.demoStep < (c.demoScenario === 'email' ? 1 : 2) ? button('demo-next', c.demoStep === 0 ? '예제 답변 추가하기' : c.demoScenario === 'refund' ? '환불 안내 시연하기' : '견적 도착 시연하기', 'text', 'arrow') : '<span class="demo-complete">모든 예제 답변을 확인했어요</span>'}</div>` : ''}
     ${pending ? `<div class="pending-banner"><span>새 메시지가 저장됐어요. 분석하면 질문과 약속에 반영돼요.</span>${button('analyze', c.questions.length ? '새 답변 분석' : '질문 분석하기', 'primary compact', 'spark')}</div>` : ''}
     <section class="stats" aria-label="상담 현황"><div><span class="stat-icon neutral">${icon('chat')}</span><span>전체 질문<strong>${c.questions.length}<small>개</small></strong></span></div><div><span class="stat-icon green">${icon('check')}</span><span>답변 받은 질문<strong>${answered}<small>개</small></strong></span></div><div><span class="stat-icon orange">${icon('clock')}</span><span>아직 남은 질문<strong>${unresolved}<small>개</small></strong></span></div><div><span class="stat-icon violet">${icon('file')}</span><span>확인할 처리 약속<strong>${c.promises.filter(p => !p.confirmedAt).length}<small>개</small></strong></span></div></section>
     ${comparisonPanel(c)}${emailExplanationPanel(c, { esc, button, date })}
@@ -403,6 +406,11 @@ async function updateCase(path, method, data) {
   render();
 }
 function highlightSource(id) {
+  if (state.current?.demoScenario === 'email' && state.emailDemoFocus[state.current.id] !== null) {
+    const source = state.current.messages.find(m => m.id === id);
+    if (source) showModal('판정 근거 원문', `<p class="modal-intro" lang="en">${esc(source.text)}</p><div class="modal-actions">${button('close-modal', '닫기', 'secondary')}</div>`);
+    return;
+  }
   state.mobile = 'source'; render();
   const el = document.getElementById(`message-${id}`);
   if (el) { el.classList.add('highlight'); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(() => el.classList.remove('highlight'), 3500); }
@@ -422,8 +430,8 @@ document.addEventListener('click', async event => {
   if (['home', 'open', 'tab', 'draft-tab', 'mobile', 'source'].includes(action)) viewRevision++;
   if (action === 'guard-cancel') return resolveGuard(false);
   if (action === 'guard-continue') return resolveGuard(true);
-  const navigating = ['home','new','demo'].includes(action) || (action === 'open' && target.dataset.id !== state.current?.id);
-  const invalidating = ['demo-next','analyze','append','edit-question','apply-ai','confirm-promise','generate-draft'].includes(action);
+  const navigating = ['home','new','demo','email-demo'].includes(action) || (action === 'open' && target.dataset.id !== state.current?.id);
+  const invalidating = ['demo-next','email-demo-reply','analyze','append','edit-question','apply-ai','confirm-promise','generate-draft'].includes(action);
   if ((navigating || invalidating) && !await guardEdits(invalidating, action === 'generate-draft' ? target.dataset.kind : undefined)) return;
   if (['home','open','demo'].includes(action)) state.guideOpen = false;
   if (action === 'guide') { state.guideOpen = true; render(); $('#guide-goal').focus(); }
@@ -448,6 +456,10 @@ document.addEventListener('click', async event => {
   if (action === 'dismiss-error') { state.error = ''; render(); }
   if (action === 'open') await viewWork('상담 기록을 불러오고 있어요', () => loadCase(target.dataset.id));
   if (action === 'demo') await work('예제 상담을 준비하고 있어요', async () => { setCase(await api('/api/demo','POST',{scenario:'refund'})); state.tab = 'questions'; state.filter = 'all'; await refreshList(); });
+  if (action === 'email-demo') await work('이메일 시연을 준비하고 있어요', async () => { setCase(await api('/api/demo','POST',{scenario:'email'})); state.emailDemoFocus[state.current.id] = 0; state.guideOpen = false; await refreshList(); });
+  if (action === 'email-demo-step' && state.current?.demoScenario === 'email') { const step = Number(target.dataset.step); if (Number.isInteger(step) && step >= 0 && step <= 3 && (step !== 3 || state.current.demoStep)) { state.emailDemoFocus[state.current.id] = step; render(); $('#email-demo-scene')?.focus(); } }
+  if (action === 'email-demo-reply' && state.current?.demoScenario === 'email') await work('준비된 새 이메일을 반영하고 있어요', async () => { if (!state.current.demoStep) await updateCase('demo-next','POST',{}); state.emailDemoFocus[state.current.id] = 3; });
+  if (action === 'email-demo-full' && state.current?.demoScenario === 'email') { state.emailDemoFocus[state.current.id] = null; state.tab = 'questions'; render(); }
   if (action === 'explain-email') await work('이메일 답변을 한국어로 설명하고 원문과 대조하고 있어요', () => updateCase('email-explanation','POST',{}));
   if (action === 'read-actions') await work('원문에서 업체가 요청한 할 일을 확인하고 있어요', () => updateCase('actions','POST',{}));
   if (action === 'action-followup') { state.selected = new Set([target.dataset.id]); state.tab = 'drafts'; state.mobile = 'analysis'; render(); }
@@ -472,7 +484,7 @@ document.addEventListener('click', async event => {
     else showModal('실제 결과를 확인하셨나요?', `<p class="modal-intro"><strong>${esc(p.title)}</strong><br><br>업체의 안내와 별개로, 환불 입금·교환품 수신 등 처리 결과를 직접 확인했을 때 완료로 표시해 주세요.</p><div class="modal-actions"><button class="btn secondary" data-action="close-modal">아직 확인 전이에요</button><button class="btn primary" data-action="confirm-yes" data-id="${p.id}">직접 확인했어요</button></div>`);
   }
   if (action === 'confirm-yes') await work('직접 확인한 결과를 기록하고 있어요', async () => { await updateCase(`promises/${target.dataset.id}`, 'PATCH', { confirmed: true }); $('#modal').close(); toast('사용자 확인 완료로 기록했어요.'); });
-  if (action === 'generate-draft') { const language = target.dataset.kind === 'followup' ? ($('#reply-language')?.value || 'ko') : 'ko'; await work('확인된 사실로 초안을 작성하고 있어요', () => updateCase('drafts','POST',{kind:target.dataset.kind, language, questionIds:[...state.selected]})); }
+  if (action === 'generate-draft') { const language = target.dataset.kind === 'followup' ? ($('#reply-language')?.value || (state.current?.demoScenario === 'email' ? 'en' : 'ko')) : 'ko'; await work('확인된 사실로 초안을 작성하고 있어요', () => updateCase('drafts','POST',{kind:target.dataset.kind, language, questionIds:[...state.selected]})); }
   if (action === 'copy') {
     const area = $(`#draft-${target.dataset.kind}`);
     try { await navigator.clipboard.writeText(area.value); toast('초안을 복사했어요.'); }

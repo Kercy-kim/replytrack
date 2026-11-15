@@ -4,13 +4,14 @@ import { createDemo, createRefundDemo, advanceDemo, demoAnalysis, demoDraft, dem
 import { actionsSchemaFor, actionsReviewSchema, ACTIONS_PROMPT, ACTIONS_REVIEW_PROMPT, validateActions, applyActions } from './next-actions.mjs';
 import { actionChecks, reviewPassed } from './feature-review.mjs';
 import { actionsFresh } from '../public/next-actions.js';
-import { analysisSchemaFor, transcriptSchema, draftSchemaFor, draftReviewSchema, boundaryReviewSchemaFor } from './schema.mjs';
-import { ANALYSIS_PROMPT, TRANSCRIPT_PROMPT, DRAFT_PROMPT, DRAFT_REVIEW_PROMPT, BOUNDARY_REVIEW_PROMPT } from './prompts.mjs';
+import { analysisSchemaFor, transcriptSchema, draftSchemaFor, draftReviewSchema, boundaryReviewSchemaFor, completionReviewSchemaFor } from './schema.mjs';
+import { ANALYSIS_PROMPT, TRANSCRIPT_PROMPT, DRAFT_PROMPT, DRAFT_REVIEW_PROMPT, BOUNDARY_REVIEW_PROMPT, COMPLETION_REVIEW_PROMPT } from './prompts.mjs';
 import { HANDOFF_PROMPT, HANDOFF_REPAIR_PROMPT, HANDOFF_REVIEW_PROMPT, stripInternalCitations, normalizeHandoffAttribution } from './handoff.mjs';
 import { checkpoint } from './operation.mjs';
 import { maskPrivate, privacyEnvelope } from './privacy.mjs';
 import { readImage } from './ocr.mjs';
 import { OfficialFaq, officialGuide } from './official-guide.mjs';
+import { createEmailDemo, emailDemoExplanation } from './email-demo.mjs';
 import { EMAIL_TRANSCRIPT_PROMPT, EMAIL_ANALYSIS_PROMPT, EMAIL_ACTIONS_PROMPT, EMAIL_EXPLANATION_PROMPT, EMAIL_EXPLANATION_REVIEW_PROMPT, emailReviewSchema, emailExplanationSchema, validateEmailExplanation, validateEmailTranscript, draftLanguagePrompt } from './email.mjs';
 
 // Derived reasoning and suggested follow-ups are not independent source facts.
@@ -93,7 +94,7 @@ export class ReplyTrack {
     c.messages.forEach((m, i) => { m.text = masked.texts[i]; });
     return this.store.create(c);
   }
-  demo(input = {}) { return this.store.create(input.scenario === 'refund' ? createRefundDemo() : createDemo()); }
+  demo(input = {}) { return this.store.create(input.scenario === 'email' ? createEmailDemo() : input.scenario === 'refund' ? createRefundDemo() : createDemo()); }
   async actions(id, version, context = {}) {
     checkpoint(context);
     const c = this.getVersion(id, version);
@@ -151,7 +152,7 @@ export class ReplyTrack {
   advance(id, version) {
     const c = this.getVersion(id, version);
     assert(c.mode === 'demo', '예제 상담에서만 사용할 수 있습니다.');
-    assert(c.demoStep < 2, '모든 예제 답변을 추가했습니다.');
+    assert(c.demoStep < (c.demoScenario === 'email' ? 1 : 2), '모든 예제 답변을 추가했습니다.');
     return this.store.save(advanceDemo(c), version);
   }
   append(id, input) {
@@ -179,6 +180,7 @@ export class ReplyTrack {
   async explainEmail(id, version, context = {}) {
     const c = this.getVersion(id, version);
     assert(c.channel === 'email' && c.messages.some(m => m.role === 'agent'), '설명할 고객센터 이메일 답변이 필요해요.');
+    if (c.mode === 'demo' && c.demoScenario === 'email') { checkpoint(context); c.emailExplanation = emailDemoExplanation(c); return this.store.save(c, version); }
     const messages = c.messages.filter(m => m.role === 'agent');
     const result = await this.ask({ name: 'replytrack_email_explanation', schema: emailExplanationSchema(messages), instructions: EMAIL_EXPLANATION_PROMPT, reasoningEffort: 'medium', data: { messages } }, context, 'email_explanation');
     checkpoint(context, 'validation');
@@ -197,7 +199,7 @@ export class ReplyTrack {
     this.busy.add(id);
     try {
       const c = this.getVersion(id, version);
-      let result, attempts = 0, boundaryReview = null;
+      let result, attempts = 0, boundaryReview = null, completionReview = null;
       const results = [];
       if (c.mode === 'demo') result = { data: demoAnalysis(c), model: '준비된 예제 · AI 호출 없음', usage: null };
       else {
@@ -212,6 +214,20 @@ export class ReplyTrack {
           if (!validationErrors.length) break;
           if (attempt === 1) throw new AppError(502, '분석의 원문 인용과 상태를 다시 확인했지만 맞지 않아 저장하지 않았습니다. 기존 기록은 유지됩니다.', 'AI_EVIDENCE');
           revision = { revisionFeedback: `앞선 생성에서 다음 원문 인용 또는 상태·근거의 일관성 오류가 있었습니다: ${validationErrors.join(', ')}. source는 customer, evidence는 agent의 실제 ID와 정확한 원문 부분 문자열이어야 합니다. 동의어 치환·조사 생략·띄어쓰기 수정·요약을 하지 말고 원문을 그대로 복사하세요. 미답변인데 근거가 있다면 그 근거의 관련성을 다시 판단하고, 관련 안내가 있으면 맞는 상태를 선택하고 무관한 안내면 근거에서 제외하세요. 최종 상태를 답하지 않았어도 같은 처리의 실행 방법을 안내했다면 partial이며 방법 안내를 근거에 보존하세요. 미답변 형식에 맞추려고 관련 근거만 삭제하지 마세요. 잘못된 출력을 재사용하지 말고 제공된 원문과 기존 기록에서 전체 분석을 다시 반환하세요.` };
+        }
+        // A lexical cue only requests a semantic review; it never creates a promise.
+        const completionCue = /완료|마쳤|해제했|처리했|접수했|수신했|\b(completed|processed|disabled|received|restored|cancelled|canceled)\b/i;
+        if (!result.data.promises.length && c.messages.some(m => m.role === 'agent' && completionCue.test(m.text))) {
+          this.getVersion(id, version);
+          const checked = await this.ask({ name: 'replytrack_completion_review', schema: completionReviewSchemaFor(c.messages, result.data.questions), instructions: COMPLETION_REVIEW_PROMPT, reasoningEffort: 'medium',
+            data: { messages: c.messages, questions: result.data.questions.map(({ id, title, source }) => ({ id, title, source })), existingPromises: data.existingPromises } }, context, 'completion_review');
+          results.push(checked);
+          const promises = checked.data?.promises;
+          if (!Array.isArray(promises) || new Set(promises.map(p => p?.id)).size !== promises.length || promises.some(p => !p || typeof p.id !== 'string' || !p.id || p.state !== 'reported' || typeof p.title !== 'string' || !p.title.trim() || !Array.isArray(p.questionIds) || p.questionIds.some(id => !result.data.questions.some(q => q.id === id)))) throw new AppError(502, '처리 통보 검토 결과가 맞지 않아 기존 기록을 유지했습니다.', 'AI_COMPLETION');
+          const candidate = { ...result.data, promises };
+          if (analysisValidationErrors(candidate, c.messages).length || promises.some(p => typeof p.dueText !== 'string' || (p.dueText && !p.evidence.quote.includes(p.dueText)))) throw new AppError(502, '처리 통보의 원문 근거가 맞지 않아 기존 기록을 유지했습니다.', 'AI_COMPLETION');
+          result = { ...result, data: candidate };
+          completionReview = { model: checked.model, promises: promises.length };
         }
         const uncertain = result.data.questions.filter(q => q.status === 'review' && q.evidence.length);
         if (uncertain.length) {
@@ -228,7 +244,7 @@ export class ReplyTrack {
         }
       }
       checkpoint(context, 'saving');
-      applyAnalysis(c, result.data, { model: result.model, usage: analysisUsage(results), attempts, ...(boundaryReview ? { boundaryReview } : {}) });
+      applyAnalysis(c, result.data, { model: result.model, usage: analysisUsage(results), attempts, ...(boundaryReview ? { boundaryReview } : {}), ...(completionReview ? { completionReview } : {}) });
       return this.store.save(c, version);
     } finally { this.busy.delete(id); }
   }
@@ -260,7 +276,7 @@ export class ReplyTrack {
     assert(c.analyzedMessageCount === c.messages.length && c.questions.length, '새 답변을 먼저 분석해 주세요.');
     assert(['followup', 'handoff'].includes(input.kind), '초안 종류를 선택해 주세요.');
     const language = input.language ?? (c.channel === 'email' && input.kind === 'followup' ? 'en' : 'ko');
-    assert(['ko', 'en'].includes(language) && (language !== 'en' || (c.mode !== 'demo' && input.kind === 'followup')), '영어는 실제 상담의 재문의 초안에서 선택해 주세요.');
+    assert(['ko', 'en'].includes(language) && (language !== 'en' || ((c.mode !== 'demo' || c.demoScenario === 'email') && input.kind === 'followup')), '영어는 실제 상담이나 이메일 예제의 재문의 초안에서 선택해 주세요.');
     const ids = Array.isArray(input.questionIds) ? input.questionIds : [];
     const selected = c.questions.filter(q => ids.includes(q.id) && q.status !== 'answered');
     assert(input.kind === 'handoff' || selected.length, '재문의할 미해결 질문을 선택해 주세요.');

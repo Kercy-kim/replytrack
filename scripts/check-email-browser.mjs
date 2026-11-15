@@ -74,6 +74,7 @@ try {
   await page.locator('[data-action=explain-email]').click(); await idle();
   assert.equal(await page.locator('.email-explanation-item').count(), 1);
   assert(ai.calls.every(c => !c.image));
+  assert(ai.calls.some(c => c.name === 'replytrack_completion_review'));
   assert.deepEqual(errors, []);
   await writeFile(`${dir}/result.json`, JSON.stringify({ passed: true, inputModes: ['text', 'real-local-ocr'], viewports: [1440, 390], calls: ai.calls.length, errors, ai: 'deterministic fixtures, not live AI' }, null, 2));
   console.log('Email browser flow passed: text, real OCR, Korean explanation, English draft, reply comparison, stale refresh, reload and mobile.');

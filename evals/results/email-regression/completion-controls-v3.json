@@ -1,0 +1,558 @@
+{
+  "at": "2026-11-15T11:14:54.725Z",
+  "mode": "Saved initial analyses replayed; completion reviews use live OpenAI",
+  "results": [
+    {
+      "id": "NR06",
+      "source": "evals/results/email-regression/baseline.json",
+      "calls": [
+        {
+          "name": "replytrack_completion_review",
+          "ms": 6818,
+          "data": {
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "환불 승인 완료",
+                "questionIds": [
+                  "new-q-1"
+                ],
+                "evidence": {
+                  "messageId": "0b71c9a9-bb3b-4181-9aa3-5619e6420f49",
+                  "quote": "요청하신 환불 승인을 완료했습니다."
+                },
+                "dueText": "",
+                "deadlineCleared": false,
+                "state": "reported"
+              }
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 801,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 657,
+            "output_tokens_details": {
+              "reasoning_tokens": 576
+            },
+            "total_tokens": 1458
+          }
+        },
+        {
+          "name": "replytrack_boundary_review",
+          "ms": 4912,
+          "data": {
+            "questions": [
+              {
+                "id": "new-q-2",
+                "status": "review",
+                "reason": "업체가 은행 계좌의 실제 입금 여부를 알 수 없다고 안내했습니다."
+              }
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 2184,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 2048
+            },
+            "output_tokens": 487,
+            "output_tokens_details": {
+              "reasoning_tokens": 384
+            },
+            "total_tokens": 2671
+          }
+        }
+      ],
+      "record": {
+        "id": "eaf25417-d94a-44e8-b9ef-c491b3af593f",
+        "title": "환불 결과 통지와 은행 입금 상태를 분리",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T11:14:54.728Z",
+        "updatedAt": "2026-11-15T11:15:06.462Z",
+        "messages": [
+          {
+            "id": "ace37b2d-0c81-4dad-9b55-86c2b5ea45b2",
+            "role": "customer",
+            "text": "환불 승인됐나요?",
+            "sentAt": null
+          },
+          {
+            "id": "f78a357f-05dc-4fc1-b3e3-ef9f3b625321",
+            "role": "customer",
+            "text": "은행 계좌에 실제로 입금된 상태인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "0b71c9a9-bb3b-4181-9aa3-5619e6420f49",
+            "role": "agent",
+            "text": "요청하신 환불 승인을 완료했습니다. 은행 계좌의 실제 입금 여부는 저희 쪽에서 알 수 없습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "24366143-b512-422f-9b92-066afa5b0e72",
+            "title": "환불 승인됐나요?",
+            "source": {
+              "messageId": "ace37b2d-0c81-4dad-9b55-86c2b5ea45b2",
+              "quote": "환불 승인됐나요?"
+            },
+            "status": "answered",
+            "reason": "요청하신 환불 승인을 완료했다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "0b71c9a9-bb3b-4181-9aa3-5619e6420f49",
+                "quote": "요청하신 환불 승인을 완료했습니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "요청하신 환불 승인을 완료했다고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "5dea5a8b-825c-4996-a10b-0746208fb2b5",
+            "title": "은행 계좌에 실제로 입금된 상태인가요?",
+            "source": {
+              "messageId": "f78a357f-05dc-4fc1-b3e3-ef9f3b625321",
+              "quote": "은행 계좌에 실제로 입금된 상태인가요?"
+            },
+            "status": "review",
+            "reason": "업체가 은행 계좌의 실제 입금 여부를 알 수 없다고 안내했습니다.",
+            "evidence": [
+              {
+                "messageId": "0b71c9a9-bb3b-4181-9aa3-5619e6420f49",
+                "quote": "은행 계좌의 실제 입금 여부는 저희 쪽에서 알 수 없습니다."
+              }
+            ],
+            "followUp": "입금 여부를 확인해 알려주세요.",
+            "aiStatus": "review",
+            "aiReason": "업체가 은행 계좌의 실제 입금 여부를 알 수 없다고 안내했습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "79170044-982a-4d62-80c3-182eb701cbec",
+            "title": "환불 승인 완료",
+            "questionIds": [
+              "24366143-b512-422f-9b92-066afa5b0e72"
+            ],
+            "evidence": {
+              "messageId": "0b71c9a9-bb3b-4181-9aa3-5619e6420f49",
+              "quote": "요청하신 환불 승인을 완료했습니다."
+            },
+            "dueText": "",
+            "dueAt": null,
+            "state": "reported",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "531c3b61-1aee-41f0-b93d-f6b176c24c63",
+            "at": "2026-11-15T11:15:06.462Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "2개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T11:15:06.461Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 3,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "ba44588c-1dda-4e40-a692-7a3e03ed1b6c",
+            "at": "2026-11-15T11:14:54.728Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "3개 메시지 등록"
+          }
+        ],
+        "summary": "요청하신 환불 승인은 완료되었고, 은행 계좌의 실제 입금 여부는 업체가 알 수 없다고 안내받았습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "saved-analysis-replay",
+          "usage": {
+            "input_tokens": 2985,
+            "output_tokens": 1144,
+            "total_tokens": 4129,
+            "input_tokens_details": {
+              "cached_tokens": 2048
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 960
+            }
+          },
+          "attempts": 1,
+          "boundaryReview": {
+            "model": "gpt-5-mini-2025-08-07",
+            "questions": 1
+          },
+          "completionReview": {
+            "model": "gpt-5-mini-2025-08-07",
+            "promises": 1
+          },
+          "at": "2026-11-15T11:15:06.461Z",
+          "comparison": {
+            "at": "2026-11-15T11:15:06.461Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 3,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "version": 2
+      },
+      "passed": true
+    },
+    {
+      "id": "U01",
+      "source": "evals/results/email-regression/final-v2.json",
+      "calls": [
+        {
+          "name": "replytrack_completion_review",
+          "ms": 8784,
+          "data": {
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "자동 갱신 해제",
+                "questionIds": [
+                  "new-q-1"
+                ],
+                "evidence": {
+                  "messageId": "10f68d2e-19a1-4ffb-b555-67994a08fc21",
+                  "quote": "자동 갱신을 해제했습니다."
+                },
+                "dueText": "",
+                "deadlineCleared": false,
+                "state": "reported"
+              }
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 769,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 763,
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            },
+            "total_tokens": 1532
+          }
+        }
+      ],
+      "record": {
+        "id": "0e09718d-85fd-4919-861d-486de5edfb11",
+        "title": "자동 갱신 중단과 이용 종료일",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T11:15:06.464Z",
+        "updatedAt": "2026-11-15T11:15:15.249Z",
+        "messages": [
+          {
+            "id": "393fcf03-087e-4719-b03c-a947d8680528",
+            "role": "customer",
+            "text": "자동 갱신이 꺼졌나요? 이용 종료일은 언제인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "10f68d2e-19a1-4ffb-b555-67994a08fc21",
+            "role": "agent",
+            "text": "자동 갱신을 해제했습니다. 이용 종료일은 2026년 11월 30일입니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "16c0678b-8082-4d3f-a581-3747f603d191",
+            "title": "자동 갱신 해제 여부",
+            "source": {
+              "messageId": "393fcf03-087e-4719-b03c-a947d8680528",
+              "quote": "자동 갱신이 꺼졌나요?"
+            },
+            "status": "answered",
+            "reason": "자동 갱신을 해제했다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "10f68d2e-19a1-4ffb-b555-67994a08fc21",
+                "quote": "자동 갱신을 해제했습니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "자동 갱신을 해제했다고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "2e7d6d7d-38bd-4a48-8e23-147de4f4f0f1",
+            "title": "이용 종료일",
+            "source": {
+              "messageId": "393fcf03-087e-4719-b03c-a947d8680528",
+              "quote": "이용 종료일은 언제인가요?"
+            },
+            "status": "answered",
+            "reason": "이용 종료일은 2026년 11월 30일이라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "10f68d2e-19a1-4ffb-b555-67994a08fc21",
+                "quote": "이용 종료일은 2026년 11월 30일입니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "이용 종료일은 2026년 11월 30일이라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "efd94e31-43f2-43b6-8598-dca3c5a7d5d2",
+            "title": "자동 갱신 해제",
+            "questionIds": [
+              "16c0678b-8082-4d3f-a581-3747f603d191"
+            ],
+            "evidence": {
+              "messageId": "10f68d2e-19a1-4ffb-b555-67994a08fc21",
+              "quote": "자동 갱신을 해제했습니다."
+            },
+            "dueText": "",
+            "dueAt": null,
+            "state": "reported",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "6ba3de1c-5153-46c7-a407-7e882603bdf3",
+            "at": "2026-11-15T11:15:15.249Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "2개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T11:15:15.249Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "77ebccc8-1043-4551-8f9e-a18ed0dbe2bb",
+            "at": "2026-11-15T11:15:06.464Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객은 자동 갱신 해제 여부와 이용 종료일을 물었고, 상담원이 둘 다 안내했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "saved-analysis-replay",
+          "usage": {
+            "input_tokens": 769,
+            "output_tokens": 763,
+            "total_tokens": 1532,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            }
+          },
+          "attempts": 1,
+          "completionReview": {
+            "model": "gpt-5-mini-2025-08-07",
+            "promises": 1
+          },
+          "at": "2026-11-15T11:15:15.249Z",
+          "comparison": {
+            "at": "2026-11-15T11:15:15.249Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "version": 2
+      },
+      "passed": true
+    },
+    {
+      "id": "R05",
+      "source": "evals/results/email-regression/baseline.json",
+      "calls": [
+        {
+          "name": "replytrack_completion_review",
+          "ms": 3598,
+          "data": {
+            "promises": []
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 743,
+            "input_tokens_details": {
+              "cache_write_tokens": 0,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 0
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 241,
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "total_tokens": 984
+          }
+        }
+      ],
+      "record": {
+        "id": "4117fd4a-63b3-45f9-a57d-a4f345cfe37b",
+        "title": "일반 소요 기간은 개별 처리 약속 아님",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T11:15:15.253Z",
+        "updatedAt": "2026-11-15T11:15:18.851Z",
+        "messages": [
+          {
+            "id": "4b38a479-8cd4-4299-ab2b-bc4db31decb1",
+            "role": "customer",
+            "text": "카드 취소는 일반적으로 며칠 걸리나요?",
+            "sentAt": null
+          },
+          {
+            "id": "50dbdb3b-f9b6-45b8-93dc-c4c1b28fa80d",
+            "role": "agent",
+            "text": "카드 취소 반영은 일반적으로 3~5영업일 걸립니다. 이 안내는 고객님 건의 취소 접수나 완료 통보가 아닙니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "1db68154-951d-4c06-ac29-218eb48f0abd",
+            "title": "카드 취소 소요기간 문의",
+            "source": {
+              "messageId": "4b38a479-8cd4-4299-ab2b-bc4db31decb1",
+              "quote": "카드 취소는 일반적으로 며칠 걸리나요?"
+            },
+            "status": "answered",
+            "reason": "카드 취소 반영은 일반적으로 3~5영업일 걸린다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "50dbdb3b-f9b6-45b8-93dc-c4c1b28fa80d",
+                "quote": "카드 취소 반영은 일반적으로 3~5영업일 걸립니다. 이 안내는 고객님 건의 취소 접수나 완료 통보가 아닙니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "카드 취소 반영은 일반적으로 3~5영업일 걸린다고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "3e5562e3-890c-4a3d-92e7-f228e53ad558",
+            "at": "2026-11-15T11:15:18.851Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "1개 질문 · 0개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T11:15:18.851Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "ba7a7a5a-0c9d-4ea9-9fda-f8290dddce08",
+            "at": "2026-11-15T11:15:15.253Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 카드 취소 소요기간을 문의했고, 상담원이 취소 반영이 일반적으로 3~5영업일 걸린다고 안내했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "saved-analysis-replay",
+          "usage": {
+            "input_tokens": 743,
+            "output_tokens": 241,
+            "total_tokens": 984,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            }
+          },
+          "attempts": 1,
+          "completionReview": {
+            "model": "gpt-5-mini-2025-08-07",
+            "promises": 0
+          },
+          "at": "2026-11-15T11:15:18.851Z",
+          "comparison": {
+            "at": "2026-11-15T11:15:18.851Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "version": 2
+      },
+      "passed": true
+    }
+  ]
+}
