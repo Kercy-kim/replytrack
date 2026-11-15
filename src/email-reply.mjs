@@ -23,22 +23,26 @@ export function splitEmailEvidence(data, messages) {
 // Only agent additions: the customer's existing question identities cannot change.
 // Keep every source message and all semantic decisions in the model's context.
 export function emailReplyPlan(c) {
+  return c.channel === 'email' ? replyAnalysisPlan(c) : null;
+}
+
+export function replyAnalysisPlan(c) {
   const count = c.analyzedMessageCount;
-  if (c.channel !== 'email' || !c.analysis || !Number.isInteger(count) || count < 1 || count >= c.messages.length || !c.questions.length
+  if ((c.channel !== undefined && !['email', 'chat'].includes(c.channel)) || !c.analysis || !Number.isInteger(count) || count < 1 || count >= c.messages.length || !c.questions.length
     || c.messages.slice(count).some(m => m.role !== 'agent')
     || c.questions.some(q => !/[가-힣]/.test(q.title) || !c.messages.slice(0, count).some(m => m.role === 'customer' && m.id === q.source?.messageId && m.text.includes(q.source.quote)))) return null;
   const schema = analysisSchemaFor(c.messages, c.channel);
   const question = schema.properties.questions.items;
-  delete question.properties.title; delete question.properties.source;
-  question.required = question.required.filter(k => !['title', 'source'].includes(k));
+  delete question.properties.title; delete question.properties.source; delete question.properties.followUp;
+  question.required = question.required.filter(k => !['title', 'source', 'followUp'].includes(k));
   question.properties.id = { type: 'string', enum: c.questions.map(q => q.id) };
   schema.properties.questions.minItems = c.questions.length;
   schema.properties.questions.maxItems = c.questions.length;
   return {
     schema,
     effort: c.questions.length <= 4 && c.messages.length <= 6 && c.messages.reduce((n, m) => n + m.text.length, 0) <= 2500
-      && !c.messages.some(m => m.role === 'agent' && /정정|철회|변경|조건|경우|예외|\b(if|unless|only|except|provided|after|before|once|when|until|instead|correction|corrected|previous|revised|retracted|disregard|however)\b/i.test(m.text)) ? 'low' : 'medium',
-    instructions: '\n이번에는 고객의 새 질문 없이 업체 답변만 추가되었습니다. existingQuestions의 각 id를 정확히 한 번씩 반환하고 모든 원문을 검토해 상태·이유·근거·followUp과 약속을 갱신하세요. 기존 질문의 title/source는 서버가 원래 값 그대로 복원하므로 출력하지 않습니다. 질문을 합치거나 새 질문을 만들지 마세요. 이전 상태는 정답이 아니며 새 답변의 정정·조건·부정도 다시 판단하세요. 일반적인 심사·검토 소요 기간 설명은 그 자체로 특정 행동 약속이 아닙니다. 이미 수신·접수한 행동의 기한에 후속 심사·검토 기간을 붙이지 마세요.',
+      && !c.messages.some(m => m.role === 'agent' && /정정|철회|번복|변경|조건|경우|예외|원칙|다만|하지만|잘못|앞서|앞선|면|기한.{0,20}취소|취소.{0,20}기한|\b(if|unless|only|except|provided|after|before|once|when|until|instead|correct(?:ion|ed|ing)?|incorrect|revis(?:e|ed|ion)|retract(?:ed|ion)?|supersed\w*|previous(?:ly)?|chang(?:e|ed)|disregard|however)\b/i.test(m.text)) ? 'low' : 'medium',
+    instructions: '\n이번에는 고객의 새 질문 없이 업체 답변만 추가되었습니다. existingQuestions의 각 id를 정확히 한 번씩 반환하고 모든 원문을 검토해 상태·이유·근거와 약속을 갱신하세요. 기존 질문의 title/source는 서버가 원래 값 그대로 복원하므로 출력하지 않습니다. 질문을 합치거나 새 질문을 만들지 마세요. 이전 상태는 정답이 아니며 새 답변의 정정·조건·부정도 다시 판단하세요. 일반적인 심사·검토 소요 기간 설명은 그 자체로 특정 행동 약속이 아닙니다. 이미 수신·접수한 행동의 기한에 후속 심사·검토 기간을 붙이지 마세요.',
     restore(data) {
       const rows = data?.questions;
       if (!Array.isArray(rows) || rows.length !== c.questions.length || new Set(rows.map(q => q?.id)).size !== rows.length

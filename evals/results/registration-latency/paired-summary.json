@@ -1,0 +1,321 @@
+{
+  "source": "evals/results/registration-latency/paired.json",
+  "sourceSha256": "6e04220de298043c124c80eeb543be59fc0c0cb99e0e456bc6697c5880bb02d0",
+  "model": "gpt-5-mini-2025-08-07",
+  "fixtureHashAtRun": "b97546db7e9848a756f09d7366b202621b801a801399df390f701796e0d775e8",
+  "fixtureHashAtScoring": "8ed0a0199f9a7584992fe4afa639af617c193c3d1d6a61408f6a803d3c0f7aba",
+  "gradingNote": "New receipt actions may have new IDs; repeated unchanged promises may cite either declared equivalent message; title synonyms identify the same question. Original scores remain in the source report. Semantic state or promise errors are still failures.",
+  "before": {
+    "cases": 12,
+    "passedCases": 10,
+    "stages": 22,
+    "passedStages": 19,
+    "initial": {
+      "count": 12,
+      "medianMs": 14220.5,
+      "meanMs": 15265,
+      "minMs": 9393,
+      "maxMs": 22709
+    },
+    "reply": {
+      "count": 10,
+      "medianMs": 17373.5,
+      "meanMs": 18058,
+      "minMs": 12610,
+      "maxMs": 26359
+    },
+    "calls": 24,
+    "observedTokens": 152960,
+    "observedOutputTokens": 39270,
+    "unobservedRequests": 1,
+    "failures": [
+      {
+        "id": "WEB-EMAIL",
+        "repeat": 1,
+        "issues": [
+          "promise:수신|접수|거래|수령|[Rr]eceived: ambiguous match",
+          "extra promise: Transaction ID received",
+          "extra promise: Review will take 3 business days"
+        ]
+      },
+      {
+        "id": "WEB-EMAIL",
+        "repeat": 2,
+        "issues": [
+          "status:서류|자료|문서: expected answered, got partial",
+          "promise:수신|접수|거래|수령|[Rr]eceived: ambiguous match",
+          "extra promise: 거래 ID 접수 통보",
+          "extra promise: 검토 예정 기간 안내"
+        ]
+      }
+    ]
+  },
+  "after": {
+    "cases": 12,
+    "passedCases": 11,
+    "stages": 22,
+    "passedStages": 21,
+    "initial": {
+      "count": 12,
+      "medianMs": 15610,
+      "meanMs": 15675,
+      "minMs": 8816,
+      "maxMs": 23674
+    },
+    "reply": {
+      "count": 10,
+      "medianMs": 21212,
+      "meanMs": 18990,
+      "minMs": 9318,
+      "maxMs": 28668
+    },
+    "calls": 24,
+    "observedTokens": 150098,
+    "observedOutputTokens": 36919,
+    "unobservedRequests": 2,
+    "failures": [
+      {
+        "id": "WEB-EMAIL",
+        "repeat": 1,
+        "issues": [
+          "status:서류|자료|문서: expected answered, got partial"
+        ]
+      }
+    ]
+  },
+  "reductionPercent": {
+    "initialMedian": -9.8,
+    "replyMedian": -22.1,
+    "totalTokens": null
+  },
+  "pairs": [
+    {
+      "id": "S06",
+      "repeat": 1,
+      "beforePassed": true,
+      "afterPassed": true,
+      "stages": [
+        {
+          "phase": "initial",
+          "beforeMs": 19782,
+          "afterMs": 8816,
+          "qualityRegression": false
+        },
+        {
+          "phase": "reply",
+          "beforeMs": 19115,
+          "afterMs": 22708,
+          "qualityRegression": false
+        }
+      ]
+    },
+    {
+      "id": "R03",
+      "repeat": 1,
+      "beforePassed": true,
+      "afterPassed": true,
+      "stages": [
+        {
+          "phase": "initial",
+          "beforeMs": 11390,
+          "afterMs": 13936,
+          "qualityRegression": false
+        },
+        {
+          "phase": "reply",
+          "beforeMs": 17911,
+          "afterMs": 15130,
+          "qualityRegression": false
+        }
+      ]
+    },
+    {
+      "id": "NS03",
+      "repeat": 1,
+      "beforePassed": true,
+      "afterPassed": true,
+      "stages": [
+        {
+          "phase": "initial",
+          "beforeMs": 14154,
+          "afterMs": 10389,
+          "qualityRegression": false
+        },
+        {
+          "phase": "reply",
+          "beforeMs": 16836,
+          "afterMs": 22059,
+          "qualityRegression": false
+        }
+      ]
+    },
+    {
+      "id": "NU02",
+      "repeat": 1,
+      "beforePassed": true,
+      "afterPassed": true,
+      "stages": [
+        {
+          "phase": "initial",
+          "beforeMs": 14287,
+          "afterMs": 15820,
+          "qualityRegression": false
+        }
+      ]
+    },
+    {
+      "id": "WEB-REFUND",
+      "repeat": 1,
+      "beforePassed": true,
+      "afterPassed": true,
+      "stages": [
+        {
+          "phase": "initial",
+          "beforeMs": 22709,
+          "afterMs": 21679,
+          "qualityRegression": false
+        },
+        {
+          "phase": "reply",
+          "beforeMs": 23026,
+          "afterMs": 28668,
+          "qualityRegression": false
+        }
+      ]
+    },
+    {
+      "id": "WEB-EMAIL",
+      "repeat": 1,
+      "beforePassed": false,
+      "afterPassed": false,
+      "stages": [
+        {
+          "phase": "initial",
+          "beforeMs": 12977,
+          "afterMs": 20099,
+          "qualityRegression": true
+        },
+        {
+          "phase": "reply",
+          "beforeMs": 15068,
+          "afterMs": 9318,
+          "qualityRegression": false
+        }
+      ]
+    },
+    {
+      "id": "R03",
+      "repeat": 2,
+      "beforePassed": true,
+      "afterPassed": true,
+      "stages": [
+        {
+          "phase": "initial",
+          "beforeMs": 13533,
+          "afterMs": 11664,
+          "qualityRegression": false
+        },
+        {
+          "phase": "reply",
+          "beforeMs": 12610,
+          "afterMs": 25503,
+          "qualityRegression": false
+        }
+      ]
+    },
+    {
+      "id": "S06",
+      "repeat": 2,
+      "beforePassed": true,
+      "afterPassed": true,
+      "stages": [
+        {
+          "phase": "initial",
+          "beforeMs": 12719,
+          "afterMs": 15597,
+          "qualityRegression": false
+        },
+        {
+          "phase": "reply",
+          "beforeMs": 21402,
+          "afterMs": 20365,
+          "qualityRegression": false
+        }
+      ]
+    },
+    {
+      "id": "NU02",
+      "repeat": 2,
+      "beforePassed": true,
+      "afterPassed": true,
+      "stages": [
+        {
+          "phase": "initial",
+          "beforeMs": 19061,
+          "afterMs": 16029,
+          "qualityRegression": false
+        }
+      ]
+    },
+    {
+      "id": "NS03",
+      "repeat": 2,
+      "beforePassed": true,
+      "afterPassed": true,
+      "stages": [
+        {
+          "phase": "initial",
+          "beforeMs": 9393,
+          "afterMs": 14774,
+          "qualityRegression": false
+        },
+        {
+          "phase": "reply",
+          "beforeMs": 13803,
+          "afterMs": 13295,
+          "qualityRegression": false
+        }
+      ]
+    },
+    {
+      "id": "WEB-EMAIL",
+      "repeat": 2,
+      "beforePassed": false,
+      "afterPassed": true,
+      "stages": [
+        {
+          "phase": "initial",
+          "beforeMs": 17139,
+          "afterMs": 15623,
+          "qualityRegression": false
+        },
+        {
+          "phase": "reply",
+          "beforeMs": 14447,
+          "afterMs": 10117,
+          "qualityRegression": false
+        }
+      ]
+    },
+    {
+      "id": "WEB-REFUND",
+      "repeat": 2,
+      "beforePassed": true,
+      "afterPassed": true,
+      "stages": [
+        {
+          "phase": "initial",
+          "beforeMs": 16035,
+          "afterMs": 23674,
+          "qualityRegression": false
+        },
+        {
+          "phase": "reply",
+          "beforeMs": 26359,
+          "afterMs": 22739,
+          "qualityRegression": false
+        }
+      ]
+    }
+  ]
+}

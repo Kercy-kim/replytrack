@@ -27,6 +27,12 @@ export function analysisSchemaFor(messages, channel) {
   const ids = role => messages.filter(m => m.role === role).map(m => m.id);
   const reference = role => object({ messageId: { type: 'string', ...(ids(role).length ? { enum: ids(role) } : {}) }, quote: text });
   const question = schema.properties.questions.items.properties;
+  // Follow-up drafts are generated and reviewed separately from selected questions.
+  // Keep initial email output identical to the baseline; compact replies remove it.
+  if (channel !== 'email') {
+    delete question.followUp;
+    schema.properties.questions.items.required = schema.properties.questions.items.required.filter(k => k !== 'followUp');
+  }
   if (channel === 'email') question.title = { type: 'string', pattern: '[가-힣]', description: '한국어 사용자가 읽을 질문 제목. 영문 질문도 의미를 보존해 한국어로 쓴다. 원문 인용은 번역하지 않는다.' };
   question.source = reference('customer');
   question.evidence.items = reference('agent');

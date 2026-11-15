@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { emailReplyPlan, splitEmailEvidence } from '../src/email-reply.mjs';
+import { emailReplyPlan, replyAnalysisPlan, splitEmailEvidence } from '../src/email-reply.mjs';
 import { ReplyTrack } from '../src/service.mjs';
 import { CaseStore } from '../src/store.mjs';
 const saved = JSON.parse(readFileSync(new URL('../evals/results/live-browser/inquiry-overview.json', import.meta.url))).cases.find(c => c.name === 'email');
@@ -11,7 +11,8 @@ test('email agent-only updates preserve question identity and full semantic deci
   const c = fixture(), original = structuredClone(c), plan = emailReplyPlan(c);
   const properties = plan.schema.properties.questions.items.properties;
   assert(!('source' in properties)); assert(!('title' in properties));
-  for (const field of ['status', 'reason', 'evidence', 'followUp']) assert(field in properties);
+  for (const field of ['status', 'reason', 'evidence']) assert(field in properties);
+  assert(!('followUp' in properties));
   const data = structuredClone(saved.updated);
   data.questions.forEach(q => { delete q.title; delete q.source; });
   const result = plan.restore(data);
@@ -22,6 +23,38 @@ test('email agent-only updates preserve question identity and full semantic deci
     assert.equal(q.status, updated.status); assert.deepEqual(q.evidence, updated.evidence);
   }
   assert.deepEqual(result.promises, data.promises); assert.deepEqual(c, original);
+});
+
+test('short chat replies use compact output while corrections keep medium reasoning', () => {
+  const c = fixture(); delete c.channel; // Chat records omit channel in persistent storage.
+  const plan = replyAnalysisPlan(c); assert(plan); assert.equal(plan.effort, 'low');
+  const result = plan.restore(saved.updated);
+  for (const q of result.questions) { const original = c.questions.find(x => x.id === q.id); assert.equal(q.title, original.title); assert.deepEqual(q.source, original.source); }
+  c.messages.at(-1).text += '앞서 안내한 기한은 취소합니다.'; assert.equal(replyAnalysisPlan(c).effort, 'medium');
+  c.messages.at(-1).role = 'customer'; assert.equal(replyAnalysisPlan(c), null);
+});
+
+test('compact chat updates preserve user corrections and source while applying new AI decisions', async () => {
+  const store = new CaseStore(':memory:');
+  try {
+    const input = fixture(); input.channel = 'chat';
+    input.questions[0].title = input.questions[0].manualTitle = '직접 수정한 필요 자료';
+    input.questions[0].status = input.questions[0].manualStatus = 'review';
+    const c = store.create(input), calls = [];
+    const service = new ReplyTrack(store, { async structured(args) {
+      calls.push(args); const data = structuredClone(saved.updated);
+      data.questions.forEach(q => { delete q.title; delete q.source; delete q.followUp; });
+      return { data, model: 'fixture' };
+    } });
+    const result = await service.analyze(c.id, c.version);
+    assert.equal(calls.length, 1);
+    assert(!calls[0].schema.properties.questions.items.properties.source);
+    const q = result.questions.find(q => q.id === c.questions[0].id);
+    assert.equal(q.title, '직접 수정한 필요 자료'); assert.equal(q.status, 'review'); assert.equal(q.aiStatus, 'answered');
+    assert.deepEqual(q.source, c.questions[0].source);
+    assert.deepEqual(result.questions.map(q => q.id), c.questions.map(q => q.id));
+    assert(result.questions.every(q => q.followUp === ''));
+  } finally { store.close(); }
 });
 
 test('initial, new customer questions, unknown speakers and stale source identities use full analysis', () => {
@@ -43,7 +76,7 @@ test('compact results cannot drop, duplicate or invent question identities', () 
 
 test('conditional, corrected and long email histories keep medium reasoning', () => {
   assert.equal(emailReplyPlan(fixture()).effort, 'low');
-  for (const cue of ['Only if approved.', 'After verification.', 'Correction: the previous date is wrong.', 'Unless you reply.', '정정합니다.']) {
+  for (const cue of ['Only if approved.', 'After verification.', 'Correction: the previous date is wrong.', 'Unless you reply.', '정정합니다.', '번복합니다.', 'The delivery date has changed.', 'We retract the deadline.', 'That amount was incorrect.']) {
     const c = fixture(); c.messages.at(-1).text += cue; assert.equal(emailReplyPlan(c).effort, 'medium');
   }
   const c = fixture(); c.messages.at(-1).text += 'text '.repeat(600); assert.equal(emailReplyPlan(c).effort, 'medium');

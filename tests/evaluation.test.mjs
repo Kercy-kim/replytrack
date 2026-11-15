@@ -41,6 +41,23 @@ test('evaluation rejects stale deadline and invented user confirmation', () => {
   assert.equal(result.metrics.correctPromises, 0);
   assert.equal(result.pass, false);
 });
+
+test('new follow-up actions may get new IDs but existing commitments must keep theirs', () => {
+  const before = record(), after = record();
+  after.promises = [{ id: 'new-p', title: '안내', evidence: { messageId: 'm2', quote: '안내하겠습니다.' }, state: 'promised', dueAt: null, dueText: '', confirmedAt: null }];
+  const gold = { ...expected, promises: [{ message: 1, topic: '안내', state: 'promised', dueAt: null, deadline: '', isNew: true }] };
+  assert(grade(after, gold, before).pass);
+  delete gold.promises[0].isNew; assert(!grade(after, gold, before).pass);
+  before.promises = structuredClone(after.promises); assert(grade(after, gold, before).pass);
+  gold.promises[0].isNew = true; assert(!grade(after, gold, before).pass);
+});
+
+test('repeated unchanged promises can cite only explicitly allowed equivalent messages', () => {
+  const c = record(); c.messages.push({ ...c.messages[1], id: 'm3' });
+  c.promises = [{ id: 'p', title: '안내', evidence: { messageId: 'm3', quote: '안내하겠습니다.' }, state: 'promised', dueAt: null, dueText: '', confirmedAt: null }];
+  const gold = { ...expected, promises: [{ message: 1, messageOptions: [1, 2], topic: '안내', state: 'promised', dueAt: null, deadline: '' }] };
+  assert(grade(c, gold).pass); delete gold.promises[0].messageOptions; assert(!grade(c, gold).pass);
+});
 test('evaluation preserves failed-call counts separately from graded output', () => {
   const summary = summarize([{ stages: [], calls: [{ error: { code: 'AI_TIMEOUT' }, ms: 90000 }], error: { code: 'AI_TIMEOUT' } }]);
   assert.equal(summary.cases, 1); assert.equal(summary.completedCases, 0);

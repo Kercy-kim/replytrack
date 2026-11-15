@@ -11,7 +11,7 @@ import { maskPrivate, privacyEnvelope } from './privacy.mjs';
 import { readImage } from './ocr.mjs';
 import { OfficialFaq, officialGuide } from './official-guide.mjs';
 import { createEmailDemo, emailDemoExplanation } from './email-demo.mjs';
-import { emailReplyPlan, splitEmailEvidence } from './email-reply.mjs';
+import { replyAnalysisPlan, splitEmailEvidence } from './email-reply.mjs';
 import { EMAIL_TRANSCRIPT_PROMPT, EMAIL_ANALYSIS_PROMPT, EMAIL_ACTIONS_PROMPT, EMAIL_EXPLANATION_PROMPT, EMAIL_EXPLANATION_REVIEW_PROMPT, emailReviewSchema, emailExplanationSchema, validateEmailExplanation, validateEmailTranscript, draftLanguagePrompt } from './email.mjs';
 
 // Derived reasoning and suggested follow-ups are not independent source facts.
@@ -37,6 +37,23 @@ export function analysisReasoningEffort(record) {
   const futureInformation = /(?:안내|알려|답변|회신)[^.!?\n]{0,24}(?:겠|드릴|드리|예정)|\b(?:will|shall|going to)\b[^.!?\n]{0,80}\b(?:update|inform|confirm|reply|tell|let you know)\b/i;
   return record.channel === 'email' || record.messages.length > 8 || record.messages.reduce((n, m) => n + m.text.length, 0) > 8000 || record.messages.some(m => m.role === 'agent' && (correction.test(m.text) || conditional.test(m.text) || futureInformation.test(m.text))) ? 'medium' : 'low';
 }
+
+// Only short first-time chats qualify. These cues route computation, never assign statuses.
+const futureAnswer = /(?:안내|알려|답변|회신)[^.!?\n]{0,24}(?:겠|드릴|예정)|\b(?:will|shall|going to)\b[^.!?\n]{0,80}\b(?:update|inform|reply|tell|let you know)\b/i;
+export function fastInitialAnalysis(record) {
+  const complex = /정정|철회|번복|변경|잘못|앞서|앞선|면|경우|조건|원칙|예외|다만|하지만|취소|\b(if|unless|only|except|provided|after|before|once|when|until|instead|correct\w*|incorrect|revis\w*|retract\w*|supersed\w*|chang(?:e|ed)|disregard|previous\w*|however)\b/i;
+  return record.channel !== 'email' && !record.analysis && !record.questions?.length && record.messages.length <= 4 && record.messages.reduce((n, m) => n + m.text.length, 0) <= 2000 && record.messages.some(m => m.role === 'agent' && futureAnswer.test(m.text)) && !record.messages.some(m => m.role === 'agent' && complex.test(m.text));
+}
+export function futureAnswerNeedsReview(data, record) {
+  const latestAgent = record.messages.findLast(m => m.role === 'agent')?.id;
+  return data.questions.some(q => q.status === 'answered' && (
+    q.evidence.some(e => e.messageId === latestAgent && futureAnswer.test(e.quote)) ||
+    data.promises.some(p => p.state === 'promised' && p.questionIds.includes(q.id) && futureAnswer.test(p.evidence.quote))
+  ));
+}
+// Review a potentially invented omission, without deciding whether the answer is complete.
+export const partialScopeNeedsReview = (data, record) => record.channel === 'email' && data.questions.some(q => q.status === 'partial' && /(?:다른|추가|나머지|그\s*밖)[^.!?\n]{0,24}(?:서류|자료|문서|요건|요구사항|항목)/.test(q.reason));
+export const durationPromiseNeedsReview = (data, record) => record.channel === 'email' && data.promises.some(p => p.state === 'promised' && /\b(?:review|processing|assessment|verification)\s+(?:(?:usually|typically|generally)\s+)?(?:will\s+take|takes?)\b/i.test(p.evidence.quote));
 
 function analysisUsage(results) {
   const usages = results.map(r => r.usage).filter(Boolean);
@@ -216,13 +233,16 @@ export class ReplyTrack {
       if (c.mode === 'demo') result = { data: demoAnalysis(c), model: '준비된 예제 · AI 호출 없음', usage: null };
       else {
         const data = analysisContext(c);
-        const replyPlan = emailReplyPlan(c);
+        const replyPlan = replyAnalysisPlan(c);
         let revision = {};
         for (let attempt = 0; attempt < 2; attempt++) {
           if (attempt) this.getVersion(id, version);
           // Keep complex histories, semantic reviews and evidence repair at medium.
           const plan = attempt === 0 ? replyPlan : null;
-          result = await this.ask({ name: 'replytrack_analysis', schema: plan?.schema ?? analysisSchemaFor(c.messages, c.channel), instructions: ANALYSIS_PROMPT + (c.channel === 'email' ? `\n${EMAIL_ANALYSIS_PROMPT}` : '') + (plan?.instructions || ''), reasoningEffort: attempt ? 'medium' : plan?.effort ?? analysisReasoningEffort(c), data: { ...data, ...revision } }, context, attempt ? 'analysis_repair' : 'analysis');
+          const schema = plan?.schema ?? analysisSchemaFor(c.messages, c.channel);
+          const outputScope = schema.properties.questions.items.properties.followUp ? '' : '\n이번 출력에는 followUp이 없습니다. 재문의 문장은 별도 생성·검토하므로 생성하지 말고 상태·이유·근거·약속 판단에 집중하세요.';
+          const effort = attempt ? 'medium' : plan?.effort ?? (fastInitialAnalysis(c) ? 'low' : analysisReasoningEffort(c));
+          result = await this.ask({ name: 'replytrack_analysis', schema, instructions: ANALYSIS_PROMPT + (c.channel === 'email' ? `\n${EMAIL_ANALYSIS_PROMPT}` : '') + (plan?.instructions || '') + outputScope, reasoningEffort: effort, data: { ...data, ...revision } }, context, attempt ? 'analysis_repair' : 'analysis');
           results.push(result); attempts++;
           checkpoint(context, 'validation');
           let restoreError;
@@ -232,6 +252,9 @@ export class ReplyTrack {
           if (!restoreError && c.channel === 'email') result.data.questions.forEach((q, i) => {
             if (typeof q.title !== 'string' || !/[가-힣]/.test(q.title)) validationErrors.push(`questions[${i}].title: 원문 질문의 의미를 보존한 한국어 제목으로 작성하세요. source/evidence 인용은 원문 언어 그대로 유지하세요`);
           });
+          if (!validationErrors.length && effort === 'low' && futureAnswerNeedsReview(result.data, c)) validationErrors.push('답변 받음의 근거에 향후 확인·안내 약속이 있습니다. 질문한 행동의 처리 날짜와 답을 알려줄 날짜가 같은지 원문을 다시 대조하세요. 안내 시점 자체를 물었다면 answered가 맞을 수도 있으므로 자동으로 waiting으로 바꾸지 마세요');
+          if (!attempt && !validationErrors.length && partialScopeNeedsReview(result.data, c)) validationErrors.push('부분 답변의 누락 사유가 원문에 실제 존재하는지 다시 확인하세요. 필요한 자료가 무엇인지 물었고 업체가 제출할 항목을 명확히 제시했다면, 그 밖의 자료가 더 있을 것이라고 추측해 partial로 낮추지 마세요. 사용자가 실제로 여러 항목을 물었거나 업체가 일부 목록이라고 명시했다면 빠진 항목을 유지해야 합니다. 자동으로 answered로 바꾸지 말고 원문에서 요구 범위를 다시 판단하세요');
+          if (!attempt && !validationErrors.length && durationPromiseNeedsReview(result.data, c)) validationErrors.push('검토·처리 소요 기간 답변을 별도 업무 약속으로 만들었는지 다시 확인하세요. The review will take 3 business days처럼 기간만 설명하면 심사 기간 질문의 답이지 독립 처리 약속이 아닙니다. 원문에 이 고객 건을 검토하겠다거나 결과를 보내겠다는 별도 행동의 확약이 있을 때만 그 행동 약속을 유지하세요. 자료를 받았다는 실제 수신 통보는 reported로 보존하고 일반 심사 기간을 그 수신 기한으로 옮기지 마세요');
           if (!validationErrors.length) break;
           if (attempt === 1) throw new AppError(502, '분석의 원문 인용과 상태를 다시 확인했지만 맞지 않아 저장하지 않았습니다. 기존 기록은 유지됩니다.', 'AI_EVIDENCE');
           revision = { revisionFeedback: `앞선 생성에서 다음 원문 인용 또는 상태·근거의 일관성 오류가 있었습니다: ${validationErrors.join(', ')}. source는 customer, evidence는 agent의 실제 ID와 정확한 원문 부분 문자열이어야 합니다. 동의어 치환·조사 생략·띄어쓰기 수정·요약을 하지 말고 원문을 그대로 복사하세요. 미답변인데 근거가 있다면 그 근거의 관련성을 다시 판단하고, 관련 안내가 있으면 맞는 상태를 선택하고 무관한 안내면 근거에서 제외하세요. 최종 상태를 답하지 않았어도 같은 처리의 실행 방법을 안내했다면 partial이며 방법 안내를 근거에 보존하세요. 미답변 형식에 맞추려고 관련 근거만 삭제하지 마세요. 잘못된 출력을 재사용하지 말고 제공된 원문과 기존 기록에서 전체 분석을 다시 반환하세요.` };

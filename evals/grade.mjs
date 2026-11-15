@@ -24,14 +24,16 @@ export function grade(record, expected, previous = null) {
   });
   for (const extra of record.questions.filter(x => !matched.has(x.id))) issues.push(`extra question: ${extra.title}`);
   const promiseResults = expected.promises.map(gold => {
-    const matches = record.promises.filter(x => !promiseMatches.has(x.id) && x.evidence.messageId === record.messages[gold.message].id && new RegExp(gold.topic).test(x.title + ' ' + x.evidence.quote));
+    const messageIds = (gold.messageOptions || [gold.message]).map(i => record.messages[i].id);
+    const matches = record.promises.filter(x => !promiseMatches.has(x.id) && messageIds.includes(x.evidence.messageId) && new RegExp(gold.topic).test(x.title + ' ' + x.evidence.quote));
     const actual = matches.length === 1 ? matches[0] : null;
     if (!actual) { issues.push(`promise:${gold.topic}: ${matches.length ? 'ambiguous match' : 'missing'}`); return { gold, actual: null, ok: false }; }
     promiseMatches.add(actual.id);
     const deadlineOK = gold.deadlineOptions ? gold.deadlineOptions.includes(actual.dueText) : gold.deadline ? actual.dueText.includes(gold.deadline) : !actual.dueText;
     const ok = actual.state === gold.state && actual.dueAt === gold.dueAt && deadlineOK && !actual.confirmedAt;
     if (!ok) issues.push(`promise:${gold.topic}: expected ${gold.state}/${gold.dueAt}/${gold.deadline}, got ${actual.state}/${actual.dueAt}/${actual.dueText}`);
-    if (previous && !previous.promises.some(x => x.id === actual.id)) issues.push(`identity:promise ${gold.topic}: existing promise id changed`);
+    if (previous && !gold.isNew && !previous.promises.some(x => x.id === actual.id)) issues.push(`identity:promise ${gold.topic}: existing promise id changed`);
+    if (previous && gold.isNew && previous.promises.some(x => x.id === actual.id)) issues.push(`identity:promise ${gold.topic}: new action reused an existing promise id`);
     return { gold, actual: { id: actual.id, title: actual.title, state: actual.state, dueAt: actual.dueAt, dueText: actual.dueText, confirmedAt: actual.confirmedAt }, ok };
   });
   for (const extra of record.promises.filter(x => !promiseMatches.has(x.id))) issues.push(`extra promise: ${extra.title}`);
