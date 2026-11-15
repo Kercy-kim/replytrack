@@ -177,6 +177,8 @@ try {
       await page.locator('[data-action=generate-draft][data-kind=followup]').click(); await idle();
       const c = current(); const draft = c.drafts.followup;
       assert(draft.review); assert.match(draft.body, fixture.draft);
+      if (fixture.name === 'refund') assert(!/언제\s*(?:안내|알려)|안내\s*(?:시점|기한|일정)|금액|결제\s*수단/.test(draft.body), 'Refund follow-up must ask only the missing refund date, not the known notification deadline or answered details.');
+      if (fixture.name === 'email') assert(!/what documents|how long|when[^?]*(?:review|recover)|have you received/i.test(draft.body), 'Email follow-up must not re-ask answered document, receipt or review-duration details.');
       assert(report.calls.some(call => call.name === 'replytrack_draft' && call.tokens > 0));
       assert(draft.sourceMessageIds.every(id => c.messages.some(m => m.id === id)));
       assert(!/\b[0-9a-f]{8}-[0-9a-f-]{27}\b|_r\d+/.test(draft.body));

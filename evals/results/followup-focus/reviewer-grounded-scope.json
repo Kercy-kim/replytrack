@@ -1,0 +1,716 @@
+{
+  "at": "2026-11-15T17:16:08.518Z",
+  "variant": "after",
+  "probes": true,
+  "model": "gpt-5-mini-2025-08-07",
+  "scope": "Live production reviewer on frozen good/bad drafts; not a generation accuracy measure.",
+  "hashes": {
+    "src/service.mjs": "9148356ae71793a143a3aeec3f58637b1998b10dbb0b28d890d04793f0e14a28",
+    "src/prompts.mjs": "6f5d2c12f7fd4dab4983901169a1bff596fdcc4a935fcde1265fdc9dd048dd54",
+    "src/feature-review.mjs": "267a8189434b2cbc24eb41a50389eb4bc07f31d127fe10e98022cdb9c602f22c",
+    "src/schema.mjs": "1e1bddb536932c04331f9c6824901b15a389c566a6ed45b5f9e80d04f759c9f5",
+    "src/email.mjs": "4c8a0c9c30b282bb9676efa6fe1abf0e1207f28412eed9e06b619f7604d814d6"
+  },
+  "fixturesHash": "942732db5628bb2a6fa5e30ebe77069ba9cd87d036ec0f8b274dcfb158abef3b",
+  "results": [
+    {
+      "id": "F03",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 9946,
+          "data": {
+            "scopeSummary": "Customer asked: \"What documents do I need and how long does the review take?\" Agent replied: \"Please send the transaction ID from your purchase receipt. The review duration is not known yet.\" Thus: (a) requested information = documents required and review duration; (b) already received = the agent asked for the transaction ID from the purchase receipt; (c) still missing = a concrete answer for how long the review will take. The draft asks only the unresolved item: \"How long will the review take?\"",
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 9945,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 9941,
+                "httpStatus": 200,
+                "bodyMs": 3,
+                "usage": {
+                  "input_tokens": 4046,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 833,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 640
+                  },
+                  "total_tokens": 4879
+                },
+                "elapsedMs": 9945
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4046,
+            "output_tokens": 833,
+            "total_tokens": 4879,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 14996,
+          "data": {
+            "scopeSummary": "Customer asked two things: (1) what documents are needed, and (2) how long the review takes. Agent replied: “Please send the transaction ID from your purchase receipt.” and “The review duration is not known yet.” (a) Actual requested info: list of required documents; review duration. (b) Already received from the agent: the agent specifically requested the transaction ID from the purchase receipt; the agent also stated the review duration is not known yet. (c) Still missing / unresolved: whether any other documents are required in addition to the transaction ID; the actual review duration (a definite time estimate).",
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": false
+            },
+            "feedback": "Problem: The draft re-asks an item already answered by the agent. The agent already requested the transaction ID (this was provided as required documentation), so asking broadly “What documents do I need” repeats an answered question.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 14996,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 14703,
+                "httpStatus": 200,
+                "bodyMs": 292,
+                "usage": {
+                  "input_tokens": 4052,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3968
+                  },
+                  "output_tokens": 1741,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1472
+                  },
+                  "total_tokens": 5793
+                },
+                "elapsedMs": 14996
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4052,
+            "output_tokens": 1741,
+            "total_tokens": 5793,
+            "input_tokens_details": {
+              "cached_tokens": 3968
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1472
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 10203,
+          "data": {
+            "scopeSummary": "Customer asked two things: which documents are needed, and how long the review takes. Agent replied that the transaction ID from the purchase receipt is required, and stated the review duration is not known yet. Therefore: (a) actual requested information = list of required documents; review duration/time to complete the review. (b) already received information = the agent requires the transaction ID from the purchase receipt. (c) still missing information = whether any other documents are required in addition to the transaction ID, and the review duration (when/how long the review will take).",
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 10203,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 10153,
+                "httpStatus": 200,
+                "bodyMs": 50,
+                "usage": {
+                  "input_tokens": 4059,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3968
+                  },
+                  "output_tokens": 859,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 640
+                  },
+                  "total_tokens": 4918
+                },
+                "elapsedMs": 10203
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4059,
+            "output_tokens": 859,
+            "total_tokens": 4918,
+            "input_tokens_details": {
+              "cached_tokens": 3968
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "420a5ce2-d7dd-4424-af9d-10de393c54cc",
+        "title": "영어 복합 질문의 서류 답변 제외",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:16:08.521Z",
+        "updatedAt": "2026-11-15T17:16:08.521Z",
+        "messages": [
+          {
+            "id": "d2c83c40-3224-4409-bafa-196e97aab9b7",
+            "role": "customer",
+            "text": "What documents do I need and how long does the review take?",
+            "sentAt": null
+          },
+          {
+            "id": "8d2ad218-0ee4-4a8b-bd07-61d92bd5a40c",
+            "role": "agent",
+            "text": "Please send the transaction ID from your purchase receipt. The review duration is not known yet.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "d3ad3908-e425-4767-b563-4a83c9d63741",
+            "title": "필요한 자료와 심사 기간",
+            "source": {
+              "messageId": "d2c83c40-3224-4409-bafa-196e97aab9b7",
+              "quote": "What documents do I need and how long does the review take?"
+            },
+            "status": "partial",
+            "aiStatus": "partial",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "8d2ad218-0ee4-4a8b-bd07-61d92bd5a40c",
+                "quote": "Please send the transaction ID from your purchase receipt. The review duration is not known yet."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "ce9e2d4d-6b6a-4750-879f-638e2cf5ab73",
+            "at": "2026-11-15T17:16:08.521Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "How long will the review take?",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "What documents do I need and how long will the review take?",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        },
+        {
+          "label": "alternative",
+          "body": "Which additional documents do you need besides the transaction ID? Also, how long will the review take?",
+          "expected": false,
+          "approved": true,
+          "passed": false
+        }
+      ],
+      "passed": false
+    },
+    {
+      "id": "F11",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 11583,
+          "data": {
+            "scopeSummary": "Customer asked whether both a receipt ID and a photo of their ID card are needed. Agent replied asking for the receipt ID and stating that it is not yet determined whether an ID photo is required. (a) Actual questions: whether the receipt ID is needed; whether a photo of the ID card is needed. (b) Already received info: agent requested the receipt ID. (c) Still missing: confirmation whether a photo of the ID card is required.",
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 11583,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 11567,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 4051,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3840
+                  },
+                  "output_tokens": 976,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 768
+                  },
+                  "total_tokens": 5027
+                },
+                "elapsedMs": 11583
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4051,
+            "output_tokens": 976,
+            "total_tokens": 5027,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 768
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 11937,
+          "data": {
+            "scopeSummary": "Customer asked if the company needs both the receipt ID and a photo of their ID card. Agent replied: “Please send your receipt ID” and said it has not been determined whether an ID photo is required. (a) Actual asked info: whether receipt ID and ID-photo are needed. (b) Already received: request to send the receipt ID. (c) Still lacking: whether a photo of the ID card is required.",
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": false
+            },
+            "feedback": "The draft re-asks about the receipt ID even though the agent already requested it. Remove the receipt-ID part and ask only whether a photo of the ID card is required (or when that will be confirmed).",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 11936,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 11935,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 4056,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3968
+                  },
+                  "output_tokens": 1394,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1152
+                  },
+                  "total_tokens": 5450
+                },
+                "elapsedMs": 11936
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4056,
+            "output_tokens": 1394,
+            "total_tokens": 5450,
+            "input_tokens_details": {
+              "cached_tokens": 3968
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1152
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "10c398e3-184d-4c2d-8edb-6a9829588de0",
+        "title": "실제로 물은 두 서류 중 하나가 미정",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:16:08.523Z",
+        "updatedAt": "2026-11-15T17:16:08.523Z",
+        "messages": [
+          {
+            "id": "3876ae04-615a-4557-b3d3-0d5a26323bb4",
+            "role": "customer",
+            "text": "Do you need my receipt ID and a photo of my ID card?",
+            "sentAt": null
+          },
+          {
+            "id": "933d7de7-6777-4e3f-97cd-a928732244ee",
+            "role": "agent",
+            "text": "Please send your receipt ID. We have not determined whether an ID photo is required.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "ebe958ea-0f51-45da-9bdd-0b59155cb58c",
+            "title": "영수증 ID와 신분증 사진 필요 여부",
+            "source": {
+              "messageId": "3876ae04-615a-4557-b3d3-0d5a26323bb4",
+              "quote": "Do you need my receipt ID and a photo of my ID card?"
+            },
+            "status": "partial",
+            "aiStatus": "partial",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "933d7de7-6777-4e3f-97cd-a928732244ee",
+                "quote": "Please send your receipt ID. We have not determined whether an ID photo is required."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "9e194584-d8fa-42c4-8597-ae3dd9415363",
+            "at": "2026-11-15T17:16:08.523Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "Is a photo of my ID card required?",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "Do you need my receipt ID and a photo of my ID card?",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "F12",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 9489,
+          "data": {
+            "scopeSummary": "Customer asked “What documents are required?” Agent replied: “Your receipt ID is required” and explicitly stated that this is only a partial list and other required documents are unknown. (a) Actual requested information: the complete list of required documents. (b) Already received information: receipt ID is required; agent’s list is partial. (c) Still missing: which additional documents (the rest of the required documents) are needed beyond the receipt ID. The draft asks exactly for those missing documents.",
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 9489,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 9488,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 4037,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3840
+                  },
+                  "output_tokens": 841,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 640
+                  },
+                  "total_tokens": 4878
+                },
+                "elapsedMs": 9489
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4037,
+            "output_tokens": 841,
+            "total_tokens": 4878,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 17454,
+          "data": {
+            "scopeSummary": "Customer originally asked for the full list of required documents. Agent replied that the receipt ID is required (explicitly) and said this is only a partial list; the other required documents are still unknown. Therefore: (a) actual question = the complete list of required documents; (b) already received = confirmation that a receipt ID is required; (c) missing = which additional documents are required (the rest of the full list) and whether the receipt ID alone is sufficient.",
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": false,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": false
+            },
+            "feedback": "The draft only asks whether the receipt ID is required—a point the agent already confirmed. It does not request the remaining unknown items (the full list of required documents), so it repeats answered information and fails to cover the outstanding question.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 17454,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 17453,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 4033,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3968
+                  },
+                  "output_tokens": 1598,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1344
+                  },
+                  "total_tokens": 5631
+                },
+                "elapsedMs": 17454
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4033,
+            "output_tokens": 1598,
+            "total_tokens": 5631,
+            "input_tokens_details": {
+              "cached_tokens": 3968
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1344
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "92b607de-c368-46ac-bdbf-e2ffc3a376bf",
+        "title": "명시적인 일부 서류 목록의 실제 누락",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:16:32.045Z",
+        "updatedAt": "2026-11-15T17:16:32.045Z",
+        "messages": [
+          {
+            "id": "cb1294e3-489b-4b89-afe9-e3ef72376edf",
+            "role": "customer",
+            "text": "What documents are required?",
+            "sentAt": null
+          },
+          {
+            "id": "984b97bf-5a6c-40df-890e-9cce32470763",
+            "role": "agent",
+            "text": "Your receipt ID is required. This is only a partial list; the other required documents are still unknown.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "ae95d8da-3497-4ad2-b8a1-917edcbf73ef",
+            "title": "필수 서류 전체 목록",
+            "source": {
+              "messageId": "cb1294e3-489b-4b89-afe9-e3ef72376edf",
+              "quote": "What documents are required?"
+            },
+            "status": "partial",
+            "aiStatus": "partial",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "984b97bf-5a6c-40df-890e-9cce32470763",
+                "quote": "Your receipt ID is required. This is only a partial list; the other required documents are still unknown."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "be190dc3-846b-47a6-aa68-caef2b32fa4d",
+            "at": "2026-11-15T17:16:32.045Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "What other documents are required besides my receipt ID?",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "Is my receipt ID required?",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    }
+  ],
+  "complete": true,
+  "passed": false
+}

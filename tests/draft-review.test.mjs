@@ -55,9 +55,24 @@ test('draft generation and review cannot treat AI reasoning or follow-up suggest
     await t.service.draft(c.id, { ...t.input, version: saved.version });
     assert.equal(t.calls.length, 2);
     for (const call of t.calls) {
-      for (const q of call.data.questions) assert.deepEqual(Object.keys(q).sort(), ['evidence', 'id', 'source', 'status', 'title']);
+      for (const q of call.data.questions) assert.deepEqual(Object.keys(q).sort(), ['evidence', 'id', 'source', 'status', 'topicHint']);
+      assert.deepEqual(call.data.answeredQuestions, c.questions.filter(q => q.status === 'answered').map(({ id, title, source, status, evidence }) => ({ id, topicHint: title, source, status, evidence })));
+      assert(call.data.questions.every(q => !call.data.answeredQuestions.some(a => a.id === q.id)));
       assert.deepEqual(call.data.messages, c.messages.map(({ id, role, text }) => ({ id, role, text })));
     }
+  } finally { t.store.close(); }
+});
+
+test('answered selections cannot trigger AI or overwrite an existing draft', async () => {
+  const t = setup(() => { throw new Error('must not call AI'); });
+  try {
+    const record = t.store.get(t.record.id);
+    record.questions.forEach(q => { q.status = 'answered'; });
+    record.drafts.followup = { body: '기존 초안', editedBody: '직접 편집한 초안' };
+    const saved = t.store.save(record, record.version);
+    await assert.rejects(t.service.draft(saved.id, { ...t.input, version: saved.version }), /미해결 질문/);
+    assert.equal(t.calls.length, 0);
+    assert.deepEqual(t.store.get(saved.id), saved);
   } finally { t.store.close(); }
 });
 

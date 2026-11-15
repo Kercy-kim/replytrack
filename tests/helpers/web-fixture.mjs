@@ -18,9 +18,9 @@ export class WebFixtureAI {
       if (this.failAnalysis) throw new AppError(502, '검증용 일시 분석 오류');
       result = demoAnalysis({ messages: data.messages, questions: data.existingQuestions, promises: data.existingPromises });
     } else if (name === 'replytrack_draft_review') {
-      result = { valid: true, feedback: '', checks: { consumerVoice: true, selectedQuestionsCovered: true, sourceFactsOnly: true, noExtraRequests: true } };
+      result = { valid: true, feedback: '', checks: { consumerVoice: true, selectedQuestionsCovered: true, sourceFactsOnly: true, noExtraRequests: true, noAnsweredRequests: true } };
     } else {
-      result = demoDraft({ messages: data.messages, questions: data.questions, promises: data.promises }, data.kind, data.questions.map(q => q.id));
+      result = demoDraft({ messages: data.messages, questions: data.questions.map(q => ({ ...q, title: q.topicHint ?? q.title })), promises: data.promises }, data.kind, data.questions.map(q => q.id));
     }
     return { data: result, model: this.model, usage: null };
   }

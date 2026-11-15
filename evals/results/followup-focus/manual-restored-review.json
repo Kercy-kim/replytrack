@@ -1,0 +1,24 @@
+{
+  "scope": "Agent source comparison of all 20 generated drafts, not independent human review.",
+  "source": "generated-restored-review.json",
+  "issues": [
+    {
+      "case": "F11",
+      "kind": "grader false positive",
+      "body": "Please confirm whether you require a photo of my ID card in addition to the receipt ID.",
+      "reason": "require and required are the same requested information; receipt ID is context, not a separate request."
+    },
+    {
+      "case": "F12",
+      "kind": "grader false positive",
+      "body": "Please provide the complete list of required documents in addition to the receipt ID.",
+      "reason": "complete list / in addition asks the explicitly missing documents, equivalent to full list / additional."
+    }
+  ],
+  "passed": true,
+  "notes": [
+    "F06 asks which stated fee applies; it does not independently ask approval status. F07 keeps the genuinely unresolved card/account conflict.",
+    "F11/F12 known receipt ID is identifying context; neither asks whether that ID is needed again.",
+    "The reviewer contrast suite is separately evaluated; a passing generated draft does not prove every bad draft is rejected."
+  ]
+}

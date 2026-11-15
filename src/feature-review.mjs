@@ -15,9 +15,10 @@ export const guideChecks = {
 };
 export const draftChecks = {
   consumerVoice:'소비자가 고객센터에 보내는 글인가. 고객님에게 배송지·계정 정보를 요구하거나 상담원처럼 답하면 false.',
-  selectedQuestionsCovered:'사용자가 선택한 questions의 답을 빠짐없이 요청하는가. 배송비를 물었는데 배송지 여부만 물으면 false.',
+  selectedQuestionsCovered:'선택한 원문 질문의 아직 부족한 정보가 모두 있는가. 부분 답변의 받은 부분을 제외하는 것은 누락이 아니다. 예: 서류와 기간을 물어 구체적인 서류를 안내받고 기간만 미정이면 기간만 묻는 초안은 true다. 안내된 서류만으로 충분한지 새로 묻도록 요구하면 안 된다. 명시적인 일부 목록이나 실제로 물은 다른 서류가 빠진 경우만 자료 질문을 유지한다. topicHint의 부연을 새로운 요청으로 취급하지 않는다.',
   sourceFactsOnly:'개별 사실·조건·상태는 원문에 있는가. 정책의 예시를 사용자 사실로 바꾸거나 미확인 배송지를 확정하면 false.',
-  noExtraRequests:'questions 밖의 새로운 요청·전제를 추가하지 않는가. 배송비만 물었는데 제주도인지도 확인해 달라고 덧붙이면 false. 선택 질문만 정중히 반복하는 것은 통과다.',
+  noExtraRequests:'선택한 원문에서 실제 남은 정보만 요청하는가. 환불 예정일을 카드사 입금·반영일로 바꾸거나 처리 날짜에 완료 여부를 대안으로 붙이면 false. 그 단계나 여부는 사용자가 직접 물었을 때만 허용한다. 소요 기간을 물었는데 시작일 없이 달력상의 완료 날짜를 대신 요구해도 false. 배송비만 물었는데 특별 승인 여부나 배송지도 확인해 달라고 추가하면 false. 답을 결정하는 조건이라도 고객이 그 조건 확인을 직접 요청하지 않았다면 새 요청이다. Do NOT infer extra missing requirements: asking for other/additional documents or whether the given documents are sufficient is an EXTRA request and must be false, unless the source explicitly says the list is partial or leaves a specifically asked document unresolved. Not saying only/all does NOT make a list partial. Adding procedures also fails.',
+  noAnsweredRequests:'질문한 구체 정보가 실제로 충족된 항목을 다시 묻지 않는가. 미정·알 수 없음·확인 중·not known yet은 필요한 답을 받은 것이 아니므로 그 정보를 다시 묻는 것은 true다. 실제 환불일이 미정이어도 안내 기한을 받았다면 언제 알려줄지 재요청하면 false. 부분 답변의 받은 항목이나 answeredQuestions의 해당 항목을 다시 물어도 false. 명시적으로 정정되어 확정된 금액을 정정된 금액이라며 다시 묻는 것도 false다. 같은 source에 금액과 날짜가 함께 있어도 금액은 answeredQuestions이고 날짜만 선택됐다면 금액을 재요청할 수 없다. 알려진 사실의 필요한 식별 맥락과 아직 해소되지 않은 충돌·정정 확인·다른 대상 질문은 허용한다.',
 };
 export function featureReviewSchema(checks) {
   return object({checks:object(Object.fromEntries(Object.entries(checks).map(([key,description])=>[key,{type:'boolean',description}]))),feedback:{type:'string'},valid:{type:'boolean'}});
