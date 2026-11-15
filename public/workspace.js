@@ -1,3 +1,4 @@
+import { needsAttention, isWaiting } from './inquiry-overview.js';
 // Date-only deadlines are compared in Korea, independent of the browser timezone.
 export function koreaDay(now = new Date()) {
   return new Date(new Date(now).getTime() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
@@ -31,9 +32,11 @@ export function filterCases(cases, { query = '', filter = 'active', sort = 'prio
   return cases.filter(c => {
     if (filter === 'archived' ? !c.archivedAt : c.archivedAt) return false;
     if (filter === 'remaining' && !c.unanswered) return false;
+    if (filter === 'attention' && !needsAttention(c.overview)) return false;
+    if (filter === 'waiting' && !isWaiting(c.overview)) return false;
     if (filter === 'due' && !c.deadlines?.overdue && !c.deadlines?.today) return false;
     if (filter === 'analysis' && !c.pendingAnalysis) return false;
-    return `${c.title} ${c.company}`.normalize('NFKC').toLocaleLowerCase('ko').includes(term);
+    return `${c.title} ${c.company} ${c.preview || ''}`.normalize('NFKC').toLocaleLowerCase('ko').includes(term);
   }).sort((a, b) => (sort === 'priority' ? casePriority(a) - casePriority(b) : 0)
     || (sort === 'priority' && casePriority(a) <= 1 ? a.deadlines.nextDueAt.localeCompare(b.deadlines.nextDueAt) : 0)
     || b.updatedAt.localeCompare(a.updatedAt) || a.id.localeCompare(b.id));

@@ -25,6 +25,7 @@ staticFiles.set('/presentation-view.js', ['presentation-view.js', 'text/javascri
 staticFiles.set('/presentation.css', ['presentation.css', 'text/css']);
 staticFiles.set('/presentation-data.json', ['presentation-data.json', 'application/json']);
 staticFiles.set('/next-actions.js', ['next-actions.js', 'text/javascript']);
+staticFiles.set('/inquiry-overview.js', ['inquiry-overview.js', 'text/javascript']);
 staticFiles.set('/official-guide.js', ['official-guide.js', 'text/javascript']);
 
 export function createApp({ store, ai, ocr, faq } = {}) {
