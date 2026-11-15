@@ -4,6 +4,7 @@ import { dirname } from 'node:path';
 import { AppError } from './errors.mjs';
 import { summarizeDeadlines } from '../public/workspace.js';
 import { actionsFresh } from '../public/next-actions.js';
+import { inquiryOverview } from '../public/inquiry-overview.js';
 
 export class CaseStore {
   constructor(filename) {
@@ -20,6 +21,9 @@ export class CaseStore {
       const c = JSON.parse(row.document);
       return {
         id: c.id, title: c.title, company: c.company, mode: c.mode,
+        channel: c.channel || 'chat',
+        preview: (c.messages.find(m => m.role === 'customer')?.text || '').slice(0, 180),
+        overview: inquiryOverview(c),
         updatedAt: c.updatedAt, createdAt: c.createdAt, version: c.version,
         questions: c.questions.length,
         unanswered: c.questions.filter(q => q.status !== 'answered').length,

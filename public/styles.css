@@ -114,6 +114,26 @@
 @media (max-width: 700px) { .demo-focus-columns { grid-template-columns: 1fr; gap: 24px; } .demo-focus-content { padding: 20px; } .demo-focus footer { flex-wrap: wrap; } .demo-focus-steps .btn { flex: 1 0 40%; } }
 
 /* Keep everyday tasks prominent; optional tools remain available on demand. */
+.inquiry-overview { margin: 24px 0; padding-block: 20px; border-block: 1px solid var(--line); }
+.inquiry-overview-heading { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 18px; }
+.inquiry-overview-heading h2 { font-size: 17px; margin: 0; }
+.inquiry-overview-heading > span { font-size: 13px; color: var(--supporting-ink); }
+.inquiry-overview-items { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.inquiry-overview-items > div { min-width: 0; }
+.inquiry-overview-items h3 { font-size: 14px; margin: 0 0 6px; line-height: 1.7; }
+.inquiry-overview-items p { font-size: 14px; line-height: 1.8; color: var(--supporting-ink); margin: 0; overflow-wrap: anywhere; }
+.inquiry-overview-items .btn { min-height: 44px; font-size: 13px; }
+.workspace-case > .inquiry-preview { color: var(--supporting-ink); font-size: 14px; line-height: 1.8; margin: 0 0 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+@media (max-width: 700px) {
+  .inquiry-overview { padding-block: 16px; margin-block: 20px; }
+  .inquiry-overview-heading { margin-bottom: 8px; }
+  .inquiry-overview-items { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .inquiry-overview-items > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; padding-block: 12px; }
+  .inquiry-overview-items > div + div { border-top: 1px solid var(--line); }
+  .inquiry-overview-items h3, .inquiry-overview-items p { grid-column: 1; }
+  .inquiry-overview-items .btn { grid-column: 2; grid-row: 1 / 3; align-self: center; }
+  .inquiry-overview-items .btn .icon { display: none; }
+}
 .sidebar-extras { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 8px; }
 .sidebar-extras summary, .capture-options summary, .handoff-section > summary, .action-suggestions > summary {
   cursor: pointer; padding: 12px 0; min-height: 44px; color: var(--green); font-size: 14px; font-weight: 600;
