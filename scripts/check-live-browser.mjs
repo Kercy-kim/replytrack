@@ -55,6 +55,14 @@ const fixtures = [
 ];
 const requestedCase = process.argv.find(arg => arg.startsWith('--case='))?.slice(7);
 assert(!requestedCase || fixtures.some(f => f.name === requestedCase), 'Use --case=refund or --case=email.');
+const existingEmailPromise = process.argv.includes('--existing-email-promise');
+report.existingEmailPromise = existingEmailPromise;
+if (existingEmailPromise) {
+  const f = fixtures.find(f => f.name === 'email');
+  f.text += ' After we verify the transaction ID, we will review your recovery request.';
+  f.reply += ' We will email you after the review.';
+  f.initial = ['answered', 'partial', 'unanswered'];
+}
 const idle = async () => {
   await page.waitForFunction(() => !document.querySelector('.busy-bar'), { }, { timeout: 330000 });
   const error = await page.locator('.error-banner, #modal-error').allTextContents();
@@ -157,7 +165,15 @@ try {
       await idle(); const c = current(); result.updated = c; grounded(c);
       assert.deepEqual(c.questions.map(q => q.id).sort(), result.initial.questions.map(q => q.id).sort());
       assert.deepEqual(c.questions.map(q => q.status).sort(), fixture.updated);
-      if (fixture.channel === 'email') {
+      if (fixture.channel === 'email' && existingEmailPromise) {
+        assert.equal(c.promises.length, 3);
+        assert.equal(c.promises.filter(p => p.state === 'reported').length, 1);
+        const old = c.promises.find(p => p.id === result.initial.promises[0].id);
+        assert(old); assert.equal(old.state, 'promised'); assert.equal(old.dueText, '');
+        assert(c.promises.some(p => p.state === 'promised' && p.evidence.quote.includes('We will email you after the review.')));
+        assert(c.promises.every(p => !p.dueText));
+        assert(c.analysis.attempts >= 2, 'Existing-promise email must use both analysis parts.');
+      } else if (fixture.channel === 'email') {
         assert.equal(c.promises.length, 1, 'General review duration must not create an extra promise.');
         assert.equal(c.promises[0].state, 'reported');
         assert.equal(c.promises[0].dueText, '');

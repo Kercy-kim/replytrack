@@ -1,0 +1,830 @@
+{
+  "at": "2026-11-15T18:01:24.723Z",
+  "model": "gpt-5-mini-2025-08-07",
+  "scope": "Four new wording/action contrasts against a fixed saved state; developer-authored gold, not a general accuracy estimate.",
+  "hashes": {
+    "src/service.mjs": "beb75422355256e55dc2355dcebf5559ee1d949ac7cec14a553beff4c3ffb6a2",
+    "src/email-reply.mjs": "96c75d2e8e85e333a01f788aa71045a59eb1600cea7cc4249619293e5d7cdbc2",
+    "src/analysis-focus.mjs": "64a46db823f73c5e4272d69dd6ce12936dbbf416ccde63ec784bdc2afd2aeacb"
+  },
+  "results": [
+    {
+      "id": "REFUND-REVIEW",
+      "reply": "We received the purchase reference. We will complete the refund review within 2 business days. We have not issued your refund. We will email you after the review.",
+      "oldState": "promised",
+      "reported": 1,
+      "count": 3,
+      "due": "2 business days",
+      "refund": true,
+      "calls": [
+        {
+          "ms": 25556,
+          "effort": "medium",
+          "data": {
+            "existingPromiseUpdates": [
+              {
+                "id": "ac81888d-7058-4cb1-9b0a-8bddb99e95fb",
+                "title": "구매 참조 확인 후 환불 요청 검토 진행",
+                "questionIds": [
+                  "ef0ab401-6c86-49bb-9590-23de723ceadb"
+                ],
+                "evidence": {
+                  "messageId": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+                  "quote": "We will complete the refund review within 2 business days."
+                },
+                "dueText": "within 2 business days.",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ],
+            "newPromises": [
+              {
+                "id": "new-p-1",
+                "title": "구매 참조 수신 통보",
+                "questionIds": [
+                  "d10f97f2-631e-46d5-a34d-df533166b497"
+                ],
+                "evidence": {
+                  "messageId": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+                  "quote": "We received the purchase reference."
+                },
+                "dueText": "",
+                "deadlineCleared": false,
+                "state": "reported"
+              },
+              {
+                "id": "new-p-2",
+                "title": "검토 완료 후 이메일 통지",
+                "questionIds": [],
+                "evidence": {
+                  "messageId": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+                  "quote": "We will email you after the review."
+                },
+                "dueText": "",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ],
+            "summary": "구매 영수증의 구매 참조를 제출해달라 안내했고(비밀번호·인증코드는 보내지 말라고 안내), 구매 참조를 수신했으며 환불 심사를 2영업일 내에 완료하겠다고 약속했고 심사 후 이메일로 통지하겠다고 안내했습니다."
+          },
+          "usage": {
+            "input_tokens": 3337,
+            "output_tokens": 2394,
+            "total_tokens": 5731,
+            "input_tokens_details": {
+              "cached_tokens": 3200
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 2048
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "ms": 25580,
+          "effort": "medium",
+          "data": {
+            "questions": [
+              {
+                "id": "d10f97f2-631e-46d5-a34d-df533166b497",
+                "status": "answered",
+                "reason": "구매 영수증의 구매 참조(purchase reference)를 제출하라고 안내받았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+                    "quote": "Please provide the purchase reference from your purchase receipt. Do not send your password or verification codes."
+                  },
+                  {
+                    "messageId": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+                    "quote": "We received the purchase reference. We will complete the refund review within 2 business days. We have not issued your refund. We will email you after the review."
+                  }
+                ]
+              },
+              {
+                "id": "ef0ab401-6c86-49bb-9590-23de723ceadb",
+                "status": "answered",
+                "reason": "환불 심사를 영업일 2일 내에 완료하겠다고 안내받았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+                    "quote": "After we verify the purchase reference, we will review your refund request."
+                  },
+                  {
+                    "messageId": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+                    "quote": "We received the purchase reference. We will complete the refund review within 2 business days. We have not issued your refund. We will email you after the review."
+                  }
+                ]
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5757,
+            "output_tokens": 2030,
+            "total_tokens": 7787,
+            "input_tokens_details": {
+              "cached_tokens": 5632
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1792
+            },
+            "unobserved_requests": 1
+          }
+        }
+      ],
+      "seed": {
+        "id": "3c4100f3-7277-4f8c-9835-132e84e49819",
+        "title": "해외 서비스 환불 요청 문의",
+        "company": "가상 고객지원",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:31:27.347Z",
+        "updatedAt": "2026-11-15T17:32:42.322Z",
+        "messages": [
+          {
+            "id": "15645a13-466f-4e0a-8a40-d2870f6713be",
+            "role": "customer",
+            "text": "What documents do you need to request a refund? How long will the review take?",
+            "sentAt": "2026-11-14T00:00:00.000Z"
+          },
+          {
+            "id": "4820483f-1510-49a4-96fa-b530530454e3",
+            "role": "agent",
+            "text": "Please provide the purchase reference from your purchase receipt. Do not send your password or verification codes. After we verify the purchase reference, we will review your refund request.",
+            "sentAt": "2026-11-14T01:00:00.000Z"
+          },
+          {
+            "id": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+            "role": "agent",
+            "text": "We received the purchase reference. We will complete the refund review within 2 business days. We have not issued your refund. We will email you after the review.",
+            "sentAt": "2026-11-15T01:00:00.000Z"
+          }
+        ],
+        "questions": [
+          {
+            "id": "d10f97f2-631e-46d5-a34d-df533166b497",
+            "title": "환불 요청에 필요한 서류는 무엇인가요?",
+            "source": {
+              "messageId": "15645a13-466f-4e0a-8a40-d2870f6713be",
+              "quote": "What documents do you need to request a refund?"
+            },
+            "status": "answered",
+            "reason": "구매 영수증의 구매 참조를 제출하라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+                "quote": "Please provide the purchase reference from your purchase receipt. Do not send your password or verification codes."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "구매 영수증의 구매 참조를 제출하라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "ef0ab401-6c86-49bb-9590-23de723ceadb",
+            "title": "심사(검토)는 얼마나 걸리나요?",
+            "source": {
+              "messageId": "15645a13-466f-4e0a-8a40-d2870f6713be",
+              "quote": "How long will the review take?"
+            },
+            "status": "partial",
+            "reason": "구매 참조 확인 후 심사를 진행한다고 안내받았지만 심사 소요 기간은 확인되지 않았습니다.",
+            "evidence": [
+              {
+                "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+                "quote": "After we verify the purchase reference, we will review your refund request."
+              }
+            ],
+            "followUp": "심사 소요 기간을 알려 주세요.",
+            "aiStatus": "partial",
+            "aiReason": "구매 참조 확인 후 심사를 진행한다고 안내받았지만 심사 소요 기간은 확인되지 않았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "ac81888d-7058-4cb1-9b0a-8bddb99e95fb",
+            "title": "구매 참조 확인 후 환불 요청 검토 진행",
+            "questionIds": [
+              "ef0ab401-6c86-49bb-9590-23de723ceadb"
+            ],
+            "evidence": {
+              "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+              "quote": "After we verify the purchase reference, we will review your refund request."
+            },
+            "dueText": "",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "7e5f2293-5618-451a-8350-2e4b677b413a",
+            "at": "2026-11-15T17:32:42.322Z",
+            "type": "draft",
+            "label": "남은 질문으로 재문의 초안을 만들었어요",
+            "details": ""
+          },
+          {
+            "id": "a255237a-d992-476d-bb3b-5bcc1f610831",
+            "at": "2026-11-15T17:32:31.022Z",
+            "type": "actions",
+            "label": "업체가 요청한 할 일을 원문과 대조했어요",
+            "details": "수행 표시와 환불·교환 완료는 별도로 관리합니다."
+          },
+          {
+            "id": "c85bf887-0392-4181-a14b-74a9c92f4bb7",
+            "at": "2026-11-15T17:32:10.637Z",
+            "type": "email_explanation",
+            "label": "이메일 답변의 한국어 설명을 확인했어요",
+            "details": ""
+          },
+          {
+            "id": "82dc72ed-b85a-4cc8-b72b-0e4a0564146b",
+            "at": "2026-11-15T17:31:52.118Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "2개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T17:31:52.118Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "da7c3a9d-1657-48b3-bc44-853a8631ce3b",
+            "at": "2026-11-15T17:31:27.347Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "구매 영수증의 구매 참조 제출을 요청받았고, 구매 참조 확인 후 환불 요청을 검토하겠다고 안내받았습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {
+          "followup": {
+            "body": "Could you please tell me how long the review of my account recovery request will take after you verify the purchase reference?",
+            "sourceMessageIds": [
+              "15645a13-466f-4e0a-8a40-d2870f6713be",
+              "4820483f-1510-49a4-96fa-b530530454e3"
+            ],
+            "questionIds": [
+              "ef0ab401-6c86-49bb-9590-23de723ceadb"
+            ],
+            "language": "en",
+            "at": "2026-11-15T17:32:42.322Z",
+            "model": "gpt-5-mini-2025-08-07",
+            "review": {
+              "model": "gpt-5-mini-2025-08-07",
+              "attempts": 1
+            }
+          }
+        },
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 5307,
+            "output_tokens": 2709,
+            "total_tokens": 8016,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 5120
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 2240
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:31:52.118Z",
+          "comparison": {
+            "at": "2026-11-15T17:31:52.118Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 5,
+        "emailExplanation": {
+          "items": [
+            {
+              "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+              "quote": "Please provide the purchase reference from your purchase receipt. Do not send your password or verification codes. After we verify the purchase reference, we will review your refund request.",
+              "korean": "구매 영수증에 있는 구매 참조를 알려 달라는 요청입니다. 비밀번호나 인증 코드는 절대 보내지 말라고 명시된 예외가 있습니다. 회사(또는 상담원)가 구매 참조를 확인한 뒤에 귀하의 복구(리커버리) 요청을 검토하겠다고 약속하는 안내입니다."
+            }
+          ],
+          "messageCount": 2,
+          "at": "2026-11-15T17:32:10.637Z",
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 841,
+            "output_tokens": 1349,
+            "total_tokens": 2190,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 960
+            }
+          }
+        },
+        "nextActions": {
+          "items": [
+            {
+              "id": "786df2b7-f430-47ee-a36e-44212b1b1eae",
+              "source": {
+                "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+                "quote": "Please provide the purchase reference from your purchase receipt."
+              },
+              "state": "requested",
+              "update": null,
+              "title": "구매 영수증의 구매 참조 제출",
+              "condition": "",
+              "dueText": "",
+              "dueAt": null,
+              "completedAt": null
+            }
+          ],
+          "messageIds": [
+            "15645a13-466f-4e0a-8a40-d2870f6713be",
+            "4820483f-1510-49a4-96fa-b530530454e3"
+          ],
+          "at": "2026-11-15T17:32:31.022Z",
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 4426,
+            "output_tokens": 1511,
+            "total_tokens": 5937,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1344
+            }
+          },
+          "reviewed": true
+        }
+      },
+      "ms": 25586,
+      "record": {
+        "id": "3c4100f3-7277-4f8c-9835-132e84e49819",
+        "title": "해외 서비스 환불 요청 문의",
+        "company": "가상 고객지원",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:31:27.347Z",
+        "updatedAt": "2026-11-15T18:01:50.311Z",
+        "messages": [
+          {
+            "id": "15645a13-466f-4e0a-8a40-d2870f6713be",
+            "role": "customer",
+            "text": "What documents do you need to request a refund? How long will the review take?",
+            "sentAt": "2026-11-14T00:00:00.000Z"
+          },
+          {
+            "id": "4820483f-1510-49a4-96fa-b530530454e3",
+            "role": "agent",
+            "text": "Please provide the purchase reference from your purchase receipt. Do not send your password or verification codes. After we verify the purchase reference, we will review your refund request.",
+            "sentAt": "2026-11-14T01:00:00.000Z"
+          },
+          {
+            "id": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+            "role": "agent",
+            "text": "We received the purchase reference. We will complete the refund review within 2 business days. We have not issued your refund. We will email you after the review.",
+            "sentAt": "2026-11-15T01:00:00.000Z"
+          }
+        ],
+        "questions": [
+          {
+            "id": "d10f97f2-631e-46d5-a34d-df533166b497",
+            "title": "환불 요청에 필요한 서류는 무엇인가요?",
+            "source": {
+              "messageId": "15645a13-466f-4e0a-8a40-d2870f6713be",
+              "quote": "What documents do you need to request a refund?"
+            },
+            "status": "answered",
+            "reason": "구매 영수증의 구매 참조(purchase reference)를 제출하라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+                "quote": "Please provide the purchase reference from your purchase receipt. Do not send your password or verification codes."
+              },
+              {
+                "messageId": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+                "quote": "We received the purchase reference. We will complete the refund review within 2 business days. We have not issued your refund. We will email you after the review."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "구매 영수증의 구매 참조(purchase reference)를 제출하라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "ef0ab401-6c86-49bb-9590-23de723ceadb",
+            "title": "심사(검토)는 얼마나 걸리나요?",
+            "source": {
+              "messageId": "15645a13-466f-4e0a-8a40-d2870f6713be",
+              "quote": "How long will the review take?"
+            },
+            "status": "answered",
+            "reason": "환불 심사를 영업일 2일 내에 완료하겠다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+                "quote": "After we verify the purchase reference, we will review your refund request."
+              },
+              {
+                "messageId": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+                "quote": "We received the purchase reference. We will complete the refund review within 2 business days. We have not issued your refund. We will email you after the review."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "환불 심사를 영업일 2일 내에 완료하겠다고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "ac81888d-7058-4cb1-9b0a-8bddb99e95fb",
+            "title": "구매 참조 확인 후 환불 요청 검토 진행",
+            "questionIds": [
+              "ef0ab401-6c86-49bb-9590-23de723ceadb"
+            ],
+            "evidence": {
+              "messageId": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+              "quote": "We will complete the refund review within 2 business days."
+            },
+            "dueText": "within 2 business days.",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          },
+          {
+            "id": "86539e9f-5012-4231-b414-603b6839379c",
+            "title": "구매 참조 수신 통보",
+            "questionIds": [
+              "d10f97f2-631e-46d5-a34d-df533166b497"
+            ],
+            "evidence": {
+              "messageId": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+              "quote": "We received the purchase reference."
+            },
+            "dueText": "",
+            "dueAt": null,
+            "state": "reported",
+            "confirmedAt": null
+          },
+          {
+            "id": "242e87bc-6461-4a15-91a2-8955f8a5932d",
+            "title": "검토 완료 후 이메일 통지",
+            "questionIds": [],
+            "evidence": {
+              "messageId": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+              "quote": "We will email you after the review."
+            },
+            "dueText": "",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "40467f33-b35f-4917-b2da-f6aa1ac35b02",
+            "at": "2026-11-15T18:01:50.311Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "심사(검토)는 얼마나 걸리나요?: 부분 답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T18:01:50.310Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "defe8bf6-3ef9-4d35-8516-2ba98ac56e99"
+              ],
+              "questions": [
+                {
+                  "id": "ef0ab401-6c86-49bb-9590-23de723ceadb",
+                  "title": "심사(검토)는 얼마나 걸리나요?",
+                  "before": {
+                    "status": "partial",
+                    "aiStatus": "partial",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "4820483f-1510-49a4-96fa-b530530454e3",
+                    "defe8bf6-3ef9-4d35-8516-2ba98ac56e99"
+                  ]
+                }
+              ],
+              "promises": [
+                {
+                  "id": "ac81888d-7058-4cb1-9b0a-8bddb99e95fb",
+                  "title": "구매 참조 확인 후 환불 요청 검토 진행",
+                  "before": {
+                    "title": "구매 참조 확인 후 환불 요청 검토 진행",
+                    "state": "promised",
+                    "dueAt": null,
+                    "dueText": "",
+                    "confirmedAt": null
+                  },
+                  "after": {
+                    "title": "구매 참조 확인 후 환불 요청 검토 진행",
+                    "state": "promised",
+                    "dueAt": null,
+                    "dueText": "within 2 business days.",
+                    "confirmedAt": null
+                  },
+                  "fields": [
+                    "deadline"
+                  ],
+                  "evidenceMessageIds": [
+                    "defe8bf6-3ef9-4d35-8516-2ba98ac56e99"
+                  ]
+                },
+                {
+                  "id": "86539e9f-5012-4231-b414-603b6839379c",
+                  "title": "구매 참조 수신 통보",
+                  "before": null,
+                  "after": {
+                    "title": "구매 참조 수신 통보",
+                    "state": "reported",
+                    "dueAt": null,
+                    "dueText": "",
+                    "confirmedAt": null
+                  },
+                  "fields": [
+                    "added"
+                  ],
+                  "evidenceMessageIds": [
+                    "defe8bf6-3ef9-4d35-8516-2ba98ac56e99"
+                  ]
+                },
+                {
+                  "id": "242e87bc-6461-4a15-91a2-8955f8a5932d",
+                  "title": "검토 완료 후 이메일 통지",
+                  "before": null,
+                  "after": {
+                    "title": "검토 완료 후 이메일 통지",
+                    "state": "promised",
+                    "dueAt": null,
+                    "dueText": "",
+                    "confirmedAt": null
+                  },
+                  "fields": [
+                    "added"
+                  ],
+                  "evidenceMessageIds": [
+                    "defe8bf6-3ef9-4d35-8516-2ba98ac56e99"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "7e5f2293-5618-451a-8350-2e4b677b413a",
+            "at": "2026-11-15T17:32:42.322Z",
+            "type": "draft",
+            "label": "남은 질문으로 재문의 초안을 만들었어요",
+            "details": ""
+          },
+          {
+            "id": "a255237a-d992-476d-bb3b-5bcc1f610831",
+            "at": "2026-11-15T17:32:31.022Z",
+            "type": "actions",
+            "label": "업체가 요청한 할 일을 원문과 대조했어요",
+            "details": "수행 표시와 환불·교환 완료는 별도로 관리합니다."
+          },
+          {
+            "id": "c85bf887-0392-4181-a14b-74a9c92f4bb7",
+            "at": "2026-11-15T17:32:10.637Z",
+            "type": "email_explanation",
+            "label": "이메일 답변의 한국어 설명을 확인했어요",
+            "details": ""
+          },
+          {
+            "id": "82dc72ed-b85a-4cc8-b72b-0e4a0564146b",
+            "at": "2026-11-15T17:31:52.118Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "2개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T17:31:52.118Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "da7c3a9d-1657-48b3-bc44-853a8631ce3b",
+            "at": "2026-11-15T17:31:27.347Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "구매 영수증의 구매 참조를 제출해달라 안내했고(비밀번호·인증코드는 보내지 말라고 안내), 구매 참조를 수신했으며 환불 심사를 2영업일 내에 완료하겠다고 약속했고 심사 후 이메일로 통지하겠다고 안내했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 9094,
+            "output_tokens": 4424,
+            "total_tokens": 13518,
+            "unobserved_requests": 1,
+            "input_tokens_details": {
+              "cached_tokens": 8832
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 3840
+            }
+          },
+          "attempts": 2,
+          "at": "2026-11-15T18:01:50.310Z",
+          "comparison": {
+            "at": "2026-11-15T18:01:50.310Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "defe8bf6-3ef9-4d35-8516-2ba98ac56e99"
+            ],
+            "questions": [
+              {
+                "id": "ef0ab401-6c86-49bb-9590-23de723ceadb",
+                "title": "심사(검토)는 얼마나 걸리나요?",
+                "before": {
+                  "status": "partial",
+                  "aiStatus": "partial",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "4820483f-1510-49a4-96fa-b530530454e3",
+                  "defe8bf6-3ef9-4d35-8516-2ba98ac56e99"
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "ac81888d-7058-4cb1-9b0a-8bddb99e95fb",
+                "title": "구매 참조 확인 후 환불 요청 검토 진행",
+                "before": {
+                  "title": "구매 참조 확인 후 환불 요청 검토 진행",
+                  "state": "promised",
+                  "dueAt": null,
+                  "dueText": "",
+                  "confirmedAt": null
+                },
+                "after": {
+                  "title": "구매 참조 확인 후 환불 요청 검토 진행",
+                  "state": "promised",
+                  "dueAt": null,
+                  "dueText": "within 2 business days.",
+                  "confirmedAt": null
+                },
+                "fields": [
+                  "deadline"
+                ],
+                "evidenceMessageIds": [
+                  "defe8bf6-3ef9-4d35-8516-2ba98ac56e99"
+                ]
+              },
+              {
+                "id": "86539e9f-5012-4231-b414-603b6839379c",
+                "title": "구매 참조 수신 통보",
+                "before": null,
+                "after": {
+                  "title": "구매 참조 수신 통보",
+                  "state": "reported",
+                  "dueAt": null,
+                  "dueText": "",
+                  "confirmedAt": null
+                },
+                "fields": [
+                  "added"
+                ],
+                "evidenceMessageIds": [
+                  "defe8bf6-3ef9-4d35-8516-2ba98ac56e99"
+                ]
+              },
+              {
+                "id": "242e87bc-6461-4a15-91a2-8955f8a5932d",
+                "title": "검토 완료 후 이메일 통지",
+                "before": null,
+                "after": {
+                  "title": "검토 완료 후 이메일 통지",
+                  "state": "promised",
+                  "dueAt": null,
+                  "dueText": "",
+                  "confirmedAt": null
+                },
+                "fields": [
+                  "added"
+                ],
+                "evidenceMessageIds": [
+                  "defe8bf6-3ef9-4d35-8516-2ba98ac56e99"
+                ]
+              }
+            ]
+          }
+        },
+        "channel": "email",
+        "version": 2,
+        "emailExplanation": {
+          "items": [
+            {
+              "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+              "quote": "Please provide the purchase reference from your purchase receipt. Do not send your password or verification codes. After we verify the purchase reference, we will review your refund request.",
+              "korean": "구매 영수증에 있는 구매 참조를 알려 달라는 요청입니다. 비밀번호나 인증 코드는 절대 보내지 말라고 명시된 예외가 있습니다. 회사(또는 상담원)가 구매 참조를 확인한 뒤에 귀하의 복구(리커버리) 요청을 검토하겠다고 약속하는 안내입니다."
+            }
+          ],
+          "messageCount": 2,
+          "at": "2026-11-15T17:32:10.637Z",
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 841,
+            "output_tokens": 1349,
+            "total_tokens": 2190,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 960
+            }
+          }
+        },
+        "nextActions": {
+          "items": [
+            {
+              "id": "786df2b7-f430-47ee-a36e-44212b1b1eae",
+              "source": {
+                "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+                "quote": "Please provide the purchase reference from your purchase receipt."
+              },
+              "state": "requested",
+              "update": null,
+              "title": "구매 영수증의 구매 참조 제출",
+              "condition": "",
+              "dueText": "",
+              "dueAt": null,
+              "completedAt": null
+            }
+          ],
+          "messageIds": [
+            "15645a13-466f-4e0a-8a40-d2870f6713be",
+            "4820483f-1510-49a4-96fa-b530530454e3"
+          ],
+          "at": "2026-11-15T17:32:31.022Z",
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 4426,
+            "output_tokens": 1511,
+            "total_tokens": 5937,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1344
+            }
+          },
+          "reviewed": true
+        }
+      },
+      "passed": true
+    }
+  ],
+  "complete": true,
+  "passed": true
+}
