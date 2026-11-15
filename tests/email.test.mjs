@@ -85,7 +85,7 @@ test('English drafts use generation and review, default Korean remains unchanged
   const prompts = [];
   const f = fixture(async args => {
     prompts.push(args.instructions);
-    return args.name === 'replytrack_draft_review' ? { data: { valid: true } } : { data: { body: 'When can I recover my account?', sourceMessageIds: [f.c.messages[0].id] } };
+    return args.name === 'replytrack_draft_review' ? { data: { valid: true, checks: { consumerVoice: true, selectedQuestionsCovered: true, sourceFactsOnly: true, noExtraRequests: true } } } : { data: { body: 'When can I recover my account?', sourceMessageIds: [f.c.messages[0].id] } };
   }); t.after(() => f.store.close());
   let c = f.store.get(f.c.id);
   c.analyzedMessageCount = 2;

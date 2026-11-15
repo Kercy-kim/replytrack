@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { cases } from '../evals/support-cases.mjs';
 import { boundaryCases } from '../evals/status-boundary-cases.mjs';
 import { unseenCases } from '../evals/unseen-cases.mjs';
+import { timingCases } from '../evals/timing-cases.mjs';
 import { grade, summarize } from '../evals/grade.mjs';
 
 const record = () => ({
@@ -51,12 +52,24 @@ test('frozen synthetic set covers 20 cases and every expected message exists', (
   assert.deepEqual(['배송', '환불', '구독'].map(category => cases.filter(c => c.category === category).length), [7, 7, 6]);
   assert.equal(boundaryCases.length, 8);
   assert.equal(new Set([...cases, ...boundaryCases].map(c => c.id)).size, 28);
-  for (const c of [...cases, ...boundaryCases, ...unseenCases]) {
+  for (const c of [...cases, ...boundaryCases, ...unseenCases, ...timingCases]) {
     for (const [messages, gold] of [[c.messages, c.expected], ...(c.next ? [[c.messages.concat(c.next), c.after]] : [])]) {
       for (const q of gold.questions) { assert.equal(messages[q.message].role, 'customer'); for (const i of q.evidence) assert.equal(messages[i].role, 'agent'); }
       for (const p of gold.promises) assert.equal(messages[p.message].role, 'agent');
     }
   }
+});
+
+test('event-order deadline alternatives do not allow invented dates or confirmation', () => {
+  const c = record();
+  c.messages[1].text = '발송 후 안내하겠습니다.';
+  c.questions[0].evidence[0].quote = c.messages[1].text;
+  c.promises = [{ id: 'p1', title: '안내', evidence: { messageId: 'm2', quote: c.messages[1].text }, state: 'promised', dueAt: null, dueText: '', confirmedAt: null }];
+  const gold = { ...expected, promises: [{ message: 1, topic: '안내', state: 'promised', dueAt: null, deadlineOptions: ['', '발송 후'] }] };
+  for (const value of ['', '발송 후']) { c.promises[0].dueText = value; assert.equal(grade(c, gold).pass, true); }
+  c.promises[0].dueText = '내일'; assert.equal(grade(c, gold).pass, false);
+  c.promises[0].dueText = ''; c.promises[0].dueAt = '2026-11-18'; assert.equal(grade(c, gold).pass, false);
+  c.promises[0].dueAt = null; c.promises[0].confirmedAt = '2026-11-18'; assert.equal(grade(c, gold).pass, false);
 });
 test('new evaluation set has 20 distinct conversations without reusing prior messages', () => {
   assert.equal(unseenCases.length, 20);

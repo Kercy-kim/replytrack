@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {actionChecks,guideChecks,featureReviewSchema,reviewPassed} from '../src/feature-review.mjs';
+import {actionChecks,guideChecks,draftChecks,featureReviewSchema,reviewPassed} from '../src/feature-review.mjs';
 test('an overall approval cannot override a failed or omitted review criterion',()=>{
-  for(const definitions of [actionChecks,guideChecks]) {
+  for(const definitions of [actionChecks,guideChecks,draftChecks]) {
     const data={valid:true,feedback:'',checks:Object.fromEntries(Object.keys(definitions).map(k=>[k,true]))};
     assert(reviewPassed(data,definitions));
     for(const key of Object.keys(definitions)) {

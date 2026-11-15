@@ -36,7 +36,7 @@ const views = new CaseNavigation();
 const disclosureStates = new Map();
 let viewRevision = 0;
 let settingsReturn = false;
-const readActions = new Set(['home', 'open', 'refresh', 'tab', 'draft-tab', 'mobile', 'source', 'copy', 'export', 'case-filter', 'reset-search', 'dismiss-error', 'guard-cancel', 'guard-continue', 'close-modal', 'inquiry-section']);
+const readActions = new Set(['home', 'open', 'refresh', 'tab', 'draft-tab', 'mobile', 'source', 'source-return', 'copy', 'export', 'case-filter', 'reset-search', 'dismiss-error', 'guard-cancel', 'guard-continue', 'close-modal', 'inquiry-section']);
 const canBrowse = () => !!state.operation && !!state.task?.caseId;
 const blocked = action => !!state.busy && !(canBrowse() && readActions.has(action));
 let guardResolve;
@@ -124,6 +124,7 @@ function renderProgress() {
 async function refreshList() { state.cases = await api('/api/cases'); }
 function setCase(c) {
   c = views.remember(c);
+  if (state.sourceReturn && (state.sourceReturn.caseId !== c.id || state.sourceReturn.version !== c.version)) state.sourceReturn = null;
   // Retain local edits during conflict recovery, even if another window invalidated a draft.
   const edits = state.current?.id === c.id ? { ...state.draftEdits } : {};
   if (state.current?.id !== c.id) {
@@ -159,7 +160,7 @@ function focusBookmark() {
   }
   if (!selector && el.name) selector = `[name="${CSS.escape(el.name)}"]${el.type === 'checkbox' ? `[value="${CSS.escape(el.value)}"]` : ''}`;
   if (!selector) return null;
-  return { scope: scope.id, selector, caseId: state.current?.id, start: el.selectionStart, end: el.selectionEnd,
+  return { scope: scope.id, selector, occurrence: [...scope.querySelectorAll(selector)].indexOf(el), caseId: state.current?.id, start: el.selectionStart, end: el.selectionEnd,
     fallback: el.dataset.action === 'save-draft' ? `#draft-${el.dataset.kind}` : null };
 }
 function restoreFocus(bookmark) {
@@ -168,7 +169,7 @@ function restoreFocus(bookmark) {
   if (modal.open && bookmark.scope !== 'modal') return;
   const scope = modal.open ? modal : $('#app');
   const available = el => el && !el.disabled && el.getClientRects().length;
-  let target = bookmark.caseId === state.current?.id ? scope.querySelector(bookmark.selector) : null;
+  let target = bookmark.caseId === state.current?.id ? scope.querySelectorAll(bookmark.selector)[bookmark.occurrence ?? 0] : null;
   if (!available(target)) target = bookmark.fallback ? scope.querySelector(bookmark.fallback) : null;
   if (!available(target)) target = scope.querySelector(modal.open ? 'h2' : 'h1') || $('#main');
   if (!available(target)) return;
@@ -281,13 +282,13 @@ function detail(c) {
     ${comparisonPanel(c)}${emailExplanationPanel(c, { esc, button, date })}
     <div id="official-context">${officialPanel(officialResult, esc)}</div>
     <div class="mobile-switch" role="group" aria-label="보기 선택"><button data-action="mobile" data-value="source" aria-pressed="${state.mobile === 'source'}" class="${state.mobile === 'source' ? 'active' : ''}">상담 원문</button><button data-action="mobile" data-value="analysis" aria-pressed="${state.mobile === 'analysis'}" class="${state.mobile === 'analysis' ? 'active' : ''}">질문 확인표</button></div>
-    <div class="workspace mobile-${state.mobile}"><section class="source-panel panel"><div class="panel-header"><div>${icon('chat')}<h2>상담 원문</h2><span class="count">${c.messages.length}</span></div><span class="subtle">${c.mode === 'demo' ? '가상 상담' : '검토한 텍스트'}</span></div><div class="source-messages">${c.messages.map(m => `<article class="message ${m.role}" id="message-${m.id}"><div class="message-meta"><span class="speaker-avatar">${m.role === 'customer' ? '나' : 'CS'}</span><strong>${m.role === 'customer' ? '나' : esc(c.company)}</strong><time>${date(m.sentAt)}</time></div><div class="message-text">${esc(m.text)}</div></article>`).join('')}</div><div class="source-bottom"><span>${icon('link')}근거를 누르면 해당 원문으로 이동해요</span>${c.mode === 'live' ? button('append', '새 답변 / 질문 추가', 'secondary wide', 'plus') : ''}</div></section>
+    <div class="workspace mobile-${state.mobile}"><section class="source-panel panel"><div class="panel-header"><div>${icon('chat')}<h2>상담 원문</h2><span class="count">${c.messages.length}</span></div><span class="subtle">${c.mode === 'demo' ? '가상 상담' : '검토한 텍스트'}</span></div><div class="source-messages">${c.messages.map(m => `<article class="message ${m.role}" id="message-${m.id}"><div class="message-meta"><span class="speaker-avatar">${m.role === 'customer' ? '나' : 'CS'}</span><strong>${m.role === 'customer' ? '나' : esc(c.company)}</strong><time>${date(m.sentAt)}</time></div><div class="message-text">${esc(m.text)}</div>${state.sourceReturn?.caseId === c.id && state.sourceReturn.messageId === m.id ? button('source-return', '확인하던 내용으로 돌아가기', 'secondary compact source-return') : ''}</article>`).join('')}</div><div class="source-bottom"><span>${icon('link')}근거를 누르면 해당 원문으로 이동해요</span>${c.mode === 'live' ? button('append', '새 답변 / 질문 추가', 'secondary wide', 'plus') : ''}</div></section>
     <section class="analysis-panel"><div class="tabs" role="tablist" aria-label="분석 보기">${[['questions','질문 확인표', c.questions.length],['drafts','답장 작성', null],['history','변경 이력', null]].map(([id,label,count]) => `<button id="tab-${id}" role="tab" aria-controls="panel-${id}" tabindex="${state.tab === id ? 0 : -1}" ${blocked('tab') ? 'disabled' : ''} aria-selected="${state.tab === id}" class="${state.tab === id ? 'active' : ''}" data-action="tab" data-value="${id}">${label}${count !== null ? `<span>${count}</span>` : ''}</button>`).join('')}</div>${c.warnings.map(w => `<div class="warning-note">${esc(w)}</div>`).join('')}<div id="panel-${state.tab}" role="tabpanel" aria-labelledby="tab-${state.tab}" tabindex="0">${state.tab === 'questions' ? questionPanel(c) : state.tab === 'drafts' ? draftPanel(c) : historyPanel(c)}</div></section></div>`;
 }
 function questionPanel(c) {
   const visible = c.questions.filter(q => state.filter === 'remaining' ? q.status !== 'answered' : state.filter === 'followup' ? ['unanswered','partial','review'].includes(q.status) : state.filter === 'waiting' ? q.status === 'waiting' : true);
   return `${renderActionPlan(c, { esc, button, date })}${c.analyzedMessageCount < c.messages.length && c.analysis ? '<p class="action-notice">아래 질문과 약속은 이전 분석 기준이에요. 새 대화를 분석하면 갱신돼요.</p>' : ''}<div class="section-tools"><div><h2>어떤 답변이 아직 남아 있나요?</h2><p>답변 수신과 실제 처리 완료는 따로 확인해요.</p></div><select id="question-filter" aria-label="질문 필터"><option value="all" ${state.filter === 'all' ? 'selected' : ''}>모든 질문</option><option value="remaining" ${state.filter === 'remaining' ? 'selected' : ''}>남은 질문만</option><option value="followup" ${state.filter === 'followup' ? 'selected' : ''}>재문의·확인할 질문</option><option value="waiting" ${state.filter === 'waiting' ? 'selected' : ''}>답변 대기 질문</option></select></div>
-    <div class="question-list" id="inquiry-questions" tabindex="-1">${visible.length ? visible.map(q => `<article class="question-card ${q.status}"><div class="question-top"><span class="question-number">Q${String(c.questions.indexOf(q) + 1).padStart(2, '0')}</span>${badge(q.status)}<button class="edit-button" data-action="edit-question" data-id="${q.id}" aria-label="${esc(q.title)} 수정">${icon('edit')}</button></div><h3>${esc(q.title)}</h3><p class="reason">${esc(q.reason)}</p>${q.manualStatus ? `<p class="manual-note">직접 수정한 상태 · AI 제안: ${names[q.aiStatus]}</p>` : ''}<div class="evidence">${q.evidence.length ? q.evidence.map(e => `<button data-action="source" data-id="${e.messageId}" class="quote">${icon('link')}<span>“${esc(e.quote)}”</span>${icon('arrow')}</button>`).join('') : `<button class="quote empty-quote" data-action="source" data-id="${q.source.messageId}">${icon('link')}<span>이 질문에 연결된 답변이 아직 없어요. 질문 원문 보기</span>${icon('arrow')}</button>`}</div></article>`).join('') : `<div class="empty-panel">${icon('check')}<h3>${!c.questions.length ? '첫 확인표를 만들어 볼까요?' : state.filter === 'waiting' ? '답변 대기 중인 질문이 없어요' : state.filter === 'followup' ? '재문의·확인할 질문이 없어요' : '모든 질문에 답변을 받았어요'}</h3><p>${c.questions.length ? '아래 처리 약속도 실제로 이행됐는지 확인해 주세요.' : '위의 질문 분석하기를 누르면 원문과 연결된 질문 카드가 생겨요.'}</p></div>`}</div>
+    <div class="question-list" id="inquiry-questions" tabindex="-1">${visible.length ? visible.map(q => `<article class="question-card ${q.status}"><div class="question-top"><span class="question-number">Q${String(c.questions.indexOf(q) + 1).padStart(2, '0')}</span>${badge(q.status)}<button class="edit-button" data-action="edit-question" data-id="${q.id}" aria-label="${esc(q.title)} 수정">${icon('edit')}</button></div><h3>${esc(q.title)}</h3><p class="reason">${esc(q.reason)}</p>${q.manualStatus ? `<p class="manual-note">직접 수정한 상태 · AI 제안: ${names[q.aiStatus]}</p>` : ''}<div class="evidence">${q.evidence.length ? q.evidence.map(e => `<button data-action="source" data-id="${e.messageId}" class="quote">${icon('link')}<span>“${esc(e.quote)}”</span>${icon('arrow')}</button>`).join('') : `<button class="quote empty-quote" data-action="source" data-id="${q.source.messageId}">${icon('link')}<span>이 질문에 연결된 답변이 아직 없어요. 질문 원문 보기</span>${icon('arrow')}</button>`}</div></article>`).join('') : `<div class="empty-panel">${icon('check')}<h3>${!c.questions.length ? (c.analysis && c.analyzedMessageCount === c.messages.length ? '원문에서 확인할 질문을 찾지 못했어요' : '아직 질문을 분석하지 않았어요') : state.filter === 'waiting' ? '답변 대기 중인 질문이 없어요' : state.filter === 'followup' ? '재문의·확인할 질문이 없어요' : '모든 질문에 답변을 받았어요'}</h3><p>${c.questions.length ? '아래 처리 약속도 실제로 이행됐는지 확인해 주세요.' : (c.analysis && c.analyzedMessageCount === c.messages.length ? '내가 문의한 내용을 확인하고, 빠진 질문은 새 답변 / 질문 추가에서 넣어 주세요.' : '위의 질문 분석하기를 누르면 원문과 연결된 질문 카드가 생겨요.')}</p></div>`}</div>
     <section class="promise-section" id="inquiry-promises" tabindex="-1"><div class="section-title"><div>${icon('clock')}<h2>답변 뒤에 남은 약속</h2></div><span>${c.promises.length}건</span></div><p class="section-description">안내받은 약속과 실제로 확인한 결과를 구분해요.</p>${c.promises.length ? c.promises.map(p => `<article class="promise-card ${p.confirmedAt ? 'confirmed' : ''}"><div><span class="promise-label">${p.confirmedAt ? '사용자 확인 완료' : p.state === 'reported' ? '업체의 처리 안내 · 직접 확인 전' : '처리 약속 · 직접 확인 전'}</span><h3>${esc(p.title)}</h3>${deadlineLabel(p)}<div class="due">${icon('clock')}${p.dueAt ? `${esc(p.dueAt)}까지` : '기한 미정'}${p.dueText ? ` <span>(${esc(p.dueText)}${!p.dueAt ? ' · 기준 날짜 확인 필요' : ''})</span>` : ''}</div><button class="promise-source" data-action="source" data-id="${p.evidence.messageId}">“${esc(p.evidence.quote)}” ${icon('link')}</button>${p.confirmedAt ? `<small class="confirmed-time">${date(p.confirmedAt)} 직접 확인</small>` : ''}</div>${button('confirm-promise', p.confirmedAt ? '확인 취소' : '직접 확인했어요', p.confirmedAt ? 'text' : 'secondary compact', p.confirmedAt ? 'check' : '', `data-id="${p.id}"`)}</article>`).join('') : '<p class="quiet-empty">명시적인 처리 약속이 나오면 여기에 모아 둘게요.</p>'}</section>
     ${c.questions.some(q => q.status !== 'answered') ? `<div class="next-step"><span>${icon('spark')}남은 질문을 다시 설명할 필요 없어요.</span>${button('draft-tab', '재문의 초안 만들기', 'primary compact', 'arrow')}</div>` : ''}
     ${c.analysis ? `<p class="analysis-meta">${esc(c.analysis.model)} · ${date(c.analysis.at)} 분석${c.analysis.usage?.total_tokens ? ` · ${c.analysis.usage.total_tokens.toLocaleString()} tokens${c.analysis.usage.unobserved_requests ? ' 이상 · 일부 요청 사용량 미확인' : ''}` : ''}${c.mode === 'live' ? ' · 생성형 AI의 판단은 원문과 대조해 주세요.' : ''}</p>` : ''}`;
@@ -298,13 +299,13 @@ function draftScopeHtml(c) {
 function draftPanel(c) {
   const replyLanguage = state.replyLanguages[c.id] ?? c.drafts.followup?.language ?? (c.channel === 'email' ? 'en' : 'ko');
   const remaining = c.questions.filter(q => q.status !== 'answered');
-  return `<div class="section-tools"><div><h2>필요한 이야기만 이어가세요</h2><p>초안을 확인하고 수정한 뒤, 원하는 채널에 붙여넣어요.</p></div></div><section class="draft-section"><div class="section-title"><div>${icon('chat')}<h2>남은 질문 재문의</h2></div><span>${remaining.length}개 남음</span></div>${c.mode !== 'demo' ? `<label class="field">답장 언어<select id="reply-language"><option value="ko" ${replyLanguage === 'ko' ? 'selected' : ''}>한국어</option><option value="en" ${replyLanguage === 'en' ? 'selected' : ''}>English · 영어</option></select></label>` : ''}<div class="question-choices">${remaining.map(q => `<label><input type="checkbox" name="draft-question" value="${q.id}" ${state.selected.has(q.id) ? 'checked' : ''}><span>${esc(q.title)}</span>${badge(q.status)}</label>`).join('') || '<p class="quiet-empty">모든 질문에 답변을 받았어요. 실제 처리 결과는 질문 확인표에서 따로 확인해 주세요.</p>'}</div>${button('generate-draft', c.drafts.followup ? '초안 다시 만들기' : '선택한 질문으로 초안 만들기', 'primary', 'spark', `data-kind="followup" ${!state.selected.size || c.analyzedMessageCount < c.messages.length ? 'disabled' : ''}`)}<div id="draft-scope" aria-live="polite">${draftScopeHtml(c)}</div>${draftEditor(c,'followup')}</section>`;
+  return `<div class="section-tools"><div><h2>필요한 이야기만 이어가세요</h2><p>초안을 확인하고 수정한 뒤, 원하는 채널에 붙여넣어요.</p></div></div><section class="draft-section"><div class="section-title"><div>${icon('chat')}<h2>남은 질문 재문의</h2></div><span>${remaining.length}개 남음</span></div>${c.mode !== 'demo' ? `<label class="field">답장 언어<select id="reply-language"><option value="ko" ${replyLanguage === 'ko' ? 'selected' : ''}>한국어</option><option value="en" ${replyLanguage === 'en' ? 'selected' : ''}>English · 영어</option></select></label>` : ''}<div class="question-choices">${remaining.map(q => `<label><input type="checkbox" name="draft-question" value="${q.id}" ${state.selected.has(q.id) ? 'checked' : ''}><span>${esc(q.title)}</span>${badge(q.status)}</label>`).join('') || `<p class="quiet-empty">${c.questions.length ? '모든 질문에 답변을 받았어요. 실제 처리 결과는 질문 확인표에서 따로 확인해 주세요.' : '분석된 질문이 없어요. 질문 확인표에서 먼저 내용을 확인해 주세요.'}</p>`}</div>${button('generate-draft', c.drafts.followup ? '초안 다시 만들기' : '선택한 질문으로 초안 만들기', 'primary', 'spark', `data-kind="followup" ${!state.selected.size || c.analyzedMessageCount < c.messages.length ? 'disabled' : ''}`)}<div id="draft-scope" aria-live="polite">${draftScopeHtml(c)}</div>${draftEditor(c,'followup')}</section>`;
 }
 function draftEditor(c, kind) {
   const draft = c.drafts[kind];
   const dirty = dirtyKinds().includes(kind);
   if (!draft && state.draftEdits[kind] === undefined) return '';
-  return `<div class="draft-editor"><label for="draft-${kind}">${kind === 'followup' ? `${draft?.language === 'en' ? '영어 ' : ''}재문의 초안` : '상담 인계 요약'} <span>직접 수정할 수 있어요</span></label>${!draft ? '<p class="warning-note">다른 작업에서 원래 초안이 초기화됐어요. 편집 내용은 아래에 보존했으니 먼저 복사한 뒤 최신 상담으로 초안을 다시 만들어 주세요.</p>' : ''}<textarea id="draft-${kind}" data-draft="${kind}" rows="7" maxlength="8000" ${state.busy ? 'readonly' : ''}>${esc(state.draftEdits[kind] ?? savedDraft(draft))}</textarea><div class="draft-editor-bottom"><span id="draft-status-${kind}" role="status">${draftStatus(kind)}</span><div class="draft-actions">${draft ? button('save-draft','편집 저장','primary compact','check',`data-kind="${kind}" ${!dirty ? 'disabled' : ''}`) : ''}${button('copy','복사하기','secondary compact','copy',`data-kind="${kind}"`)}</div></div><p class="draft-note">자동 전송되지 않아요. 직접 편집한 문장은 원문과 대조해 주세요.</p>${draft ? `<details class="draft-sources"><summary>생성 당시 원문 근거 ${draft.sourceMessageIds.length}개</summary>${draft.sourceMessageIds.map(id => `<button class="quote" data-action="source" data-id="${id}">${icon('link')}${esc(c.messages.find(m => m.id === id)?.text)}</button>`).join('')}</details>${draft.editedAt ? `<details class="draft-sources"><summary>편집 전 생성 초안 보기</summary><p class="original-draft">${esc(draft.body)}</p></details>` : ''}` : ''}</div>`;
+  return `<div class="draft-editor"><label for="draft-${kind}">${kind === 'followup' ? `${draft?.language === 'en' ? '영어 ' : ''}재문의 초안` : '상담 인계 요약'} <span>직접 수정할 수 있어요</span></label>${!draft ? '<p class="warning-note">다른 작업에서 원래 초안이 초기화됐어요. 편집 내용은 아래에 보존했으니 먼저 복사한 뒤 최신 상담으로 초안을 다시 만들어 주세요.</p>' : ''}<textarea id="draft-${kind}" data-draft="${kind}" rows="7" maxlength="8000" ${state.busy ? 'readonly' : ''}>${esc(state.draftEdits[kind] ?? savedDraft(draft))}</textarea><div class="draft-editor-bottom"><span id="draft-status-${kind}" role="status">${draftStatus(kind)}</span><div class="draft-actions">${draft ? button('save-draft','편집 저장','primary compact','check',`data-kind="${kind}" ${!dirty ? 'disabled' : ''}`) : ''}${button('copy','복사하기','secondary compact','copy',`data-kind="${kind}"`)}</div></div><p class="draft-note">자동 전송되지 않아요. 직접 편집한 문장은 원문과 대조해 주세요.</p>${draft ? `<details class="draft-sources" data-disclosure="draft-sources-${esc(c.id)}-${kind}"><summary>생성 당시 원문 근거 ${draft.sourceMessageIds.length}개</summary>${draft.sourceMessageIds.map(id => `<button class="quote" data-action="source" data-id="${id}">${icon('link')}${esc(c.messages.find(m => m.id === id)?.text)}</button>`).join('')}</details>${draft.editedAt ? `<details class="draft-sources" data-disclosure="draft-original-${esc(c.id)}-${kind}"><summary>편집 전 생성 초안 보기</summary><p class="original-draft">${esc(draft.body)}</p></details>` : ''}` : ''}</div>`;
 }
 function draftStatus(kind) {
   const draft = state.current?.drafts[kind];
@@ -312,7 +313,7 @@ function draftStatus(kind) {
   return dirtyKinds().includes(kind) ? '저장하지 않은 편집 내용' : draft?.editedAt ? `${date(draft.editedAt)} 편집 저장됨` : '생성 초안 저장됨';
 }
 function historyPanel(c) {
-  return `<div class="section-tools"><div><h2>상담이 이어진 발자취</h2><p>새 답변, AI 분석, 직접 확인한 내용을 기록해요.</p></div></div><ol class="timeline">${c.history.map(h => `<li><span class="timeline-dot">${icon(h.type === 'confirmation' ? 'check' : h.type === 'analysis' ? 'spark' : 'chat')}</span><div><time>${date(h.at)}</time><h3>${esc(h.label)}</h3>${h.details ? `<p>${esc(h.details)}</p>` : ''}${h.comparison && h.comparison.kind !== 'initial' ? `<details class="history-comparison"><summary>반영 전후 비교 보기 · 질문 ${h.comparison.questions.length}건 · 약속 ${h.comparison.promises.length}건</summary><p class="change-note">이 분석 당시의 기록이에요. 현재 상태와 다를 수 있어요.</p>${comparisonContents(h.comparison)}</details>` : ''}</div></li>`).join('')}</ol>`;
+  return `<div class="section-tools"><div><h2>상담이 이어진 발자취</h2><p>새 답변, AI 분석, 직접 확인한 내용을 기록해요.</p></div></div><ol class="timeline">${c.history.map(h => `<li><span class="timeline-dot">${icon(h.type === 'confirmation' ? 'check' : h.type === 'analysis' ? 'spark' : 'chat')}</span><div><time>${date(h.at)}</time><h3>${esc(h.label)}</h3>${h.details ? `<p>${esc(h.details)}</p>` : ''}${h.comparison && h.comparison.kind !== 'initial' ? `<details class="history-comparison" data-disclosure="history-${esc(c.id)}-${esc(h.id)}"><summary>반영 전후 비교 보기 · 질문 ${h.comparison.questions.length}건 · 약속 ${h.comparison.promises.length}건</summary><p class="change-note">이 분석 당시의 기록이에요. 현재 상태와 다를 수 있어요.</p>${comparisonContents(h.comparison)}</details>` : ''}</div></li>`).join('')}</ol>`;
 }
 function showModal(title, content, wide = false) {
   const modal = $('#modal'); modal.className = wide ? 'modal wide-modal' : 'modal';
@@ -447,9 +448,16 @@ function highlightSource(id) {
     if (source) showModal('판정 근거 원문', `<p class="modal-intro" lang="en">${esc(source.text)}</p><div class="modal-actions">${button('close-modal', '닫기', 'secondary')}</div>`);
     return;
   }
+  state.sourceReturn = { caseId: state.current.id, version: state.current.version, messageId: id, tab: state.tab, mobile: state.mobile, filter: state.filter, focus: focusBookmark() };
   state.mobile = 'source'; render();
   const el = document.getElementById(`message-${id}`);
-  if (el) { el.classList.add('highlight'); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(() => el.classList.remove('highlight'), 3500); }
+  if (el) { el.classList.add('highlight'); el.tabIndex = -1; el.focus({ preventScroll: true }); el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'center' }); setTimeout(() => el.classList.remove('highlight'), 3500); }
+}
+function returnFromSource() {
+  const back = state.sourceReturn; state.sourceReturn = null;
+  if (!back || back.caseId !== state.current?.id || back.version !== state.current.version) return;
+  state.tab = back.tab; state.mobile = back.mobile; state.filter = back.filter;
+  render(); restoreFocus(back.focus); document.activeElement?.scrollIntoView({ block: 'center', behavior: 'instant' });
 }
 function downloadRecord() {
   const c = state.current;
@@ -463,12 +471,13 @@ document.addEventListener('click', async event => {
   if (target.dataset.action === 'cancel-operation') { await state.operation?.cancel(); return; }
   const action = target.dataset.action;
   if (blocked(action)) return;
-  if (['home', 'open', 'tab', 'draft-tab', 'mobile', 'source', 'inquiry-section'].includes(action)) viewRevision++;
+  if (['home', 'open', 'tab', 'draft-tab', 'mobile', 'source', 'source-return', 'inquiry-section'].includes(action)) viewRevision++;
   if (action === 'guard-cancel') return resolveGuard(false);
   if (action === 'guard-continue') return resolveGuard(true);
   const navigating = ['home','new','demo','email-demo'].includes(action) || (action === 'open' && target.dataset.id !== state.current?.id);
   const invalidating = ['demo-next','email-demo-reply','analyze','append','edit-question','apply-ai','confirm-promise','generate-draft'].includes(action);
   if ((navigating || invalidating) && !await guardEdits(invalidating, action === 'generate-draft' ? target.dataset.kind : undefined)) return;
+  if (['home', 'tab', 'draft-tab', 'mobile', 'inquiry-section'].includes(action)) state.sourceReturn = null;
   if (action === 'home') { views.leave(); state.current = null; state.draftEdits = {}; state.error = ''; window.history.replaceState(null,'','/'); await viewWork('상담 목록을 불러오고 있어요', refreshList); }
   if (action === 'refresh') await viewWork('상담 목록을 새로 불러오고 있어요', refreshList);
   if (action === 'inquiry-section') {
@@ -508,6 +517,7 @@ document.addEventListener('click', async event => {
   if (action === 'draft-tab') { state.tab = 'drafts'; state.mobile = 'analysis'; render(); }
   if (action === 'mobile') { state.mobile = target.dataset.value; render(); }
   if (action === 'source') highlightSource(target.dataset.id);
+  if (action === 'source-return') returnFromSource();
   if (action === 'append') showAppend();
   if (action === 'edit-question') showEdit(target.dataset.id);
   if (action === 'apply-ai') await work('AI 제안을 적용하고 있어요', async () => { await updateCase(`questions/${target.dataset.id}`, 'PATCH', { applyAI: true }); $('#modal').close(); });

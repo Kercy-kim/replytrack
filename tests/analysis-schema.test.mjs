@@ -76,6 +76,7 @@ test('analysis service sends fresh reference constraints after a reply without c
 test('routine replies use low effort while corrections, conditional policies and long context keep medium', () => {
   const record = text => ({ messages: [{ role: 'customer', text: 'When will it arrive?' }, { role: 'agent', text }] });
   for (const text of ['내일 도착 예정입니다.', 'It will arrive on November 20.']) assert.equal(analysisReasoningEffort(record(text)), 'low');
+  for (const text of ['환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다.', '배송일을 내일 알려드릴 예정입니다.', 'We will let you know the refund date tomorrow.']) assert.equal(analysisReasoningEffort(record(text)), 'medium');
   const email = { ...record('Please send the receipt number.'), channel: 'email', questions: [] };
   assert.equal(analysisReasoningEffort(email), 'medium');
   assert.equal(analysisReasoningEffort({ ...email, questions: [{ id: 'existing-question' }] }), 'medium');

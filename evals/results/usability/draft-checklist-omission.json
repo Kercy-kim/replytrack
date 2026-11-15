@@ -1,0 +1,227 @@
+{
+  "mode": "Live draft regeneration and reviewer controls, saved synthetic analyses",
+  "sourcePath": "evals/results/usability/full48.json",
+  "sourceHash": "9200bb033b231f8a17bc48c16b4b183b3a967c95c207a4a1f7a948b7e6c35692",
+  "hashes": {
+    "src/prompts.mjs": "ee61948e6e199c64c0ef4f008c20ae97f29ee6d070f5f408f3bbedc6365c1b63",
+    "src/service.mjs": "a02d8d97ac5eaef80e6f26d197d7ae324c98fc5e30fcd817a6db9822cdff3540",
+    "src/schema.mjs": "c078c05458303337f89cb9c4ed5c43d4ca3f280112fd936b3bff7f326412711c",
+    "src/feature-review.mjs": "756abdd902b93689ead3c51f9522d28ee5b0287c28266a7be95b6cad0b915c3c",
+    "scripts/check-draft-grounding-live.mjs": "98308dc14349a9006648cb1adb9cb7c2f32012dd2abb34947c90f5da115eaaa6"
+  },
+  "results": [
+    {
+      "name": "S02-missing-question-repair",
+      "kind": "controlled incomplete draft with live review and repair",
+      "calls": [
+        {
+          "name": "replytrack_draft",
+          "syntheticOmission": true,
+          "data": {
+            "body": "배송비는 얼마인가요?",
+            "sourceMessageIds": [
+              "49bbc774-391c-4eeb-b08c-fac2f0120209"
+            ]
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "ms": 7540,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": false,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true
+            },
+            "feedback": "원문의 미해결 질문인 '도착일은 언제인가요?'가 초안에 빠졌습니다. 미해결 항목(도착일)도 함께 문의하도록 초안을 보완하세요. (운송장 번호는 이미 안내되었습니다.)",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 7538,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 7533,
+                "httpStatus": 200,
+                "bodyMs": 4,
+                "usage": {
+                  "input_tokens": 2276,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 770,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 640
+                  },
+                  "total_tokens": 3046
+                },
+                "elapsedMs": 7538
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 2276,
+            "output_tokens": 770,
+            "total_tokens": 3046,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft",
+          "ms": 8273,
+          "data": {
+            "body": "도착일은 언제인가요? 배송비는 얼마인가요? 확인 부탁드립니다.",
+            "sourceMessageIds": [
+              "49bbc774-391c-4eeb-b08c-fac2f0120209",
+              "fe298191-36f0-4cb9-a509-f14214a669ca"
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 8273,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 8181,
+                "httpStatus": 200,
+                "bodyMs": 92,
+                "usage": {
+                  "input_tokens": 1774,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 1664
+                  },
+                  "output_tokens": 785,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 704
+                  },
+                  "total_tokens": 2559
+                },
+                "elapsedMs": 8273
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1774,
+            "output_tokens": 785,
+            "total_tokens": 2559,
+            "input_tokens_details": {
+              "cached_tokens": 1664
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 704
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "ms": 6056,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 6056,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 6054,
+                "httpStatus": 200,
+                "bodyMs": 2,
+                "usage": {
+                  "input_tokens": 2291,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 2176
+                  },
+                  "output_tokens": 545,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 448
+                  },
+                  "total_tokens": 2836
+                },
+                "elapsedMs": 6056
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 2291,
+            "output_tokens": 545,
+            "total_tokens": 2836,
+            "input_tokens_details": {
+              "cached_tokens": 2176
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 448
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "draft": {
+        "body": "도착일은 언제인가요? 배송비는 얼마인가요? 확인 부탁드립니다.",
+        "sourceMessageIds": [
+          "49bbc774-391c-4eeb-b08c-fac2f0120209",
+          "fe298191-36f0-4cb9-a509-f14214a669ca"
+        ],
+        "questionIds": [
+          "be6bff39-528a-431c-bd7c-c3191852feb9",
+          "eb92f160-a7e1-4a7c-86f4-619727606d6a"
+        ],
+        "language": "ko",
+        "at": "2026-11-15T15:25:23.864Z",
+        "model": "gpt-5-mini-2025-08-07",
+        "review": {
+          "model": "gpt-5-mini-2025-08-07",
+          "attempts": 2
+        }
+      },
+      "passed": true
+    }
+  ],
+  "passed": true
+}

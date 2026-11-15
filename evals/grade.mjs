@@ -28,7 +28,8 @@ export function grade(record, expected, previous = null) {
     const actual = matches.length === 1 ? matches[0] : null;
     if (!actual) { issues.push(`promise:${gold.topic}: ${matches.length ? 'ambiguous match' : 'missing'}`); return { gold, actual: null, ok: false }; }
     promiseMatches.add(actual.id);
-    const ok = actual.state === gold.state && actual.dueAt === gold.dueAt && (gold.deadline ? actual.dueText.includes(gold.deadline) : !actual.dueText) && !actual.confirmedAt;
+    const deadlineOK = gold.deadlineOptions ? gold.deadlineOptions.includes(actual.dueText) : gold.deadline ? actual.dueText.includes(gold.deadline) : !actual.dueText;
+    const ok = actual.state === gold.state && actual.dueAt === gold.dueAt && deadlineOK && !actual.confirmedAt;
     if (!ok) issues.push(`promise:${gold.topic}: expected ${gold.state}/${gold.dueAt}/${gold.deadline}, got ${actual.state}/${actual.dueAt}/${actual.dueText}`);
     if (previous && !previous.promises.some(x => x.id === actual.id)) issues.push(`identity:promise ${gold.topic}: existing promise id changed`);
     return { gold, actual: { id: actual.id, title: actual.title, state: actual.state, dueAt: actual.dueAt, dueText: actual.dueText, confirmedAt: actual.confirmedAt }, ok };

@@ -2,7 +2,7 @@ import { assert, AppError } from './errors.mjs';
 import { newCase, message, history, applyAnalysis, analysisValidationErrors, validateDraft, statuses, cleanText } from './domain.mjs';
 import { createDemo, createRefundDemo, advanceDemo, demoAnalysis, demoDraft, demoActions } from './demo.mjs';
 import { actionsSchemaFor, actionsReviewSchema, ACTIONS_PROMPT, ACTIONS_REVIEW_PROMPT, validateActions, applyActions } from './next-actions.mjs';
-import { actionChecks, reviewPassed } from './feature-review.mjs';
+import { actionChecks, draftChecks, reviewPassed } from './feature-review.mjs';
 import { actionsFresh } from '../public/next-actions.js';
 import { analysisSchemaFor, transcriptSchema, draftSchemaFor, draftReviewSchema, boundaryReviewSchemaFor, completionReviewSchemaFor } from './schema.mjs';
 import { ANALYSIS_PROMPT, TRANSCRIPT_PROMPT, DRAFT_PROMPT, DRAFT_REVIEW_PROMPT, BOUNDARY_REVIEW_PROMPT, COMPLETION_REVIEW_PROMPT } from './prompts.mjs';
@@ -32,7 +32,10 @@ export const analysisContext = record => ({
 export function analysisReasoningEffort(record) {
   const correction = /정정|철회|번복|변경|잘못|앞서|앞선|기한.{0,20}취소|취소.{0,20}기한|\b(correct(?:ion|ed|ing)?|incorrect|revis(?:e|ed|ion)|retract(?:ed|ion)?|instead|supersed\w*|disregard|previous(?:ly)?|chang(?:e|ed))\b/i;
   const conditional = /면|경우|조건|원칙|예외|다만|하지만|\b(if|unless|only|except|provided)\b/i;
-  return record.channel === 'email' || record.messages.length > 8 || record.messages.reduce((n, m) => n + m.text.length, 0) > 8000 || record.messages.some(m => m.role === 'agent' && (correction.test(m.text) || conditional.test(m.text))) ? 'medium' : 'low';
+  // A deadline for learning an answer can differ from the requested processing date.
+  // Spend more reasoning on future information promises; never assign a status by regex.
+  const futureInformation = /(?:안내|알려|답변|회신)[^.!?\n]{0,24}(?:겠|드릴|드리|예정)|\b(?:will|shall|going to)\b[^.!?\n]{0,80}\b(?:update|inform|confirm|reply|tell|let you know)\b/i;
+  return record.channel === 'email' || record.messages.length > 8 || record.messages.reduce((n, m) => n + m.text.length, 0) > 8000 || record.messages.some(m => m.role === 'agent' && (correction.test(m.text) || conditional.test(m.text) || futureInformation.test(m.text))) ? 'medium' : 'low';
 }
 
 function analysisUsage(results) {
@@ -322,10 +325,13 @@ export class ReplyTrack {
         }
         const checked = await this.ask({ name: 'replytrack_draft_review', schema: draftReviewSchema, instructions: DRAFT_REVIEW_PROMPT + draftLanguagePrompt(language), reasoningEffort: 'medium',
           data: { ...source, draft: candidate } }, context, 'draft_review');
-        if (checked.data?.valid === true) {
+        if (reviewPassed(checked.data, draftChecks)) {
           draft = candidate; review = { model: checked.model, attempts: attempt + 1 }; break;
         }
-        revisionFeedback = typeof checked.data?.feedback === 'string' ? checked.data.feedback.slice(0, 1500) : '선택한 모든 질문, 소비자 관점, 원문 사실과 일치하도록 수정해 주세요.';
+        // A reviewer can itself invent a requirement. Retry from authoritative source
+        // data instead of promoting its suggested facts or the rejected draft to input.
+        previousDraft = null;
+        revisionFeedback = '이전 초안이 독립 검토를 통과하지 못했습니다. 원문 messages와 사용자가 선택한 questions만 다시 대조해 소비자 입장의 새 재문의를 작성하세요. 선택 질문은 빠짐없이 묻되 새 질문이나 미확인 배경 사실을 추가하지 마세요.';
       }
       if (!draft) throw new AppError(502, '초안을 검토했지만 선택한 질문이나 원문과 맞지 않는 부분이 남아 저장하지 않았습니다. 다시 작성해 주세요.', 'DRAFT_REVIEW');
     }

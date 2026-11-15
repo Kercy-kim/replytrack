@@ -89,7 +89,7 @@ export class OfficialContext {
     const sources = await this.sources(c, provider, signal);
     if (!sources.length || signal.aborted) return { state: 'omitted' };
     const data = { provider: provider.id, title: c.title, messages: c.messages, sources };
-    const providerInstructions = provider.id === 'microsoft' ? ' Microsoft 자료의 working email은 복구 결과를 수신할 수 있는 연락용 이메일이며 직장·업무용·작업용 이메일이라는 뜻이 아니다. Outlook/Skype/Xbox 등의 자료는 해당 계정에서 그 서비스를 사용한 경우에만 해당하므로 모든 사용자에게 전부 제출하라고 표현하지 않는다.' : '';
+    const providerInstructions = provider.id === 'microsoft' ? ' Microsoft 자료의 working email은 복구 결과를 수신할 수 있는 연락용 이메일이며 직장·업무용·작업용 이메일이라는 뜻이 아니다. Outlook/Skype/Xbox 등의 자료는 해당 계정에서 그 서비스를 사용한 경우에만 해당한다. 고객 원문에 실제 이용 서비스가 없다면 서비스명·기기 ID·연락처 목록을 나열하지 말고, 연락용 이메일과 실제 이용한 서비스의 계정 확인 정보를 준비한다는 범위로 압축한다. 조건을 생략해 모든 사용자에게 전부 제출하라고 표현하지 않는다. 선택적인 기기·위치 팁은 자료 준비 질문의 답에 덧붙이지 않는다.' : '';
     const schema = obj({ items: { type: 'array', maxItems: 1, items: obj({ text, sourceId: { type: 'string', enum: sources.map(s => s.id) }, quote: text }) } });
     let revision = {};
     for (let attempt = 0; attempt < 2; attempt++) {
