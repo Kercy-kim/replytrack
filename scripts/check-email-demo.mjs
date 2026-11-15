@@ -16,6 +16,7 @@ const errors = []; page.on('pageerror', e => errors.push(e.message));
 const idle = () => page.waitForFunction(() => !document.querySelector('.busy-bar'));
 try {
   await page.goto(`http://127.0.0.1:${app.server.address().port}`);
+  await page.locator('.sidebar-extras > summary').click();
   await page.locator('[data-action=email-demo]').click(); await idle();
   const started = performance.now();
   for (let step = 0; step < 4; step++) {

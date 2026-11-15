@@ -118,6 +118,7 @@ try {
   const imagePath = resolve(artifacts, 'synthetic-private-chat.png'); await imagePage.screenshot({ path: imagePath }); await imagePage.close();
   await page.locator('.sidebar [data-action="new"]').click(); await modal.locator('[data-action="guard-continue"]').click();
   await page.locator('#import-form [name=title]').fill('로컬 캡처 테스트');
+  await page.locator('.capture-options > summary').click();
   await page.locator('#import-form [name=image]').setInputFiles(imagePath);
   await page.locator('#import-form [name=text]').fill('추가 입력도 취소 후 보존');
   await page.locator('#import-form button[type=submit]').click();

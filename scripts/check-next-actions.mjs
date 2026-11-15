@@ -36,6 +36,7 @@ try {
   page.on('pageerror',e=>errors.push(e.message)); page.setDefaultTimeout(12000);
   const idle=()=>page.waitForFunction(()=>!document.querySelector('.busy-bar'));
   await page.goto(origin);
+  await page.locator('.sidebar-extras > summary').click();
   await page.locator('.sidebar [data-action="demo"]').click(); await idle();
   await page.getByRole('heading',{name:'지금 내가 할 일',exact:true}).waitFor();
   assert.match(await page.locator('#next-actions').innerText(),/불량 사진 보내기/);
@@ -52,6 +53,7 @@ try {
   await page.locator('.action-history summary').click();
   await page.getByRole('button',{name:'수행 표시 취소',exact:true}).click(); await idle();
   assert.equal(app.store.get(demoId).nextActions.items[0].completedAt,null);
+  await page.locator('.action-suggestions > summary').click();
   await page.locator('[data-action="action-followup"]').click();
   assert.equal(await page.locator('[name="draft-question"]:checked').count(),1);
   assert.match(await page.locator('[name="draft-question"]:checked').locator('..').innerText(),/배송비/);
