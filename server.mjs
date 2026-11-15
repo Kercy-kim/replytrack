@@ -9,6 +9,7 @@ import { ReplyTrack } from './src/service.mjs';
 import { AppError, assert } from './src/errors.mjs';
 import { allowExtensionRequest } from './src/extension-access.mjs';
 import { Operations, checkpoint } from './src/operation.mjs';
+import { guideInput } from './src/official-guide.mjs';
 
 const root = dirname(fileURLToPath(import.meta.url));
 try { process.loadEnvFile(join(root, '.env')); } catch (error) { if (error.code !== 'ENOENT') throw error; }
@@ -17,11 +18,12 @@ staticFiles.set('/workspace.js', ['workspace.js', 'text/javascript']);
 staticFiles.set('/operations.js', ['operations.js', 'text/javascript']);
 staticFiles.set('/onboarding.js', ['onboarding.js', 'text/javascript']);
 staticFiles.set('/next-actions.js', ['next-actions.js', 'text/javascript']);
+staticFiles.set('/official-guide.js', ['official-guide.js', 'text/javascript']);
 
-export function createApp({ store, ai, ocr } = {}) {
+export function createApp({ store, ai, ocr, faq } = {}) {
   const db = store ?? new CaseStore(resolve(root, process.env.REPLYTRACK_DATA_DIR || 'data', 'replytrack.sqlite'));
   const client = ai ?? new OpenAIClient({ apiKey: process.env.OPENAI_API_KEY || '', model: process.env.OPENAI_MODEL || 'gpt-5-mini' });
-  const service = new ReplyTrack(db, client, { ocr });
+  const service = new ReplyTrack(db, client, { ocr, faq });
   const operations = new Operations();
   const server = createServer(async (req, res) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -51,11 +53,13 @@ export function createApp({ store, ai, ocr } = {}) {
       if (method === 'PUT' && path === '/api/config') return json(service.configure(body));
       if (method === 'POST' && path === '/api/operations') {
         const { id, kind, caseId, input = {} } = body;
-        assert(['preflight', 'prepare', 'extract', 'analyze', 'draft', 'actions'].includes(kind), '작업 종류를 확인해 주세요.');
+        assert(['preflight', 'prepare', 'extract', 'analyze', 'draft', 'actions', 'guide'].includes(kind), '작업 종류를 확인해 주세요.');
         assert(input && typeof input === 'object' && !Array.isArray(input), '작업 입력을 확인해 주세요.');
         // Do optimistic-version validation before spending any provider tokens.
         const record = ['analyze', 'draft', 'actions'].includes(kind) ? service.getVersion(caseId, input.version) : null;
+        if (kind === 'guide') guideInput(input);
         return json(operations.start(id, async context => {
+          if (kind === 'guide') return service.guide(input, context);
           if (kind === 'preflight') return service.preflight(context);
           if (kind === 'prepare') return service.prepare(input, context);
           if (record?.mode !== 'demo') await service.ensureConnection(context);

@@ -2,6 +2,7 @@ import { deadlineState, filterCases, dirtyDraftKinds, savedDraft, selectedQuesti
 import { WebOperation, stages, elapsedLabel } from './operations.js';
 import { newOnboarding, hasOnboardingInput, manualMessages } from './onboarding.js';
 import { renderActionPlan, actionsMarkdown } from './next-actions.js';
+import { newGuide, renderGuide, guideTranscript } from './official-guide.js';
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const names = { unanswered: '미답변', partial: '부분 답변', waiting: '답변 대기', answered: '답변 받음', review: '확인 필요' };
@@ -20,6 +21,8 @@ const icons = {
 const icon = (name, cls = '') => `<svg class="icon ${cls}" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.chat}</svg>`;
 const state = { cases: [], current: null, config: { configured: false, model: 'gpt-5-mini' }, busy: '', tab: 'questions', mobile: 'analysis', filter: 'all', selected: new Set(), draftEdits: {}, error: '', onboarding: null, query: '', caseFilter: 'active', sort: 'priority' };
 const dirtyKinds = () => dirtyDraftKinds(state.current?.drafts || {}, state.draftEdits);
+state.guide = newGuide();
+state.guideOpen = false;
 const views = new CaseNavigation();
 let viewRevision = 0;
 let settingsReturn = false;
@@ -35,7 +38,7 @@ function guardEdits(invalidates = false, kind) {
   return new Promise(resolve => { guardResolve = resolve; });
 }
 function resolveGuard(allowed) { const resolve = guardResolve; guardResolve = null; $('#modal').close(); resolve?.(allowed); }
-window.addEventListener('beforeunload', event => { if (dirtyKinds().length || state.operation || hasOnboardingInput(state.onboarding)) { event.preventDefault(); event.returnValue = ''; } });
+window.addEventListener('beforeunload', event => { if (dirtyKinds().length || state.operation || hasOnboardingInput(state.onboarding) || state.guide.goal.trim()) { event.preventDefault(); event.returnValue = ''; } });
 window.addEventListener('pagehide', () => {
   if (state.operation?.snapshot.state === 'running') fetch(`/api/operations/${state.operation.id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: '{}', keepalive: true }).catch(() => {});
 });
@@ -110,6 +113,7 @@ function renderProgress() {
 }
 async function refreshList() { state.cases = await api('/api/cases'); }
 function setCase(c) {
+  state.guideOpen = false;
   c = views.remember(c);
   // Retain local edits during conflict recovery, even if another window invalidated a draft.
   const edits = state.current?.id === c.id ? { ...state.draftEdits } : {};
@@ -166,6 +170,7 @@ function render() {
       <a href="/" class="brand" data-action="home" aria-label="ReplyTrack 홈"><img src="/favicon.svg" width="35" height="35" alt=""><span>ReplyTrack<span class="brand-dot">.</span></span></a>
       <div class="workspace-label">나의 상담 워크스페이스</div>
       ${button('new', '새 상담 시작하기', 'primary wide', 'plus')}
+      ${button('guide', 'SSG 공식 안내 찾기', 'secondary wide workspace-home', 'spark')}
       ${button('home', '상담 전체 보기', 'secondary wide workspace-home', 'file')}
       <div class="nav-heading"><span>내 상담</span><span>${state.cases.filter(item => !item.archivedAt || item.id === c?.id).length.toString().padStart(2, '0')}</span></div>
       <nav class="case-list" aria-label="상담 목록">${state.cases.length ? state.cases.filter(item => !item.archivedAt || item.id === c?.id).map(item => `<button class="case-item ${c?.id === item.id ? 'active' : ''}" data-action="open" data-id="${item.id}" ${blocked('open') ? 'disabled' : ''}>${icon('chat')}<span><strong>${esc(item.title)}</strong><small>${esc(item.company)}${item.mode === 'demo' ? ' · 예제' : ''}</small></span>${item.unanswered ? `<b>${item.unanswered}</b>` : icon('check')}</button>`).join('') : '<p class="sidebar-empty">새 상담을 시작하면<br>이곳에 기록이 쌓여요.</p>'}</nav>
@@ -177,7 +182,7 @@ function render() {
       <header class="topbar"><div>워크스페이스 <span>/</span> <strong>${c ? '상담 기록' : state.cases.length ? '상담 전체 보기' : '시작하기'}</strong></div><span class="topbar-note">놓친 답변 없이, 다음 이야기로</span><button class="avatar" data-action="settings" aria-label="AI 연결 설정">R</button></header>
       ${state.busy ? `<div class="busy-bar" role="status">${esc(state.busy)}</div>` : ''}<section class="operation-panel" data-progress hidden aria-label="작업 진행 상황"></section>
       ${state.error ? `<div class="error-banner" role="alert">${esc(state.error)}<button data-action="dismiss-error" aria-label="오류 안내 닫기">${icon('close')}</button></div>` : ''}
-      ${c ? detail(c) : landing()}
+      ${state.guideOpen ? renderGuide(state.guide, { busy: !!state.busy, configured: state.config.configured, hasDraft: hasOnboardingInput(state.onboarding) }) : c ? detail(c) : landing()}
       <footer class="footer">ReplyTrack <span>대화는 이어지고, 기록은 남으니까.</span><span>AI 판단은 원문과 함께 확인해 주세요.</span></footer>
     </main>`;
   $('#app').querySelectorAll('button[data-action]').forEach(el => { if (blocked(el.dataset.action) && el.dataset.action !== 'cancel-operation') el.disabled = true; });
@@ -407,6 +412,16 @@ document.addEventListener('click', async event => {
   const navigating = ['home','new','demo'].includes(action) || (action === 'open' && target.dataset.id !== state.current?.id);
   const invalidating = ['demo-next','analyze','append','edit-question','apply-ai','confirm-promise','generate-draft'].includes(action);
   if ((navigating || invalidating) && !await guardEdits(invalidating, action === 'generate-draft' ? target.dataset.kind : undefined)) return;
+  if (['home','open','demo'].includes(action)) state.guideOpen = false;
+  if (action === 'guide') { state.guideOpen = true; render(); $('#guide-goal').focus(); }
+  if (action === 'guide-back') { state.guideOpen = false; render(); }
+  if (action === 'guide-handoff' && state.guide.result && !hasOnboardingInput(state.onboarding)) {
+    if (!await guardEdits()) return;
+    const input = state.guide.result.input;
+    state.onboarding = { ...newOnboarding(), title: input.goal.slice(0, 100), company: 'SSG', stage: 'review', messages: [{ role: 'customer', text: guideTranscript(input), sentAt: null }] };
+    render();
+    showReview();
+  }
   if (action === 'home') { views.leave(); state.current = null; state.draftEdits = {}; state.error = ''; window.history.replaceState(null,'','/'); await viewWork('상담 목록을 불러오고 있어요', refreshList); }
   if (action === 'refresh') await viewWork('상담 목록을 새로 불러오고 있어요', refreshList);
   if (action === 'case-filter') { state.caseFilter = target.dataset.value; render(); }
@@ -460,6 +475,7 @@ document.addEventListener('click', async event => {
   if (action === 'remove-row') { target.closest('.review-row').remove(); captureOnboarding(); }
 });
 document.addEventListener('change', event => {
+  if (event.target.dataset.guideAnswer) { if (event.target.value) state.guide.answers[event.target.dataset.guideAnswer] = event.target.value; else delete state.guide.answers[event.target.dataset.guideAnswer]; render(); }
   if (event.target.closest('#import-form, #privacy-form, #review-form')) captureOnboarding();
   if (event.target.id === 'case-sort') { state.sort = event.target.value; $('#workspace-results').innerHTML = caseResults(); }
   if (event.target.id === 'question-filter') { state.filter = event.target.value; render(); }
@@ -483,6 +499,10 @@ document.addEventListener('keydown', event => {
   $(`#tab-${state.tab}`).focus();
 });
 document.addEventListener('input', event => {
+  if (event.target.id === 'guide-goal') {
+    state.guide.goal = event.target.value; state.guide.answers = {}; state.guide.question = null; state.guide.message = '';
+    render();
+  }
   if (event.target.closest('#import-form, #privacy-form, #review-form')) captureOnboarding();
   if (event.target.id === 'case-search') { state.query = event.target.value; $('#workspace-results').innerHTML = caseResults(); }
   const kind = event.target.dataset.draft;
@@ -496,6 +516,16 @@ document.addEventListener('input', event => {
 document.addEventListener('submit', async event => {
   event.preventDefault(); const form = event.target;
   if (state.busy) return;
+  if (form.id === 'guide-form') {
+    const input = { store: 'ssg', goal: state.guide.goal, answers: { ...state.guide.answers } };
+    await work('공식 안내를 찾고 내 상황과 대조하고 있어요', async () => {
+      const result = await runOperation('guide', input);
+      state.guide.question = result.status === 'question' ? result.question : null;
+      state.guide.message = result.status === 'unsupported' ? result.message : '';
+      if (result.status === 'ready') state.guide.result = { ...result, request: input };
+    });
+    if (!state.error) (state.guide.question ? $(`#guide-form select[data-guide-answer="${state.guide.question.key}"]`) : $('#guide-result-heading'))?.focus();
+  }
   if (form.id === 'case-settings-form') {
     const data = {title:form.elements.title.value,company:form.elements.company.value};
     await work('상담 정보를 저장하고 있어요',async () => { await updateCase('','PATCH',data); $('#modal').close(); toast('상담 정보를 수정했어요.'); });
