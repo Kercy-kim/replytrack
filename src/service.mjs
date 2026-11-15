@@ -40,6 +40,7 @@ function analysisUsage(results) {
   if (!usages.length) return null;
   const sum = key => usages.reduce((n, u) => n + (u[key] || 0), 0);
   return { input_tokens: sum('input_tokens'), output_tokens: sum('output_tokens'), total_tokens: sum('total_tokens'),
+    unobserved_requests: results.reduce((n, r) => n + (r.transport?.unobservedRequests ?? r.usage?.unobserved_requests ?? (r.usage ? 0 : 1)), 0),
     input_tokens_details: { cached_tokens: usages.reduce((n, u) => n + (u.input_tokens_details?.cached_tokens || 0), 0) },
     output_tokens_details: { reasoning_tokens: usages.reduce((n, u) => n + (u.output_tokens_details?.reasoning_tokens || 0), 0) } };
 }

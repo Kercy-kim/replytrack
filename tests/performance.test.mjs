@@ -41,3 +41,12 @@ test('first analysis and reply latency are separated, including failed operation
   after.results[0].stages[0].reasonGrade = { pass: false };
   assert(compareRuns(before, after).regressions.includes('A: analysis 1 reason quality'));
 });
+
+test('a successful hedge with an unobserved loser is not reported as a token saving', () => {
+  const before = report(), after = report(); before.results[0].calls.pop(); after.results[0].calls.pop();
+  after.results[0].calls[0].transport = { hedged: true, unobservedRequests: 1, attempts: [{ state: 'cancelled' }, { state: 'completed' }] };
+  const comparison = compareRuns(before, after);
+  assert.equal(comparison.after.requests, 2); assert.equal(comparison.after.hedgedCalls, 1); assert.equal(comparison.after.unobservedRequests, 1);
+  assert.equal(comparison.reductionPercent.totalTokens, null); assert.equal(comparison.reductionPercent.inputTokens, null);
+  assert.equal(comparison.reductionPercent.outputTokens, null);
+});

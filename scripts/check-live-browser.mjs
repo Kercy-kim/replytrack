@@ -18,7 +18,7 @@ const analysisEffort = process.argv.find(arg => arg.startsWith('--analysis-effor
 const coreOnly = process.argv.includes('--core-only');
 assert(['product', 'low', 'medium'].includes(analysisEffort), 'Use product, low or medium analysis effort.');
 const report = { at: new Date().toISOString(), analysisEffort, coreOnly, passed: false, cases: [], calls: [], browserErrors: [],
-  hashes: Object.fromEntries(['src/service.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/openai.mjs', 'public/app.js', 'scripts/check-live-browser.mjs'].map(f => [f, createHash('sha256').update(readFileSync(f)).digest('hex')])) };
+  hashes: Object.fromEntries(['src/service.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/openai.mjs', 'src/ai-race.mjs', 'public/app.js', 'scripts/check-live-browser.mjs'].map(f => [f, createHash('sha256').update(readFileSync(f)).digest('hex')])) };
 const save = () => writeFile(`${dir}/result.json`, JSON.stringify(report, null, 2));
 class MeasuredOpenAI extends OpenAIClient {
   async structured(args) {
@@ -26,11 +26,11 @@ class MeasuredOpenAI extends OpenAIClient {
     const started = Date.now();
     try {
       const result = await super.structured(args);
-      report.calls.push({ name: args.name, reasoningEffort: args.reasoningEffort || 'low', model: result.model, elapsedMs: Date.now() - started, tokens: result.usage?.total_tokens || 0, usage: result.usage });
+      report.calls.push({ name: args.name, reasoningEffort: args.reasoningEffort || 'low', model: result.model, elapsedMs: Date.now() - started, tokens: result.usage?.total_tokens || 0, usage: result.usage, transport: result.transport });
       console.log(`${args.name}: ${Date.now() - started} ms`);
       await save(); return result;
     } catch (error) {
-      report.calls.push({ name: args.name, elapsedMs: Date.now() - started, error: error.code || 'ERROR' });
+      report.calls.push({ name: args.name, elapsedMs: Date.now() - started, error: error.code || 'ERROR', transport: error.transport });
       await save(); throw error;
     }
   }
