@@ -1,0 +1,147 @@
+{
+  "at": "2026-11-15T10:46:39.259Z",
+  "controls": [
+    {
+      "id": "valid",
+      "expected": true,
+      "result": {
+        "data": {
+          "valid": true,
+          "feedback": "원문과 한국어 설명이 의미상 일치합니다. 에이전트 메시지는 정확히 하나이고(“Please provide the transaction ID…”), 구매 영수증의 거래 번호 요청, 비밀번호·인증 코드 금지 경고, 거래 번호 확인 후 복구 요청 검토라는 순서와 조건이 모두 보존되어 있습니다. 누락된 자료 요청이나 절차·개인정보 추가 요구, 실제 복구·첨부 완료를 단정하는 표현은 없습니다. 번역에서 ‘transaction ID’를 ‘거래 번호’로 옮긴 것도 적절합니다."
+        },
+        "model": "gpt-5-mini-2025-08-07",
+        "usage": {
+          "input_tokens": 372,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cache_write_tokens_details": {
+              "ttl_12h_tokens": 0,
+              "ttl_30m_tokens": 0
+            },
+            "cached_tokens": 0
+          },
+          "output_tokens": 734,
+          "output_tokens_details": {
+            "reasoning_tokens": 576
+          },
+          "total_tokens": 1106
+        }
+      },
+      "ms": 7634,
+      "passed": true
+    },
+    {
+      "id": "negation-reversed",
+      "expected": false,
+      "result": {
+        "data": {
+          "valid": false,
+          "feedback": "에이전트 메시지는 정확히 한 건으로 존재합니다. 그러나 설명문은 원문 의미를 잘못 전달하고 있습니다. 원문은 ‘구매 영수증의 거래 ID를 보내 달라’고 요청하고 ‘비밀번호나 인증 코드는 보내지 마라’는 금지를 명시합니다. 설명문은 금지를 지우고 오히려 비밀번호와 인증 코드까지 보내 달라고 변경하여 원문에 없는 개인정보 요구를 추가했으므로 의미가 훼손되었습니다. 복구 검토는 거래 ID 확인 후에 이루어진다는 조건(‘확인 후 복구 요청을 검토합니다’)은 설명에 보존되어 있습니다. 원문에 없는 절차·개인정보 요구를 추가했으므로 유효하지 않습니다. 수정 제안(원문과 동등한 한국어 번역):\n\n\"구매 영수증의 거래 ID(거래 번호)를 보내 주세요. 비밀번호나 인증 코드는 보내지 마세요. 거래 ID를 확인한 후 복구 요청을 검토하겠습니다.\""
+        },
+        "model": "gpt-5-mini-2025-08-07",
+        "usage": {
+          "input_tokens": 364,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cache_write_tokens_details": {
+              "ttl_12h_tokens": 0,
+              "ttl_30m_tokens": 0
+            },
+            "cached_tokens": 0
+          },
+          "output_tokens": 1313,
+          "output_tokens_details": {
+            "reasoning_tokens": 1024
+          },
+          "total_tokens": 1677
+        }
+      },
+      "ms": 13002,
+      "passed": true
+    },
+    {
+      "id": "invented-deadline",
+      "expected": false,
+      "result": {
+        "data": {
+          "valid": false,
+          "feedback": "에이전트 메시지는 정확히 하나로 존재하는 것은 확인됩니다. 다만 설명(한국어 번역)이 원문에 없는 기한 '오늘까지'를 추가하여 의미가 변경되었습니다. 원문에는 제출 기한이 명시되어 있지 않으므로 기한을 새로 넣는 것은 오류입니다. 그 외 요청 내용(구매 영수증의 거래 번호 제출 요청), 금지사항(비밀번호·인증 코드 전송 금지), 처리 순서(거래 번호 확인 후 복구 요청 검토)는 보존되어 있습니다. 수정 제안: '오늘까지'를 삭제하고 원문 의미대로 번역하십시오. 예: \"구매 영수증의 거래 번호를 보내 주세요. 비밀번호나 인증 코드는 보내지 마세요. 거래 번호 확인 후 복구 요청을 검토합니다.\""
+        },
+        "model": "gpt-5-mini-2025-08-07",
+        "usage": {
+          "input_tokens": 373,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cache_write_tokens_details": {
+              "ttl_12h_tokens": 0,
+              "ttl_30m_tokens": 0
+            },
+            "cached_tokens": 0
+          },
+          "output_tokens": 1029,
+          "output_tokens_details": {
+            "reasoning_tokens": 832
+          },
+          "total_tokens": 1402
+        }
+      },
+      "ms": 11703,
+      "passed": true
+    },
+    {
+      "id": "invented-completion",
+      "expected": false,
+      "result": {
+        "data": {
+          "valid": false,
+          "feedback": "에이전트 메시지는 한 개로 존재하는 것은 확인됩니다. 그러나 한국어 설명은 원문의 의미를 보존하지 못합니다. 원문은 구매 영수증의 거래 ID를 제출해 달라고 요구하고(그리고 비밀번호·인증코드 전송 금지라는 금지사항이 있음), 거래 ID 확인 후 복구 요청을 검토하겠다고 조건을 제시합니다. 반면 설명은 ‘계정 복구가 완료되었고 추가 자료는 필요하지 않다’고 단정하여 요청된 자료를 삭제하고 절차·조건을 변경·부정(완료 주장)했습니다. 핵심 요구(거래 ID 제출)와 금지사항(비밀번호·인증코드 전송 금지), 처리 조건(확인 후 검토)을 모두 보존하지 않았으므로 설명은 잘못되었습니다."
+        },
+        "model": "gpt-5-mini-2025-08-07",
+        "usage": {
+          "input_tokens": 351,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cache_write_tokens_details": {
+              "ttl_12h_tokens": 0,
+              "ttl_30m_tokens": 0
+            },
+            "cached_tokens": 0
+          },
+          "output_tokens": 1097,
+          "output_tokens_details": {
+            "reasoning_tokens": 832
+          },
+          "total_tokens": 1448
+        }
+      },
+      "ms": 12121,
+      "passed": true
+    }
+  ],
+  "capture": {
+    "prepared": {
+      "text": "Account recovery\n\nFrom: me@example.test\n\nWhat documents do you need to recover my account? How long will the review take?\n\nFrom: support@example.test\n\nPlease provide the transaction ID from your purchase receipt. Do not send your password or verification\ncodes. After we verify the transaction ID, we will review your recovery request.\n",
+      "counts": {
+        "phone": 0,
+        "address": 0
+      }
+    },
+    "read": {
+      "messages": [
+        {
+          "role": "customer",
+          "text": "What documents do you need to recover my account? How long will the review take?",
+          "sentAt": null
+        },
+        {
+          "role": "agent",
+          "text": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification\ncodes. After we verify the transaction ID, we will review your recovery request.",
+          "sentAt": null
+        }
+      ],
+      "notes": [],
+      "model": "gpt-5-mini-2025-08-07"
+    },
+    "passed": true
+  }
+}

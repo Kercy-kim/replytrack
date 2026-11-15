@@ -11,6 +11,7 @@ import { checkpoint } from './operation.mjs';
 import { maskPrivate, privacyEnvelope } from './privacy.mjs';
 import { readImage } from './ocr.mjs';
 import { OfficialFaq, officialGuide } from './official-guide.mjs';
+import { EMAIL_TRANSCRIPT_PROMPT, EMAIL_ANALYSIS_PROMPT, EMAIL_ACTIONS_PROMPT, EMAIL_EXPLANATION_PROMPT, EMAIL_EXPLANATION_REVIEW_PROMPT, emailReviewSchema, emailExplanationSchema, validateEmailExplanation, validateEmailTranscript, draftLanguagePrompt } from './email.mjs';
 
 // Derived reasoning and suggested follow-ups are not independent source facts.
 export const draftQuestionContext = questions => questions.map(({ id, title, source, status, evidence }) => ({ id, title, source, status, evidence }));
@@ -100,11 +101,11 @@ export class ReplyTrack {
     let result, checked;
     if (c.mode === 'demo') result = { data: demoActions(c), model: '준비된 예제 · AI 호출 없음' };
     else {
-      result = await this.ask({ name: 'replytrack_actions', schema: actionsSchemaFor(c), instructions: ACTIONS_PROMPT, reasoningEffort: 'medium', data }, context, 'actions');
+      result = await this.ask({ name: 'replytrack_actions', schema: actionsSchemaFor(c), instructions: ACTIONS_PROMPT + (c.channel === 'email' ? `\n${EMAIL_ACTIONS_PROMPT}` : ''), reasoningEffort: 'medium', data }, context, 'actions');
       checkpoint(context, 'validation');
       validateActions(result.data, c);
       this.getVersion(id, version);
-      checked = await this.ask({ name: 'replytrack_actions_review', schema: actionsReviewSchema, instructions: ACTIONS_REVIEW_PROMPT, reasoningEffort: 'medium', data: { ...data, items: result.data.items } }, context, 'actions_review');
+      checked = await this.ask({ name: 'replytrack_actions_review', schema: actionsReviewSchema, instructions: ACTIONS_REVIEW_PROMPT + (c.channel === 'email' ? `\n${EMAIL_ACTIONS_PROMPT}` : ''), reasoningEffort: 'medium', data: { ...data, items: result.data.items } }, context, 'actions_review');
       if (!reviewPassed(checked.data,actionChecks)) throw new AppError(502, '업체 요청에 누락되거나 원문과 맞지 않는 부분이 있어 저장하지 않았어요. 원문을 확인하고 다시 시도해 주세요. 이전 할 일은 유지됩니다.', 'ACTIONS_REVIEW');
     }
     checkpoint(context, 'saving');
@@ -163,6 +164,33 @@ export class ReplyTrack {
     history(c, 'message', m.role === 'agent' ? '고객센터의 새 답변을 저장했어요' : '내 추가 질문을 저장했어요', '분석 전에도 원문은 보존됩니다.');
     return this.store.save(c, input.version);
   }
+  appendEmail(id, input) {
+    const c = this.getVersion(id, input.version);
+    assert(c.mode !== 'demo' && c.channel === 'email', '이메일 상담에서 사용할 수 있어요.');
+    assert(Array.isArray(input.messages) && input.messages.length > 0 && input.messages.length <= 60, '추가할 이메일을 확인해 주세요.');
+    const added = input.messages.map(message);
+    assert(c.messages.length + added.length <= 60 && [...c.messages, ...added].reduce((n, m) => n + m.text.length, 0) <= 40000, '상담은 60개 메시지, 총 40,000자까지 지원합니다.');
+    const masked = maskPrivate({ existing: c.messages.map(m => m.text), added: added.map(m => m.text) });
+    added.forEach((m, i) => { m.text = masked.added[i]; });
+    c.messages.push(...added);
+    history(c, 'message', '새 이메일을 저장했어요', `${added.length}개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다.`);
+    return this.store.save(c, input.version);
+  }
+  async explainEmail(id, version, context = {}) {
+    const c = this.getVersion(id, version);
+    assert(c.channel === 'email' && c.messages.some(m => m.role === 'agent'), '설명할 고객센터 이메일 답변이 필요해요.');
+    const messages = c.messages.filter(m => m.role === 'agent');
+    const result = await this.ask({ name: 'replytrack_email_explanation', schema: emailExplanationSchema(messages), instructions: EMAIL_EXPLANATION_PROMPT, reasoningEffort: 'medium', data: { messages } }, context, 'email_explanation');
+    checkpoint(context, 'validation');
+    validateEmailExplanation(result.data, messages);
+    this.getVersion(id, version);
+    const reviewed = await this.ask({ name: 'replytrack_email_review', schema: emailReviewSchema, instructions: EMAIL_EXPLANATION_REVIEW_PROMPT, reasoningEffort: 'medium', data: { messages, explanation: result.data } }, context, 'email_review');
+    if (reviewed.data?.valid !== true) throw new AppError(502, '한국어 설명에 원문과 다른 의미나 누락이 있어 저장하지 않았어요. 다시 시도해 주세요. 이전 설명은 유지됩니다.', 'EMAIL_REVIEW');
+    checkpoint(context, 'saving');
+    c.emailExplanation = { ...result.data, messageCount: c.messages.length, at: new Date().toISOString(), model: result.model, usage: analysisUsage([result, reviewed]) };
+    history(c, 'email_explanation', '이메일 답변의 한국어 설명을 확인했어요');
+    return this.store.save(c, version);
+  }
   async analyze(id, version, context = {}) {
     checkpoint(context);
     assert(!this.busy.has(id), '이 상담을 분석 중입니다. 잠시 기다려 주세요.', 409);
@@ -177,7 +205,7 @@ export class ReplyTrack {
         let revision = {};
         for (let attempt = 0; attempt < 2; attempt++) {
           if (attempt) this.getVersion(id, version);
-          result = await this.ask({ name: 'replytrack_analysis', schema: analysisSchemaFor(c.messages), instructions: ANALYSIS_PROMPT, reasoningEffort: 'medium', data: { ...data, ...revision } }, context, attempt ? 'analysis_repair' : 'analysis');
+          result = await this.ask({ name: 'replytrack_analysis', schema: analysisSchemaFor(c.messages), instructions: ANALYSIS_PROMPT + (c.channel === 'email' ? `\n${EMAIL_ANALYSIS_PROMPT}` : ''), reasoningEffort: 'medium', data: { ...data, ...revision } }, context, attempt ? 'analysis_repair' : 'analysis');
           results.push(result); attempts++;
           checkpoint(context, 'validation');
           const validationErrors = analysisValidationErrors(result.data, c.messages);
@@ -231,6 +259,8 @@ export class ReplyTrack {
     const c = this.getVersion(id, input.version);
     assert(c.analyzedMessageCount === c.messages.length && c.questions.length, '새 답변을 먼저 분석해 주세요.');
     assert(['followup', 'handoff'].includes(input.kind), '초안 종류를 선택해 주세요.');
+    const language = input.language ?? (c.channel === 'email' && input.kind === 'followup' ? 'en' : 'ko');
+    assert(['ko', 'en'].includes(language) && (language !== 'en' || (c.mode !== 'demo' && input.kind === 'followup')), '영어는 실제 상담의 재문의 초안에서 선택해 주세요.');
     const ids = Array.isArray(input.questionIds) ? input.questionIds : [];
     const selected = c.questions.filter(q => ids.includes(q.id) && q.status !== 'answered');
     assert(input.kind === 'handoff' || selected.length, '재문의할 미해결 질문을 선택해 주세요.');
@@ -242,20 +272,21 @@ export class ReplyTrack {
       let revisionFeedback = '', previousDraft = null;
       // Bound paid calls: one generation + review, with at most one repair attempt.
       for (let attempt = 0; attempt < 2; attempt++) {
-        const result = await this.ask({ name: 'replytrack_draft', schema: draftSchemaFor(c.messages), instructions: input.kind === 'handoff' ? (attempt === 0 ? HANDOFF_PROMPT : HANDOFF_REPAIR_PROMPT) : DRAFT_PROMPT, reasoningEffort: attempt === 0 ? 'low' : 'medium',
+        const result = await this.ask({ name: 'replytrack_draft', schema: draftSchemaFor(c.messages), instructions: input.kind === 'handoff' ? (attempt === 0 ? HANDOFF_PROMPT : HANDOFF_REPAIR_PROMPT) : DRAFT_PROMPT + draftLanguagePrompt(language), reasoningEffort: attempt === 0 ? 'low' : 'medium',
           data: { ...source, ...(revisionFeedback ? { revisionFeedback, previousDraft } : {}) } }, context, attempt ? 'draft_repair' : 'draft');
         checkpoint(context, 'validation');
         model = result.model; previousDraft = result.data;
         let candidate;
         try {
           candidate = validateDraft(input.kind === 'handoff' ? normalizeHandoffAttribution(stripInternalCitations(result.data, c), c) : result.data, c);
+          if (language === 'en' && (candidate.body.match(/[A-Za-z]/g)?.length || 0) <= (candidate.body.replace(/\[[^\]]+\]/g, '').match(/[가-힣]/g)?.length || 0)) throw new AppError(502, '영어 답장 본문을 영어로 작성해 주세요.', 'DRAFT_LANGUAGE');
           if (input.kind === 'handoff') previousDraft = candidate;
         }
         catch (error) {
           if (attempt === 1) throw error;
           revisionFeedback = error.message; continue;
         }
-        const checked = await this.ask({ name: 'replytrack_draft_review', schema: draftReviewSchema, instructions: input.kind === 'handoff' ? HANDOFF_REVIEW_PROMPT : DRAFT_REVIEW_PROMPT, reasoningEffort: 'medium',
+        const checked = await this.ask({ name: 'replytrack_draft_review', schema: draftReviewSchema, instructions: input.kind === 'handoff' ? HANDOFF_REVIEW_PROMPT : DRAFT_REVIEW_PROMPT + draftLanguagePrompt(language), reasoningEffort: 'medium',
           data: { ...source, draft: candidate } }, context, 'draft_review');
         if (checked.data?.valid === true) {
           draft = candidate; review = { model: checked.model, attempts: attempt + 1 }; break;
@@ -265,12 +296,13 @@ export class ReplyTrack {
       if (!draft) throw new AppError(502, '초안을 검토했지만 선택한 질문이나 원문과 맞지 않는 부분이 남아 저장하지 않았습니다. 다시 작성해 주세요.', 'DRAFT_REVIEW');
     }
     checkpoint(context, 'saving');
-    c.drafts[input.kind] = { ...draft, at: new Date().toISOString(), model, ...(review ? { review } : {}) };
+    c.drafts[input.kind] = { ...draft, language, at: new Date().toISOString(), model, ...(review ? { review } : {}) };
     history(c, 'draft', input.kind === 'followup' ? '남은 질문으로 재문의 초안을 만들었어요' : '상담 인계 요약을 만들었어요');
     return this.store.save(c, input.version);
   }
   async prepare(input, context = {}) {
     checkpoint(context, 'masking');
+    assert(input.ocrLanguage === undefined || ['eng', 'kor+eng'].includes(input.ocrLanguage), '캡처 언어를 확인해 주세요.');
     assert((typeof input.text === 'string' && input.text.trim()) || (typeof input.image === 'string' && input.image.length), '상담 텍스트나 캡처를 등록해 주세요.');
     if (input.text) cleanText(input.text, 30000, '상담 텍스트');
     if (input.image) {
@@ -280,7 +312,7 @@ export class ReplyTrack {
       const valid = kind === 'png' ? bytes.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])) : kind === 'jpeg' ? bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255 : bytes.toString('ascii', 0, 4) === 'RIFF' && bytes.toString('ascii', 8, 12) === 'WEBP';
       assert(valid, '이미지 파일 형식과 내용이 일치하지 않습니다.');
     }
-    const text = [input.text || '', input.image ? await this.ocr(input.image, context) : ''].filter(Boolean).join('\n\n');
+    const text = [input.text || '', input.image ? await this.ocr(input.image, { ...context, ocrLanguage: input.ocrLanguage }) : ''].filter(Boolean).join('\n\n');
     checkpoint(context, 'masking');
     cleanText(text, 30000, '읽은 상담 텍스트');
     const masked = privacyEnvelope(text);
@@ -288,10 +320,17 @@ export class ReplyTrack {
   }
   async extract(input, context = {}) {
     const prepared = await this.prepare(input, context);
-    const r = await this.ask({ name: 'replytrack_transcript', schema: transcriptSchema, instructions: TRANSCRIPT_PROMPT, data: { text: prepared.text } }, context, 'reading');
+    const email = input.channel === 'email';
+    const existing = input.caseId ? this.getVersion(input.caseId, input.version).messages : [];
+    const myAddress = email && typeof input.myAddress === 'string' ? cleanText(input.myAddress, 254, '내 발신 이메일 주소') : '';
+    const r = await this.ask({ name: 'replytrack_transcript', schema: transcriptSchema, instructions: TRANSCRIPT_PROMPT + (email ? `\n${EMAIL_TRANSCRIPT_PROMPT}` : ''), data: { text: prepared.text, ...(email ? { myAddress, existingMessages: existing } : {}) } }, context, 'reading');
     const data = r.data;
     if (!data || !Array.isArray(data.messages) || !data.messages.length || data.messages.length > 60 || data.messages.some(m => !['customer','agent','unknown'].includes(m.role) || typeof m.text !== 'string' || !m.text.trim() || m.text.length > 6000)) throw new AppError(422, '읽을 수 있는 대화를 찾지 못했습니다. 직접 입력하거나 다른 캡처로 시도해 주세요.');
     checkpoint(context, 'validation');
+    if (email) {
+      data.messages = validateEmailTranscript(data.messages, prepared.text, existing);
+      assert(data.messages.length, '이미 등록된 이메일만 있어요. 새 본문을 확인해 주세요.');
+    }
     return { messages: data.messages.map(m => ({ role: m.role, text: maskPrivate(m.text), sentAt: m.sentAt && Number.isFinite(Date.parse(m.sentAt)) ? new Date(m.sentAt).toISOString() : null })), notes: Array.isArray(data.notes) ? data.notes.filter(x => typeof x === 'string').map(maskPrivate) : [], model: r.model };
   }
 }

@@ -1,3 +1,4 @@
+import { emailExplanationPanel } from './email.js';
 import { deadlineState, filterCases, dirtyDraftKinds, savedDraft, selectedQuestionIds, CaseNavigation } from './workspace.js';
 import { WebOperation, stages, elapsedLabel } from './operations.js';
 import { newOnboarding, hasOnboardingInput, manualMessages } from './onboarding.js';
@@ -21,6 +22,7 @@ const icons = {
 const icon = (name, cls = '') => `<svg class="icon ${cls}" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.chat}</svg>`;
 const state = { cases: [], current: null, config: { configured: false, model: 'gpt-5-mini' }, busy: '', tab: 'questions', mobile: 'analysis', filter: 'all', selected: new Set(), draftEdits: {}, error: '', onboarding: null, query: '', caseFilter: 'active', sort: 'priority' };
 const dirtyKinds = () => dirtyDraftKinds(state.current?.drafts || {}, state.draftEdits);
+state.replyLanguages = {};
 state.guide = newGuide();
 state.guideOpen = false;
 const views = new CaseNavigation();
@@ -263,7 +265,7 @@ function detail(c) {
     ${c.mode === 'demo' ? `<div class="demo-banner"><span>${icon('spark')}<strong>예제 상담</strong> 준비된 가상 데이터예요. AI API를 호출하지 않아요.</span>${c.demoStep < 2 ? button('demo-next', c.demoStep === 0 ? '예제 답변 추가하기' : c.demoScenario === 'refund' ? '환불 안내 시연하기' : '견적 도착 시연하기', 'text', 'arrow') : '<span class="demo-complete">모든 예제 답변을 확인했어요</span>'}</div>` : ''}
     ${pending ? `<div class="pending-banner"><span>새 메시지가 저장됐어요. 분석하면 질문과 약속에 반영돼요.</span>${button('analyze', c.questions.length ? '새 답변 분석' : '질문 분석하기', 'primary compact', 'spark')}</div>` : ''}
     <section class="stats" aria-label="상담 현황"><div><span class="stat-icon neutral">${icon('chat')}</span><span>전체 질문<strong>${c.questions.length}<small>개</small></strong></span></div><div><span class="stat-icon green">${icon('check')}</span><span>답변 받은 질문<strong>${answered}<small>개</small></strong></span></div><div><span class="stat-icon orange">${icon('clock')}</span><span>아직 남은 질문<strong>${unresolved}<small>개</small></strong></span></div><div><span class="stat-icon violet">${icon('file')}</span><span>확인할 처리 약속<strong>${c.promises.filter(p => !p.confirmedAt).length}<small>개</small></strong></span></div></section>
-    ${comparisonPanel(c)}
+    ${comparisonPanel(c)}${emailExplanationPanel(c, { esc, button, date })}
     <div class="mobile-switch" role="group" aria-label="보기 선택"><button data-action="mobile" data-value="source" class="${state.mobile === 'source' ? 'active' : ''}">상담 원문</button><button data-action="mobile" data-value="analysis" class="${state.mobile === 'analysis' ? 'active' : ''}">질문 확인표</button></div>
     <div class="workspace mobile-${state.mobile}"><section class="source-panel panel"><div class="panel-header"><div>${icon('chat')}<h2>상담 원문</h2><span class="count">${c.messages.length}</span></div><span class="subtle">${c.mode === 'demo' ? '가상 상담' : '검토한 텍스트'}</span></div><div class="source-messages">${c.messages.map(m => `<article class="message ${m.role}" id="message-${m.id}"><div class="message-meta"><span class="speaker-avatar">${m.role === 'customer' ? '나' : 'CS'}</span><strong>${m.role === 'customer' ? '나' : esc(c.company)}</strong><time>${date(m.sentAt)}</time></div><div class="message-text">${esc(m.text)}</div></article>`).join('')}</div><div class="source-bottom"><span>${icon('link')}근거를 누르면 해당 원문으로 이동해요</span>${c.mode === 'live' ? button('append', '새 답변 / 질문 추가', 'secondary wide', 'plus') : ''}</div></section>
     <section class="analysis-panel"><div class="tabs" role="tablist" aria-label="분석 보기">${[['questions','질문 확인표', c.questions.length],['drafts','재문의 · 인계', null],['history','변경 이력', null]].map(([id,label,count]) => `<button id="tab-${id}" role="tab" aria-controls="panel-${id}" tabindex="${state.tab === id ? 0 : -1}" ${blocked('tab') ? 'disabled' : ''} aria-selected="${state.tab === id}" class="${state.tab === id ? 'active' : ''}" data-action="tab" data-value="${id}">${label}${count !== null ? `<span>${count}</span>` : ''}</button>`).join('')}</div>${c.warnings.map(w => `<div class="warning-note">${esc(w)}</div>`).join('')}<div id="panel-${state.tab}" role="tabpanel" aria-labelledby="tab-${state.tab}" tabindex="0">${state.tab === 'questions' ? questionPanel(c) : state.tab === 'drafts' ? draftPanel(c) : historyPanel(c)}</div></section></div>`;
@@ -277,14 +279,15 @@ function questionPanel(c) {
     ${c.analysis ? `<p class="analysis-meta">${esc(c.analysis.model)} · ${date(c.analysis.at)} 분석${c.analysis.usage?.total_tokens ? ` · ${c.analysis.usage.total_tokens.toLocaleString()} tokens` : ''}${c.mode === 'live' ? ' · 생성형 AI의 판단은 원문과 대조해 주세요.' : ''}</p>` : ''}`;
 }
 function draftPanel(c) {
+  const replyLanguage = state.replyLanguages[c.id] ?? c.drafts.followup?.language ?? (c.channel === 'email' ? 'en' : 'ko');
   const remaining = c.questions.filter(q => q.status !== 'answered');
-  return `<div class="section-tools"><div><h2>필요한 이야기만 이어가세요</h2><p>초안을 확인하고 수정한 뒤, 원하는 채널에 붙여넣어요.</p></div></div><section class="draft-section"><div class="section-title"><div>${icon('chat')}<h2>남은 질문 재문의</h2></div><span>${remaining.length}개 남음</span></div><div class="question-choices">${remaining.map(q => `<label><input type="checkbox" name="draft-question" value="${q.id}" ${state.selected.has(q.id) ? 'checked' : ''}><span>${esc(q.title)}</span>${badge(q.status)}</label>`).join('') || '<p class="quiet-empty">모든 질문에 답변을 받았어요. 상담 인계 요약을 만들 수 있어요.</p>'}</div>${button('generate-draft', c.drafts.followup ? '초안 다시 만들기' : '선택한 질문으로 초안 만들기', 'primary', 'spark', `data-kind="followup" ${!state.selected.size || c.analyzedMessageCount < c.messages.length ? 'disabled' : ''}`)}${draftEditor(c,'followup')}</section><section class="draft-section"><div class="section-title"><div>${icon('file')}<h2>다른 상담원에게 이어 설명하기</h2></div></div><p class="section-description">상황, 받은 답변, 남은 질문과 약속을 하나의 요약으로 정리해요.</p>${button('generate-draft', c.drafts.handoff ? '인계 요약 다시 만들기' : '상담 인계 요약 만들기', 'secondary', 'spark', 'data-kind="handoff"')}${draftEditor(c,'handoff')}</section>`;
+  return `<div class="section-tools"><div><h2>필요한 이야기만 이어가세요</h2><p>초안을 확인하고 수정한 뒤, 원하는 채널에 붙여넣어요.</p></div></div><section class="draft-section"><div class="section-title"><div>${icon('chat')}<h2>남은 질문 재문의</h2></div><span>${remaining.length}개 남음</span></div>${c.mode !== 'demo' ? `<label class="field">답장 언어<select id="reply-language"><option value="ko" ${replyLanguage === 'ko' ? 'selected' : ''}>한국어</option><option value="en" ${replyLanguage === 'en' ? 'selected' : ''}>English · 영어</option></select></label>` : ''}<div class="question-choices">${remaining.map(q => `<label><input type="checkbox" name="draft-question" value="${q.id}" ${state.selected.has(q.id) ? 'checked' : ''}><span>${esc(q.title)}</span>${badge(q.status)}</label>`).join('') || '<p class="quiet-empty">모든 질문에 답변을 받았어요. 상담 인계 요약을 만들 수 있어요.</p>'}</div>${button('generate-draft', c.drafts.followup ? '초안 다시 만들기' : '선택한 질문으로 초안 만들기', 'primary', 'spark', `data-kind="followup" ${!state.selected.size || c.analyzedMessageCount < c.messages.length ? 'disabled' : ''}`)}${draftEditor(c,'followup')}</section><section class="draft-section"><div class="section-title"><div>${icon('file')}<h2>다른 상담원에게 이어 설명하기</h2></div></div><p class="section-description">상황, 받은 답변, 남은 질문과 약속을 하나의 요약으로 정리해요.</p>${button('generate-draft', c.drafts.handoff ? '인계 요약 다시 만들기' : '상담 인계 요약 만들기', 'secondary', 'spark', 'data-kind="handoff"')}${draftEditor(c,'handoff')}</section>`;
 }
 function draftEditor(c, kind) {
   const draft = c.drafts[kind];
   const dirty = dirtyKinds().includes(kind);
   if (!draft && state.draftEdits[kind] === undefined) return '';
-  return `<div class="draft-editor"><label for="draft-${kind}">${kind === 'followup' ? '재문의 초안' : '상담 인계 요약'} <span>직접 수정할 수 있어요</span></label>${!draft ? '<p class="warning-note">다른 작업에서 원래 초안이 초기화됐어요. 편집 내용은 아래에 보존했으니 먼저 복사한 뒤 최신 상담으로 초안을 다시 만들어 주세요.</p>' : ''}<textarea id="draft-${kind}" data-draft="${kind}" rows="7" maxlength="8000" ${state.busy ? 'readonly' : ''}>${esc(state.draftEdits[kind] ?? savedDraft(draft))}</textarea><div class="draft-editor-bottom"><span id="draft-status-${kind}" role="status">${draftStatus(kind)}</span><div class="draft-actions">${draft ? button('save-draft','편집 저장','primary compact','check',`data-kind="${kind}" ${!dirty ? 'disabled' : ''}`) : ''}${button('copy','복사하기','secondary compact','copy',`data-kind="${kind}"`)}</div></div><p class="draft-note">자동 전송되지 않아요. 직접 편집한 문장은 원문과 대조해 주세요.</p>${draft ? `<details class="draft-sources"><summary>생성 당시 원문 근거 ${draft.sourceMessageIds.length}개</summary>${draft.sourceMessageIds.map(id => `<button class="quote" data-action="source" data-id="${id}">${icon('link')}${esc(c.messages.find(m => m.id === id)?.text)}</button>`).join('')}</details>${draft.editedAt ? `<details class="draft-sources"><summary>편집 전 생성 초안 보기</summary><p class="original-draft">${esc(draft.body)}</p></details>` : ''}` : ''}</div>`;
+  return `<div class="draft-editor"><label for="draft-${kind}">${kind === 'followup' ? `${draft?.language === 'en' ? '영어 ' : ''}재문의 초안` : '상담 인계 요약'} <span>직접 수정할 수 있어요</span></label>${!draft ? '<p class="warning-note">다른 작업에서 원래 초안이 초기화됐어요. 편집 내용은 아래에 보존했으니 먼저 복사한 뒤 최신 상담으로 초안을 다시 만들어 주세요.</p>' : ''}<textarea id="draft-${kind}" data-draft="${kind}" rows="7" maxlength="8000" ${state.busy ? 'readonly' : ''}>${esc(state.draftEdits[kind] ?? savedDraft(draft))}</textarea><div class="draft-editor-bottom"><span id="draft-status-${kind}" role="status">${draftStatus(kind)}</span><div class="draft-actions">${draft ? button('save-draft','편집 저장','primary compact','check',`data-kind="${kind}" ${!dirty ? 'disabled' : ''}`) : ''}${button('copy','복사하기','secondary compact','copy',`data-kind="${kind}"`)}</div></div><p class="draft-note">자동 전송되지 않아요. 직접 편집한 문장은 원문과 대조해 주세요.</p>${draft ? `<details class="draft-sources"><summary>생성 당시 원문 근거 ${draft.sourceMessageIds.length}개</summary>${draft.sourceMessageIds.map(id => `<button class="quote" data-action="source" data-id="${id}">${icon('link')}${esc(c.messages.find(m => m.id === id)?.text)}</button>`).join('')}</details>${draft.editedAt ? `<details class="draft-sources"><summary>편집 전 생성 초안 보기</summary><p class="original-draft">${esc(draft.body)}</p></details>` : ''}` : ''}</div>`;
 }
 function draftStatus(kind) {
   const draft = state.current?.drafts[kind];
@@ -340,13 +343,17 @@ function showNew() {
   state.onboarding ||= newOnboarding();
   const data = state.onboarding;
   data.stage = 'import';
-  showModal('어떤 상담을 이어갈까요?', `<p class="modal-intro">대화를 가져온 뒤, 발화자와 내용을 확인하고 분석해요. 이 탭을 열어 둔 동안 입력을 유지해요.</p>${onboardingConnection()}<form id="import-form"><div class="form-grid"><label class="field">상담 제목<input name="title" value="${esc(data.title)}" placeholder="예: 불량 이어폰 환불 문의" maxlength="100" required></label><label class="field">업체명<input name="company" value="${esc(data.company)}" placeholder="예: 모노샵 고객센터" maxlength="60"></label></div><label class="field">상담 내용<textarea name="text" rows="8" maxlength="30000" placeholder="나: 수리비와 왕복 배송비가 궁금합니다.&#10;고객센터: 수리비는 점검 후 안내하겠습니다.">${esc(data.text)}</textarea></label><label class="upload-zone">${icon('file')}<span><strong>대화 캡처로 가져오기</strong><small>PNG · JPG · WebP / 최대 4MB / 1장</small></span><input name="image" type="file" accept="image/png,image/jpeg,image/webp"></label>${data.file ? `<p class="selected-capture">선택한 캡처: ${esc(data.file.name)} <button type="button" class="btn text compact" data-action="remove-capture">선택 해제</button></p>` : ''}<p class="form-note">전화번호·주소를 기본으로 가려요. 캡처는 기기에서 글자를 읽으며 원본 이미지는 외부 AI로 보내거나 저장하지 않아요. 다음 화면에서 가림 결과를 확인해 주세요.</p><div class="modal-actions"><button type="button" class="btn secondary" data-action="manual">직접 나누어 입력</button><button class="btn primary" type="submit">${icon('spark')}개인정보 가리고 확인</button></div></form>`, true);
+  showModal(data.targetCaseId ? '새 이메일 이어 붙이기' : '어떤 상담을 이어갈까요?', `<p class="modal-intro">대화를 가져온 뒤, 발화자와 내용을 확인하고 분석해요. 이 탭을 열어 둔 동안 입력을 유지해요.</p>${onboardingConnection()}<form id="import-form"><label class="field">문의 유형<select name="channel" ${data.targetCaseId ? 'disabled' : ''}><option value="chat" ${data.channel !== 'email' ? 'selected' : ''}>일반 상담</option><option value="email" ${data.channel === 'email' ? 'selected' : ''}>이메일 문의</option></select></label>${data.channel === 'email' ? `<p class="form-note">내 문의와 받은 답변을 헤더와 함께 붙여넣거나 캡처해 주세요. 이전 답장 인용은 중복을 정리한 뒤 직접 확인해요. 영어 원문은 그대로 보존해요.</p><label class="field">내 발신 이메일 주소 (선택)<input name="myAddress" type="email" value="${esc(data.myAddress || '')}" maxlength="254" placeholder="발신자 구분에만 사용해요"></label>` : ''}<div class="form-grid"><label class="field">상담 제목<input name="title" value="${esc(data.title)}" ${data.targetCaseId ? 'readonly' : ''} placeholder="예: 불량 이어폰 환불 문의" maxlength="100" required></label><label class="field">업체명<input name="company" value="${esc(data.company)}" ${data.targetCaseId ? 'readonly' : ''} placeholder="예: 모노샵 고객센터" maxlength="60"></label></div><label class="field">${data.channel === 'email' ? '이메일 본문' : '상담 내용'}<textarea name="text" rows="8" maxlength="30000" placeholder="나: 수리비와 왕복 배송비가 궁금합니다.&#10;고객센터: 수리비는 점검 후 안내하겠습니다.">${esc(data.text)}</textarea></label><label class="field">캡처 언어<select name="ocrLanguage"><option value="kor+eng" ${(data.ocrLanguage || (data.channel === 'email' ? 'eng' : 'kor+eng')) === 'kor+eng' ? 'selected' : ''}>한국어 · 영어 혼합</option><option value="eng" ${(data.ocrLanguage || (data.channel === 'email' ? 'eng' : 'kor+eng')) === 'eng' ? 'selected' : ''}>영어</option></select></label><label class="upload-zone">${icon('file')}<span><strong>${data.channel === 'email' ? '이메일 캡처로 가져오기' : '대화 캡처로 가져오기'}</strong><small>PNG · JPG · WebP / 최대 4MB / 1장</small></span><input name="image" type="file" accept="image/png,image/jpeg,image/webp"></label>${data.file ? `<p class="selected-capture">선택한 캡처: ${esc(data.file.name)} <button type="button" class="btn text compact" data-action="remove-capture">선택 해제</button></p>` : ''}<p class="form-note">전화번호·주소를 기본으로 가려요. 캡처는 기기에서 글자를 읽으며 원본 이미지는 외부 AI로 보내거나 저장하지 않아요. 다음 화면에서 가림 결과를 확인해 주세요.</p><div class="modal-actions"><button type="button" class="btn secondary" data-action="manual">직접 나누어 입력</button><button class="btn primary" type="submit">${icon('spark')}개인정보 가리고 확인</button></div></form>`, true);
 }
 function readNewMetadata() {
   const form = $('#import-form');
   if (form) {
     const data = state.onboarding;
     if (data.text !== form.elements.text.value) { data.prepared = null; data.messages = []; data.notes = []; }
+    if (data.channel !== form.elements.channel.value || data.myAddress !== (form.elements.myAddress?.value || '')) { data.prepared = null; data.messages = []; data.notes = []; }
+    if (data.ocrLanguage !== form.elements.ocrLanguage.value) { data.prepared = null; data.messages = []; }
+    data.ocrLanguage = form.elements.ocrLanguage.value;
+    data.channel = form.elements.channel.value; data.myAddress = form.elements.myAddress?.value || '';
     data.title = form.elements.title.value; data.company = form.elements.company.value; data.text = form.elements.text.value;
     if (form.elements.image.files[0] && data.file !== form.elements.image.files[0]) { data.file = form.elements.image.files[0]; data.prepared = null; }
   }
@@ -354,7 +361,7 @@ function readNewMetadata() {
 function showPrivacyPreview(prepared) {
   state.onboarding.prepared = prepared;
   state.onboarding.stage = 'privacy';
-  showModal('AI에 보내기 전에 확인해 주세요', `<p class="modal-intro">전화번호 ${prepared.counts.phone}개·주소 ${prepared.counts.address}개를 자동으로 가렸어요. 아직 상담 내용은 외부 AI로 보내지 않았어요.</p>${onboardingConnection()}<form id="privacy-form"><label class="field">AI에 전달할 상담 내용<textarea name="text" rows="12" maxlength="30000" required>${esc(prepared.text)}</textarea></label><p class="form-note">한국 전화번호·도로명·지번 주소를 기본 탐지해요. 특이한 표기나 캡처 인식 오류는 놓칠 수 있으니 이름·계좌번호 등 추가로 숨길 내용도 직접 지워 주세요. 가림 표시는 저장 후 되돌릴 수 없어요.</p><div class="modal-actions"><button type="button" class="btn secondary" data-action="onboarding-import">이전 단계</button><button type="submit" class="btn primary">확인한 내용으로 AI 대화 읽기</button></div></form>`, true);
+  showModal('AI에 보내기 전에 확인해 주세요', `<p class="modal-intro">전화번호 ${prepared.counts.phone}개·주소 ${prepared.counts.address}개를 자동으로 가렸어요. 아직 상담 내용은 외부 AI로 보내지 않았어요.</p>${onboardingConnection()}<form id="privacy-form"><label class="field">AI에 전달할 상담 내용<textarea name="text" rows="12" maxlength="30000" required>${esc(prepared.text)}</textarea></label><p class="form-note">한국 전화번호·도로명·지번 주소를 기본 탐지해요. 특이한 표기나 캡처 인식 오류는 놓칠 수 있으니 이름·이메일 주소·계좌번호·복구 코드 등 추가로 숨길 내용도 직접 지워 주세요. 가림 표시는 저장 후 되돌릴 수 없어요.</p><div class="modal-actions"><button type="button" class="btn secondary" data-action="onboarding-import">이전 단계</button><button type="submit" class="btn primary">확인한 내용으로 AI 대화 읽기</button></div></form>`, true);
 }
 const localDateInput = iso => iso ? new Date(new Date(iso).getTime() - new Date(iso).getTimezoneOffset() * 60000).toISOString().slice(0,16) : '';
 function reviewRow(m, i) {
@@ -363,9 +370,14 @@ function reviewRow(m, i) {
 function showReview() {
   const data = state.onboarding;
   data.stage = 'review';
-  showModal('원문을 한 번 확인해 주세요', `<p class="modal-intro">이 내용이 분석의 기준이 돼요. 발화자와 인식 오류를 고치고, 실제 상담 날짜를 아는 경우 입력해 주세요.</p>${onboardingConnection()}${data.notes.map(n => `<p class="warning-note">${esc(n)}</p>`).join('')}<form id="review-form"><div class="form-grid"><label class="field">상담 제목<input name="title" value="${esc(data.title)}" maxlength="100" required></label><label class="field">업체명<input name="company" value="${esc(data.company)}" maxlength="60"></label></div><div id="review-rows">${data.messages.map(reviewRow).join('')}</div><button class="btn secondary" type="button" data-action="add-row">${icon('plus')}메시지 추가</button><div class="form-note">날짜가 없는 “내일” 같은 표현은 기한 미정으로 남겨요. 전화번호·주소는 저장 전 다시 가리고, 가린 원문만 OpenAI에 전달해요. 인식 오류와 누락된 개인정보를 확인해 주세요.</div><div class="modal-actions"><button class="btn secondary" type="button" data-action="onboarding-back">이전 단계</button><button class="btn primary" type="submit">저장하고 질문 분석하기 ${icon('arrow')}</button></div></form>`, true);
+  showModal('원문을 한 번 확인해 주세요', `<p class="modal-intro">이 내용이 분석의 기준이 돼요. 발화자와 인식 오류를 고치고, 실제 상담 날짜를 아는 경우 입력해 주세요.</p>${onboardingConnection()}${data.notes.map(n => `<p class="warning-note">${esc(n)}</p>`).join('')}<form id="review-form"><div class="form-grid"><label class="field">상담 제목<input name="title" value="${esc(data.title)}" maxlength="100" ${data.targetCaseId ? 'readonly' : ''} required></label><label class="field">업체명<input name="company" value="${esc(data.company)}" maxlength="60" ${data.targetCaseId ? 'readonly' : ''}></label></div><div id="review-rows">${data.messages.map(reviewRow).join('')}</div><button class="btn secondary" type="button" data-action="add-row">${icon('plus')}메시지 추가</button><div class="form-note">날짜가 없는 “내일” 같은 표현은 기한 미정으로 남겨요. 전화번호·주소는 저장 전 다시 가리고, 가린 원문만 OpenAI에 전달해요. 인식 오류와 누락된 개인정보를 확인해 주세요.</div><div class="modal-actions"><button class="btn secondary" type="button" data-action="onboarding-back">이전 단계</button><button class="btn primary" type="submit">${data.targetCaseId ? '저장하고 새 답변 분석' : '저장하고 질문 분석하기'} ${icon('arrow')}</button></div></form>`, true);
 }
 function showAppend() {
+  if (state.current.channel === 'email') {
+    if (hasOnboardingInput(state.onboarding)) { toast('작성 중인 입력을 먼저 마무리해 주세요. 입력은 유지됩니다.'); resumeOnboarding(); return; }
+    state.onboarding = { ...newOnboarding(), channel: 'email', title: state.current.title, company: state.current.company, targetCaseId: state.current.id, targetVersion: state.current.version };
+    showNew(); return;
+  }
   showModal('새로운 대화 이어 붙이기', `<p class="modal-intro">기존 질문과 새 답변을 연결해요. 전화번호·주소를 가린 메시지를 먼저 저장해요. 분석을 취소하거나 실패해도 메시지와 이전 분석·초안은 유지돼요.</p><form id="append-form"><div class="form-grid"><label class="field">발화자<select name="role"><option value="agent">고객센터</option><option value="customer">나</option></select></label><label class="field">실제 상담 날짜 (선택)<input name="sentAt" type="datetime-local"></label></div><label class="field">추가 메시지<textarea name="text" rows="7" maxlength="6000" required placeholder="새로 받은 답변을 붙여넣어 주세요."></textarea></label><div class="modal-actions"><button class="btn secondary" type="button" data-action="close-modal">취소</button><button class="btn primary" type="submit">저장하고 새 답변 분석</button></div></form>`);
 }
 function showEdit(id) {
@@ -375,7 +387,8 @@ function showEdit(id) {
 async function updateCase(path, method, data) {
   const c = state.current;
   const input = { ...data, version: c.version };
-  const result = path === 'analyze' ? await runOperation('analyze', input, c.id)
+  const result = path === 'email-explanation' ? await runOperation('email-explanation', input, c.id)
+    : path === 'analyze' ? await runOperation('analyze', input, c.id)
     : path === 'actions' ? await runOperation('actions', input, c.id)
     : path === 'drafts' && method === 'POST' ? await runOperation('draft', input, c.id)
     : await api(`/api/cases/${c.id}${path ? `/${path}` : ''}`, method, input);
@@ -435,6 +448,7 @@ document.addEventListener('click', async event => {
   if (action === 'dismiss-error') { state.error = ''; render(); }
   if (action === 'open') await viewWork('상담 기록을 불러오고 있어요', () => loadCase(target.dataset.id));
   if (action === 'demo') await work('예제 상담을 준비하고 있어요', async () => { setCase(await api('/api/demo','POST',{scenario:'refund'})); state.tab = 'questions'; state.filter = 'all'; await refreshList(); });
+  if (action === 'explain-email') await work('이메일 답변을 한국어로 설명하고 원문과 대조하고 있어요', () => updateCase('email-explanation','POST',{}));
   if (action === 'read-actions') await work('원문에서 업체가 요청한 할 일을 확인하고 있어요', () => updateCase('actions','POST',{}));
   if (action === 'action-followup') { state.selected = new Set([target.dataset.id]); state.tab = 'drafts'; state.mobile = 'analysis'; render(); }
   if (action === 'complete-action') {
@@ -458,7 +472,7 @@ document.addEventListener('click', async event => {
     else showModal('실제 결과를 확인하셨나요?', `<p class="modal-intro"><strong>${esc(p.title)}</strong><br><br>업체의 안내와 별개로, 환불 입금·교환품 수신 등 처리 결과를 직접 확인했을 때 완료로 표시해 주세요.</p><div class="modal-actions"><button class="btn secondary" data-action="close-modal">아직 확인 전이에요</button><button class="btn primary" data-action="confirm-yes" data-id="${p.id}">직접 확인했어요</button></div>`);
   }
   if (action === 'confirm-yes') await work('직접 확인한 결과를 기록하고 있어요', async () => { await updateCase(`promises/${target.dataset.id}`, 'PATCH', { confirmed: true }); $('#modal').close(); toast('사용자 확인 완료로 기록했어요.'); });
-  if (action === 'generate-draft') await work('확인된 사실로 초안을 작성하고 있어요', () => updateCase('drafts','POST',{kind:target.dataset.kind, questionIds:[...state.selected]}));
+  if (action === 'generate-draft') { const language = target.dataset.kind === 'followup' ? ($('#reply-language')?.value || 'ko') : 'ko'; await work('확인된 사실로 초안을 작성하고 있어요', () => updateCase('drafts','POST',{kind:target.dataset.kind, language, questionIds:[...state.selected]})); }
   if (action === 'copy') {
     const area = $(`#draft-${target.dataset.kind}`);
     try { await navigator.clipboard.writeText(area.value); toast('초안을 복사했어요.'); }
@@ -478,6 +492,8 @@ document.addEventListener('change', event => {
   if (event.target.dataset.guideAnswer) { if (event.target.value) state.guide.answers[event.target.dataset.guideAnswer] = event.target.value; else delete state.guide.answers[event.target.dataset.guideAnswer]; render(); }
   if (event.target.closest('#import-form, #privacy-form, #review-form')) captureOnboarding();
   if (event.target.id === 'case-sort') { state.sort = event.target.value; $('#workspace-results').innerHTML = caseResults(); }
+  if (event.target.name === 'channel') { readNewMetadata(); state.onboarding.prepared = null; state.onboarding.messages = []; state.onboarding.ocrLanguage = state.onboarding.channel === 'email' ? 'eng' : 'kor+eng'; showNew(); }
+  if (event.target.id === 'reply-language') state.replyLanguages[state.current.id] = event.target.value;
   if (event.target.id === 'question-filter') { state.filter = event.target.value; render(); }
   if (event.target.name === 'draft-question') {
     if (event.target.checked) state.selected.add(event.target.value); else state.selected.delete(event.target.value);
@@ -547,7 +563,7 @@ document.addEventListener('submit', async event => {
       if (!text && !file) throw new Error('상담 텍스트나 캡처를 입력해 주세요.');
       if (file && file.size > 4 * 1024 * 1024) throw new Error('4MB 이하 캡처를 선택해 주세요.');
       const image = file ? await new Promise((resolve,reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror=reject; reader.readAsDataURL(file); }) : undefined;
-      const result = await runOperation('prepare', {text,image});
+      const result = await runOperation('prepare', {text,image,ocrLanguage:state.onboarding.ocrLanguage});
       showPrivacyPreview(result);
     });
   }
@@ -557,7 +573,8 @@ document.addEventListener('submit', async event => {
     const text = form.elements.text.value;
     if (state.onboarding.messages.length && state.onboarding.reviewText === text) { showReview(); return; }
     await work('연결을 확인하고 AI가 대화를 정리하고 있어요', async () => {
-      const result = await runOperation('extract', {text});
+      const d = state.onboarding;
+      const result = await runOperation('extract', {text, channel:d.channel, ...(d.myAddress ? {myAddress:d.myAddress} : {}), ...(d.targetCaseId ? {caseId:d.targetCaseId,version:d.targetVersion} : {})});
       Object.assign(state.onboarding, result, { reviewText: text }); showReview();
     });
   }
@@ -568,7 +585,9 @@ document.addEventListener('submit', async event => {
     const messages = [...form.querySelectorAll('.review-row')].map(row => ({ role:row.querySelector('[name=role]').value,text:row.querySelector('textarea').value,sentAt:row.querySelector('[name=sentAt]').value ? new Date(row.querySelector('[name=sentAt]').value).toISOString() : null }));
     await work('상담을 저장하고 AI가 질문을 분석하고 있어요', async () => {
       if (messages.some(m => m.role === 'unknown')) throw new Error('모든 메시지의 발화자를 확인해 주세요.');
-      setCase(await api('/api/cases','POST',{title,company,messages})); state.onboarding = null; await refreshList(); $('#modal').close(); state.tab='questions'; state.filter='all'; render();
+      const d = state.onboarding;
+      if (d.targetCaseId) setCase(await api(`/api/cases/${d.targetCaseId}/email-messages`,'POST',{messages,version:d.targetVersion}));
+      else setCase(await api('/api/cases','POST',{title,company,messages,channel:d.channel})); state.onboarding = null; await refreshList(); $('#modal').close(); state.tab='questions'; state.filter='all'; render();
       await updateCase('analyze','POST',{});
     });
   }
