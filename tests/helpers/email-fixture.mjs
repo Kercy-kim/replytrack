@@ -14,6 +14,10 @@ export class EmailFixtureAI {
         { id: data.existingQuestions[1]?.id || 'q-time', title: '검토 소요 기간', source: { messageId: first.id, quote: 'How long will the review take?' }, status: updated ? 'answered' : 'partial', reason: updated ? '3영업일 걸린다고 안내했어요.' : '거래 번호 확인 후 검토하지만 소요 기간은 안내하지 않았어요.', evidence: [{ messageId: last.id, quote: last.text }], followUp: updated ? '' : '검토 소요 기간을 알려 주세요.' },
       ], promises: [] };
     } else if (name === 'replytrack_email_explanation') result = { items: data.messages.map(m => ({ messageId: m.id, quote: m.text, korean: m.text === f.reply ? '거래 번호를 받았으며 검토에는 3영업일이 걸립니다. 계정은 아직 복구되지 않았고 검토 후 이메일로 안내합니다.' : '구매 영수증의 거래 번호를 보내 주세요. 비밀번호나 인증 코드는 보내지 마세요. 거래 번호 확인 후 복구 요청을 검토합니다.' })) };
+    else if (name === 'replytrack_completion_review') {
+      const reply = data.messages.find(m => m.role === 'agent' && m.text === f.reply);
+      result = { promises: reply ? [{ id: 'receipt-notice', title: '거래 번호 수신', questionIds: [], evidence: { messageId: reply.id, quote: 'We received your transaction ID.' }, dueText: '', deadlineCleared: false, state: 'reported' }] : [] };
+    }
     else if (name.endsWith('_review')) result = { valid: true, feedback: '' };
     else if (name === 'replytrack_draft') result = { body: 'How long will the review of my recovery request take?', sourceMessageIds: data.messages.map(m => m.id) };
     else throw new Error(`Unexpected fixture request: ${name}`);

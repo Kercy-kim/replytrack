@@ -36,6 +36,14 @@ export function analysisSchemaFor(messages) {
   }
   return schema;
 }
+export function completionReviewSchemaFor(messages, questions) {
+  const promises = analysisSchemaFor(messages).properties.promises;
+  promises.items.properties.state.enum = ['reported'];
+  // Shared scalar schema objects must not be mutated: title/dueText also use text.
+  if (questions.length) promises.items.properties.questionIds.items = { type: 'string', enum: questions.map(q => q.id) };
+  else promises.items.properties.questionIds.maxItems = 0;
+  return object({ promises });
+}
 export const transcriptSchema = object({
   messages: array(object({
     role: { type: 'string', enum: ['customer', 'agent', 'unknown'] },
