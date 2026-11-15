@@ -1,4 +1,5 @@
 export const stages = {
+  email_explanation: '이메일 답변을 한국어로 설명 중', email_review: '번역의 조건·누락·기한 검토 중',
   guide_intent: '원하는 일 파악 중', guide_search: 'SSG 공식 FAQ 검색 중', guide_writing: '내 상황에 맞는 안내 작성 중', guide_review: '공식 근거·조건·예외 대조 중', guide_repair: '검토에서 발견한 안내 오류 수정 중',
   actions: '업체가 요청한 할 일 읽는 중', actions_review: '할 일의 조건·누락·이후 안내 검토 중',
   starting: '작업 접수 중', connection: 'AI 연결 확인 중', ocr: '로컬 캡처 인식 준비 중', ocr_reading: '기기에서 캡처 글자 읽는 중',

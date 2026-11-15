@@ -6,7 +6,7 @@ import { checkpoint, cancelled } from './operation.mjs';
 // Images, language models, recognition and masking stay on this local server.
 export async function readImage(image, context = {}) {
   checkpoint(context, 'ocr');
-  const worker = new Worker(new URL('./ocr-worker.mjs', import.meta.url), { workerData: image, stdout: true, stderr: true });
+  const worker = new Worker(new URL('./ocr-worker.mjs', import.meta.url), { workerData: { image, language: context.ocrLanguage === 'eng' ? 'eng' : 'kor+eng' }, stdout: true, stderr: true });
   // Engine diagnostics can contain recognized text; expose only our sanitized errors.
   worker.stdout.resume(); worker.stderr.resume();
   return new Promise((resolve, reject) => {

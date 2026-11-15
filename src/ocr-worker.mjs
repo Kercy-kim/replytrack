@@ -24,9 +24,9 @@ try {
       } else if (error.code !== 'EEXIST') throw error;
     }
   }
-  worker = await createWorker('kor+eng', 1, { langPath, cacheMethod: 'none', gzip: true,
+  worker = await createWorker(workerData.language, 1, { langPath, cacheMethod: 'none', gzip: true,
     logger: event => { if (event.status === 'recognizing text') parentPort.postMessage({ stage: 'ocr_reading' }); }, errorHandler: () => {} });
-  const result = await worker.recognize(Buffer.from(workerData.split(',')[1], 'base64'));
+  const result = await worker.recognize(Buffer.from(workerData.image.split(',')[1], 'base64'));
   parentPort.postMessage({ text: result.data.text });
 } catch { parentPort.postMessage({ error: true }); }
 finally { await worker?.terminate(); }

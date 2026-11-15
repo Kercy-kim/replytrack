@@ -26,6 +26,7 @@ export function history(record, type, label, details = '') {
   return entry;
 }
 export function newCase(input, mode = 'live') {
+  assert(input.channel === undefined || ['chat', 'email'].includes(input.channel), '문의 유형을 확인해 주세요.');
   assert(Array.isArray(input.messages) && input.messages.length > 0 && input.messages.length <= 60, '상담 메시지를 1~60개 등록해 주세요.');
   const messages = input.messages.map(message);
   assert(messages.some(m => m.role === 'customer'), '질문을 분석할 수 있도록 내 메시지를 포함해 주세요.');
@@ -35,6 +36,7 @@ export function newCase(input, mode = 'live') {
     id: uid(), title: cleanText(input.title, 100, '상담 제목'), company: cleanText(input.company || '고객센터', 60, '업체명'), mode,
     createdAt: now, updatedAt: now, messages, questions: [], promises: [], history: [],
     summary: '', warnings: [], analyzedMessageCount: 0, drafts: {}, analysis: null,
+    ...(input.channel === 'email' ? { channel: 'email' } : {}),
   };
   history(record, 'created', '상담 기록을 만들었어요', `${messages.length}개 메시지 등록`);
   return record;

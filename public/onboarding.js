@@ -1,5 +1,5 @@
 // Keep unfinished input in this tab's memory, never in browser storage.
-export const newOnboarding = () => ({ stage: 'import', title: '', company: '', text: '', file: null, messages: [], notes: [], prepared: null });
+export const newOnboarding = () => ({ stage: 'import', channel: 'chat', myAddress: '', title: '', company: '', text: '', file: null, messages: [], notes: [], prepared: null });
 export const hasOnboardingInput = draft => !!draft && !!(draft.title || draft.company || draft.text || draft.file || draft.messages.some(m => m.text));
 
 export function manualMessages(text) {
