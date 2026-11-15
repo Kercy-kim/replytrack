@@ -7,9 +7,8 @@ import { CaseStore } from './src/store.mjs';
 import { OpenAIClient } from './src/openai.mjs';
 import { ReplyTrack } from './src/service.mjs';
 import { AppError, assert } from './src/errors.mjs';
-import { allowExtensionRequest } from './src/extension-access.mjs';
 import { Operations, checkpoint } from './src/operation.mjs';
-import { guideInput } from './src/official-guide.mjs';
+import { OfficialContext, officialKey } from './src/official-context.mjs';
 
 const root = dirname(fileURLToPath(import.meta.url));
 try { process.loadEnvFile(join(root, '.env')); } catch (error) { if (error.code !== 'ENOENT') throw error; }
@@ -26,13 +25,14 @@ staticFiles.set('/presentation.css', ['presentation.css', 'text/css']);
 staticFiles.set('/presentation-data.json', ['presentation-data.json', 'application/json']);
 staticFiles.set('/next-actions.js', ['next-actions.js', 'text/javascript']);
 staticFiles.set('/inquiry-overview.js', ['inquiry-overview.js', 'text/javascript']);
-staticFiles.set('/official-guide.js', ['official-guide.js', 'text/javascript']);
+staticFiles.set('/official-context.js', ['official-context.js', 'text/javascript']);
 
-export function createApp({ store, ai, ocr, faq } = {}) {
+export function createApp({ store, ai, ocr, faq, official } = {}) {
   const db = store ?? new CaseStore(resolve(root, process.env.REPLYTRACK_DATA_DIR || 'data', 'replytrack.sqlite'));
   const client = ai ?? new OpenAIClient({ apiKey: process.env.OPENAI_API_KEY || '', model: process.env.OPENAI_MODEL || 'gpt-5-mini' });
   const service = new ReplyTrack(db, client, { ocr, faq });
   const operations = new Operations();
+  const officialContext = official ?? new OfficialContext({ ai: client, ...(faq ? { faq } : {}) });
   const server = createServer(async (req, res) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Referrer-Policy', 'no-referrer');
@@ -44,9 +44,7 @@ export function createApp({ store, ai, ocr, faq } = {}) {
       const port = server.address()?.port;
       assert([`localhost:${port}`, `127.0.0.1:${port}`].includes(host), '로컬 주소로 접속해 주세요.', 403);
       const path = new URL(req.url, `http://${host}`).pathname;
-      if (req.headers.origin && req.headers.origin !== `http://${host}`) {
-        if (allowExtensionRequest(req, res, path)) return;
-      }
+      assert(!req.headers.origin || req.headers.origin === `http://${host}`, '이 요청의 출처를 허용하지 않습니다.', 403);
       const method = req.method;
       let body = {};
       if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
@@ -61,13 +59,11 @@ export function createApp({ store, ai, ocr, faq } = {}) {
       if (method === 'PUT' && path === '/api/config') return json(service.configure(body));
       if (method === 'POST' && path === '/api/operations') {
         const { id, kind, caseId, input = {} } = body;
-        assert(['preflight', 'prepare', 'extract', 'analyze', 'draft', 'actions', 'guide', 'email-explanation'].includes(kind), '작업 종류를 확인해 주세요.');
+        assert(['preflight', 'prepare', 'extract', 'analyze', 'draft', 'actions', 'email-explanation'].includes(kind), '작업 종류를 확인해 주세요.');
         assert(input && typeof input === 'object' && !Array.isArray(input), '작업 입력을 확인해 주세요.');
         // Do optimistic-version validation before spending any provider tokens.
         const record = ['analyze', 'draft', 'actions', 'email-explanation'].includes(kind) ? service.getVersion(caseId, input.version) : null;
-        if (kind === 'guide') guideInput(input);
         return json(operations.start(id, async context => {
-          if (kind === 'guide') return service.guide(input, context);
           if (kind === 'preflight') return service.preflight(context);
           if (kind === 'prepare') return service.prepare(input, context);
           if (record?.mode !== 'demo') await service.ensureConnection(context);
@@ -86,6 +82,11 @@ export function createApp({ store, ai, ocr, faq } = {}) {
       if (method === 'POST' && path === '/api/cases') return json(service.create(body), 201);
       if (method === 'POST' && path === '/api/demo') return json(service.demo(body), 201);
       if (method === 'POST' && path === '/api/extract') return json(await service.extract(body));
+      const officialMatch = path.match(/^\/api\/cases\/([\w-]+)\/official-context$/);
+      if (officialMatch && ['GET', 'POST'].includes(method)) {
+        const c = db.get(officialMatch[1]);
+        return json(method === 'POST' ? officialContext.start(c) : officialContext.entries.get(officialKey(c))?.result ?? { key: officialKey(c), state: 'omitted' });
+      }
       const match = path.match(/^\/api\/cases\/([\w-]+)(?:\/(analyze|messages|email-messages|questions|promises|drafts|actions|demo-next)(?:\/([\w-]+))?)?$/);
       if (match) {
         const [, id, action, item] = match;
@@ -117,7 +118,7 @@ export function createApp({ store, ai, ocr, faq } = {}) {
     }
   });
   server.requestTimeout = 120000;
-  server.on('close', () => operations.close());
+  server.on('close', () => { operations.close(); officialContext.close(); });
   return { server, service, store: db, ai: client, operations };
 }
 

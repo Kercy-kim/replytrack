@@ -2,7 +2,7 @@ import { createDemo, demoAnalysis, demoDraft } from '../../src/demo.mjs';
 import { AppError } from '../../src/errors.mjs';
 
 // Deterministic transport/UI fixture only. Never selected by the production server.
-export class ExtensionFixtureAI {
+export class WebFixtureAI {
   configured = true;
   model = '검증용 응답 · 실제 AI 호출 없음';
   failAnalysis = false;

@@ -6,12 +6,12 @@ import { resolve } from 'node:path';
 import assert from 'node:assert/strict';
 import { createApp } from '../server.mjs';
 import { CaseStore } from '../src/store.mjs';
-import { ExtensionFixtureAI, fixtureText } from '../tests/helpers/extension-fixture.mjs';
+import { WebFixtureAI, fixtureText } from '../tests/helpers/web-fixture.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.REPLYTRACK_PLAYWRIGHT_MODULE || 'playwright');
 const artifacts = resolve('.artifacts/web-operations'); await mkdir(artifacts, { recursive: true });
-class BrowserAI extends ExtensionFixtureAI {
+class BrowserAI extends WebFixtureAI {
   model = 'gpt-5-mini';
   configure({ model }) { this.model = model; }
   hold(name) { this.heldName = name; this.gate = new Promise(resolve => { this.release = () => { this.heldName = ''; resolve(); }; }); }

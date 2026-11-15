@@ -18,7 +18,7 @@ const analysisEffort = process.argv.find(arg => arg.startsWith('--analysis-effor
 const coreOnly = process.argv.includes('--core-only');
 assert(['product', 'low', 'medium'].includes(analysisEffort), 'Use product, low or medium analysis effort.');
 const report = { at: new Date().toISOString(), analysisEffort, coreOnly, passed: false, cases: [], calls: [], browserErrors: [],
-  hashes: Object.fromEntries(['src/service.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/openai.mjs', 'src/ai-race.mjs', 'src/store.mjs', 'public/app.js', 'public/inquiry-overview.js', 'public/workspace.js', 'public/styles.css', 'scripts/check-live-browser.mjs'].map(f => [f, createHash('sha256').update(readFileSync(f)).digest('hex')])) };
+  hashes: Object.fromEntries(['src/service.mjs', 'src/email-reply.mjs', 'src/official-context.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/openai.mjs', 'src/ai-race.mjs', 'src/store.mjs', 'public/app.js', 'public/inquiry-overview.js', 'public/workspace.js', 'public/styles.css', 'scripts/check-live-browser.mjs'].map(f => [f, createHash('sha256').update(readFileSync(f)).digest('hex')])) };
 const save = () => writeFile(`${dir}/result.json`, JSON.stringify(report, null, 2));
 class MeasuredOpenAI extends OpenAIClient {
   async structured(args) {
