@@ -174,7 +174,8 @@ function render() {
       <a href="/" class="brand" data-action="home" aria-label="ReplyTrack 홈"><img src="/favicon.svg" width="35" height="35" alt=""><span>ReplyTrack<span class="brand-dot">.</span></span></a>
       <div class="workspace-label">나의 상담 워크스페이스</div>
       ${button('new', '새 상담 시작하기', 'primary wide', 'plus')}
-      ${button('email-demo', '이메일 30초 시연', 'secondary wide', 'arrow')}${button('guide', 'SSG 공식 안내 찾기', 'secondary wide workspace-home', 'spark')}
+      <a class="btn secondary wide" href="/presentation" target="_blank" rel="noopener">실제 AI 결과 30초 보기</a>
+      ${button('email-demo', '이메일 예제 체험', 'secondary wide', 'arrow')}${button('guide', 'SSG 공식 안내 찾기', 'secondary wide workspace-home', 'spark')}
       ${button('home', '상담 전체 보기', 'secondary wide workspace-home', 'file')}
       <div class="nav-heading"><span>내 상담</span><span>${state.cases.filter(item => !item.archivedAt || item.id === c?.id).length.toString().padStart(2, '0')}</span></div>
       <nav class="case-list" aria-label="상담 목록">${state.cases.length ? state.cases.filter(item => !item.archivedAt || item.id === c?.id).map(item => `<button class="case-item ${c?.id === item.id ? 'active' : ''}" data-action="open" data-id="${item.id}" ${blocked('open') ? 'disabled' : ''}>${icon('chat')}<span><strong>${esc(item.title)}</strong><small>${esc(item.company)}${item.mode === 'demo' ? ' · 예제' : ''}</small></span>${item.unanswered ? `<b>${item.unanswered}</b>` : icon('check')}</button>`).join('') : '<p class="sidebar-empty">새 상담을 시작하면<br>이곳에 기록이 쌓여요.</p>'}</nav>

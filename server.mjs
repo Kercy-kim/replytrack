@@ -19,6 +19,11 @@ staticFiles.set('/operations.js', ['operations.js', 'text/javascript']);
 staticFiles.set('/onboarding.js', ['onboarding.js', 'text/javascript']);
 staticFiles.set('/email.js', ['email.js', 'text/javascript']);
 staticFiles.set('/email-demo.js', ['email-demo.js', 'text/javascript']);
+staticFiles.set('/presentation', ['presentation.html', 'text/html']);
+staticFiles.set('/presentation.js', ['presentation.js', 'text/javascript']);
+staticFiles.set('/presentation-view.js', ['presentation-view.js', 'text/javascript']);
+staticFiles.set('/presentation.css', ['presentation.css', 'text/css']);
+staticFiles.set('/presentation-data.json', ['presentation-data.json', 'application/json']);
 staticFiles.set('/next-actions.js', ['next-actions.js', 'text/javascript']);
 staticFiles.set('/official-guide.js', ['official-guide.js', 'text/javascript']);
 
