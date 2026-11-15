@@ -6,6 +6,7 @@ import { WebOperation, stages, elapsedLabel } from './operations.js';
 import { newOnboarding, hasOnboardingInput, manualMessages } from './onboarding.js';
 import { renderActionPlan, actionsMarkdown } from './next-actions.js';
 import { createOfficialLoader, officialPanel } from './official-context.js';
+import { draftScope } from './draft-scope.js';
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const names = { unanswered: '미답변', partial: '부분 답변', waiting: '답변 대기', answered: '답변 받음', review: '확인 필요' };
@@ -291,10 +292,13 @@ function questionPanel(c) {
     ${c.questions.some(q => q.status !== 'answered') ? `<div class="next-step"><span>${icon('spark')}남은 질문을 다시 설명할 필요 없어요.</span>${button('draft-tab', '재문의 초안 만들기', 'primary compact', 'arrow')}</div>` : ''}
     ${c.analysis ? `<p class="analysis-meta">${esc(c.analysis.model)} · ${date(c.analysis.at)} 분석${c.analysis.usage?.total_tokens ? ` · ${c.analysis.usage.total_tokens.toLocaleString()} tokens${c.analysis.usage.unobserved_requests ? ' 이상 · 일부 요청 사용량 미확인' : ''}` : ''}${c.mode === 'live' ? ' · 생성형 AI의 판단은 원문과 대조해 주세요.' : ''}</p>` : ''}`;
 }
+function draftScopeHtml(c) {
+  return draftScope(c, state.selected, state.replyLanguages[c.id] ?? c.drafts.followup?.language ?? (c.channel === 'email' ? 'en' : 'ko'), esc);
+}
 function draftPanel(c) {
   const replyLanguage = state.replyLanguages[c.id] ?? c.drafts.followup?.language ?? (c.channel === 'email' ? 'en' : 'ko');
   const remaining = c.questions.filter(q => q.status !== 'answered');
-  return `<div class="section-tools"><div><h2>필요한 이야기만 이어가세요</h2><p>초안을 확인하고 수정한 뒤, 원하는 채널에 붙여넣어요.</p></div></div><section class="draft-section"><div class="section-title"><div>${icon('chat')}<h2>남은 질문 재문의</h2></div><span>${remaining.length}개 남음</span></div>${c.mode !== 'demo' ? `<label class="field">답장 언어<select id="reply-language"><option value="ko" ${replyLanguage === 'ko' ? 'selected' : ''}>한국어</option><option value="en" ${replyLanguage === 'en' ? 'selected' : ''}>English · 영어</option></select></label>` : ''}<div class="question-choices">${remaining.map(q => `<label><input type="checkbox" name="draft-question" value="${q.id}" ${state.selected.has(q.id) ? 'checked' : ''}><span>${esc(q.title)}</span>${badge(q.status)}</label>`).join('') || '<p class="quiet-empty">모든 질문에 답변을 받았어요. 실제 처리 결과는 질문 확인표에서 따로 확인해 주세요.</p>'}</div>${button('generate-draft', c.drafts.followup ? '초안 다시 만들기' : '선택한 질문으로 초안 만들기', 'primary', 'spark', `data-kind="followup" ${!state.selected.size || c.analyzedMessageCount < c.messages.length ? 'disabled' : ''}`)}${draftEditor(c,'followup')}</section><details class="draft-section handoff-section" data-disclosure="handoff-${esc(c.id)}" ${c.drafts.handoff || state.draftEdits.handoff !== undefined ? 'open' : ''}><summary>다른 상담원에게 전달할 요약</summary><p class="section-description">상황, 받은 답변, 남은 질문과 약속을 하나의 요약으로 정리해요.</p>${button('generate-draft', c.drafts.handoff ? '인계 요약 다시 만들기' : '상담 인계 요약 만들기', 'secondary', 'spark', 'data-kind="handoff"')}${draftEditor(c,'handoff')}</details>`;
+  return `<div class="section-tools"><div><h2>필요한 이야기만 이어가세요</h2><p>초안을 확인하고 수정한 뒤, 원하는 채널에 붙여넣어요.</p></div></div><section class="draft-section"><div class="section-title"><div>${icon('chat')}<h2>남은 질문 재문의</h2></div><span>${remaining.length}개 남음</span></div>${c.mode !== 'demo' ? `<label class="field">답장 언어<select id="reply-language"><option value="ko" ${replyLanguage === 'ko' ? 'selected' : ''}>한국어</option><option value="en" ${replyLanguage === 'en' ? 'selected' : ''}>English · 영어</option></select></label>` : ''}<div class="question-choices">${remaining.map(q => `<label><input type="checkbox" name="draft-question" value="${q.id}" ${state.selected.has(q.id) ? 'checked' : ''}><span>${esc(q.title)}</span>${badge(q.status)}</label>`).join('') || '<p class="quiet-empty">모든 질문에 답변을 받았어요. 실제 처리 결과는 질문 확인표에서 따로 확인해 주세요.</p>'}</div>${button('generate-draft', c.drafts.followup ? '초안 다시 만들기' : '선택한 질문으로 초안 만들기', 'primary', 'spark', `data-kind="followup" ${!state.selected.size || c.analyzedMessageCount < c.messages.length ? 'disabled' : ''}`)}<div id="draft-scope" aria-live="polite">${draftScopeHtml(c)}</div>${draftEditor(c,'followup')}</section>`;
 }
 function draftEditor(c, kind) {
   const draft = c.drafts[kind];
@@ -537,12 +541,16 @@ document.addEventListener('change', event => {
   }
   if (event.target.id === 'case-sort') { state.sort = event.target.value; $('#workspace-results').innerHTML = caseResults(); }
   if (event.target.name === 'channel') { readNewMetadata(); state.onboarding.prepared = null; state.onboarding.messages = []; state.onboarding.ocrLanguage = state.onboarding.channel === 'email' ? 'eng' : 'kor+eng'; showNew(); }
-  if (event.target.id === 'reply-language') state.replyLanguages[state.current.id] = event.target.value;
+  if (event.target.id === 'reply-language') {
+    state.replyLanguages[state.current.id] = event.target.value;
+    if ($('#draft-scope')) $('#draft-scope').innerHTML = draftScopeHtml(state.current);
+  }
   if (event.target.id === 'question-filter') { state.filter = event.target.value; render(); }
   if (event.target.name === 'draft-question') {
     if (event.target.checked) state.selected.add(event.target.value); else state.selected.delete(event.target.value);
     const generate = $('[data-action="generate-draft"][data-kind="followup"]');
     if (generate) generate.disabled = !!state.busy || !state.selected.size || state.current.analyzedMessageCount < state.current.messages.length;
+    if ($('#draft-scope')) $('#draft-scope').innerHTML = draftScopeHtml(state.current);
   }
 });
 document.addEventListener('keydown', event => {

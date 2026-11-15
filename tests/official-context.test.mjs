@@ -7,7 +7,7 @@ import { CaseStore } from '../src/store.mjs';
 const record = () => ({ id:'case1', title:'계정 복구', company:'Google', mode:'live', analysis:{}, analyzedMessageCount:1, messages:[{id:'m1',role:'customer',text:'내 계정의 비밀번호를 잊었어요. 어떻게 복구하나요?'}] });
 const source = {id:'s1',url:'https://support.google.com/accounts/answer/7682439?hl=ko',title:'계정 복구',checkedAt:'2026-11-15',body:'계정 복구 절차에 따라 계정 소유자임을 확인해야 합니다. 확인되지 않으면 접근을 허용하지 않습니다.'};
 const item={sourceId:'s1',quote:'계정 복구 절차에 따라 계정 소유자임을 확인해야 합니다.',text:'계정 복구 절차에서 소유자 확인이 필요하다는 공식 안내입니다.'};
-const approved={applicable:true,grounded:true,conditionsPreserved:true,noConflict:true};
+const approved={applicable:true,answersQuestion:true,grounded:true,conditionsPreserved:true,noConflict:true};
 function fixture({items=[item],review=approved}={}) {
   const calls=[];const context=new OfficialContext({ai:{configured:true,async structured(args){calls.push(args);return {data:args.name.endsWith('_review')?review:{items}};}}});
   context.sources=async()=>[source];return {context,calls};
@@ -41,6 +41,12 @@ test('SSG dated fallback and failed first-party fetching cannot become current o
   const context=new OfficialContext({ai:{configured:true},faq:{async search(){return {mode:'reviewed',sources:[source]};}}});
   assert.deepEqual(await context.sources({messages:[{text:'환불'}]},{id:'ssg'},new AbortController().signal),[]);
   const {context:failed}=fixture();failed.sources=async()=>{throw Error('source unavailable');};failed.start(record());await failed.entries.get(officialKey(record())).done;assert.equal(failed.start(record()).state,'omitted');
+});
+
+test('related but non-answering guidance is omitted without repairing it into a different answer',async()=>{
+  const {context,calls}=fixture({review:{...approved,answersQuestion:false,feedback:'개인 완료일 대신 조회 방법을 안내함'}});
+  context.start(record());await context.entries.get(officialKey(record())).done;
+  assert.equal(context.start(record()).state,'omitted');assert.equal(calls.length,2);context.close();
 });
 test('a condition omission gets one bounded repair and still requires independent approval',async()=>{
   const calls=[];let reviews=0;

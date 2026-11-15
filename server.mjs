@@ -26,6 +26,7 @@ staticFiles.set('/presentation-data.json', ['presentation-data.json', 'applicati
 staticFiles.set('/next-actions.js', ['next-actions.js', 'text/javascript']);
 staticFiles.set('/inquiry-overview.js', ['inquiry-overview.js', 'text/javascript']);
 staticFiles.set('/official-context.js', ['official-context.js', 'text/javascript']);
+staticFiles.set('/draft-scope.js', ['draft-scope.js', 'text/javascript']);
 
 export function createApp({ store, ai, ocr, faq, official } = {}) {
   const db = store ?? new CaseStore(resolve(root, process.env.REPLYTRACK_DATA_DIR || 'data', 'replytrack.sqlite'));
@@ -61,6 +62,7 @@ export function createApp({ store, ai, ocr, faq, official } = {}) {
         const { id, kind, caseId, input = {} } = body;
         assert(['preflight', 'prepare', 'extract', 'analyze', 'draft', 'actions', 'email-explanation'].includes(kind), '작업 종류를 확인해 주세요.');
         assert(input && typeof input === 'object' && !Array.isArray(input), '작업 입력을 확인해 주세요.');
+        if (kind === 'draft') assert(input.kind === 'followup', '현재는 남은 질문의 재문의 초안만 작성할 수 있어요.');
         // Do optimistic-version validation before spending any provider tokens.
         const record = ['analyze', 'draft', 'actions', 'email-explanation'].includes(kind) ? service.getVersion(caseId, input.version) : null;
         return json(operations.start(id, async context => {

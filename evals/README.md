@@ -1,5 +1,9 @@
 # ReplyTrack 실제 AI 평가
 
+## 현행 핵심 범위 안내 — 2026-11-15
+
+인계 요약 생성은 현행 제품에서 제거했다. 아래 인계 전용 평가 기록·스크립트는 과거 실험 자료이며 전체 재현은 당시 커밋에서 수행한다. 현재 `evaluate-ai.mjs`는 기존 상담의 질문 분석을 모두 유지하고, 제거된 인계 초안에는 `retiredDraft`를 남겨 초안 평가에서 제외한다. 성공한 인계 생성으로 집계하지 않는다. 재문의 초안은 계속 평가한다. 최신 공식 안내 실제 웹 검증·네 핵심 기능 검증은 [검증 기록](../docs/OFFICIAL-WEB-CORE.md)을 따른다.
+
 ## 질문 범위와 판정 이유 회귀
 
 현재 `--only draft-probes`는 기존 7개에 NU03의 불필요한 추가 예약 절차 질문과 정상 재문의를 더한 **9개**다. 아래 과거 평가의 7개라는 표기는 당시 실행 범위를 뜻한다. 새 실패 출력은 `results/reason-scope/accepted.json`, 정상 출력은 `results/full-regression/accepted.json`에서 가져오며 호출 전에 expectedValid를 고정했다.
