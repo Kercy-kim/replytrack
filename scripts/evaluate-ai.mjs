@@ -9,6 +9,7 @@ import { boundaryCases } from '../evals/status-boundary-cases.mjs';
 import { unseenCases } from '../evals/unseen-cases.mjs';
 import { reasonCases } from '../evals/reason-cases.mjs';
 import { timingCases } from '../evals/timing-cases.mjs';
+import { correctionContrastCases } from '../evals/correction-contrast-cases.mjs';
 import { gradeReasons } from '../evals/reason-quality.mjs';
 import { grade, summarize } from '../evals/grade.mjs';
 import { performanceSummary } from '../evals/performance.mjs';
@@ -28,16 +29,17 @@ sourceFiles.push('src/privacy.mjs');
 sourceFiles.push('evals/reason-cases.mjs', 'evals/reason-quality.mjs');
 sourceFiles.push('evals/timing-cases.mjs');
 sourceFiles.push('src/feature-review.mjs');
+sourceFiles.push('src/analysis-focus.mjs', 'src/email-reply.mjs', 'src/email.mjs', 'evals/correction-contrast-cases.mjs');
 if (existsSync(resolve(root, 'src/ai-wire.mjs'))) sourceFiles.push('src/ai-wire.mjs');
 if (existsSync(resolve(root, 'src/handoff.mjs'))) sourceFiles.push('src/handoff.mjs');
 if (existsSync(resolve(root, 'src/ai-race.mjs'))) sourceFiles.push('src/ai-race.mjs');
-const suites = { support: cases, boundary: boundaryCases, all: [...cases, ...boundaryCases], unseen: unseenCases, full: [...cases, ...boundaryCases, ...unseenCases], reasons: reasonCases, timing: timingCases };
+const suites = { support: cases, boundary: boundaryCases, all: [...cases, ...boundaryCases], unseen: unseenCases, full: [...cases, ...boundaryCases, ...unseenCases], reasons: reasonCases, timing: timingCases, corrections: correctionContrastCases };
 const args = process.argv.slice(2);
 const option = (name, fallback) => args.includes(name) ? args[args.indexOf(name) + 1] : fallback;
 const analysisEffort = option('--analysis-effort', 'product');
 if (!['product', 'low', 'medium'].includes(analysisEffort)) throw new Error('Unknown analysis effort');
 if (args.includes('--help')) {
-  console.log('--suite support|boundary|all|unseen|full|reasons|timing selects frozen cases. full runs the existing 48; reasons and timing each run 4 additional contrast controls. --analysis-only skips draft generation/review. Interactive JSON also accepts suite and analysisOnly.');
+  console.log('--suite support|boundary|all|unseen|full|reasons|timing|corrections selects frozen cases. full runs the existing 48; reasons and timing each run 4 additional contrast controls; corrections runs 6 new correction/requirement contrasts. --analysis-only skips draft generation/review. Interactive JSON also accepts suite and analysisOnly.');
   console.log('--analysis-effort product|low|medium overrides only the first analysis for controlled experiments; repairs/reviews keep product settings.');
   console.log('Live evaluation (paid API calls): node --env-file=.env scripts/evaluate-ai.mjs --out .artifacts/eval/run.json [--only S01,R03] [--model gpt-5-mini]\n--key-stdin accepts one hidden line; --interactive keeps credentials in memory for another run after code changes. Never writes the key.\nScore saved output offline: node scripts/evaluate-ai.mjs --rescore path/to/run.json');
   process.exit(0);
@@ -51,6 +53,7 @@ if (args.includes('--rescore')) {
   if (['unseen', 'full'].includes(report.suite) && report.hashes['evals/unseen-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/unseen-cases.mjs')))) throw new Error('Unseen dataset hash mismatch');
   if (report.suite === 'reasons' && report.hashes['evals/reason-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/reason-cases.mjs')))) throw new Error('Reason dataset hash mismatch');
   if (report.suite === 'timing' && report.hashes['evals/timing-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/timing-cases.mjs')))) throw new Error('Timing dataset hash mismatch');
+  if (report.suite === 'corrections' && report.hashes['evals/correction-contrast-cases.mjs'] !== hash(readFileSync(resolve(root, 'evals/correction-contrast-cases.mjs')))) throw new Error('Correction dataset hash mismatch');
   for (const result of report.results) {
     const testCase = suiteCases.find(c => c.id === result.id);
     if (!testCase) throw new Error('Unknown saved case');
@@ -120,7 +123,7 @@ async function run({ out, only = '', model = process.env.OPENAI_MODEL || 'gpt-5-
         } finally { result.operations.push({ kind: 'analysis', ms: Math.round(performance.now() - start), success }); }
       }
       try {
-        let record = service.create({ title: testCase.title, company: '가상 고객센터', messages: testCase.messages });
+        let record = service.create({ title: testCase.title, company: '가상 고객센터', channel: testCase.channel, messages: testCase.messages });
         // Frozen support/boundary/unseen fixtures contain no personal data to mask.
         // A privacy false positive must fail even when the question-state grade passes.
         if (record.messages.some((m, i) => m.text !== testCase.messages[i].text)) throw Object.assign(new Error('Synthetic source text changed during masking'), { code: 'SOURCE_ALTERED' });

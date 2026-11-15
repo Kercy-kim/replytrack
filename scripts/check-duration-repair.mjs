@@ -6,7 +6,7 @@ import { CaseStore } from '../src/store.mjs';
 import { ReplyTrack } from '../src/service.mjs';
 import { OpenAIClient } from '../src/openai.mjs';
 assert(process.argv.includes('--run'));
-const out = 'evals/results/registration-latency/duration-repair.json'; assert(!existsSync(out));
+const out = process.env.REPLYTRACK_DURATION_REPORT || 'evals/results/registration-latency/duration-repair.json'; assert(!existsSync(out));
 const saved = JSON.parse(readFileSync('evals/results/registration-latency/browser-after.json')).cases.find(c => c.name === 'email');
 const report = { at: new Date().toISOString(), mode: 'Replayed incorrect first output, live medium repair', source: 'browser-after.json', hash: createHash('sha256').update(readFileSync('src/service.mjs')).digest('hex'), results: [] };
 for (const actualCommitment of [false, true]) {

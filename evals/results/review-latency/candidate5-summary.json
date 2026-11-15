@@ -1,0 +1,328 @@
+{
+  "source": "evals/results/review-latency/selected-paired.json",
+  "sourceSha256": "b62ac77a01f3678f1fb91537444c174c2bce14f752111d20f5df98591fb7a3cc",
+  "baselineCommit": "ea822f65745ee4b44c7931ec8b42270fef989c3a",
+  "model": "gpt-5-mini-2025-08-07",
+  "repeats": 2,
+  "note": "Repair measurements exclude the replayed first output. Token totals include only live calls. Unknown canceled request usage prevents total cost-savings claims.",
+  "groups": {
+    "live-update": {
+      "before": {
+        "count": 8,
+        "medianMs": 19595.5,
+        "meanMs": 20240,
+        "maxMs": 23590,
+        "passed": 8,
+        "cases": 8,
+        "calls": 8,
+        "inputTokens": 41096,
+        "outputTokens": 15977,
+        "reasoningTokens": 13376,
+        "unobservedRequests": 0,
+        "failures": []
+      },
+      "after": {
+        "count": 8,
+        "medianMs": 16509,
+        "meanMs": 17811,
+        "maxMs": 39801,
+        "passed": 7,
+        "cases": 8,
+        "calls": 9,
+        "inputTokens": 28035,
+        "outputTokens": 15470,
+        "reasoningTokens": 12416,
+        "unobservedRequests": 0,
+        "failures": [
+          {
+            "id": "NS05",
+            "repeat": 2,
+            "issues": [
+              "status:날짜|방문|배송: expected answered, got review",
+              "identity:promise 방문|배송: existing promise id changed",
+              "extra promise: 책상 방문 배송 예정"
+            ],
+            "reason": {
+              "pass": true,
+              "issues": [],
+              "checkedQuestions": 1,
+              "scopedChecks": 0
+            }
+          }
+        ]
+      }
+    },
+    "replayed-first/live-repair": {
+      "before": {
+        "count": 6,
+        "medianMs": 19184,
+        "meanMs": 18797,
+        "maxMs": 25293,
+        "passed": 6,
+        "cases": 6,
+        "calls": 6,
+        "inputTokens": 32434,
+        "outputTokens": 12180,
+        "reasoningTokens": 10112,
+        "unobservedRequests": 0,
+        "failures": []
+      },
+      "after": {
+        "count": 6,
+        "medianMs": 11984.5,
+        "meanMs": 12282,
+        "maxMs": 15622,
+        "passed": 6,
+        "cases": 6,
+        "calls": 6,
+        "inputTokens": 16588,
+        "outputTokens": 8007,
+        "reasoningTokens": 6720,
+        "unobservedRequests": 0,
+        "failures": []
+      }
+    }
+  },
+  "perCase": [
+    {
+      "id": "S06",
+      "kind": "live-update",
+      "before": {
+        "count": 2,
+        "medianMs": 23064,
+        "meanMs": 23064,
+        "maxMs": 23590,
+        "passed": 2,
+        "cases": 2,
+        "calls": 2,
+        "inputTokens": 10310,
+        "outputTokens": 4421,
+        "reasoningTokens": 3776,
+        "unobservedRequests": 0,
+        "failures": []
+      },
+      "after": {
+        "count": 2,
+        "medianMs": 9769,
+        "meanMs": 9769,
+        "maxMs": 10852,
+        "passed": 2,
+        "cases": 2,
+        "calls": 2,
+        "inputTokens": 6466,
+        "outputTokens": 1917,
+        "reasoningTokens": 1152,
+        "unobservedRequests": 0,
+        "failures": []
+      }
+    },
+    {
+      "id": "R03",
+      "kind": "live-update",
+      "before": {
+        "count": 2,
+        "medianMs": 21617.5,
+        "meanMs": 21618,
+        "maxMs": 23238,
+        "passed": 2,
+        "cases": 2,
+        "calls": 2,
+        "inputTokens": 10254,
+        "outputTokens": 4376,
+        "reasoningTokens": 3776,
+        "unobservedRequests": 0,
+        "failures": []
+      },
+      "after": {
+        "count": 2,
+        "medianMs": 18634.5,
+        "meanMs": 18635,
+        "maxMs": 20187,
+        "passed": 2,
+        "cases": 2,
+        "calls": 2,
+        "inputTokens": 6410,
+        "outputTokens": 4108,
+        "reasoningTokens": 3392,
+        "unobservedRequests": 0,
+        "failures": []
+      }
+    },
+    {
+      "id": "NS05",
+      "kind": "live-update",
+      "before": {
+        "count": 2,
+        "medianMs": 18072.5,
+        "meanMs": 18073,
+        "maxMs": 19194,
+        "passed": 2,
+        "cases": 2,
+        "calls": 2,
+        "inputTokens": 10214,
+        "outputTokens": 3450,
+        "reasoningTokens": 2816,
+        "unobservedRequests": 0,
+        "failures": []
+      },
+      "after": {
+        "count": 2,
+        "medianMs": 25515.5,
+        "meanMs": 25516,
+        "maxMs": 39801,
+        "passed": 1,
+        "cases": 2,
+        "calls": 3,
+        "inputTokens": 8685,
+        "outputTokens": 5563,
+        "reasoningTokens": 4736,
+        "unobservedRequests": 0,
+        "failures": [
+          {
+            "id": "NS05",
+            "repeat": 2,
+            "issues": [
+              "status:날짜|방문|배송: expected answered, got review",
+              "identity:promise 방문|배송: existing promise id changed",
+              "extra promise: 책상 방문 배송 예정"
+            ],
+            "reason": {
+              "pass": true,
+              "issues": [],
+              "checkedQuestions": 1,
+              "scopedChecks": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "NU06",
+      "kind": "live-update",
+      "before": {
+        "count": 2,
+        "medianMs": 18205.5,
+        "meanMs": 18206,
+        "maxMs": 18486,
+        "passed": 2,
+        "cases": 2,
+        "calls": 2,
+        "inputTokens": 10318,
+        "outputTokens": 3730,
+        "reasoningTokens": 3008,
+        "unobservedRequests": 0,
+        "failures": []
+      },
+      "after": {
+        "count": 2,
+        "medianMs": 17326.5,
+        "meanMs": 17327,
+        "maxMs": 18717,
+        "passed": 2,
+        "cases": 2,
+        "calls": 2,
+        "inputTokens": 6474,
+        "outputTokens": 3882,
+        "reasoningTokens": 3136,
+        "unobservedRequests": 0,
+        "failures": []
+      }
+    },
+    {
+      "id": "REPAIR-DATE",
+      "kind": "replayed-first/live-repair",
+      "before": {
+        "count": 2,
+        "medianMs": 13976,
+        "meanMs": 13976,
+        "maxMs": 14550,
+        "passed": 2,
+        "cases": 2,
+        "calls": 2,
+        "inputTokens": 10088,
+        "outputTokens": 2990,
+        "reasoningTokens": 2432,
+        "unobservedRequests": 0,
+        "failures": []
+      },
+      "after": {
+        "count": 2,
+        "medianMs": 13906,
+        "meanMs": 13906,
+        "maxMs": 15622,
+        "passed": 2,
+        "cases": 2,
+        "calls": 2,
+        "inputTokens": 6296,
+        "outputTokens": 2444,
+        "reasoningTokens": 1920,
+        "unobservedRequests": 0,
+        "failures": []
+      }
+    },
+    {
+      "id": "REPAIR-DOCS",
+      "kind": "replayed-first/live-repair",
+      "before": {
+        "count": 2,
+        "medianMs": 19500,
+        "meanMs": 19500,
+        "maxMs": 21169,
+        "passed": 2,
+        "cases": 2,
+        "calls": 2,
+        "inputTokens": 10938,
+        "outputTokens": 4198,
+        "reasoningTokens": 3520,
+        "unobservedRequests": 0,
+        "failures": []
+      },
+      "after": {
+        "count": 2,
+        "medianMs": 11977,
+        "meanMs": 11977,
+        "maxMs": 14648,
+        "passed": 2,
+        "cases": 2,
+        "calls": 2,
+        "inputTokens": 7410,
+        "outputTokens": 2706,
+        "reasoningTokens": 2304,
+        "unobservedRequests": 0,
+        "failures": []
+      }
+    },
+    {
+      "id": "REPAIR-DURATION",
+      "kind": "replayed-first/live-repair",
+      "before": {
+        "count": 2,
+        "medianMs": 22915,
+        "meanMs": 22915,
+        "maxMs": 25293,
+        "passed": 2,
+        "cases": 2,
+        "calls": 2,
+        "inputTokens": 11408,
+        "outputTokens": 4992,
+        "reasoningTokens": 4160,
+        "unobservedRequests": 0,
+        "failures": []
+      },
+      "after": {
+        "count": 2,
+        "medianMs": 10963.5,
+        "meanMs": 10964,
+        "maxMs": 11779,
+        "passed": 2,
+        "cases": 2,
+        "calls": 2,
+        "inputTokens": 2882,
+        "outputTokens": 2857,
+        "reasoningTokens": 2496,
+        "unobservedRequests": 0,
+        "failures": []
+      }
+    }
+  ]
+}

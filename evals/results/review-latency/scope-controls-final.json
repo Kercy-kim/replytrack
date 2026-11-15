@@ -1,0 +1,437 @@
+{
+  "mode": "Observed bad first output replayed; only repair uses real API",
+  "source": "paired-guarded.json",
+  "at": "2026-11-15T16:47:17.829Z",
+  "serviceHash": "c605f7afcb146f40b9d4e2225a0ba0956b35790fc5e21407c2d025009d5bb83e",
+  "results": [
+    {
+      "genuineOmission": false,
+      "expected": "answered",
+      "passed": true,
+      "calls": [
+        {
+          "simulated": true
+        },
+        {
+          "simulated": false,
+          "name": "replytrack_analysis",
+          "effort": "medium",
+          "data": {
+            "summary": "고객이 계정 복구에 필요한 서류, 심사 소요 기간, 사건 참조 번호를 문의했고, 상담원은 구매 영수증의 transaction ID 제출을 요청하며 비밀번호나 인증 코드는 보내지 말라고 안내했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "계정 복구에 필요한 서류는 무엇인가요?",
+                "status": "answered",
+                "reason": "업체가 구매 영수증의 transaction ID 제출을 명확히 안내했으므로 답변됨.",
+                "evidence": [
+                  {
+                    "messageId": "da14f10b-d43f-4cfd-891a-fa57d99a0bf1",
+                    "quote": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes."
+                  }
+                ]
+              }
+            ],
+            "promises": []
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 13881,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 13662,
+                "httpStatus": 200,
+                "bodyMs": 218,
+                "usage": {
+                  "input_tokens": 3973,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3840
+                  },
+                  "output_tokens": 1490,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1280
+                  },
+                  "total_tokens": 5463
+                },
+                "elapsedMs": 13881
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 3973,
+            "output_tokens": 1490,
+            "total_tokens": 5463,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1280
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "record": {
+        "id": "758e97be-ba43-4a92-aa6b-ae3ca70168f9",
+        "title": "계정 복구 영어 문의",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T15:48:32.206Z",
+        "updatedAt": "2026-11-15T16:47:31.716Z",
+        "messages": [
+          {
+            "id": "0f7957af-f970-492f-977f-9d70e0aead0f",
+            "role": "customer",
+            "text": "What documents do I need to recover my account? How long will the review take? What is my case reference number?",
+            "sentAt": null
+          },
+          {
+            "id": "da14f10b-d43f-4cfd-891a-fa57d99a0bf1",
+            "role": "agent",
+            "text": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "86fd57e9-16fa-48ce-b4bf-b92cc9dd5f0a",
+            "title": "계정 복구에 필요한 서류는 무엇인가요?",
+            "source": {
+              "messageId": "0f7957af-f970-492f-977f-9d70e0aead0f",
+              "quote": "What documents do I need to recover my account?"
+            },
+            "status": "answered",
+            "reason": "업체가 구매 영수증의 transaction ID 제출을 명확히 안내했으므로 답변됨.",
+            "evidence": [
+              {
+                "messageId": "da14f10b-d43f-4cfd-891a-fa57d99a0bf1",
+                "quote": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "업체가 구매 영수증의 transaction ID 제출을 명확히 안내했으므로 답변됨.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "f971cbf8-c54b-4201-aa7d-f89ad32973a1",
+            "title": "심사 소요 기간은 얼마나 걸리나요?",
+            "source": {
+              "messageId": "0f7957af-f970-492f-977f-9d70e0aead0f",
+              "quote": "How long will the review take?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "evidence": [],
+            "followUp": "심사 소요 기간을 알려주세요.",
+            "aiStatus": "unanswered",
+            "aiReason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "382b777d-adde-4ae5-940a-ee4807c42000",
+            "title": "사건 참조 번호가 무엇인가요?",
+            "source": {
+              "messageId": "0f7957af-f970-492f-977f-9d70e0aead0f",
+              "quote": "What is my case reference number?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "evidence": [],
+            "followUp": "사건 참조 번호를 알려주세요.",
+            "aiStatus": "unanswered",
+            "aiReason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "12606bd1-858a-405e-86c9-c103a3ea6a41",
+            "at": "2026-11-15T16:47:31.716Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 0개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T16:47:31.716Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "f5b2bc46-424e-413e-9ad5-537fb600396f",
+            "at": "2026-11-15T15:48:45.219Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 0개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T15:48:45.219Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "2791e783-8df7-4d4a-b2bc-05e396061f91",
+            "at": "2026-11-15T15:48:32.207Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 계정 복구에 필요한 서류, 심사 소요 기간, 사건 참조 번호를 문의했고, 상담원은 구매 영수증의 transaction ID 제출을 요청하며 비밀번호나 인증 코드는 보내지 말라고 안내했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3973,
+            "output_tokens": 1490,
+            "total_tokens": 5463,
+            "unobserved_requests": 1,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1280
+            }
+          },
+          "attempts": 2,
+          "at": "2026-11-15T16:47:31.716Z",
+          "comparison": {
+            "at": "2026-11-15T16:47:31.716Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 2
+      }
+    },
+    {
+      "genuineOmission": true,
+      "expected": "partial",
+      "passed": true,
+      "calls": [
+        {
+          "simulated": true
+        },
+        {
+          "simulated": false,
+          "name": "replytrack_analysis",
+          "effort": "medium",
+          "data": {
+            "summary": "업체는 구매 영수증의 거래 ID 제출은 요청했지만, 신분증 사진 제출 여부에 대해서는 언급하지 않았습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "거래 ID와 신분증 사진 필요 여부",
+                "status": "partial",
+                "reason": "업체는 구매 영수증의 거래 ID 제출을 요청했지만 신분증 사진 제출에 대해서는 언급하지 않아 일부 항목만 안내되었다.",
+                "evidence": [
+                  {
+                    "messageId": "da14f10b-d43f-4cfd-891a-fa57d99a0bf1",
+                    "quote": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes."
+                  }
+                ]
+              }
+            ],
+            "promises": []
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 6996,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 6744,
+                "httpStatus": 200,
+                "bodyMs": 252,
+                "usage": {
+                  "input_tokens": 3873,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3712
+                  },
+                  "output_tokens": 818,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 640
+                  },
+                  "total_tokens": 4691
+                },
+                "elapsedMs": 6996
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 3873,
+            "output_tokens": 818,
+            "total_tokens": 4691,
+            "input_tokens_details": {
+              "cached_tokens": 3712
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "record": {
+        "id": "758e97be-ba43-4a92-aa6b-ae3ca70168f9",
+        "title": "계정 복구 영어 문의",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T15:48:32.206Z",
+        "updatedAt": "2026-11-15T16:47:38.714Z",
+        "messages": [
+          {
+            "id": "0f7957af-f970-492f-977f-9d70e0aead0f",
+            "role": "customer",
+            "text": "Do I need a transaction ID and a photo of my ID card?",
+            "sentAt": null
+          },
+          {
+            "id": "da14f10b-d43f-4cfd-891a-fa57d99a0bf1",
+            "role": "agent",
+            "text": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "abffadab-014c-49b9-9cf9-fd03d9250fa5",
+            "title": "거래 ID와 신분증 사진 필요 여부",
+            "source": {
+              "messageId": "0f7957af-f970-492f-977f-9d70e0aead0f",
+              "quote": "Do I need a transaction ID and a photo of my ID card?"
+            },
+            "status": "partial",
+            "reason": "업체는 구매 영수증의 거래 ID 제출을 요청했지만 신분증 사진 제출에 대해서는 언급하지 않아 일부 항목만 안내되었다.",
+            "evidence": [
+              {
+                "messageId": "da14f10b-d43f-4cfd-891a-fa57d99a0bf1",
+                "quote": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "partial",
+            "aiReason": "업체는 구매 영수증의 거래 ID 제출을 요청했지만 신분증 사진 제출에 대해서는 언급하지 않아 일부 항목만 안내되었다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "4e739017-f5a3-4656-8429-98808dd8c6b8",
+            "at": "2026-11-15T16:47:38.714Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "1개 질문 · 0개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T16:47:38.714Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "f5b2bc46-424e-413e-9ad5-537fb600396f",
+            "at": "2026-11-15T15:48:45.219Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 0개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T15:48:45.219Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "2791e783-8df7-4d4a-b2bc-05e396061f91",
+            "at": "2026-11-15T15:48:32.207Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "업체는 구매 영수증의 거래 ID 제출은 요청했지만, 신분증 사진 제출 여부에 대해서는 언급하지 않았습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3873,
+            "output_tokens": 818,
+            "total_tokens": 4691,
+            "unobserved_requests": 1,
+            "input_tokens_details": {
+              "cached_tokens": 3712
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            }
+          },
+          "attempts": 2,
+          "at": "2026-11-15T16:47:38.714Z",
+          "comparison": {
+            "at": "2026-11-15T16:47:38.714Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 2
+      }
+    }
+  ],
+  "passed": true
+}

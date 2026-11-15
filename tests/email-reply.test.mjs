@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { emailReplyPlan, replyAnalysisPlan, splitEmailEvidence } from '../src/email-reply.mjs';
 import { ReplyTrack } from '../src/service.mjs';
 import { CaseStore } from '../src/store.mjs';
+import { FOCUSED_ANALYSIS_PROMPT } from '../src/analysis-focus.mjs';
 const saved = JSON.parse(readFileSync(new URL('../evals/results/live-browser/inquiry-overview.json', import.meta.url))).cases.find(c => c.name === 'email');
 function fixture() { return { ...structuredClone(saved.initial), messages: structuredClone(saved.updated.messages) }; }
 
@@ -25,12 +26,15 @@ test('email agent-only updates preserve question identity and full semantic deci
   assert.deepEqual(result.promises, data.promises); assert.deepEqual(c, original);
 });
 
-test('short chat replies use compact output while corrections keep medium reasoning', () => {
+test('short established-question corrections use compact low output while conditions keep medium', () => {
   const c = fixture(); delete c.channel; // Chat records omit channel in persistent storage.
   const plan = replyAnalysisPlan(c); assert(plan); assert.equal(plan.effort, 'low');
+  assert.equal(plan.focused, true);
   const result = plan.restore(saved.updated);
   for (const q of result.questions) { const original = c.questions.find(x => x.id === q.id); assert.equal(q.title, original.title); assert.deepEqual(q.source, original.source); }
-  c.messages.at(-1).text += '앞서 안내한 기한은 취소합니다.'; assert.equal(replyAnalysisPlan(c).effort, 'medium');
+  c.messages.at(-1).text += '앞서 안내한 기한은 취소합니다.'; assert.equal(replyAnalysisPlan(c).effort, 'low');
+  c.messages.at(-1).text += '다만 승인되면 가능합니다.'; assert.equal(replyAnalysisPlan(c).effort, 'medium');
+  assert.equal(replyAnalysisPlan(c).focused, false);
   c.messages.at(-1).role = 'customer'; assert.equal(replyAnalysisPlan(c), null);
 });
 
@@ -48,6 +52,8 @@ test('compact chat updates preserve user corrections and source while applying n
     } });
     const result = await service.analyze(c.id, c.version);
     assert.equal(calls.length, 1);
+    assert(calls[0].instructions.startsWith(FOCUSED_ANALYSIS_PROMPT));
+    assert.deepEqual(calls[0].data.messages, c.messages);
     assert(!calls[0].schema.properties.questions.items.properties.source);
     const q = result.questions.find(q => q.id === c.questions[0].id);
     assert.equal(q.title, '직접 수정한 필요 자료'); assert.equal(q.status, 'review'); assert.equal(q.aiStatus, 'answered');
@@ -74,10 +80,16 @@ test('compact results cannot drop, duplicate or invent question identities', () 
   }
 });
 
-test('conditional, corrected and long email histories keep medium reasoning', () => {
+test('conditional, corrected and long email histories keep medium', () => {
   assert.equal(emailReplyPlan(fixture()).effort, 'low');
-  for (const cue of ['Only if approved.', 'After verification.', 'Correction: the previous date is wrong.', 'Unless you reply.', '정정합니다.', '번복합니다.', 'The delivery date has changed.', 'We retract the deadline.', 'That amount was incorrect.']) {
+  assert.equal(emailReplyPlan(fixture()).focused, false);
+  for (const cue of ['Only if approved.', 'After verification.', 'Unless you reply.']) {
     const c = fixture(); c.messages.at(-1).text += cue; assert.equal(emailReplyPlan(c).effort, 'medium');
+  }
+  for (const cue of ['Correction: the previous date is wrong.', '정정합니다.', '번복합니다.', 'The delivery date has changed.', 'We retract the deadline.', 'That amount was incorrect.']) {
+    const c = fixture(); c.messages.at(-1).text += cue; assert.equal(emailReplyPlan(c).effort, 'medium');
+    c.promises = [{ id: 'prior', dueAt: '2026-11-20', dueText: '2026년 11월 20일' }];
+    assert.equal(emailReplyPlan(c).effort, 'medium');
   }
   const c = fixture(); c.messages.at(-1).text += 'text '.repeat(600); assert.equal(emailReplyPlan(c).effort, 'medium');
 });
@@ -105,6 +117,8 @@ test('a malformed compact response retries the full medium schema before changin
     } });
     const updated = await svc.analyze(c.id,c.version);
     assert.equal(calls.length,2);assert.equal(calls[0].reasoningEffort,'low');assert.equal(calls[1].reasoningEffort,'medium');
+    assert(!calls[0].instructions.startsWith(FOCUSED_ANALYSIS_PROMPT));
+    assert(!calls[1].instructions.startsWith(FOCUSED_ANALYSIS_PROMPT));
     assert(!calls[0].schema.properties.questions.items.properties.source);assert(calls[1].schema.properties.questions.items.properties.source);
     assert.deepEqual(updated.questions.map(q=>q.status).sort(),['answered','answered','unanswered']);
   } finally { store.close(); }

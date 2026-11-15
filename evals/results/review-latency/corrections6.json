@@ -1,0 +1,3693 @@
+{
+  "formatVersion": 1,
+  "startedAt": "2026-11-15T16:35:08.567Z",
+  "mode": "live OpenAI Responses API",
+  "requestedModel": "gpt-5-mini-2025-08-07",
+  "suite": "corrections",
+  "analysisOnly": true,
+  "analysisEffort": "product",
+  "baseCommit": "ea822f65745ee4b44c7931ec8b42270fef989c3a",
+  "hashes": {
+    "evals/support-cases.mjs": "ab86201457d670ffd62d4844fa66e72711bb4be91ea677260946b3c98a904b8d",
+    "evals/status-boundary-cases.mjs": "482f9f80fb7aaa5998faebed0f515f41c34e9ad20d6feedcc77310cd601a0d96",
+    "evals/unseen-cases.mjs": "c436aedb0dc0bd93528afe1f42ae18f6e066cc0958d00bf2e92ed4662f484f59",
+    "evals/grade.mjs": "e63449363ac84a37e5dd215a3e6e235936130d50f3a922a33b82c4d30110a259",
+    "src/prompts.mjs": "ee61948e6e199c64c0ef4f008c20ae97f29ee6d070f5f408f3bbedc6365c1b63",
+    "src/schema.mjs": "6076ecdb794744d3fd30522c729b3b15c22d7194b32f3cb0e23e17f91256f94d",
+    "src/domain.mjs": "f0d8e117c986537d732ab9e77d1505c9064b5fad387bf77ef22aef7c647f9203",
+    "src/service.mjs": "7cfadfdc54217899179111cf406c576932a2be363535b157eab136ea0f55bc7b",
+    "src/openai.mjs": "e33740fd56e8e9963e7206b474669422845fc93ce03a2ae7af90f537cf33d6d6",
+    "src/analysis-changes.mjs": "36d13aaab3b180d7a2081dc22127a79e394ddb1e006136090a10945c88d94d73",
+    "scripts/evaluate-ai.mjs": "ae4887649f1b491eaefac2aaae31172c4211f66427643114b6e41b580e3827b2",
+    "evals/performance.mjs": "7653123fb45862bfa17a582ab3cdeaa8dc0f6169dca17dbcb0ba75f116a7110c",
+    "src/privacy.mjs": "75db14559c861418e60fe28f2354d920931cbb44a7cf9e5a4b0b95022e9d16b8",
+    "evals/reason-cases.mjs": "aa58f48ceb2ea86f9fdca5d0c48e3c7d9cce176b045e01fd8ad74ea27e634f85",
+    "evals/reason-quality.mjs": "e8bb9156da494f39bfe64b975651c276bb692e6be4d1cc3b2c9dee3c11d64f33",
+    "evals/timing-cases.mjs": "78c4c28d6beff54af6ba26c5df5db7dc076cd70ba691dff03ad0a5b492454fd1",
+    "src/feature-review.mjs": "756abdd902b93689ead3c51f9522d28ee5b0287c28266a7be95b6cad0b915c3c",
+    "src/analysis-focus.mjs": "e7a3112d37f18ea216d802b0dba551eca4209bd3be64c2d6446e34eebb4a8102",
+    "src/email-reply.mjs": "f17ffc1ca44100d026a83cccebe77f64ad08fb39250cc2dfa2b553ee827faf14",
+    "evals/correction-contrast-cases.mjs": "23fccd13e9a28e2c6be03fb0c4a72af05539f4d2ad67f26a48da797b4cae0948",
+    "src/ai-wire.mjs": "73655462fd4966f5889dfd6e82effcb4a13a6e12027574b4f4d120aaf2c79fe1",
+    "src/handoff.mjs": "b2a86dc899ea58d7d9ccde575567fc0c1b36c4525e6218af6f9cc4c752ddd365",
+    "src/ai-race.mjs": "4cae88270203093c2d5ba8e4ce9b6c9c5dc91eff38d224c54b14f9f4bd44e977"
+  },
+  "results": [
+    {
+      "id": "CR01",
+      "title": "기한 취소를 부정하는 정정",
+      "stages": [
+        {
+          "record": {
+            "id": "ed196f76-c62f-4454-8612-76ea865f5783",
+            "title": "기한 취소를 부정하는 정정",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-15T16:35:08.614Z",
+            "updatedAt": "2026-11-15T16:35:15.301Z",
+            "messages": [
+              {
+                "id": "07e9d855-a5c8-44f9-8e67-52ca9ed90683",
+                "role": "customer",
+                "text": "배송 위치가 어디인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "20601e3f-51bd-43b8-9c0a-efb1889dc9d9",
+                "role": "agent",
+                "text": "배송 위치를 확인해 2026년 11월 20일까지 안내하겠습니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "3cdf5aed-172e-4351-bdd6-2264f6791836",
+                "title": "배송 위치 안내 여부",
+                "source": {
+                  "messageId": "07e9d855-a5c8-44f9-8e67-52ca9ed90683",
+                  "quote": "배송 위치가 어디인가요?"
+                },
+                "status": "waiting",
+                "reason": "배송 위치를 확인해 2026년 11월 20일까지 안내하겠다는 약속을 받았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "20601e3f-51bd-43b8-9c0a-efb1889dc9d9",
+                    "quote": "배송 위치를 확인해 2026년 11월 20일까지 안내하겠습니다."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "waiting",
+                "aiReason": "배송 위치를 확인해 2026년 11월 20일까지 안내하겠다는 약속을 받았습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [
+              {
+                "id": "9f90d7a6-d1e2-4e42-b0e4-96a8b5af52a5",
+                "title": "배송 위치 확인 및 안내",
+                "questionIds": [
+                  "3cdf5aed-172e-4351-bdd6-2264f6791836"
+                ],
+                "evidence": {
+                  "messageId": "20601e3f-51bd-43b8-9c0a-efb1889dc9d9",
+                  "quote": "배송 위치를 확인해 2026년 11월 20일까지 안내하겠습니다."
+                },
+                "dueText": "2026년 11월 20일까지 안내하겠습니다.",
+                "dueAt": "2026-11-20",
+                "state": "promised",
+                "confirmedAt": null
+              }
+            ],
+            "history": [
+              {
+                "id": "45123563-f4e7-4f52-83bc-a48472811774",
+                "at": "2026-11-15T16:35:15.301Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 1개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-15T16:35:15.301Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "67d3e339-0de6-46f1-bcc0-34d2e13fd997",
+                "at": "2026-11-15T16:35:08.614Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객이 배송 위치를 문의했고, 상담원이 확인 후 2026년 11월 20일까지 안내하겠다고 약속했습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 2,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 4780,
+                "output_tokens": 593,
+                "total_tokens": 5373,
+                "unobserved_requests": 0,
+                "input_tokens_details": {
+                  "cached_tokens": 3840
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 320
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-15T16:35:15.301Z",
+              "comparison": {
+                "at": "2026-11-15T16:35:15.301Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 2,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "배송|위치",
+                  "status": "waiting",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "actual": {
+                  "id": "3cdf5aed-172e-4351-bdd6-2264f6791836",
+                  "title": "배송 위치 안내 여부",
+                  "status": "waiting",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [
+              {
+                "gold": {
+                  "topic": "위치|안내|확인",
+                  "message": 1,
+                  "deadline": "2026년 11월 20일",
+                  "dueAt": "2026-11-20",
+                  "state": "promised"
+                },
+                "actual": {
+                  "id": "9f90d7a6-d1e2-4e42-b0e4-96a8b5af52a5",
+                  "title": "배송 위치 확인 및 안내",
+                  "state": "promised",
+                  "dueAt": "2026-11-20",
+                  "dueText": "2026년 11월 20일까지 안내하겠습니다.",
+                  "confirmedAt": null
+                },
+                "ok": true
+              }
+            ],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 1,
+              "expectedPromises": 1,
+              "correctPromises": 1,
+              "references": 3,
+              "grounded": 3
+            }
+          },
+          "reasonGrade": {
+            "pass": true,
+            "issues": [],
+            "checkedQuestions": 1,
+            "scopedChecks": 0
+          }
+        },
+        {
+          "record": {
+            "id": "ed196f76-c62f-4454-8612-76ea865f5783",
+            "title": "기한 취소를 부정하는 정정",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-15T16:35:08.614Z",
+            "updatedAt": "2026-11-15T16:35:28.833Z",
+            "messages": [
+              {
+                "id": "07e9d855-a5c8-44f9-8e67-52ca9ed90683",
+                "role": "customer",
+                "text": "배송 위치가 어디인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "20601e3f-51bd-43b8-9c0a-efb1889dc9d9",
+                "role": "agent",
+                "text": "배송 위치를 확인해 2026년 11월 20일까지 안내하겠습니다.",
+                "sentAt": null
+              },
+              {
+                "id": "dae19668-0496-48a8-883e-dfff04c348a3",
+                "role": "agent",
+                "text": "앞서 말씀드린 2026년 11월 20일 안내 기한은 취소하지 않습니다. 그날까지 위치를 확인해 안내하겠습니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "3cdf5aed-172e-4351-bdd6-2264f6791836",
+                "title": "배송 위치 안내 여부",
+                "source": {
+                  "messageId": "07e9d855-a5c8-44f9-8e67-52ca9ed90683",
+                  "quote": "배송 위치가 어디인가요?"
+                },
+                "status": "waiting",
+                "reason": "업체가 배송 위치를 확인해 2026년 11월 20일까지 안내하겠다고 약속했으므로 안내를 받을 때까지 대기합니다.",
+                "evidence": [
+                  {
+                    "messageId": "20601e3f-51bd-43b8-9c0a-efb1889dc9d9",
+                    "quote": "배송 위치를 확인해 2026년 11월 20일까지 안내하겠습니다."
+                  },
+                  {
+                    "messageId": "dae19668-0496-48a8-883e-dfff04c348a3",
+                    "quote": "앞서 말씀드린 2026년 11월 20일 안내 기한은 취소하지 않습니다. 그날까지 위치를 확인해 안내하겠습니다."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "waiting",
+                "aiReason": "업체가 배송 위치를 확인해 2026년 11월 20일까지 안내하겠다고 약속했으므로 안내를 받을 때까지 대기합니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [
+              {
+                "id": "9f90d7a6-d1e2-4e42-b0e4-96a8b5af52a5",
+                "title": "배송 위치 확인 및 안내",
+                "questionIds": [
+                  "3cdf5aed-172e-4351-bdd6-2264f6791836"
+                ],
+                "evidence": {
+                  "messageId": "20601e3f-51bd-43b8-9c0a-efb1889dc9d9",
+                  "quote": "배송 위치를 확인해 2026년 11월 20일까지 안내하겠습니다."
+                },
+                "dueText": "2026년 11월 20일까지 안내하겠습니다.",
+                "dueAt": "2026-11-20",
+                "state": "promised",
+                "confirmedAt": null
+              }
+            ],
+            "history": [
+              {
+                "id": "458415f3-c2dc-4e8a-b489-a0511c1f39f1",
+                "at": "2026-11-15T16:35:28.833Z",
+                "type": "analysis",
+                "label": "새 답변을 확인표에 반영했어요",
+                "details": "질문 변화 0건 · 약속 변화 0건",
+                "comparison": {
+                  "at": "2026-11-15T16:35:28.833Z",
+                  "kind": "reply",
+                  "fromMessageCount": 2,
+                  "toMessageCount": 3,
+                  "messageIds": [
+                    "dae19668-0496-48a8-883e-dfff04c348a3"
+                  ],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "8214896d-fd21-4549-b084-2aab184bf22a",
+                "at": "2026-11-15T16:35:15.303Z",
+                "type": "message",
+                "label": "고객센터의 새 답변을 저장했어요",
+                "details": "분석 전에도 원문은 보존됩니다."
+              },
+              {
+                "id": "45123563-f4e7-4f52-83bc-a48472811774",
+                "at": "2026-11-15T16:35:15.301Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 1개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-15T16:35:15.301Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "67d3e339-0de6-46f1-bcc0-34d2e13fd997",
+                "at": "2026-11-15T16:35:08.614Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객이 배송 위치를 문의했고, 업체가 배송 위치를 확인해 2026년 11월 20일까지 안내하겠다고 약속했습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 3,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 3353,
+                "output_tokens": 1448,
+                "total_tokens": 4801,
+                "unobserved_requests": 0,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 1088
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-15T16:35:28.833Z",
+              "comparison": {
+                "at": "2026-11-15T16:35:28.833Z",
+                "kind": "reply",
+                "fromMessageCount": 2,
+                "toMessageCount": 3,
+                "messageIds": [
+                  "dae19668-0496-48a8-883e-dfff04c348a3"
+                ],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 4
+          },
+          "grade": {
+            "pass": false,
+            "issues": [
+              "promise:위치|안내|확인: missing",
+              "extra promise: 배송 위치 확인 및 안내"
+            ],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "배송|위치",
+                  "status": "waiting",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "actual": {
+                  "id": "3cdf5aed-172e-4351-bdd6-2264f6791836",
+                  "title": "배송 위치 안내 여부",
+                  "status": "waiting",
+                  "evidence": [
+                    1,
+                    2
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [
+              {
+                "gold": {
+                  "topic": "위치|안내|확인",
+                  "message": 2,
+                  "deadline": "2026년 11월 20일",
+                  "dueAt": "2026-11-20",
+                  "state": "promised"
+                },
+                "actual": null,
+                "ok": false
+              }
+            ],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 1,
+              "expectedPromises": 1,
+              "correctPromises": 0,
+              "references": 4,
+              "grounded": 4
+            }
+          },
+          "reasonGrade": {
+            "pass": true,
+            "issues": [],
+            "checkedQuestions": 1,
+            "scopedChecks": 0
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "low",
+          "ms": 6683,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 4780,
+            "output_tokens": 593,
+            "total_tokens": 5373,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 320
+            },
+            "unobserved_requests": 0
+          },
+          "transport": {
+            "elapsedMs": 6682,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 6677,
+                "httpStatus": 200,
+                "bodyMs": 4,
+                "usage": {
+                  "input_tokens": 4780,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3840
+                  },
+                  "output_tokens": 593,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 320
+                  },
+                  "total_tokens": 5373
+                },
+                "elapsedMs": 6682
+              }
+            ]
+          },
+          "data": {
+            "summary": "고객이 배송 위치를 문의했고, 상담원이 확인 후 2026년 11월 20일까지 안내하겠다고 약속했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "배송 위치 안내 여부",
+                "source": {
+                  "messageId": "07e9d855-a5c8-44f9-8e67-52ca9ed90683",
+                  "quote": "배송 위치가 어디인가요?"
+                },
+                "status": "waiting",
+                "reason": "배송 위치를 확인해 2026년 11월 20일까지 안내하겠다는 약속을 받았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "20601e3f-51bd-43b8-9c0a-efb1889dc9d9",
+                    "quote": "배송 위치를 확인해 2026년 11월 20일까지 안내하겠습니다."
+                  }
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "배송 위치 확인 및 안내",
+                "questionIds": [
+                  "new-q-1"
+                ],
+                "evidence": {
+                  "messageId": "20601e3f-51bd-43b8-9c0a-efb1889dc9d9",
+                  "quote": "배송 위치를 확인해 2026년 11월 20일까지 안내하겠습니다."
+                },
+                "dueText": "2026년 11월 20일까지 안내하겠습니다.",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          }
+        },
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "medium",
+          "ms": 13530,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3353,
+            "output_tokens": 1448,
+            "total_tokens": 4801,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1088
+            },
+            "unobserved_requests": 0
+          },
+          "transport": {
+            "elapsedMs": 13529,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 13527,
+                "httpStatus": 200,
+                "bodyMs": 2,
+                "usage": {
+                  "input_tokens": 3353,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 1448,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1088
+                  },
+                  "total_tokens": 4801
+                },
+                "elapsedMs": 13529
+              }
+            ]
+          },
+          "data": {
+            "summary": "고객이 배송 위치를 문의했고, 업체가 배송 위치를 확인해 2026년 11월 20일까지 안내하겠다고 약속했습니다.",
+            "questions": [
+              {
+                "id": "3cdf5aed-172e-4351-bdd6-2264f6791836",
+                "status": "waiting",
+                "reason": "업체가 배송 위치를 확인해 2026년 11월 20일까지 안내하겠다고 약속했으므로 안내를 받을 때까지 대기합니다.",
+                "evidence": [
+                  {
+                    "messageId": "20601e3f-51bd-43b8-9c0a-efb1889dc9d9",
+                    "quote": "배송 위치를 확인해 2026년 11월 20일까지 안내하겠습니다."
+                  },
+                  {
+                    "messageId": "dae19668-0496-48a8-883e-dfff04c348a3",
+                    "quote": "앞서 말씀드린 2026년 11월 20일 안내 기한은 취소하지 않습니다. 그날까지 위치를 확인해 안내하겠습니다."
+                  }
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "9f90d7a6-d1e2-4e42-b0e4-96a8b5af52a5",
+                "title": "배송 위치 확인 및 안내",
+                "questionIds": [
+                  "3cdf5aed-172e-4351-bdd6-2264f6791836"
+                ],
+                "evidence": {
+                  "messageId": "20601e3f-51bd-43b8-9c0a-efb1889dc9d9",
+                  "quote": "배송 위치를 확인해 2026년 11월 20일까지 안내하겠습니다."
+                },
+                "dueText": "2026년 11월 20일까지 안내하겠습니다.",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          }
+        }
+      ],
+      "operations": [
+        {
+          "kind": "analysis",
+          "ms": 6687,
+          "success": true
+        },
+        {
+          "kind": "analysis",
+          "ms": 13531,
+          "success": true
+        }
+      ]
+    },
+    {
+      "id": "CR02",
+      "title": "기존 기한 철회와 새 기한 지정",
+      "stages": [
+        {
+          "record": {
+            "id": "648350ac-896d-4380-9b4b-5666f36fdea1",
+            "title": "기존 기한 철회와 새 기한 지정",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-15T16:35:08.618Z",
+            "updatedAt": "2026-11-15T16:35:16.449Z",
+            "messages": [
+              {
+                "id": "4d55a7a1-00d6-429c-be5a-58ee613aab37",
+                "role": "customer",
+                "text": "쿠폰이 복구됐나요?",
+                "sentAt": null
+              },
+              {
+                "id": "5ccd1402-eab9-446a-987e-9efcfd7cf762",
+                "role": "agent",
+                "text": "쿠폰 복구 여부를 확인해 2026년 11월 20일까지 알려드리겠습니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "1eb2570e-c12e-4cda-9849-2b3f38eb2c00",
+                "title": "쿠폰 복구 여부 확인",
+                "source": {
+                  "messageId": "4d55a7a1-00d6-429c-be5a-58ee613aab37",
+                  "quote": "쿠폰이 복구됐나요?"
+                },
+                "status": "waiting",
+                "reason": "쿠폰 복구 여부를 확인해 안내하겠다는 약속을 받았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "5ccd1402-eab9-446a-987e-9efcfd7cf762",
+                    "quote": "쿠폰 복구 여부를 확인해 2026년 11월 20일까지 알려드리겠습니다."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "waiting",
+                "aiReason": "쿠폰 복구 여부를 확인해 안내하겠다는 약속을 받았습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [
+              {
+                "id": "00cae488-4cdd-43c0-944b-a75bc487c4a3",
+                "title": "쿠폰 복구 여부 확인 후 안내",
+                "questionIds": [
+                  "1eb2570e-c12e-4cda-9849-2b3f38eb2c00"
+                ],
+                "evidence": {
+                  "messageId": "5ccd1402-eab9-446a-987e-9efcfd7cf762",
+                  "quote": "쿠폰 복구 여부를 확인해 2026년 11월 20일까지 알려드리겠습니다."
+                },
+                "dueText": "2026년 11월 20일까지 알려드리겠습니다.",
+                "dueAt": "2026-11-20",
+                "state": "promised",
+                "confirmedAt": null
+              }
+            ],
+            "history": [
+              {
+                "id": "fa1a4d37-1b0d-4fee-b03c-49aa5904fbb7",
+                "at": "2026-11-15T16:35:16.449Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 1개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-15T16:35:16.449Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "02598c31-514f-43c8-8771-781aa7e7d802",
+                "at": "2026-11-15T16:35:08.618Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객이 쿠폰 복구 여부를 물었고, 상담원이 2026년 11월 20일까지 확인해 알려주겠다고 약속했습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 2,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 4785,
+                "output_tokens": 696,
+                "total_tokens": 5481,
+                "unobserved_requests": 0,
+                "input_tokens_details": {
+                  "cached_tokens": 4608
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 448
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-15T16:35:16.449Z",
+              "comparison": {
+                "at": "2026-11-15T16:35:16.449Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 2,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "쿠폰|복구",
+                  "status": "waiting",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "actual": {
+                  "id": "1eb2570e-c12e-4cda-9849-2b3f38eb2c00",
+                  "title": "쿠폰 복구 여부 확인",
+                  "status": "waiting",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [
+              {
+                "gold": {
+                  "topic": "쿠폰|복구|안내|확인",
+                  "message": 1,
+                  "deadline": "2026년 11월 20일",
+                  "dueAt": "2026-11-20",
+                  "state": "promised"
+                },
+                "actual": {
+                  "id": "00cae488-4cdd-43c0-944b-a75bc487c4a3",
+                  "title": "쿠폰 복구 여부 확인 후 안내",
+                  "state": "promised",
+                  "dueAt": "2026-11-20",
+                  "dueText": "2026년 11월 20일까지 알려드리겠습니다.",
+                  "confirmedAt": null
+                },
+                "ok": true
+              }
+            ],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 1,
+              "expectedPromises": 1,
+              "correctPromises": 1,
+              "references": 3,
+              "grounded": 3
+            }
+          },
+          "reasonGrade": {
+            "pass": true,
+            "issues": [],
+            "checkedQuestions": 1,
+            "scopedChecks": 0
+          }
+        },
+        {
+          "record": {
+            "id": "648350ac-896d-4380-9b4b-5666f36fdea1",
+            "title": "기존 기한 철회와 새 기한 지정",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-15T16:35:08.618Z",
+            "updatedAt": "2026-11-15T16:35:31.759Z",
+            "messages": [
+              {
+                "id": "4d55a7a1-00d6-429c-be5a-58ee613aab37",
+                "role": "customer",
+                "text": "쿠폰이 복구됐나요?",
+                "sentAt": null
+              },
+              {
+                "id": "5ccd1402-eab9-446a-987e-9efcfd7cf762",
+                "role": "agent",
+                "text": "쿠폰 복구 여부를 확인해 2026년 11월 20일까지 알려드리겠습니다.",
+                "sentAt": null
+              },
+              {
+                "id": "63921f7c-a70e-47bf-a645-b6249ce2f1be",
+                "role": "agent",
+                "text": "기존 안내 기한은 취소합니다. 대신 2026년 11월 22일까지 쿠폰 복구 여부를 확인해 알려드리겠습니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "1eb2570e-c12e-4cda-9849-2b3f38eb2c00",
+                "title": "쿠폰 복구 여부 확인",
+                "source": {
+                  "messageId": "4d55a7a1-00d6-429c-be5a-58ee613aab37",
+                  "quote": "쿠폰이 복구됐나요?"
+                },
+                "status": "waiting",
+                "reason": "업체가 기존 안내 기한(2026년 11월 20일)을 취소하고 대신 2026년 11월 22일까지 쿠폰 복구 여부를 확인해 알려주겠다고 약속했으므로 안내를 기다리는 중입니다.",
+                "evidence": [
+                  {
+                    "messageId": "5ccd1402-eab9-446a-987e-9efcfd7cf762",
+                    "quote": "쿠폰 복구 여부를 확인해 2026년 11월 20일까지 알려드리겠습니다."
+                  },
+                  {
+                    "messageId": "63921f7c-a70e-47bf-a645-b6249ce2f1be",
+                    "quote": "기존 안내 기한은 취소합니다. 대신 2026년 11월 22일까지 쿠폰 복구 여부를 확인해 알려드리겠습니다."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "waiting",
+                "aiReason": "업체가 기존 안내 기한(2026년 11월 20일)을 취소하고 대신 2026년 11월 22일까지 쿠폰 복구 여부를 확인해 알려주겠다고 약속했으므로 안내를 기다리는 중입니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [
+              {
+                "id": "00cae488-4cdd-43c0-944b-a75bc487c4a3",
+                "title": "쿠폰 복구 여부 확인 후 안내",
+                "questionIds": [
+                  "1eb2570e-c12e-4cda-9849-2b3f38eb2c00"
+                ],
+                "evidence": {
+                  "messageId": "63921f7c-a70e-47bf-a645-b6249ce2f1be",
+                  "quote": "기존 안내 기한은 취소합니다. 대신 2026년 11월 22일까지 쿠폰 복구 여부를 확인해 알려드리겠습니다."
+                },
+                "dueText": "2026년 11월 22일까지 쿠폰 복구 여부를 확인해 알려드리겠습니다.",
+                "dueAt": "2026-11-22",
+                "state": "promised",
+                "confirmedAt": null
+              }
+            ],
+            "history": [
+              {
+                "id": "f3849748-8dac-4d6d-bca3-9c8fc2b6bfdf",
+                "at": "2026-11-15T16:35:31.759Z",
+                "type": "analysis",
+                "label": "새 답변을 확인표에 반영했어요",
+                "details": "질문 변화 0건 · 약속 변화 1건",
+                "comparison": {
+                  "at": "2026-11-15T16:35:31.759Z",
+                  "kind": "reply",
+                  "fromMessageCount": 2,
+                  "toMessageCount": 3,
+                  "messageIds": [
+                    "63921f7c-a70e-47bf-a645-b6249ce2f1be"
+                  ],
+                  "questions": [],
+                  "promises": [
+                    {
+                      "id": "00cae488-4cdd-43c0-944b-a75bc487c4a3",
+                      "title": "쿠폰 복구 여부 확인 후 안내",
+                      "before": {
+                        "title": "쿠폰 복구 여부 확인 후 안내",
+                        "state": "promised",
+                        "dueAt": "2026-11-20",
+                        "dueText": "2026년 11월 20일까지 알려드리겠습니다.",
+                        "confirmedAt": null
+                      },
+                      "after": {
+                        "title": "쿠폰 복구 여부 확인 후 안내",
+                        "state": "promised",
+                        "dueAt": "2026-11-22",
+                        "dueText": "2026년 11월 22일까지 쿠폰 복구 여부를 확인해 알려드리겠습니다.",
+                        "confirmedAt": null
+                      },
+                      "fields": [
+                        "deadline"
+                      ],
+                      "evidenceMessageIds": [
+                        "63921f7c-a70e-47bf-a645-b6249ce2f1be"
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "15d89de0-34ea-4915-8dd1-7a1e0bfa1572",
+                "at": "2026-11-15T16:35:16.449Z",
+                "type": "message",
+                "label": "고객센터의 새 답변을 저장했어요",
+                "details": "분석 전에도 원문은 보존됩니다."
+              },
+              {
+                "id": "fa1a4d37-1b0d-4fee-b03c-49aa5904fbb7",
+                "at": "2026-11-15T16:35:16.449Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 1개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-15T16:35:16.449Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "02598c31-514f-43c8-8771-781aa7e7d802",
+                "at": "2026-11-15T16:35:08.618Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객이 '쿠폰이 복구됐나요?'를 문의했고, 상담사가 처음 2026년 11월 20일까지 안내하겠다고 약속했으나 해당 기한을 취소하고 대신 2026년 11월 22일까지 쿠폰 복구 여부를 확인해 알려주겠다고 다시 약속했습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 3,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 3372,
+                "output_tokens": 1549,
+                "total_tokens": 4921,
+                "unobserved_requests": 0,
+                "input_tokens_details": {
+                  "cached_tokens": 2816
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 1152
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-15T16:35:31.759Z",
+              "comparison": {
+                "at": "2026-11-15T16:35:31.759Z",
+                "kind": "reply",
+                "fromMessageCount": 2,
+                "toMessageCount": 3,
+                "messageIds": [
+                  "63921f7c-a70e-47bf-a645-b6249ce2f1be"
+                ],
+                "questions": [],
+                "promises": [
+                  {
+                    "id": "00cae488-4cdd-43c0-944b-a75bc487c4a3",
+                    "title": "쿠폰 복구 여부 확인 후 안내",
+                    "before": {
+                      "title": "쿠폰 복구 여부 확인 후 안내",
+                      "state": "promised",
+                      "dueAt": "2026-11-20",
+                      "dueText": "2026년 11월 20일까지 알려드리겠습니다.",
+                      "confirmedAt": null
+                    },
+                    "after": {
+                      "title": "쿠폰 복구 여부 확인 후 안내",
+                      "state": "promised",
+                      "dueAt": "2026-11-22",
+                      "dueText": "2026년 11월 22일까지 쿠폰 복구 여부를 확인해 알려드리겠습니다.",
+                      "confirmedAt": null
+                    },
+                    "fields": [
+                      "deadline"
+                    ],
+                    "evidenceMessageIds": [
+                      "63921f7c-a70e-47bf-a645-b6249ce2f1be"
+                    ]
+                  }
+                ]
+              }
+            },
+            "version": 4
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "쿠폰|복구",
+                  "status": "waiting",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "actual": {
+                  "id": "1eb2570e-c12e-4cda-9849-2b3f38eb2c00",
+                  "title": "쿠폰 복구 여부 확인",
+                  "status": "waiting",
+                  "evidence": [
+                    1,
+                    2
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [
+              {
+                "gold": {
+                  "topic": "쿠폰|복구|안내|확인",
+                  "message": 2,
+                  "deadline": "2026년 11월 22일",
+                  "dueAt": "2026-11-22",
+                  "state": "promised"
+                },
+                "actual": {
+                  "id": "00cae488-4cdd-43c0-944b-a75bc487c4a3",
+                  "title": "쿠폰 복구 여부 확인 후 안내",
+                  "state": "promised",
+                  "dueAt": "2026-11-22",
+                  "dueText": "2026년 11월 22일까지 쿠폰 복구 여부를 확인해 알려드리겠습니다.",
+                  "confirmedAt": null
+                },
+                "ok": true
+              }
+            ],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 1,
+              "expectedPromises": 1,
+              "correctPromises": 1,
+              "references": 4,
+              "grounded": 4
+            }
+          },
+          "reasonGrade": {
+            "pass": true,
+            "issues": [],
+            "checkedQuestions": 1,
+            "scopedChecks": 0
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "low",
+          "ms": 7830,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 4785,
+            "output_tokens": 696,
+            "total_tokens": 5481,
+            "input_tokens_details": {
+              "cached_tokens": 4608
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 448
+            },
+            "unobserved_requests": 0
+          },
+          "transport": {
+            "elapsedMs": 7830,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 7546,
+                "httpStatus": 200,
+                "bodyMs": 267,
+                "usage": {
+                  "input_tokens": 4785,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4608
+                  },
+                  "output_tokens": 696,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 448
+                  },
+                  "total_tokens": 5481
+                },
+                "elapsedMs": 7830
+              }
+            ]
+          },
+          "data": {
+            "summary": "고객이 쿠폰 복구 여부를 물었고, 상담원이 2026년 11월 20일까지 확인해 알려주겠다고 약속했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "쿠폰 복구 여부 확인",
+                "source": {
+                  "messageId": "4d55a7a1-00d6-429c-be5a-58ee613aab37",
+                  "quote": "쿠폰이 복구됐나요?"
+                },
+                "status": "waiting",
+                "reason": "쿠폰 복구 여부를 확인해 안내하겠다는 약속을 받았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "5ccd1402-eab9-446a-987e-9efcfd7cf762",
+                    "quote": "쿠폰 복구 여부를 확인해 2026년 11월 20일까지 알려드리겠습니다."
+                  }
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "쿠폰 복구 여부 확인 후 안내",
+                "questionIds": [
+                  "new-q-1"
+                ],
+                "evidence": {
+                  "messageId": "5ccd1402-eab9-446a-987e-9efcfd7cf762",
+                  "quote": "쿠폰 복구 여부를 확인해 2026년 11월 20일까지 알려드리겠습니다."
+                },
+                "dueText": "2026년 11월 20일까지 알려드리겠습니다.",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          }
+        },
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "medium",
+          "ms": 15310,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3372,
+            "output_tokens": 1549,
+            "total_tokens": 4921,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1152
+            },
+            "unobserved_requests": 0
+          },
+          "transport": {
+            "elapsedMs": 15309,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 15308,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 3372,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 2816
+                  },
+                  "output_tokens": 1549,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1152
+                  },
+                  "total_tokens": 4921
+                },
+                "elapsedMs": 15309
+              }
+            ]
+          },
+          "data": {
+            "summary": "고객이 '쿠폰이 복구됐나요?'를 문의했고, 상담사가 처음 2026년 11월 20일까지 안내하겠다고 약속했으나 해당 기한을 취소하고 대신 2026년 11월 22일까지 쿠폰 복구 여부를 확인해 알려주겠다고 다시 약속했습니다.",
+            "questions": [
+              {
+                "id": "1eb2570e-c12e-4cda-9849-2b3f38eb2c00",
+                "status": "waiting",
+                "reason": "업체가 기존 안내 기한(2026년 11월 20일)을 취소하고 대신 2026년 11월 22일까지 쿠폰 복구 여부를 확인해 알려주겠다고 약속했으므로 안내를 기다리는 중입니다.",
+                "evidence": [
+                  {
+                    "messageId": "5ccd1402-eab9-446a-987e-9efcfd7cf762",
+                    "quote": "쿠폰 복구 여부를 확인해 2026년 11월 20일까지 알려드리겠습니다."
+                  },
+                  {
+                    "messageId": "63921f7c-a70e-47bf-a645-b6249ce2f1be",
+                    "quote": "기존 안내 기한은 취소합니다. 대신 2026년 11월 22일까지 쿠폰 복구 여부를 확인해 알려드리겠습니다."
+                  }
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "00cae488-4cdd-43c0-944b-a75bc487c4a3",
+                "title": "쿠폰 복구 여부 확인 후 안내",
+                "questionIds": [
+                  "1eb2570e-c12e-4cda-9849-2b3f38eb2c00"
+                ],
+                "evidence": {
+                  "messageId": "63921f7c-a70e-47bf-a645-b6249ce2f1be",
+                  "quote": "기존 안내 기한은 취소합니다. 대신 2026년 11월 22일까지 쿠폰 복구 여부를 확인해 알려드리겠습니다."
+                },
+                "dueText": "2026년 11월 22일까지 쿠폰 복구 여부를 확인해 알려드리겠습니다.",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          }
+        }
+      ],
+      "operations": [
+        {
+          "kind": "analysis",
+          "ms": 7831,
+          "success": true
+        },
+        {
+          "kind": "analysis",
+          "ms": 15310,
+          "success": true
+        }
+      ]
+    },
+    {
+      "id": "CR03",
+      "title": "영어 금액 정정",
+      "stages": [
+        {
+          "record": {
+            "id": "d85af068-21e3-4a43-b034-44f6a676a158",
+            "title": "영어 금액 정정",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-15T16:35:28.835Z",
+            "updatedAt": "2026-11-15T16:35:37.706Z",
+            "messages": [
+              {
+                "id": "fa9e8a27-54df-439f-916e-8fd34be74ce8",
+                "role": "customer",
+                "text": "What is the repair fee?",
+                "sentAt": null
+              },
+              {
+                "id": "86741e5e-d738-4f0a-846d-6e73a2511a9e",
+                "role": "agent",
+                "text": "The repair fee is 24000 KRW.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "aed93f85-0e8d-4f74-ac93-0fc2f070a2d8",
+                "title": "수리비는 얼마인가요?",
+                "source": {
+                  "messageId": "fa9e8a27-54df-439f-916e-8fd34be74ce8",
+                  "quote": "What is the repair fee?"
+                },
+                "status": "answered",
+                "reason": "수리비는 24000 KRW라고 안내받았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "86741e5e-d738-4f0a-846d-6e73a2511a9e",
+                    "quote": "The repair fee is 24000 KRW."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "answered",
+                "aiReason": "수리비는 24000 KRW라고 안내받았습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [],
+            "history": [
+              {
+                "id": "abb68ee7-6496-43bc-b125-524a43433a3b",
+                "at": "2026-11-15T16:35:37.706Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 0개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-15T16:35:37.706Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "0fabd046-6844-4fb3-aab1-942c4157bc57",
+                "at": "2026-11-15T16:35:28.835Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "수리비 문의에 대해 '24000 KRW'라고 안내받았습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 2,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 5138,
+                "output_tokens": 793,
+                "total_tokens": 5931,
+                "unobserved_requests": 0,
+                "input_tokens_details": {
+                  "cached_tokens": 4864
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 640
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-15T16:35:37.706Z",
+              "comparison": {
+                "at": "2026-11-15T16:35:37.706Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 2,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "channel": "email",
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "수리|요금|비용",
+                  "status": "answered",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "actual": {
+                  "id": "aed93f85-0e8d-4f74-ac93-0fc2f070a2d8",
+                  "title": "수리비는 얼마인가요?",
+                  "status": "answered",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 0,
+              "evidenceCorrect": 1,
+              "expectedPromises": 0,
+              "correctPromises": 0,
+              "references": 2,
+              "grounded": 2
+            }
+          },
+          "reasonGrade": {
+            "pass": true,
+            "issues": [],
+            "checkedQuestions": 1,
+            "scopedChecks": 0
+          }
+        },
+        {
+          "record": {
+            "id": "d85af068-21e3-4a43-b034-44f6a676a158",
+            "title": "영어 금액 정정",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-15T16:35:28.835Z",
+            "updatedAt": "2026-11-15T16:35:42.148Z",
+            "messages": [
+              {
+                "id": "fa9e8a27-54df-439f-916e-8fd34be74ce8",
+                "role": "customer",
+                "text": "What is the repair fee?",
+                "sentAt": null
+              },
+              {
+                "id": "86741e5e-d738-4f0a-846d-6e73a2511a9e",
+                "role": "agent",
+                "text": "The repair fee is 24000 KRW.",
+                "sentAt": null
+              },
+              {
+                "id": "4db69021-f196-44d5-bc2d-6fbd29cd6636",
+                "role": "agent",
+                "text": "Correction: the repair fee is 18000 KRW, not 24000 KRW.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "aed93f85-0e8d-4f74-ac93-0fc2f070a2d8",
+                "title": "수리비는 얼마인가요?",
+                "source": {
+                  "messageId": "fa9e8a27-54df-439f-916e-8fd34be74ce8",
+                  "quote": "What is the repair fee?"
+                },
+                "status": "answered",
+                "reason": "상담원이 최초 24000 KRW에서 정정하여 최종 수리비를 18000 KRW로 안내했다.",
+                "evidence": [
+                  {
+                    "messageId": "86741e5e-d738-4f0a-846d-6e73a2511a9e",
+                    "quote": "The repair fee is 24000 KRW."
+                  },
+                  {
+                    "messageId": "4db69021-f196-44d5-bc2d-6fbd29cd6636",
+                    "quote": "Correction: the repair fee is 18000 KRW, not 24000 KRW."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "answered",
+                "aiReason": "상담원이 최초 24000 KRW에서 정정하여 최종 수리비를 18000 KRW로 안내했다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [],
+            "history": [
+              {
+                "id": "ba82d023-4622-49f6-a87c-fe5e873b259c",
+                "at": "2026-11-15T16:35:42.148Z",
+                "type": "analysis",
+                "label": "새 답변을 확인표에 반영했어요",
+                "details": "질문 변화 0건 · 약속 변화 0건",
+                "comparison": {
+                  "at": "2026-11-15T16:35:42.148Z",
+                  "kind": "reply",
+                  "fromMessageCount": 2,
+                  "toMessageCount": 3,
+                  "messageIds": [
+                    "4db69021-f196-44d5-bc2d-6fbd29cd6636"
+                  ],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "9477f78d-0ed9-48f8-bec1-6c61ef196b58",
+                "at": "2026-11-15T16:35:37.706Z",
+                "type": "message",
+                "label": "고객센터의 새 답변을 저장했어요",
+                "details": "분석 전에도 원문은 보존됩니다."
+              },
+              {
+                "id": "abb68ee7-6496-43bc-b125-524a43433a3b",
+                "at": "2026-11-15T16:35:37.706Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 0개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-15T16:35:37.706Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "0fabd046-6844-4fb3-aab1-942c4157bc57",
+                "at": "2026-11-15T16:35:28.835Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객이 수리비를 물었고 상담원이 처음에 24000 KRW라 안내했으나 정정하여 18000 KRW로 안내했다.",
+            "warnings": [],
+            "analyzedMessageCount": 3,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 3484,
+                "output_tokens": 329,
+                "total_tokens": 3813,
+                "unobserved_requests": 0,
+                "input_tokens_details": {
+                  "cached_tokens": 2816
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 128
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-15T16:35:42.148Z",
+              "comparison": {
+                "at": "2026-11-15T16:35:42.148Z",
+                "kind": "reply",
+                "fromMessageCount": 2,
+                "toMessageCount": 3,
+                "messageIds": [
+                  "4db69021-f196-44d5-bc2d-6fbd29cd6636"
+                ],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "channel": "email",
+            "version": 4
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "수리|요금|비용",
+                  "status": "answered",
+                  "evidence": [
+                    2
+                  ],
+                  "reasonPattern": "18,?000"
+                },
+                "actual": {
+                  "id": "aed93f85-0e8d-4f74-ac93-0fc2f070a2d8",
+                  "title": "수리비는 얼마인가요?",
+                  "status": "answered",
+                  "evidence": [
+                    1,
+                    2
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 0,
+              "evidenceCorrect": 1,
+              "expectedPromises": 0,
+              "correctPromises": 0,
+              "references": 3,
+              "grounded": 3
+            }
+          },
+          "reasonGrade": {
+            "pass": true,
+            "issues": [],
+            "checkedQuestions": 1,
+            "scopedChecks": 0
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "medium",
+          "ms": 8870,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 5138,
+            "output_tokens": 793,
+            "total_tokens": 5931,
+            "input_tokens_details": {
+              "cached_tokens": 4864
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            },
+            "unobserved_requests": 0
+          },
+          "transport": {
+            "elapsedMs": 8870,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 8575,
+                "httpStatus": 200,
+                "bodyMs": 295,
+                "usage": {
+                  "input_tokens": 5138,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4864
+                  },
+                  "output_tokens": 793,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 640
+                  },
+                  "total_tokens": 5931
+                },
+                "elapsedMs": 8870
+              }
+            ]
+          },
+          "data": {
+            "summary": "수리비 문의에 대해 '24000 KRW'라고 안내받았습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "수리비는 얼마인가요?",
+                "source": {
+                  "messageId": "fa9e8a27-54df-439f-916e-8fd34be74ce8",
+                  "quote": "What is the repair fee?"
+                },
+                "status": "answered",
+                "reason": "수리비는 24000 KRW라고 안내받았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "86741e5e-d738-4f0a-846d-6e73a2511a9e",
+                    "quote": "The repair fee is 24000 KRW."
+                  }
+                ],
+                "followUp": ""
+              }
+            ],
+            "promises": []
+          }
+        },
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "low",
+          "ms": 4442,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3484,
+            "output_tokens": 329,
+            "total_tokens": 3813,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 128
+            },
+            "unobserved_requests": 0
+          },
+          "transport": {
+            "elapsedMs": 4441,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 4440,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 3484,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 2816
+                  },
+                  "output_tokens": 329,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 128
+                  },
+                  "total_tokens": 3813
+                },
+                "elapsedMs": 4441
+              }
+            ]
+          },
+          "data": {
+            "summary": "고객이 수리비를 물었고 상담원이 처음에 24000 KRW라 안내했으나 정정하여 18000 KRW로 안내했다.",
+            "questions": [
+              {
+                "id": "aed93f85-0e8d-4f74-ac93-0fc2f070a2d8",
+                "status": "answered",
+                "reason": "상담원이 최초 24000 KRW에서 정정하여 최종 수리비를 18000 KRW로 안내했다.",
+                "evidence": [
+                  {
+                    "messageId": "86741e5e-d738-4f0a-846d-6e73a2511a9e",
+                    "quote": "The repair fee is 24000 KRW."
+                  },
+                  {
+                    "messageId": "4db69021-f196-44d5-bc2d-6fbd29cd6636",
+                    "quote": "Correction: the repair fee is 18000 KRW, not 24000 KRW."
+                  }
+                ]
+              }
+            ],
+            "promises": []
+          }
+        }
+      ],
+      "operations": [
+        {
+          "kind": "analysis",
+          "ms": 8871,
+          "success": true
+        },
+        {
+          "kind": "analysis",
+          "ms": 4442,
+          "success": true
+        }
+      ]
+    },
+    {
+      "id": "CR04",
+      "title": "정정 뒤 조건부 요금과 승인 미정",
+      "stages": [
+        {
+          "record": {
+            "id": "ac4155f4-4f6d-421d-bc17-9d9218545080",
+            "title": "정정 뒤 조건부 요금과 승인 미정",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-15T16:35:31.761Z",
+            "updatedAt": "2026-11-15T16:35:35.776Z",
+            "messages": [
+              {
+                "id": "96cc3281-ae7d-46b3-85f0-051ad86c7df6",
+                "role": "customer",
+                "text": "추가 배송비가 얼마인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "45940981-baed-4a33-b016-781abef11f7b",
+                "role": "agent",
+                "text": "추가 배송비는 3,000원입니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "a55da279-c7aa-4225-a427-428fd8504f49",
+                "title": "추가 배송비 금액",
+                "source": {
+                  "messageId": "96cc3281-ae7d-46b3-85f0-051ad86c7df6",
+                  "quote": "추가 배송비가 얼마인가요?"
+                },
+                "status": "answered",
+                "reason": "추가 배송비는 3,000원이라고 안내받았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "45940981-baed-4a33-b016-781abef11f7b",
+                    "quote": "추가 배송비는 3,000원입니다."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "answered",
+                "aiReason": "추가 배송비는 3,000원이라고 안내받았습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [],
+            "history": [
+              {
+                "id": "f2ac869c-7c4a-486e-aae9-f830608ec321",
+                "at": "2026-11-15T16:35:35.776Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 0개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-15T16:35:35.776Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "9ee0e6f9-e7ce-43af-923c-0f6503ffb141",
+                "at": "2026-11-15T16:35:31.761Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객이 추가 배송비 금액을 물었고, 상담원이 금액을 안내했습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 2,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 4775,
+                "output_tokens": 286,
+                "total_tokens": 5061,
+                "unobserved_requests": 0,
+                "input_tokens_details": {
+                  "cached_tokens": 3840
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 128
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-15T16:35:35.776Z",
+              "comparison": {
+                "at": "2026-11-15T16:35:35.776Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 2,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "배송비",
+                  "status": "answered",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "actual": {
+                  "id": "a55da279-c7aa-4225-a427-428fd8504f49",
+                  "title": "추가 배송비 금액",
+                  "status": "answered",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 0,
+              "evidenceCorrect": 1,
+              "expectedPromises": 0,
+              "correctPromises": 0,
+              "references": 2,
+              "grounded": 2
+            }
+          },
+          "reasonGrade": {
+            "pass": true,
+            "issues": [],
+            "checkedQuestions": 1,
+            "scopedChecks": 0
+          }
+        },
+        {
+          "record": {
+            "id": "ac4155f4-4f6d-421d-bc17-9d9218545080",
+            "title": "정정 뒤 조건부 요금과 승인 미정",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-15T16:35:31.761Z",
+            "updatedAt": "2026-11-15T16:35:47.318Z",
+            "messages": [
+              {
+                "id": "96cc3281-ae7d-46b3-85f0-051ad86c7df6",
+                "role": "customer",
+                "text": "추가 배송비가 얼마인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "45940981-baed-4a33-b016-781abef11f7b",
+                "role": "agent",
+                "text": "추가 배송비는 3,000원입니다.",
+                "sentAt": null
+              },
+              {
+                "id": "7d50dbd7-0eb0-4c0d-a313-61e4b23df59e",
+                "role": "agent",
+                "text": "배송비 안내를 정정합니다. 특별 승인이 나면 무료입니다. 승인되지 않으면 3,000원입니다. 현재 고객님 건의 승인 여부는 확인되지 않았습니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "a55da279-c7aa-4225-a427-428fd8504f49",
+                "title": "추가 배송비 금액",
+                "source": {
+                  "messageId": "96cc3281-ae7d-46b3-85f0-051ad86c7df6",
+                  "quote": "추가 배송비가 얼마인가요?"
+                },
+                "status": "partial",
+                "reason": "업체가 '특별 승인이 나면 무료이고, 승인되지 않으면 3,000원'이라고 안내했으나 현재 고객님 건의 승인 여부는 확인되지 않아 비용이 확정되지 않습니다.",
+                "evidence": [
+                  {
+                    "messageId": "45940981-baed-4a33-b016-781abef11f7b",
+                    "quote": "추가 배송비는 3,000원입니다."
+                  },
+                  {
+                    "messageId": "7d50dbd7-0eb0-4c0d-a313-61e4b23df59e",
+                    "quote": "배송비 안내를 정정합니다. 특별 승인이 나면 무료입니다. 승인되지 않으면 3,000원입니다. 현재 고객님 건의 승인 여부는 확인되지 않았습니다."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "partial",
+                "aiReason": "업체가 '특별 승인이 나면 무료이고, 승인되지 않으면 3,000원'이라고 안내했으나 현재 고객님 건의 승인 여부는 확인되지 않아 비용이 확정되지 않습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [],
+            "history": [
+              {
+                "id": "de4a3dbd-6983-45c4-a993-9b51e0cb4ed9",
+                "at": "2026-11-15T16:35:47.318Z",
+                "type": "analysis",
+                "label": "새 답변을 확인표에 반영했어요",
+                "details": "추가 배송비 금액: 답변 받음 → 부분 답변",
+                "comparison": {
+                  "at": "2026-11-15T16:35:47.318Z",
+                  "kind": "reply",
+                  "fromMessageCount": 2,
+                  "toMessageCount": 3,
+                  "messageIds": [
+                    "7d50dbd7-0eb0-4c0d-a313-61e4b23df59e"
+                  ],
+                  "questions": [
+                    {
+                      "id": "a55da279-c7aa-4225-a427-428fd8504f49",
+                      "title": "추가 배송비 금액",
+                      "before": {
+                        "status": "answered",
+                        "aiStatus": "answered",
+                        "manualStatus": null
+                      },
+                      "after": {
+                        "status": "partial",
+                        "aiStatus": "partial",
+                        "manualStatus": null
+                      },
+                      "evidenceMessageIds": [
+                        "45940981-baed-4a33-b016-781abef11f7b",
+                        "7d50dbd7-0eb0-4c0d-a313-61e4b23df59e"
+                      ]
+                    }
+                  ],
+                  "promises": []
+                }
+              },
+              {
+                "id": "16770219-c75e-4c19-9255-9b87ce4a5dad",
+                "at": "2026-11-15T16:35:35.776Z",
+                "type": "message",
+                "label": "고객센터의 새 답변을 저장했어요",
+                "details": "분석 전에도 원문은 보존됩니다."
+              },
+              {
+                "id": "f2ac869c-7c4a-486e-aae9-f830608ec321",
+                "at": "2026-11-15T16:35:35.776Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 0개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-15T16:35:35.776Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "9ee0e6f9-e7ce-43af-923c-0f6503ffb141",
+                "at": "2026-11-15T16:35:31.761Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "추가 배송비 문의: 업체는 '특별 승인 시 무료, 미승인 시 3,000원'으로 정정했으며 현재 승인 여부는 확인되지 않았음.",
+            "warnings": [],
+            "analyzedMessageCount": 3,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 3274,
+                "output_tokens": 1052,
+                "total_tokens": 4326,
+                "unobserved_requests": 0,
+                "input_tokens_details": {
+                  "cached_tokens": 2816
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 768
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-15T16:35:47.318Z",
+              "comparison": {
+                "at": "2026-11-15T16:35:47.318Z",
+                "kind": "reply",
+                "fromMessageCount": 2,
+                "toMessageCount": 3,
+                "messageIds": [
+                  "7d50dbd7-0eb0-4c0d-a313-61e4b23df59e"
+                ],
+                "questions": [
+                  {
+                    "id": "a55da279-c7aa-4225-a427-428fd8504f49",
+                    "title": "추가 배송비 금액",
+                    "before": {
+                      "status": "answered",
+                      "aiStatus": "answered",
+                      "manualStatus": null
+                    },
+                    "after": {
+                      "status": "partial",
+                      "aiStatus": "partial",
+                      "manualStatus": null
+                    },
+                    "evidenceMessageIds": [
+                      "45940981-baed-4a33-b016-781abef11f7b",
+                      "7d50dbd7-0eb0-4c0d-a313-61e4b23df59e"
+                    ]
+                  }
+                ],
+                "promises": []
+              }
+            },
+            "version": 4
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "배송비",
+                  "status": "partial",
+                  "evidence": [
+                    2
+                  ]
+                },
+                "actual": {
+                  "id": "a55da279-c7aa-4225-a427-428fd8504f49",
+                  "title": "추가 배송비 금액",
+                  "status": "partial",
+                  "evidence": [
+                    1,
+                    2
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 1,
+              "expectedPromises": 0,
+              "correctPromises": 0,
+              "references": 3,
+              "grounded": 3
+            }
+          },
+          "reasonGrade": {
+            "pass": true,
+            "issues": [],
+            "checkedQuestions": 1,
+            "scopedChecks": 0
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "low",
+          "ms": 4014,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 4775,
+            "output_tokens": 286,
+            "total_tokens": 5061,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 128
+            },
+            "unobserved_requests": 0
+          },
+          "transport": {
+            "elapsedMs": 4014,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 4012,
+                "httpStatus": 200,
+                "bodyMs": 2,
+                "usage": {
+                  "input_tokens": 4775,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3840
+                  },
+                  "output_tokens": 286,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 128
+                  },
+                  "total_tokens": 5061
+                },
+                "elapsedMs": 4014
+              }
+            ]
+          },
+          "data": {
+            "summary": "고객이 추가 배송비 금액을 물었고, 상담원이 금액을 안내했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "추가 배송비 금액",
+                "source": {
+                  "messageId": "96cc3281-ae7d-46b3-85f0-051ad86c7df6",
+                  "quote": "추가 배송비가 얼마인가요?"
+                },
+                "status": "answered",
+                "reason": "추가 배송비는 3,000원이라고 안내받았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "45940981-baed-4a33-b016-781abef11f7b",
+                    "quote": "추가 배송비는 3,000원입니다."
+                  }
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "medium",
+          "ms": 11542,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3274,
+            "output_tokens": 1052,
+            "total_tokens": 4326,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 768
+            },
+            "unobserved_requests": 0
+          },
+          "transport": {
+            "elapsedMs": 11541,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 11537,
+                "httpStatus": 200,
+                "bodyMs": 4,
+                "usage": {
+                  "input_tokens": 3274,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 2816
+                  },
+                  "output_tokens": 1052,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 768
+                  },
+                  "total_tokens": 4326
+                },
+                "elapsedMs": 11541
+              }
+            ]
+          },
+          "data": {
+            "summary": "추가 배송비 문의: 업체는 '특별 승인 시 무료, 미승인 시 3,000원'으로 정정했으며 현재 승인 여부는 확인되지 않았음.",
+            "questions": [
+              {
+                "id": "a55da279-c7aa-4225-a427-428fd8504f49",
+                "status": "partial",
+                "reason": "업체가 '특별 승인이 나면 무료이고, 승인되지 않으면 3,000원'이라고 안내했으나 현재 고객님 건의 승인 여부는 확인되지 않아 비용이 확정되지 않습니다.",
+                "evidence": [
+                  {
+                    "messageId": "45940981-baed-4a33-b016-781abef11f7b",
+                    "quote": "추가 배송비는 3,000원입니다."
+                  },
+                  {
+                    "messageId": "7d50dbd7-0eb0-4c0d-a313-61e4b23df59e",
+                    "quote": "배송비 안내를 정정합니다. 특별 승인이 나면 무료입니다. 승인되지 않으면 3,000원입니다. 현재 고객님 건의 승인 여부는 확인되지 않았습니다."
+                  }
+                ]
+              }
+            ],
+            "promises": []
+          }
+        }
+      ],
+      "operations": [
+        {
+          "kind": "analysis",
+          "ms": 4015,
+          "success": true
+        },
+        {
+          "kind": "analysis",
+          "ms": 11542,
+          "success": true
+        }
+      ]
+    },
+    {
+      "id": "CR05",
+      "title": "실제 발송일 정정과 다른 날짜의 부정",
+      "stages": [
+        {
+          "record": {
+            "id": "b6b780e7-c6f9-4b8f-9a75-dd98b3a6fe29",
+            "title": "실제 발송일 정정과 다른 날짜의 부정",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-15T16:35:42.149Z",
+            "updatedAt": "2026-11-15T16:35:47.816Z",
+            "messages": [
+              {
+                "id": "f12f7971-4281-4646-bc7d-1b4b5125c4d1",
+                "role": "customer",
+                "text": "보증서를 언제 보내주시나요?",
+                "sentAt": null
+              },
+              {
+                "id": "230745eb-efd1-42ba-8951-86ba9735a030",
+                "role": "agent",
+                "text": "보증서는 2026년 11월 20일까지 보내겠습니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "9572bdb9-43ba-4e72-9792-168bf43013c2",
+                "title": "보증서 발송 시점",
+                "source": {
+                  "messageId": "f12f7971-4281-4646-bc7d-1b4b5125c4d1",
+                  "quote": "보증서를 언제 보내주시나요?"
+                },
+                "status": "answered",
+                "reason": "2026년 11월 20일까지 보내겠다고 안내받았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "230745eb-efd1-42ba-8951-86ba9735a030",
+                    "quote": "보증서는 2026년 11월 20일까지 보내겠습니다."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "answered",
+                "aiReason": "2026년 11월 20일까지 보내겠다고 안내받았습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [
+              {
+                "id": "c1c13d83-0fc1-4119-a1e9-b05be00783f9",
+                "title": "보증서 발송",
+                "questionIds": [
+                  "9572bdb9-43ba-4e72-9792-168bf43013c2"
+                ],
+                "evidence": {
+                  "messageId": "230745eb-efd1-42ba-8951-86ba9735a030",
+                  "quote": "보증서는 2026년 11월 20일까지 보내겠습니다."
+                },
+                "dueText": "2026년 11월 20일까지",
+                "dueAt": "2026-11-20",
+                "state": "promised",
+                "confirmedAt": null
+              }
+            ],
+            "history": [
+              {
+                "id": "604ec040-7ae1-4352-9180-6e4e32ab3e27",
+                "at": "2026-11-15T16:35:47.816Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 1개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-15T16:35:47.816Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "6f96330a-544e-4bbc-bd1e-7ec712e74600",
+                "at": "2026-11-15T16:35:42.149Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "보증서 발송 시점을 문의했고, 상담사가 2026년 11월 20일까지 보내겠다고 답했습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 2,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 4778,
+                "output_tokens": 422,
+                "total_tokens": 5200,
+                "unobserved_requests": 0,
+                "input_tokens_details": {
+                  "cached_tokens": 4608
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 192
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-15T16:35:47.816Z",
+              "comparison": {
+                "at": "2026-11-15T16:35:47.816Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 2,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "version": 2
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "보증서|발송",
+                  "status": "answered",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "actual": {
+                  "id": "9572bdb9-43ba-4e72-9792-168bf43013c2",
+                  "title": "보증서 발송 시점",
+                  "status": "answered",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [
+              {
+                "gold": {
+                  "topic": "보증서|발송|전송",
+                  "message": 1,
+                  "deadline": "2026년 11월 20일",
+                  "dueAt": "2026-11-20",
+                  "state": "promised"
+                },
+                "actual": {
+                  "id": "c1c13d83-0fc1-4119-a1e9-b05be00783f9",
+                  "title": "보증서 발송",
+                  "state": "promised",
+                  "dueAt": "2026-11-20",
+                  "dueText": "2026년 11월 20일까지",
+                  "confirmedAt": null
+                },
+                "ok": true
+              }
+            ],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 0,
+              "evidenceCorrect": 1,
+              "expectedPromises": 1,
+              "correctPromises": 1,
+              "references": 3,
+              "grounded": 3
+            }
+          },
+          "reasonGrade": {
+            "pass": true,
+            "issues": [],
+            "checkedQuestions": 1,
+            "scopedChecks": 0
+          }
+        },
+        {
+          "record": {
+            "id": "b6b780e7-c6f9-4b8f-9a75-dd98b3a6fe29",
+            "title": "실제 발송일 정정과 다른 날짜의 부정",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-15T16:35:42.149Z",
+            "updatedAt": "2026-11-15T16:36:05.772Z",
+            "messages": [
+              {
+                "id": "f12f7971-4281-4646-bc7d-1b4b5125c4d1",
+                "role": "customer",
+                "text": "보증서를 언제 보내주시나요?",
+                "sentAt": null
+              },
+              {
+                "id": "230745eb-efd1-42ba-8951-86ba9735a030",
+                "role": "agent",
+                "text": "보증서는 2026년 11월 20일까지 보내겠습니다.",
+                "sentAt": null
+              },
+              {
+                "id": "b39b9b5c-08b2-4cbe-aa85-f78468cb013a",
+                "role": "agent",
+                "text": "앞서 안내한 보증서 발송일을 정정합니다. 21일이 아니라 2026년 11월 23일까지 보내겠습니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "9572bdb9-43ba-4e72-9792-168bf43013c2",
+                "title": "보증서 발송 시점",
+                "source": {
+                  "messageId": "f12f7971-4281-4646-bc7d-1b4b5125c4d1",
+                  "quote": "보증서를 언제 보내주시나요?"
+                },
+                "status": "answered",
+                "reason": "업체가 앞선 발송일을 정정하여 보증서를 2026년 11월 23일까지 보내겠다고 안내했습니다.",
+                "evidence": [
+                  {
+                    "messageId": "b39b9b5c-08b2-4cbe-aa85-f78468cb013a",
+                    "quote": "앞서 안내한 보증서 발송일을 정정합니다. 21일이 아니라 2026년 11월 23일까지 보내겠습니다."
+                  },
+                  {
+                    "messageId": "230745eb-efd1-42ba-8951-86ba9735a030",
+                    "quote": "보증서는 2026년 11월 20일까지 보내겠습니다."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "answered",
+                "aiReason": "업체가 앞선 발송일을 정정하여 보증서를 2026년 11월 23일까지 보내겠다고 안내했습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [
+              {
+                "id": "c1c13d83-0fc1-4119-a1e9-b05be00783f9",
+                "title": "보증서 발송",
+                "questionIds": [
+                  "9572bdb9-43ba-4e72-9792-168bf43013c2"
+                ],
+                "evidence": {
+                  "messageId": "b39b9b5c-08b2-4cbe-aa85-f78468cb013a",
+                  "quote": "앞서 안내한 보증서 발송일을 정정합니다. 21일이 아니라 2026년 11월 23일까지 보내겠습니다."
+                },
+                "dueText": "2026년 11월 23일까지",
+                "dueAt": "2026-11-23",
+                "state": "promised",
+                "confirmedAt": null
+              }
+            ],
+            "history": [
+              {
+                "id": "f6a2707f-a6b3-4e96-b0b6-3a3cc05cd40f",
+                "at": "2026-11-15T16:36:05.772Z",
+                "type": "analysis",
+                "label": "새 답변을 확인표에 반영했어요",
+                "details": "질문 변화 0건 · 약속 변화 1건",
+                "comparison": {
+                  "at": "2026-11-15T16:36:05.772Z",
+                  "kind": "reply",
+                  "fromMessageCount": 2,
+                  "toMessageCount": 3,
+                  "messageIds": [
+                    "b39b9b5c-08b2-4cbe-aa85-f78468cb013a"
+                  ],
+                  "questions": [],
+                  "promises": [
+                    {
+                      "id": "c1c13d83-0fc1-4119-a1e9-b05be00783f9",
+                      "title": "보증서 발송",
+                      "before": {
+                        "title": "보증서 발송",
+                        "state": "promised",
+                        "dueAt": "2026-11-20",
+                        "dueText": "2026년 11월 20일까지",
+                        "confirmedAt": null
+                      },
+                      "after": {
+                        "title": "보증서 발송",
+                        "state": "promised",
+                        "dueAt": "2026-11-23",
+                        "dueText": "2026년 11월 23일까지",
+                        "confirmedAt": null
+                      },
+                      "fields": [
+                        "deadline"
+                      ],
+                      "evidenceMessageIds": [
+                        "b39b9b5c-08b2-4cbe-aa85-f78468cb013a"
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "7271c129-8456-4105-b211-00b409a3c0e7",
+                "at": "2026-11-15T16:35:47.816Z",
+                "type": "message",
+                "label": "고객센터의 새 답변을 저장했어요",
+                "details": "분석 전에도 원문은 보존됩니다."
+              },
+              {
+                "id": "604ec040-7ae1-4352-9180-6e4e32ab3e27",
+                "at": "2026-11-15T16:35:47.816Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 1개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-15T16:35:47.816Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "6f96330a-544e-4bbc-bd1e-7ec712e74600",
+                "at": "2026-11-15T16:35:42.149Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "고객이 보증서 발송 시점을 물었고, 업체는 처음에 2026년 11월 20일까지 보내겠다고 안내한 뒤 발송일을 정정하여 2026년 11월 23일까지 보내겠다고 안내했습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 3,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 3344,
+                "output_tokens": 1919,
+                "total_tokens": 5263,
+                "unobserved_requests": 0,
+                "input_tokens_details": {
+                  "cached_tokens": 2816
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 1600
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-15T16:36:05.772Z",
+              "comparison": {
+                "at": "2026-11-15T16:36:05.772Z",
+                "kind": "reply",
+                "fromMessageCount": 2,
+                "toMessageCount": 3,
+                "messageIds": [
+                  "b39b9b5c-08b2-4cbe-aa85-f78468cb013a"
+                ],
+                "questions": [],
+                "promises": [
+                  {
+                    "id": "c1c13d83-0fc1-4119-a1e9-b05be00783f9",
+                    "title": "보증서 발송",
+                    "before": {
+                      "title": "보증서 발송",
+                      "state": "promised",
+                      "dueAt": "2026-11-20",
+                      "dueText": "2026년 11월 20일까지",
+                      "confirmedAt": null
+                    },
+                    "after": {
+                      "title": "보증서 발송",
+                      "state": "promised",
+                      "dueAt": "2026-11-23",
+                      "dueText": "2026년 11월 23일까지",
+                      "confirmedAt": null
+                    },
+                    "fields": [
+                      "deadline"
+                    ],
+                    "evidenceMessageIds": [
+                      "b39b9b5c-08b2-4cbe-aa85-f78468cb013a"
+                    ]
+                  }
+                ]
+              }
+            },
+            "version": 4
+          },
+          "grade": {
+            "pass": true,
+            "issues": [],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "보증서|발송",
+                  "status": "answered",
+                  "evidence": [
+                    2
+                  ],
+                  "reasonPattern": "23"
+                },
+                "actual": {
+                  "id": "9572bdb9-43ba-4e72-9792-168bf43013c2",
+                  "title": "보증서 발송 시점",
+                  "status": "answered",
+                  "evidence": [
+                    2,
+                    1
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [
+              {
+                "gold": {
+                  "topic": "보증서|발송|전송",
+                  "message": 2,
+                  "deadline": "2026년 11월 23일",
+                  "dueAt": "2026-11-23",
+                  "state": "promised"
+                },
+                "actual": {
+                  "id": "c1c13d83-0fc1-4119-a1e9-b05be00783f9",
+                  "title": "보증서 발송",
+                  "state": "promised",
+                  "dueAt": "2026-11-23",
+                  "dueText": "2026년 11월 23일까지",
+                  "confirmedAt": null
+                },
+                "ok": true
+              }
+            ],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 0,
+              "evidenceCorrect": 1,
+              "expectedPromises": 1,
+              "correctPromises": 1,
+              "references": 4,
+              "grounded": 4
+            }
+          },
+          "reasonGrade": {
+            "pass": true,
+            "issues": [],
+            "checkedQuestions": 1,
+            "scopedChecks": 0
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "low",
+          "ms": 5665,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 4778,
+            "output_tokens": 422,
+            "total_tokens": 5200,
+            "input_tokens_details": {
+              "cached_tokens": 4608
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "unobserved_requests": 0
+          },
+          "transport": {
+            "elapsedMs": 5665,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 5664,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 4778,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4608
+                  },
+                  "output_tokens": 422,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 192
+                  },
+                  "total_tokens": 5200
+                },
+                "elapsedMs": 5665
+              }
+            ]
+          },
+          "data": {
+            "summary": "보증서 발송 시점을 문의했고, 상담사가 2026년 11월 20일까지 보내겠다고 답했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "보증서 발송 시점",
+                "source": {
+                  "messageId": "f12f7971-4281-4646-bc7d-1b4b5125c4d1",
+                  "quote": "보증서를 언제 보내주시나요?"
+                },
+                "status": "answered",
+                "reason": "2026년 11월 20일까지 보내겠다고 안내받았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "230745eb-efd1-42ba-8951-86ba9735a030",
+                    "quote": "보증서는 2026년 11월 20일까지 보내겠습니다."
+                  }
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "보증서 발송",
+                "questionIds": [
+                  "new-q-1"
+                ],
+                "evidence": {
+                  "messageId": "230745eb-efd1-42ba-8951-86ba9735a030",
+                  "quote": "보증서는 2026년 11월 20일까지 보내겠습니다."
+                },
+                "dueText": "2026년 11월 20일까지",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          }
+        },
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "medium",
+          "ms": 17956,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3344,
+            "output_tokens": 1919,
+            "total_tokens": 5263,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1600
+            },
+            "unobserved_requests": 0
+          },
+          "transport": {
+            "elapsedMs": 17956,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 17954,
+                "httpStatus": 200,
+                "bodyMs": 2,
+                "usage": {
+                  "input_tokens": 3344,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 2816
+                  },
+                  "output_tokens": 1919,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1600
+                  },
+                  "total_tokens": 5263
+                },
+                "elapsedMs": 17956
+              }
+            ]
+          },
+          "data": {
+            "summary": "고객이 보증서 발송 시점을 물었고, 업체는 처음에 2026년 11월 20일까지 보내겠다고 안내한 뒤 발송일을 정정하여 2026년 11월 23일까지 보내겠다고 안내했습니다.",
+            "questions": [
+              {
+                "id": "9572bdb9-43ba-4e72-9792-168bf43013c2",
+                "status": "answered",
+                "reason": "업체가 앞선 발송일을 정정하여 보증서를 2026년 11월 23일까지 보내겠다고 안내했습니다.",
+                "evidence": [
+                  {
+                    "messageId": "b39b9b5c-08b2-4cbe-aa85-f78468cb013a",
+                    "quote": "앞서 안내한 보증서 발송일을 정정합니다. 21일이 아니라 2026년 11월 23일까지 보내겠습니다."
+                  },
+                  {
+                    "messageId": "230745eb-efd1-42ba-8951-86ba9735a030",
+                    "quote": "보증서는 2026년 11월 20일까지 보내겠습니다."
+                  }
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "c1c13d83-0fc1-4119-a1e9-b05be00783f9",
+                "title": "보증서 발송",
+                "questionIds": [
+                  "9572bdb9-43ba-4e72-9792-168bf43013c2"
+                ],
+                "evidence": {
+                  "messageId": "b39b9b5c-08b2-4cbe-aa85-f78468cb013a",
+                  "quote": "앞서 안내한 보증서 발송일을 정정합니다. 21일이 아니라 2026년 11월 23일까지 보내겠습니다."
+                },
+                "dueText": "2026년 11월 23일까지",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          }
+        }
+      ],
+      "operations": [
+        {
+          "kind": "analysis",
+          "ms": 5666,
+          "success": true
+        },
+        {
+          "kind": "analysis",
+          "ms": 17957,
+          "success": true
+        }
+      ]
+    },
+    {
+      "id": "CR06",
+      "title": "실제로 일부만 알려준 서류 목록",
+      "stages": [
+        {
+          "record": {
+            "id": "de06a5a8-b203-4a10-bac5-da4b4e0dbeb6",
+            "title": "실제로 일부만 알려준 서류 목록",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-15T16:35:47.320Z",
+            "updatedAt": "2026-11-15T16:36:02.658Z",
+            "messages": [
+              {
+                "id": "3c620561-9f5f-4df7-a235-6b5e31b295e2",
+                "role": "customer",
+                "text": "What is the full list of required documents?",
+                "sentAt": null
+              },
+              {
+                "id": "dbf46d2c-65a7-47ed-8c0d-4f85a84f5991",
+                "role": "agent",
+                "text": "So far we know your receipt ID is required. The other required documents are still being checked.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "5b0fc8b0-d692-472f-ab7d-2b4c5133dd66",
+                "title": "필요한 서류 전체 목록이 무엇인가요?",
+                "source": {
+                  "messageId": "3c620561-9f5f-4df7-a235-6b5e31b295e2",
+                  "quote": "What is the full list of required documents?"
+                },
+                "status": "waiting",
+                "reason": "필요한 서류 전체 목록을 확인해 안내하겠다는 약속을 받았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "dbf46d2c-65a7-47ed-8c0d-4f85a84f5991",
+                    "quote": "So far we know your receipt ID is required. The other required documents are still being checked."
+                  }
+                ],
+                "followUp": "남은 필요한 서류 목록을 확인해 알려주세요.",
+                "aiStatus": "waiting",
+                "aiReason": "필요한 서류 전체 목록을 확인해 안내하겠다는 약속을 받았습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [
+              {
+                "id": "b926e499-faf3-4874-bb6f-bb347322ba23",
+                "title": "필요한 서류 추가 확인 및 안내",
+                "questionIds": [
+                  "5b0fc8b0-d692-472f-ab7d-2b4c5133dd66"
+                ],
+                "evidence": {
+                  "messageId": "dbf46d2c-65a7-47ed-8c0d-4f85a84f5991",
+                  "quote": "So far we know your receipt ID is required. The other required documents are still being checked."
+                },
+                "dueText": "",
+                "dueAt": null,
+                "state": "promised",
+                "confirmedAt": null
+              }
+            ],
+            "history": [
+              {
+                "id": "d7148aac-c9e5-47f4-aa78-933bd970bdbc",
+                "at": "2026-11-15T16:36:02.658Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 1개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-15T16:36:02.658Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "43a1ddfc-f9c5-45f0-8ed9-ade7c0c88ada",
+                "at": "2026-11-15T16:35:47.320Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "영수증 ID는 필요하다고 안내받았고, 나머지 서류는 확인 중이라고 안내받았습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 2,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 5150,
+                "output_tokens": 1422,
+                "total_tokens": 6572,
+                "unobserved_requests": 0,
+                "input_tokens_details": {
+                  "cached_tokens": 4992
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 1152
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-15T16:36:02.658Z",
+              "comparison": {
+                "at": "2026-11-15T16:36:02.658Z",
+                "kind": "initial",
+                "fromMessageCount": 0,
+                "toMessageCount": 2,
+                "messageIds": [],
+                "questions": [],
+                "promises": []
+              }
+            },
+            "channel": "email",
+            "version": 2
+          },
+          "grade": {
+            "pass": false,
+            "issues": [
+              "status:자료|서류|문서|목록: expected partial, got waiting",
+              "extra promise: 필요한 서류 추가 확인 및 안내"
+            ],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "자료|서류|문서|목록",
+                  "status": "partial",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "actual": {
+                  "id": "5b0fc8b0-d692-472f-ab7d-2b4c5133dd66",
+                  "title": "필요한 서류 전체 목록이 무엇인가요?",
+                  "status": "waiting",
+                  "evidence": [
+                    1
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 0,
+              "falseAnswered": 0,
+              "expectedUnresolved": 1,
+              "evidenceCorrect": 1,
+              "expectedPromises": 0,
+              "correctPromises": 0,
+              "references": 3,
+              "grounded": 3
+            }
+          },
+          "reasonGrade": {
+            "pass": true,
+            "issues": [],
+            "checkedQuestions": 1,
+            "scopedChecks": 0
+          }
+        },
+        {
+          "record": {
+            "id": "de06a5a8-b203-4a10-bac5-da4b4e0dbeb6",
+            "title": "실제로 일부만 알려준 서류 목록",
+            "company": "가상 고객센터",
+            "mode": "live",
+            "createdAt": "2026-11-15T16:35:47.320Z",
+            "updatedAt": "2026-11-15T16:36:08.331Z",
+            "messages": [
+              {
+                "id": "3c620561-9f5f-4df7-a235-6b5e31b295e2",
+                "role": "customer",
+                "text": "What is the full list of required documents?",
+                "sentAt": null
+              },
+              {
+                "id": "dbf46d2c-65a7-47ed-8c0d-4f85a84f5991",
+                "role": "agent",
+                "text": "So far we know your receipt ID is required. The other required documents are still being checked.",
+                "sentAt": null
+              },
+              {
+                "id": "84b21b1a-0bbf-4dda-b96d-c2e0cb3decf2",
+                "role": "agent",
+                "text": "The required documents are your receipt ID and a photo of the damaged item. No identity document is required.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "5b0fc8b0-d692-472f-ab7d-2b4c5133dd66",
+                "title": "필요한 서류 전체 목록이 무엇인가요?",
+                "source": {
+                  "messageId": "3c620561-9f5f-4df7-a235-6b5e31b295e2",
+                  "quote": "What is the full list of required documents?"
+                },
+                "status": "answered",
+                "reason": "업체가 영수증 ID와 파손된 물품 사진을 필요한 서류로 명시하고 신분증은 필요하지 않다고 구체적으로 안내했으므로 전체 목록이 제시되었습니다.",
+                "evidence": [
+                  {
+                    "messageId": "dbf46d2c-65a7-47ed-8c0d-4f85a84f5991",
+                    "quote": "So far we know your receipt ID is required. The other required documents are still being checked."
+                  },
+                  {
+                    "messageId": "84b21b1a-0bbf-4dda-b96d-c2e0cb3decf2",
+                    "quote": "The required documents are your receipt ID and a photo of the damaged item. No identity document is required."
+                  }
+                ],
+                "followUp": "",
+                "aiStatus": "answered",
+                "aiReason": "업체가 영수증 ID와 파손된 물품 사진을 필요한 서류로 명시하고 신분증은 필요하지 않다고 구체적으로 안내했으므로 전체 목록이 제시되었습니다.",
+                "manualStatus": null,
+                "manualTitle": null
+              }
+            ],
+            "promises": [
+              {
+                "id": "b926e499-faf3-4874-bb6f-bb347322ba23",
+                "title": "필요한 서류 추가 확인 및 안내",
+                "questionIds": [
+                  "5b0fc8b0-d692-472f-ab7d-2b4c5133dd66"
+                ],
+                "evidence": {
+                  "messageId": "84b21b1a-0bbf-4dda-b96d-c2e0cb3decf2",
+                  "quote": "The required documents are your receipt ID and a photo of the damaged item. No identity document is required."
+                },
+                "dueText": "",
+                "dueAt": null,
+                "state": "reported",
+                "confirmedAt": null
+              }
+            ],
+            "history": [
+              {
+                "id": "bd83e91f-bd2e-41a0-86ad-a19179ef547d",
+                "at": "2026-11-15T16:36:08.331Z",
+                "type": "analysis",
+                "label": "새 답변을 확인표에 반영했어요",
+                "details": "필요한 서류 전체 목록이 무엇인가요?: 답변 대기 → 답변 받음",
+                "comparison": {
+                  "at": "2026-11-15T16:36:08.331Z",
+                  "kind": "reply",
+                  "fromMessageCount": 2,
+                  "toMessageCount": 3,
+                  "messageIds": [
+                    "84b21b1a-0bbf-4dda-b96d-c2e0cb3decf2"
+                  ],
+                  "questions": [
+                    {
+                      "id": "5b0fc8b0-d692-472f-ab7d-2b4c5133dd66",
+                      "title": "필요한 서류 전체 목록이 무엇인가요?",
+                      "before": {
+                        "status": "waiting",
+                        "aiStatus": "waiting",
+                        "manualStatus": null
+                      },
+                      "after": {
+                        "status": "answered",
+                        "aiStatus": "answered",
+                        "manualStatus": null
+                      },
+                      "evidenceMessageIds": [
+                        "dbf46d2c-65a7-47ed-8c0d-4f85a84f5991",
+                        "84b21b1a-0bbf-4dda-b96d-c2e0cb3decf2"
+                      ]
+                    }
+                  ],
+                  "promises": [
+                    {
+                      "id": "b926e499-faf3-4874-bb6f-bb347322ba23",
+                      "title": "필요한 서류 추가 확인 및 안내",
+                      "before": {
+                        "title": "필요한 서류 추가 확인 및 안내",
+                        "state": "promised",
+                        "dueAt": null,
+                        "dueText": "",
+                        "confirmedAt": null
+                      },
+                      "after": {
+                        "title": "필요한 서류 추가 확인 및 안내",
+                        "state": "reported",
+                        "dueAt": null,
+                        "dueText": "",
+                        "confirmedAt": null
+                      },
+                      "fields": [
+                        "state"
+                      ],
+                      "evidenceMessageIds": [
+                        "84b21b1a-0bbf-4dda-b96d-c2e0cb3decf2"
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "d224d690-223e-43b0-bb08-99dba0549eca",
+                "at": "2026-11-15T16:36:02.658Z",
+                "type": "message",
+                "label": "고객센터의 새 답변을 저장했어요",
+                "details": "분석 전에도 원문은 보존됩니다."
+              },
+              {
+                "id": "d7148aac-c9e5-47f4-aa78-933bd970bdbc",
+                "at": "2026-11-15T16:36:02.658Z",
+                "type": "analysis",
+                "label": "질문별 확인표가 준비됐어요",
+                "details": "1개 질문 · 1개 처리 약속",
+                "comparison": {
+                  "at": "2026-11-15T16:36:02.658Z",
+                  "kind": "initial",
+                  "fromMessageCount": 0,
+                  "toMessageCount": 2,
+                  "messageIds": [],
+                  "questions": [],
+                  "promises": []
+                }
+              },
+              {
+                "id": "43a1ddfc-f9c5-45f0-8ed9-ade7c0c88ada",
+                "at": "2026-11-15T16:35:47.320Z",
+                "type": "created",
+                "label": "상담 기록을 만들었어요",
+                "details": "2개 메시지 등록"
+              }
+            ],
+            "summary": "상담원은 영수증(Receipt ID)과 파손 물품 사진(photo of the damaged item)이 필요하고 신분증은 필요하지 않다고 안내했습니다.",
+            "warnings": [],
+            "analyzedMessageCount": 3,
+            "drafts": {},
+            "analysis": {
+              "model": "gpt-5-mini-2025-08-07",
+              "usage": {
+                "input_tokens": 3581,
+                "output_tokens": 600,
+                "total_tokens": 4181,
+                "unobserved_requests": 0,
+                "input_tokens_details": {
+                  "cached_tokens": 2816
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 320
+                }
+              },
+              "attempts": 1,
+              "at": "2026-11-15T16:36:08.331Z",
+              "comparison": {
+                "at": "2026-11-15T16:36:08.331Z",
+                "kind": "reply",
+                "fromMessageCount": 2,
+                "toMessageCount": 3,
+                "messageIds": [
+                  "84b21b1a-0bbf-4dda-b96d-c2e0cb3decf2"
+                ],
+                "questions": [
+                  {
+                    "id": "5b0fc8b0-d692-472f-ab7d-2b4c5133dd66",
+                    "title": "필요한 서류 전체 목록이 무엇인가요?",
+                    "before": {
+                      "status": "waiting",
+                      "aiStatus": "waiting",
+                      "manualStatus": null
+                    },
+                    "after": {
+                      "status": "answered",
+                      "aiStatus": "answered",
+                      "manualStatus": null
+                    },
+                    "evidenceMessageIds": [
+                      "dbf46d2c-65a7-47ed-8c0d-4f85a84f5991",
+                      "84b21b1a-0bbf-4dda-b96d-c2e0cb3decf2"
+                    ]
+                  }
+                ],
+                "promises": [
+                  {
+                    "id": "b926e499-faf3-4874-bb6f-bb347322ba23",
+                    "title": "필요한 서류 추가 확인 및 안내",
+                    "before": {
+                      "title": "필요한 서류 추가 확인 및 안내",
+                      "state": "promised",
+                      "dueAt": null,
+                      "dueText": "",
+                      "confirmedAt": null
+                    },
+                    "after": {
+                      "title": "필요한 서류 추가 확인 및 안내",
+                      "state": "reported",
+                      "dueAt": null,
+                      "dueText": "",
+                      "confirmedAt": null
+                    },
+                    "fields": [
+                      "state"
+                    ],
+                    "evidenceMessageIds": [
+                      "84b21b1a-0bbf-4dda-b96d-c2e0cb3decf2"
+                    ]
+                  }
+                ]
+              }
+            },
+            "channel": "email",
+            "version": 4
+          },
+          "grade": {
+            "pass": false,
+            "issues": [
+              "extra promise: 필요한 서류 추가 확인 및 안내"
+            ],
+            "questions": [
+              {
+                "gold": {
+                  "message": 0,
+                  "topic": "자료|서류|문서|목록",
+                  "status": "answered",
+                  "evidence": [
+                    2
+                  ],
+                  "reasonPattern": "사진|photo"
+                },
+                "actual": {
+                  "id": "5b0fc8b0-d692-472f-ab7d-2b4c5133dd66",
+                  "title": "필요한 서류 전체 목록이 무엇인가요?",
+                  "status": "answered",
+                  "evidence": [
+                    1,
+                    2
+                  ]
+                },
+                "evidenceOK": true
+              }
+            ],
+            "promises": [],
+            "metrics": {
+              "expectedQuestions": 1,
+              "found": 1,
+              "correct": 1,
+              "falseAnswered": 0,
+              "expectedUnresolved": 0,
+              "evidenceCorrect": 1,
+              "expectedPromises": 0,
+              "correctPromises": 0,
+              "references": 4,
+              "grounded": 4
+            }
+          },
+          "reasonGrade": {
+            "pass": true,
+            "issues": [],
+            "checkedQuestions": 1,
+            "scopedChecks": 0
+          }
+        }
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "medium",
+          "ms": 15338,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 5150,
+            "output_tokens": 1422,
+            "total_tokens": 6572,
+            "input_tokens_details": {
+              "cached_tokens": 4992
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1152
+            },
+            "unobserved_requests": 0
+          },
+          "transport": {
+            "elapsedMs": 15337,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 15336,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 5150,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4992
+                  },
+                  "output_tokens": 1422,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1152
+                  },
+                  "total_tokens": 6572
+                },
+                "elapsedMs": 15337
+              }
+            ]
+          },
+          "data": {
+            "summary": "영수증 ID는 필요하다고 안내받았고, 나머지 서류는 확인 중이라고 안내받았습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "필요한 서류 전체 목록이 무엇인가요?",
+                "source": {
+                  "messageId": "3c620561-9f5f-4df7-a235-6b5e31b295e2",
+                  "quote": "What is the full list of required documents?"
+                },
+                "status": "waiting",
+                "reason": "필요한 서류 전체 목록을 확인해 안내하겠다는 약속을 받았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "dbf46d2c-65a7-47ed-8c0d-4f85a84f5991",
+                    "quote": "So far we know your receipt ID is required. The other required documents are still being checked."
+                  }
+                ],
+                "followUp": "남은 필요한 서류 목록을 확인해 알려주세요."
+              }
+            ],
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "필요한 서류 추가 확인 및 안내",
+                "questionIds": [
+                  "new-q-1"
+                ],
+                "evidence": {
+                  "messageId": "dbf46d2c-65a7-47ed-8c0d-4f85a84f5991",
+                  "quote": "So far we know your receipt ID is required. The other required documents are still being checked."
+                },
+                "dueText": "",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          }
+        },
+        {
+          "name": "replytrack_analysis",
+          "reasoningEffort": "low",
+          "ms": 5673,
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3581,
+            "output_tokens": 600,
+            "total_tokens": 4181,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 320
+            },
+            "unobserved_requests": 0
+          },
+          "transport": {
+            "elapsedMs": 5673,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 5672,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 3581,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 2816
+                  },
+                  "output_tokens": 600,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 320
+                  },
+                  "total_tokens": 4181
+                },
+                "elapsedMs": 5673
+              }
+            ]
+          },
+          "data": {
+            "summary": "상담원은 영수증(Receipt ID)과 파손 물품 사진(photo of the damaged item)이 필요하고 신분증은 필요하지 않다고 안내했습니다.",
+            "questions": [
+              {
+                "id": "5b0fc8b0-d692-472f-ab7d-2b4c5133dd66",
+                "status": "answered",
+                "reason": "업체가 영수증 ID와 파손된 물품 사진을 필요한 서류로 명시하고 신분증은 필요하지 않다고 구체적으로 안내했으므로 전체 목록이 제시되었습니다.",
+                "evidence": [
+                  {
+                    "messageId": "dbf46d2c-65a7-47ed-8c0d-4f85a84f5991",
+                    "quote": "So far we know your receipt ID is required. The other required documents are still being checked."
+                  },
+                  {
+                    "messageId": "84b21b1a-0bbf-4dda-b96d-c2e0cb3decf2",
+                    "quote": "The required documents are your receipt ID and a photo of the damaged item. No identity document is required."
+                  }
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "b926e499-faf3-4874-bb6f-bb347322ba23",
+                "title": "필요한 서류 추가 확인 및 안내",
+                "questionIds": [
+                  "5b0fc8b0-d692-472f-ab7d-2b4c5133dd66"
+                ],
+                "evidence": {
+                  "messageId": "84b21b1a-0bbf-4dda-b96d-c2e0cb3decf2",
+                  "quote": "The required documents are your receipt ID and a photo of the damaged item. No identity document is required."
+                },
+                "dueText": "",
+                "deadlineCleared": true,
+                "state": "reported"
+              }
+            ]
+          }
+        }
+      ],
+      "operations": [
+        {
+          "kind": "analysis",
+          "ms": 15338,
+          "success": true
+        },
+        {
+          "kind": "analysis",
+          "ms": 5673,
+          "success": true
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "cases": 6,
+    "completedCases": 6,
+    "passedCases": 4,
+    "stages": 12,
+    "passedStages": 9,
+    "totals": {
+      "expectedQuestions": 12,
+      "found": 12,
+      "correct": 11,
+      "falseAnswered": 0,
+      "expectedUnresolved": 6,
+      "evidenceCorrect": 12,
+      "expectedPromises": 6,
+      "correctPromises": 5,
+      "references": 38,
+      "grounded": 38
+    },
+    "calls": 12,
+    "apiErrors": 0,
+    "draftErrors": 0,
+    "inputTokens": 49814,
+    "outputTokens": 11109,
+    "latencyMs": {
+      "median": 8870,
+      "p95": 17956,
+      "max": 17956
+    }
+  },
+  "performance": {
+    "inputTokens": 49814,
+    "cachedInputTokens": 40832,
+    "outputTokens": 11109,
+    "reasoningTokens": 7936,
+    "totalTokens": 60923,
+    "calls": 12,
+    "callsWithoutUsage": 0,
+    "requests": 12,
+    "hedgedCalls": 0,
+    "unobservedRequests": 0,
+    "analysisMs": {
+      "count": 12,
+      "median": 8871,
+      "p95": 17957
+    },
+    "initialAnalysisMs": {
+      "count": 6,
+      "median": 7831,
+      "p95": 15338
+    },
+    "replyAnalysisMs": {
+      "count": 6,
+      "median": 13531,
+      "p95": 17957
+    },
+    "draftMs": {
+      "count": 0,
+      "median": null,
+      "p95": null
+    },
+    "failedOperations": 0
+  },
+  "completedAt": "2026-11-15T16:36:08.333Z",
+  "complete": true
+}

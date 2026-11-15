@@ -4,6 +4,7 @@ import { cases } from '../evals/support-cases.mjs';
 import { boundaryCases } from '../evals/status-boundary-cases.mjs';
 import { unseenCases } from '../evals/unseen-cases.mjs';
 import { timingCases } from '../evals/timing-cases.mjs';
+import { correctionContrastCases } from '../evals/correction-contrast-cases.mjs';
 import { grade, summarize } from '../evals/grade.mjs';
 
 const record = () => ({
@@ -12,6 +13,14 @@ const record = () => ({
   promises: [], warnings: [],
 });
 const expected = { questions: [{ message: 0, topic: '환불', status: 'waiting', evidence: [1] }], promises: [] };
+
+test('correction contrasts require the corrected answer detail, not just the right status', () => {
+  const c = record(), gold = { questions: [{ ...expected.questions[0], reasonPattern: '18,?000' }], promises: [] };
+  c.questions[0].reason = '24,000원이라고 안내받았습니다.'; assert.equal(grade(c, gold).pass, false);
+  c.questions[0].reason = '18,000원이라고 안내받았습니다.'; assert.equal(grade(c, gold).pass, true);
+  assert.equal(new Set(correctionContrastCases.map(c => c.id)).size, 6);
+  assert(correctionContrastCases.every(c => c.next && c.expected && c.after));
+});
 
 test('evaluation flags falsely answered questions and missing required evidence', () => {
   const c = record();
