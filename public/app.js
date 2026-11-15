@@ -5,7 +5,7 @@ import { deadlineState, filterCases, dirtyDraftKinds, savedDraft, selectedQuesti
 import { WebOperation, stages, elapsedLabel } from './operations.js';
 import { newOnboarding, hasOnboardingInput, manualMessages } from './onboarding.js';
 import { renderActionPlan, actionsMarkdown } from './next-actions.js';
-import { newGuide, renderGuide, guideTranscript } from './official-guide.js';
+import { createOfficialLoader, officialPanel } from './official-context.js';
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const names = { unanswered: '미답변', partial: '부분 답변', waiting: '답변 대기', answered: '답변 받음', review: '확인 필요' };
@@ -26,8 +26,11 @@ const state = { cases: [], current: null, config: { configured: false, model: 'g
 const dirtyKinds = () => dirtyDraftKinds(state.current?.drafts || {}, state.draftEdits);
 state.replyLanguages = {};
 state.emailDemoFocus = {};
-state.guide = newGuide();
-state.guideOpen = false;
+let officialResult = null;
+const loadOfficial = createOfficialLoader({ api, current: () => state.current, display: result => {
+  officialResult = result;
+  const region = $('#official-context'); if (region) region.innerHTML = officialPanel(result, esc);
+} });
 const views = new CaseNavigation();
 const disclosureStates = new Map();
 let viewRevision = 0;
@@ -44,7 +47,7 @@ function guardEdits(invalidates = false, kind) {
   return new Promise(resolve => { guardResolve = resolve; });
 }
 function resolveGuard(allowed) { const resolve = guardResolve; guardResolve = null; $('#modal').close(); resolve?.(allowed); }
-window.addEventListener('beforeunload', event => { if (dirtyKinds().length || state.operation || hasOnboardingInput(state.onboarding) || state.guide.goal.trim()) { event.preventDefault(); event.returnValue = ''; } });
+window.addEventListener('beforeunload', event => { if (dirtyKinds().length || state.operation || hasOnboardingInput(state.onboarding)) { event.preventDefault(); event.returnValue = ''; } });
 window.addEventListener('pagehide', () => {
   if (state.operation?.snapshot.state === 'running') fetch(`/api/operations/${state.operation.id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: '{}', keepalive: true }).catch(() => {});
 });
@@ -119,7 +122,6 @@ function renderProgress() {
 }
 async function refreshList() { state.cases = await api('/api/cases'); }
 function setCase(c) {
-  state.guideOpen = false;
   c = views.remember(c);
   // Retain local edits during conflict recovery, even if another window invalidated a draft.
   const edits = state.current?.id === c.id ? { ...state.draftEdits } : {};
@@ -131,6 +133,7 @@ function setCase(c) {
   state.current = c; state.draftEdits = edits;
   localStorage.setItem('replytrack:last-case', c.id);
   window.history.replaceState(null, '', `?case=${encodeURIComponent(c.id)}`);
+  loadOfficial(c);
 }
 async function loadCase(id) {
   const record = await views.open(id, async caseId => { const c = await api(`/api/cases/${caseId}`); await refreshList(); return c; });
@@ -187,7 +190,7 @@ function render() {
       <details class="sidebar-extras" data-disclosure="sidebar-extras"><summary>예제 · 도움 기능</summary><div>
       ${button('email-demo', '이메일 예제 체험', 'text wide', 'arrow')}${button('demo', '환불 예제 체험', 'text wide', 'chat')}
       <a class="btn text wide" href="/presentation" target="_blank" rel="noopener">실제 AI 결과 30초 보기</a>
-      ${button('guide', 'SSG 공식 안내 찾기', 'text wide', 'spark')}</div></details>
+      </div></details>
       <div class="sidebar-bottom">
       <button class="connection" data-action="settings"><span class="connection-dot ${state.config.connection?.state === 'ready' ? 'connected' : ''}"></span><span>${connectionLabel()}<small>${state.config.configured ? esc(state.config.model) : '실제 상담 분석에 사용해요'}</small></span>${icon('settings')}</button>
       <div class="local-note">로컬 워크스페이스 · 이 기기에 저장</div></div>
@@ -196,7 +199,7 @@ function render() {
       <header class="topbar"><div>워크스페이스 <span>/</span> <strong>${c ? '상담 기록' : state.cases.length ? '내 문의함' : '시작하기'}</strong></div><span class="topbar-note">문의 내용과 진행 상황을 한곳에</span><button class="avatar" data-action="settings" aria-label="AI 연결 설정">R</button></header>
       ${state.busy ? `<div class="busy-bar" role="status">${esc(state.busy)}</div>` : ''}<section class="operation-panel" data-progress hidden aria-label="작업 진행 상황"></section>
       ${state.error ? `<div class="error-banner" role="alert">${esc(state.error)}<button data-action="dismiss-error" aria-label="오류 안내 닫기">${icon('close')}</button></div>` : ''}
-      ${state.guideOpen ? renderGuide(state.guide, { busy: !!state.busy, configured: state.config.configured, hasDraft: hasOnboardingInput(state.onboarding) }) : c ? detail(c) : landing()}
+      ${c ? detail(c) : landing()}
       <footer class="footer">ReplyTrack <span>대화는 이어지고, 기록은 남으니까.</span><span>AI 판단은 원문과 함께 확인해 주세요.</span></footer>
     </main>`;
   $('#app').querySelectorAll('button[data-action]').forEach(el => { if (blocked(el.dataset.action) && el.dataset.action !== 'cancel-operation') el.disabled = true; });
@@ -275,6 +278,7 @@ function detail(c) {
     ${pending ? `<div class="pending-banner"><span>새 메시지가 저장됐어요. 분석하면 질문과 약속에 반영돼요.</span>${button('analyze', c.questions.length ? '새 답변 분석' : '질문 분석하기', 'primary compact', 'spark')}</div>` : ''}
     ${inquiryOverviewPanel(c, { esc, button })}
     ${comparisonPanel(c)}${emailExplanationPanel(c, { esc, button, date })}
+    <div id="official-context">${officialPanel(officialResult, esc)}</div>
     <div class="mobile-switch" role="group" aria-label="보기 선택"><button data-action="mobile" data-value="source" aria-pressed="${state.mobile === 'source'}" class="${state.mobile === 'source' ? 'active' : ''}">상담 원문</button><button data-action="mobile" data-value="analysis" aria-pressed="${state.mobile === 'analysis'}" class="${state.mobile === 'analysis' ? 'active' : ''}">질문 확인표</button></div>
     <div class="workspace mobile-${state.mobile}"><section class="source-panel panel"><div class="panel-header"><div>${icon('chat')}<h2>상담 원문</h2><span class="count">${c.messages.length}</span></div><span class="subtle">${c.mode === 'demo' ? '가상 상담' : '검토한 텍스트'}</span></div><div class="source-messages">${c.messages.map(m => `<article class="message ${m.role}" id="message-${m.id}"><div class="message-meta"><span class="speaker-avatar">${m.role === 'customer' ? '나' : 'CS'}</span><strong>${m.role === 'customer' ? '나' : esc(c.company)}</strong><time>${date(m.sentAt)}</time></div><div class="message-text">${esc(m.text)}</div></article>`).join('')}</div><div class="source-bottom"><span>${icon('link')}근거를 누르면 해당 원문으로 이동해요</span>${c.mode === 'live' ? button('append', '새 답변 / 질문 추가', 'secondary wide', 'plus') : ''}</div></section>
     <section class="analysis-panel"><div class="tabs" role="tablist" aria-label="분석 보기">${[['questions','질문 확인표', c.questions.length],['drafts','답장 작성', null],['history','변경 이력', null]].map(([id,label,count]) => `<button id="tab-${id}" role="tab" aria-controls="panel-${id}" tabindex="${state.tab === id ? 0 : -1}" ${blocked('tab') ? 'disabled' : ''} aria-selected="${state.tab === id}" class="${state.tab === id ? 'active' : ''}" data-action="tab" data-value="${id}">${label}${count !== null ? `<span>${count}</span>` : ''}</button>`).join('')}</div>${c.warnings.map(w => `<div class="warning-note">${esc(w)}</div>`).join('')}<div id="panel-${state.tab}" role="tabpanel" aria-labelledby="tab-${state.tab}" tabindex="0">${state.tab === 'questions' ? questionPanel(c) : state.tab === 'drafts' ? draftPanel(c) : historyPanel(c)}</div></section></div>`;
@@ -461,16 +465,6 @@ document.addEventListener('click', async event => {
   const navigating = ['home','new','demo','email-demo'].includes(action) || (action === 'open' && target.dataset.id !== state.current?.id);
   const invalidating = ['demo-next','email-demo-reply','analyze','append','edit-question','apply-ai','confirm-promise','generate-draft'].includes(action);
   if ((navigating || invalidating) && !await guardEdits(invalidating, action === 'generate-draft' ? target.dataset.kind : undefined)) return;
-  if (['home','open','demo'].includes(action)) state.guideOpen = false;
-  if (action === 'guide') { state.guideOpen = true; render(); $('#guide-goal').focus(); }
-  if (action === 'guide-back') { state.guideOpen = false; render(); }
-  if (action === 'guide-handoff' && state.guide.result && !hasOnboardingInput(state.onboarding)) {
-    if (!await guardEdits()) return;
-    const input = state.guide.result.input;
-    state.onboarding = { ...newOnboarding(), title: input.goal.slice(0, 100), company: 'SSG', stage: 'review', messages: [{ role: 'customer', text: guideTranscript(input), sentAt: null }] };
-    render();
-    showReview();
-  }
   if (action === 'home') { views.leave(); state.current = null; state.draftEdits = {}; state.error = ''; window.history.replaceState(null,'','/'); await viewWork('상담 목록을 불러오고 있어요', refreshList); }
   if (action === 'refresh') await viewWork('상담 목록을 새로 불러오고 있어요', refreshList);
   if (action === 'inquiry-section') {
@@ -491,7 +485,7 @@ document.addEventListener('click', async event => {
   if (action === 'dismiss-error') { state.error = ''; render(); }
   if (action === 'open') await viewWork('상담 기록을 불러오고 있어요', () => loadCase(target.dataset.id));
   if (action === 'demo') await work('예제 상담을 준비하고 있어요', async () => { setCase(await api('/api/demo','POST',{scenario:'refund'})); state.tab = 'questions'; state.filter = 'all'; await refreshList(); });
-  if (action === 'email-demo') await work('이메일 시연을 준비하고 있어요', async () => { setCase(await api('/api/demo','POST',{scenario:'email'})); state.emailDemoFocus[state.current.id] = 0; state.guideOpen = false; await refreshList(); });
+  if (action === 'email-demo') await work('이메일 시연을 준비하고 있어요', async () => { setCase(await api('/api/demo','POST',{scenario:'email'})); state.emailDemoFocus[state.current.id] = 0; await refreshList(); });
   if (action === 'email-demo-step' && state.current?.demoScenario === 'email') { const step = Number(target.dataset.step); if (Number.isInteger(step) && step >= 0 && step <= 3 && (step !== 3 || state.current.demoStep)) { state.emailDemoFocus[state.current.id] = step; render(); $('#email-demo-scene')?.focus(); } }
   if (action === 'email-demo-reply' && state.current?.demoScenario === 'email') await work('준비된 새 이메일을 반영하고 있어요', async () => { if (!state.current.demoStep) await updateCase('demo-next','POST',{}); state.emailDemoFocus[state.current.id] = 3; });
   if (action === 'email-demo-full' && state.current?.demoScenario === 'email') { state.emailDemoFocus[state.current.id] = null; state.tab = 'questions'; render(); }
@@ -536,7 +530,6 @@ document.addEventListener('click', async event => {
   if (action === 'remove-row') { target.closest('.review-row').remove(); captureOnboarding(); updateReviewStatus(); }
 });
 document.addEventListener('change', event => {
-  if (event.target.dataset.guideAnswer) { if (event.target.value) state.guide.answers[event.target.dataset.guideAnswer] = event.target.value; else delete state.guide.answers[event.target.dataset.guideAnswer]; render(); }
   if (event.target.closest('#import-form, #privacy-form, #review-form')) captureOnboarding();
   if (event.target.matches('#review-form [name=role]')) {
     updateReviewStatus();
@@ -566,10 +559,6 @@ document.addEventListener('keydown', event => {
   $(`#tab-${state.tab}`).focus();
 });
 document.addEventListener('input', event => {
-  if (event.target.id === 'guide-goal') {
-    state.guide.goal = event.target.value; state.guide.answers = {}; state.guide.question = null; state.guide.message = '';
-    render();
-  }
   if (event.target.closest('#import-form, #privacy-form, #review-form')) captureOnboarding();
   if (event.target.id === 'case-search') { state.query = event.target.value; $('#workspace-results').innerHTML = caseResults(); }
   const kind = event.target.dataset.draft;
@@ -583,16 +572,6 @@ document.addEventListener('input', event => {
 document.addEventListener('submit', async event => {
   event.preventDefault(); const form = event.target;
   if (state.busy) return;
-  if (form.id === 'guide-form') {
-    const input = { store: 'ssg', goal: state.guide.goal, answers: { ...state.guide.answers } };
-    await work('공식 안내를 찾고 내 상황과 대조하고 있어요', async () => {
-      const result = await runOperation('guide', input);
-      state.guide.question = result.status === 'question' ? result.question : null;
-      state.guide.message = result.status === 'unsupported' ? result.message : '';
-      if (result.status === 'ready') state.guide.result = { ...result, request: input };
-    });
-    if (!state.error) (state.guide.question ? $(`#guide-form select[data-guide-answer="${state.guide.question.key}"]`) : $('#guide-result-heading'))?.focus();
-  }
   if (form.id === 'case-settings-form') {
     const data = {title:form.elements.title.value,company:form.elements.company.value};
     await work('상담 정보를 저장하고 있어요',async () => { await updateCase('','PATCH',data); $('#modal').close(); toast('상담 정보를 수정했어요.'); });

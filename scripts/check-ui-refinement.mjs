@@ -33,7 +33,7 @@ try {
   assert.equal(await extras.evaluate(el => el.open), false);
   await extras.locator('summary').focus(); await page.keyboard.press('Enter');
   assert(await page.locator('[data-action=email-demo]').isVisible());
-  assert(await page.locator('[data-action=guide]').isVisible());
+  assert.equal(await page.locator('[data-action=guide]').count(), 0);
   assert(await page.locator('a[href="/presentation"]').isVisible());
   await page.locator('.sidebar [data-action=demo]').click(); await idle();
   assert(await extras.evaluate(el => el.open), 'Menu state survives rerender');

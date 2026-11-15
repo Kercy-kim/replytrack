@@ -5,7 +5,6 @@ import { OfficialFaq, parseFaq, guideInput, validateGuide, reviewedSources, cont
 import { ReplyTrack } from '../src/service.mjs';
 import { CaseStore } from '../src/store.mjs';
 import { createApp } from '../server.mjs';
-import { fields, guideTranscript, renderGuide, newGuide } from '../public/official-guide.js';
 import { guideChecks } from '../src/feature-review.mjs';
 const reviewResult=(valid,feedback='')=>({checks:Object.fromEntries(Object.keys(guideChecks).map(key=>[key,valid])),valid,feedback});
 
@@ -129,8 +128,6 @@ test('exception page absence triggers complete reviewed fallback, without mixing
 });
 test('input rejects unsupported stores, arbitrary URLs, invalid answers and oversized text', () => {
   for (const raw of [{ ...input, store: 'http://localhost' }, { ...input, goal: 'x'.repeat(2001) }, { ...input, answers: { received: 'tomorrow' } }, { ...input, answers: { url: 'http://localhost' } }]) assert.throws(() => guideInput(raw));
-  assert.deepEqual(Object.keys(fields), Object.keys(contextFields));
-  for (const key of Object.keys(fields)) assert.deepEqual(fields[key].options, contextFields[key].options);
 });
 test('clarification asks one missing situation at a time; unknown is a real answer', async t => {
   const f = fixture(); t.after(() => f.store.close());
@@ -295,22 +292,13 @@ test('cancel after generation prevents review and result publication', async t =
   await assert.rejects(f.service.guide(input, { signal: controller.signal }), e => e.code === 'OPERATION_CANCELLED');
   assert(!f.calls.some(p => p.name === 'replytrack_guide_review'));
 });
-test('UI escapes user/provider data, marks old results, and transfers only user context', () => {
-  const g = newGuide(); g.goal = '<img src=x onerror=alert(1)>'; g.result = { input, request: input, ...sampleGuide(reviewedSources), sources: reviewedSources, mode: 'reviewed', reason: '검색 실패' };
-  const rendered = renderGuide(g, { busy: false, configured: true, hasDraft: false });
-  assert(!rendered.includes('<img')); assert.match(rendered, /이전 입력/); assert.match(rendered, /data-action="guide-handoff" disabled/);
-  const transcript = guideTranscript(input); assert.match(transcript, /사이즈/); assert(!transcript.includes('일반 상품의 예외')); assert(!transcript.includes('FAQ'));
-});
-test('HTTP guide validates before AI calls and exposes completed asynchronous results', async t => {
+test('retired SSG wizard is no longer exposed through HTTP', async t => {
   const f = fixture(); const app = createApp({ store: f.store, ai: f.ai, faq: f.faq });
   await new Promise(r => app.server.listen(0, '127.0.0.1', r));
   t.after(async () => { app.operations.close(); await new Promise(r => app.server.close(r)); f.store.close(); });
   const base = `http://127.0.0.1:${app.server.address().port}`;
   const post = body => fetch(`${base}/api/operations`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   assert.equal((await post({ id: randomUUID(), kind: 'guide', input: { ...input, store: 'other' } })).status, 400); assert.equal(f.calls.length, 0);
-  const id = randomUUID(); assert.equal((await post({ id, kind: 'guide', input })).status, 202);
-  let job;
-  for (let i = 0; i < 50; i++) { job = await (await fetch(`${base}/api/operations/${id}`)).json(); if (job.state !== 'running') break; await new Promise(r => setTimeout(r, 10)); }
-  assert.equal(job.state, 'completed'); assert.equal(job.result.status, 'ready');
-  assert.equal((await fetch(`${base}/official-guide.js`)).status, 200);
+  assert.equal((await post({ id: randomUUID(), kind: 'guide', input })).status, 400);
+  assert.equal((await fetch(`${base}/official-guide.js`)).status, 404);
 });

@@ -12,6 +12,7 @@ import { maskPrivate, privacyEnvelope } from './privacy.mjs';
 import { readImage } from './ocr.mjs';
 import { OfficialFaq, officialGuide } from './official-guide.mjs';
 import { createEmailDemo, emailDemoExplanation } from './email-demo.mjs';
+import { emailReplyPlan, splitEmailEvidence } from './email-reply.mjs';
 import { EMAIL_TRANSCRIPT_PROMPT, EMAIL_ANALYSIS_PROMPT, EMAIL_ACTIONS_PROMPT, EMAIL_EXPLANATION_PROMPT, EMAIL_EXPLANATION_REVIEW_PROMPT, emailReviewSchema, emailExplanationSchema, validateEmailExplanation, validateEmailTranscript, draftLanguagePrompt } from './email.mjs';
 
 // Derived reasoning and suggested follow-ups are not independent source facts.
@@ -213,15 +214,20 @@ export class ReplyTrack {
       if (c.mode === 'demo') result = { data: demoAnalysis(c), model: '준비된 예제 · AI 호출 없음', usage: null };
       else {
         const data = analysisContext(c);
+        const replyPlan = emailReplyPlan(c);
         let revision = {};
         for (let attempt = 0; attempt < 2; attempt++) {
           if (attempt) this.getVersion(id, version);
           // Keep complex histories, semantic reviews and evidence repair at medium.
-          result = await this.ask({ name: 'replytrack_analysis', schema: analysisSchemaFor(c.messages, c.channel), instructions: ANALYSIS_PROMPT + (c.channel === 'email' ? `\n${EMAIL_ANALYSIS_PROMPT}` : ''), reasoningEffort: attempt ? 'medium' : analysisReasoningEffort(c), data: { ...data, ...revision } }, context, attempt ? 'analysis_repair' : 'analysis');
+          const plan = attempt === 0 ? replyPlan : null;
+          result = await this.ask({ name: 'replytrack_analysis', schema: plan?.schema ?? analysisSchemaFor(c.messages, c.channel), instructions: ANALYSIS_PROMPT + (c.channel === 'email' ? `\n${EMAIL_ANALYSIS_PROMPT}` : '') + (plan?.instructions || ''), reasoningEffort: attempt ? 'medium' : plan?.effort ?? analysisReasoningEffort(c), data: { ...data, ...revision } }, context, attempt ? 'analysis_repair' : 'analysis');
           results.push(result); attempts++;
           checkpoint(context, 'validation');
-          const validationErrors = analysisValidationErrors(result.data, c.messages);
-          if (c.channel === 'email') result.data.questions.forEach((q, i) => {
+          let restoreError;
+          if (plan) { try { result = { ...result, data: plan.restore(result.data) }; } catch (error) { restoreError = error.message; } }
+          if (c.channel === 'email' && !restoreError) result = { ...result, data: splitEmailEvidence(result.data, c.messages) };
+          const validationErrors = restoreError ? [restoreError] : analysisValidationErrors(result.data, c.messages);
+          if (!restoreError && c.channel === 'email') result.data.questions.forEach((q, i) => {
             if (typeof q.title !== 'string' || !/[가-힣]/.test(q.title)) validationErrors.push(`questions[${i}].title: 원문 질문의 의미를 보존한 한국어 제목으로 작성하세요. source/evidence 인용은 원문 언어 그대로 유지하세요`);
           });
           if (!validationErrors.length) break;
