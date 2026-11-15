@@ -11,8 +11,8 @@ import { maskPrivate, privacyEnvelope } from './privacy.mjs';
 import { readImage } from './ocr.mjs';
 import { OfficialFaq, officialGuide } from './official-guide.mjs';
 import { createEmailDemo, emailDemoExplanation } from './email-demo.mjs';
-import { replyAnalysisPlan, splitEmailEvidence } from './email-reply.mjs';
-import { FOCUSED_ANALYSIS_PROMPT, semanticReviewPlan, unsupportedDeadlineClear } from './analysis-focus.mjs';
+import { replyAnalysisPlan, splitEmailEvidence, receiptFulfillsDifferentAction } from './email-reply.mjs';
+import { FOCUSED_ANALYSIS_PROMPT, PROMISE_REVIEW_PROMPT, semanticReviewPlan, unsupportedDeadlineClear } from './analysis-focus.mjs';
 import { EMAIL_TRANSCRIPT_PROMPT, EMAIL_ANALYSIS_PROMPT, EMAIL_ACTIONS_PROMPT, EMAIL_EXPLANATION_PROMPT, EMAIL_EXPLANATION_REVIEW_PROMPT, emailReviewSchema, emailExplanationSchema, validateEmailExplanation, validateEmailTranscript, draftLanguagePrompt } from './email.mjs';
 
 // Derived reasoning and suggested follow-ups are not independent source facts.
@@ -250,8 +250,30 @@ export class ReplyTrack {
           const outputScope = !schema.properties.questions || schema.properties.questions.items.properties.followUp ? '' : '\n이번 출력에는 followUp이 없습니다. 재문의 문장은 별도 생성·검토하므로 생성하지 말고 상태·이유·근거·약속 판단에 집중하세요.';
           const effort = attempt ? 'medium' : plan?.effort ?? (fastInitialAnalysis(c) ? 'low' : analysisReasoningEffort(c));
           const prompt = plan?.prompt ?? (plan?.focused || (attempt && semanticRepair) ? FOCUSED_ANALYSIS_PROMPT : ANALYSIS_PROMPT);
-          result = await this.ask({ name: 'replytrack_analysis', schema, instructions: prompt + (c.channel === 'email' && !plan?.prompt ? `\n${EMAIL_ANALYSIS_PROMPT}` : '') + (plan?.instructions || '') + outputScope, reasoningEffort: effort, data: { ...data, ...revision, ...plan?.input } }, context, attempt ? 'analysis_repair' : 'analysis');
-          results.push(result); attempts++;
+          const request = { name: 'replytrack_analysis', schema, instructions: prompt + (c.channel === 'email' && !plan?.prompt ? `\n${EMAIL_ANALYSIS_PROMPT}` : '') + (plan?.instructions || '') + outputScope, reasoningEffort: effort, data: { ...data, ...revision, ...plan?.input } };
+          if (!attempt && plan?.parallel) {
+            const scoped = properties => ({ type: 'object', properties, required: Object.keys(properties), additionalProperties: false });
+            const controller = new AbortController();
+            const parallelContext = { ...context, signal: context.signal ? AbortSignal.any([context.signal, controller.signal]) : controller.signal };
+            const requests = [
+              { ...request, schema: scoped({ questions: schema.properties.questions }), instructions: request.instructions + '\n이번 작업은 기존 질문의 상태·이유·근거만 반환합니다. 약속 추출은 별도 병렬 분석에서 수행하지만, 질문의 waiting 판단에는 전체 원문의 약속을 고려하세요.' },
+              { ...request, schema: scoped({ existingPromiseUpdates: schema.properties.existingPromiseUpdates, newPromises: schema.properties.newPromises, summary: schema.properties.summary }),
+                instructions: PROMISE_REVIEW_PROMPT + plan.instructions + '\nexistingQuestions는 약속의 questionIds 연결용 원문입니다. existingPromiseUpdates에는 기존 동일 행동의 갱신, newPromises에는 기존 행동과 다른 업무 수행 확약·이행 통보를 반환하세요. 단순 상태 설명이나 미완료·미수신의 부정은 수행한 업무가 아닙니다. 예를 들어 has not been restored yet는 복구 완료도 미복구 통보 업무도 아니므로 약속 목록에 넣지 않습니다. 질문 상태는 출력하지 않습니다. 후속 결과 통지 약속은 검토 행동과 별개이며, 질문 상태와 관계없이 보존하세요.' },
+            ];
+            let failure;
+            const parts = await Promise.allSettled(requests.map(async params => {
+              try { return await this.ask(params, parallelContext, 'analysis'); }
+              catch (error) { if (!failure) { failure = error; controller.abort(error); } throw error; }
+            }));
+            if (failure) throw failure;
+            checkpoint(context);
+            const [questions, promises] = parts.map(p => p.value);
+            result = { ...questions, data: { ...promises.data, questions: questions.data.questions } };
+            results.push(questions, promises); attempts += 2;
+          } else {
+            result = await this.ask(request, context, attempt ? 'analysis_repair' : 'analysis');
+            results.push(result); attempts++;
+          }
           checkpoint(context, 'validation');
           let restoreError;
           if (plan) { try { result = { ...result, data: plan.restore(result.data) }; } catch (error) { restoreError = error.message; } }
@@ -261,6 +283,7 @@ export class ReplyTrack {
             if (typeof q.title !== 'string' || !/[가-힣]/.test(q.title)) validationErrors.push(`questions[${i}].title: 원문 질문의 의미를 보존한 한국어 제목으로 작성하세요. source/evidence 인용은 원문 언어 그대로 유지하세요`);
           });
           if (!attempt) semanticRepair = !validationErrors.length;
+          if (!validationErrors.length && replyPlan?.emailActionScope && receiptFulfillsDifferentAction(result.data, c)) validationErrors.push('기존 검증·심사 약속의 행동이 자료 수신만으로 이행됐다고 바뀌었습니다. 자료 수신과 검증·심사는 별개입니다. 기존 약속 ID는 같은 행동에만 쓰고, 수신은 별도의 reported로 보존하세요. 원문에서 해당 검증·심사 자체의 수행이 명시된 경우만 기존 약속을 reported로 바꾸세요');
           if (!validationErrors.length && unsupportedDeadlineClear(result.data)) validationErrors.push('기한 삭제 표시에 명시적인 철회·미정 정정 근거가 없습니다. 업무 완료·수신·접수 통보나 기한 생략만으로 deadlineCleared=true를 쓰지 마세요. 실제 철회인지 전체 원문을 재검토하고, 단순 완료 통보라면 reported와 deadlineCleared=false로 기존 기한 이력을 보존하세요');
           if (!validationErrors.length && effort === 'low' && futureAnswerNeedsReview(result.data, c)) validationErrors.push('질문과 향후 확인·안내 약속의 시간 대상을 대조하세요. 질문한 행동의 처리 날짜와 답을 알려줄 날짜가 같은지 원문을 다시 대조하세요. 안내 시점 자체를 물었고 그 시점을 받았다면 answered가 맞을 수도 있습니다. 자동으로 waiting으로 바꾸거나 유지하지 마세요');
           if (!attempt && !validationErrors.length && partialScopeNeedsReview(result.data, c)) validationErrors.push('부분 답변의 누락 사유가 원문에 실제 존재하는지 다시 확인하세요. 필요한 자료가 무엇인지 물었고 업체가 제출할 항목을 명확히 제시했다면, 그 밖의 자료가 더 있을 것이라고 추측해 partial로 낮추지 마세요. 사용자가 실제로 여러 항목을 물었거나 업체가 일부 목록이라고 명시했다면 빠진 항목을 유지해야 합니다. 자동으로 answered로 바꾸지 말고 원문에서 요구 범위를 다시 판단하세요');

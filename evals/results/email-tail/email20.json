@@ -1,0 +1,3940 @@
+{
+  "at": "2026-11-15T17:58:26.134Z",
+  "scope": "20 synthetic saved-question/new-agent-reply cases",
+  "hashes": {
+    "src/service.mjs": "beb75422355256e55dc2355dcebf5559ee1d949ac7cec14a553beff4c3ffb6a2",
+    "src/email-reply.mjs": "96c75d2e8e85e333a01f788aa71045a59eb1600cea7cc4249619293e5d7cdbc2",
+    "src/email.mjs": "4e1d0a1882fa2f4ec05c34957062461b33592dbda02ef227aba663a8b9a85ac4",
+    "src/analysis-focus.mjs": "64a46db823f73c5e4272d69dd6ce12936dbbf416ccde63ec784bdc2afd2aeacb",
+    "src/prompts.mjs": "dcf829288dc8e94bd9d1561b0b5a397e243009f678575c06293544ed73fdc33b",
+    "evals/email-reply-cases.mjs": "f4d0d16e4b5b3ac4ed2dfb1daac393a72a23a9c5555aaf5ba7182b6fee4982e3"
+  },
+  "cases": [
+    {
+      "id": "amount",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 4692,
+          "usage": {
+            "input_tokens": 6425,
+            "output_tokens": 369,
+            "total_tokens": 6794,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 4693,
+      "result": {
+        "id": "958f336e-1960-4c87-9c2f-ef58a14db0c9",
+        "title": "amount",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:58:26.137Z",
+        "updatedAt": "2026-11-15T17:58:30.831Z",
+        "messages": [
+          {
+            "id": "de569a42-c14a-4559-9f40-8ab557229567",
+            "role": "customer",
+            "text": "What is my refund amount?",
+            "sentAt": null
+          },
+          {
+            "id": "54301c59-229f-445e-859c-0c2145903894",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "e6edc50b-36ad-4e4d-9dfd-09ba730de86f",
+            "role": "agent",
+            "text": "Your refund amount is USD 24.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "3e8a2e40-fa2a-43ca-8fca-95a846a5bed6",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "de569a42-c14a-4559-9f40-8ab557229567",
+              "quote": "What is my refund amount?"
+            },
+            "status": "answered",
+            "reason": "환불 금액이 USD 24라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "e6edc50b-36ad-4e4d-9dfd-09ba730de86f",
+                "quote": "Your refund amount is USD 24."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "환불 금액이 USD 24라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "d899e1ab-7023-4697-aad2-5aadf45d6ca9",
+            "at": "2026-11-15T17:58:30.831Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T17:58:30.831Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "e6edc50b-36ad-4e4d-9dfd-09ba730de86f"
+              ],
+              "questions": [
+                {
+                  "id": "3e8a2e40-fa2a-43ca-8fca-95a846a5bed6",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "e6edc50b-36ad-4e4d-9dfd-09ba730de86f"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "d9a05657-d261-4d2e-9f7b-868e1a861d43",
+            "at": "2026-11-15T17:58:26.137Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "dc064b6e-a88a-412a-aeb9-90843539d892",
+            "at": "2026-11-15T17:58:26.137Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "에이전트가 고객의 환불 금액을 USD 24라고 안내했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 6425,
+            "output_tokens": 369,
+            "total_tokens": 6794,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:58:30.831Z",
+          "comparison": {
+            "at": "2026-11-15T17:58:30.831Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "e6edc50b-36ad-4e4d-9dfd-09ba730de86f"
+            ],
+            "questions": [
+              {
+                "id": "3e8a2e40-fa2a-43ca-8fca-95a846a5bed6",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "e6edc50b-36ad-4e4d-9dfd-09ba730de86f"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "method",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 4440,
+          "usage": {
+            "input_tokens": 6430,
+            "output_tokens": 302,
+            "total_tokens": 6732,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 4441,
+      "result": {
+        "id": "007c3d1c-15e2-43fa-8ff1-21405944764c",
+        "title": "method",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:58:26.141Z",
+        "updatedAt": "2026-11-15T17:58:30.582Z",
+        "messages": [
+          {
+            "id": "c804638d-53da-4a07-97be-4e1ad4e5e9af",
+            "role": "customer",
+            "text": "Which payment method will receive my refund?",
+            "sentAt": null
+          },
+          {
+            "id": "8542b061-f6a5-440c-b655-0f66f2eec9f6",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "c227f9e3-8e87-4d65-8abb-bacfc752ea9a",
+            "role": "agent",
+            "text": "The refund will go to the original card.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "7fa7cc88-a43c-4238-9b7d-f26a704dea27",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "c804638d-53da-4a07-97be-4e1ad4e5e9af",
+              "quote": "Which payment method will receive my refund?"
+            },
+            "status": "answered",
+            "reason": "환불은 원래 카드로 돌아간다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "c227f9e3-8e87-4d65-8abb-bacfc752ea9a",
+                "quote": "The refund will go to the original card."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "환불은 원래 카드로 돌아간다고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "9e44c393-d4eb-4137-916a-2fb62516ebb3",
+            "at": "2026-11-15T17:58:30.582Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T17:58:30.582Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "c227f9e3-8e87-4d65-8abb-bacfc752ea9a"
+              ],
+              "questions": [
+                {
+                  "id": "7fa7cc88-a43c-4238-9b7d-f26a704dea27",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "c227f9e3-8e87-4d65-8abb-bacfc752ea9a"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "462cce6c-9df3-4b75-89de-e7d723da7281",
+            "at": "2026-11-15T17:58:26.141Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "48ca12f2-3433-475d-a86e-afb813d6db45",
+            "at": "2026-11-15T17:58:26.141Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "환불은 원래 카드로 지급된다고 안내받았습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 6430,
+            "output_tokens": 302,
+            "total_tokens": 6732,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:58:30.582Z",
+          "comparison": {
+            "at": "2026-11-15T17:58:30.582Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "c227f9e3-8e87-4d65-8abb-bacfc752ea9a"
+            ],
+            "questions": [
+              {
+                "id": "7fa7cc88-a43c-4238-9b7d-f26a704dea27",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "c227f9e3-8e87-4d65-8abb-bacfc752ea9a"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "negative-policy",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 4219,
+          "usage": {
+            "input_tokens": 6427,
+            "output_tokens": 290,
+            "total_tokens": 6717,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 4221,
+      "result": {
+        "id": "443b4f34-6507-4943-bb05-f6d65120ae3e",
+        "title": "negative-policy",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:58:26.141Z",
+        "updatedAt": "2026-11-15T17:58:30.362Z",
+        "messages": [
+          {
+            "id": "83796df9-bb18-4cb1-9f38-831ca6563055",
+            "role": "customer",
+            "text": "Can I refund a downloaded item?",
+            "sentAt": null
+          },
+          {
+            "id": "fd1df6b9-161e-4e01-ba5d-fdb195e2bb10",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "e0872829-7444-465d-b361-c048814b7a39",
+            "role": "agent",
+            "text": "Downloaded items are not eligible for refunds.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "62056846-7254-4089-be5d-a44c689f5680",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "83796df9-bb18-4cb1-9f38-831ca6563055",
+              "quote": "Can I refund a downloaded item?"
+            },
+            "status": "answered",
+            "reason": "다운로드한 항목은 환불 대상이 아니라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "e0872829-7444-465d-b361-c048814b7a39",
+                "quote": "Downloaded items are not eligible for refunds."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "다운로드한 항목은 환불 대상이 아니라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "20561077-0cd3-48af-b2a8-ee6e417a0a22",
+            "at": "2026-11-15T17:58:30.362Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T17:58:30.361Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "e0872829-7444-465d-b361-c048814b7a39"
+              ],
+              "questions": [
+                {
+                  "id": "62056846-7254-4089-be5d-a44c689f5680",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "e0872829-7444-465d-b361-c048814b7a39"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "61f7d085-e1a7-49b4-bd93-7cbabf2a9578",
+            "at": "2026-11-15T17:58:26.141Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "84d139fd-d45d-4241-a5b6-6ee1833c5ae7",
+            "at": "2026-11-15T17:58:26.141Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "다운로드한 항목은 환불 대상이 아니라고 안내받았습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 6427,
+            "output_tokens": 290,
+            "total_tokens": 6717,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:58:30.361Z",
+          "comparison": {
+            "at": "2026-11-15T17:58:30.361Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "e0872829-7444-465d-b361-c048814b7a39"
+            ],
+            "questions": [
+              {
+                "id": "62056846-7254-4089-be5d-a44c689f5680",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "e0872829-7444-465d-b361-c048814b7a39"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "unknown-date",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 6579,
+          "usage": {
+            "input_tokens": 6426,
+            "output_tokens": 529,
+            "total_tokens": 6955,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 384
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_boundary_review",
+          "effort": "medium",
+          "ms": 8699,
+          "usage": {
+            "input_tokens": 2276,
+            "output_tokens": 641,
+            "total_tokens": 2917,
+            "input_tokens_details": {
+              "cached_tokens": 2176
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 576
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 15280,
+      "result": {
+        "id": "bbe100ad-9715-4a92-afb7-1696ca56aaff",
+        "title": "unknown-date",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:58:30.363Z",
+        "updatedAt": "2026-11-15T17:58:45.644Z",
+        "messages": [
+          {
+            "id": "8d7289d2-2f22-4646-9ab2-bf4e580a6d60",
+            "role": "customer",
+            "text": "What is the exact refund date?",
+            "sentAt": null
+          },
+          {
+            "id": "b1e3b454-5a36-47f5-b101-ebf99a934282",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "6fddb508-eaeb-4998-bc16-c4f899dfb8cc",
+            "role": "agent",
+            "text": "We cannot determine the refund date.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "1a5bf69c-b621-4d8e-a93f-7f35e6ce5337",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "8d7289d2-2f22-4646-9ab2-bf4e580a6d60",
+              "quote": "What is the exact refund date?"
+            },
+            "status": "review",
+            "reason": "업체가 환불 날짜를 알 수 없다고 안내했습니다.",
+            "evidence": [
+              {
+                "messageId": "6fddb508-eaeb-4998-bc16-c4f899dfb8cc",
+                "quote": "We cannot determine the refund date."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "review",
+            "aiReason": "업체가 환불 날짜를 알 수 없다고 안내했습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "21a1b671-8e3c-4fc9-a421-8fc51fd3d2cb",
+            "at": "2026-11-15T17:58:45.644Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 확인 필요",
+            "comparison": {
+              "at": "2026-11-15T17:58:45.644Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "6fddb508-eaeb-4998-bc16-c4f899dfb8cc"
+              ],
+              "questions": [
+                {
+                  "id": "1a5bf69c-b621-4d8e-a93f-7f35e6ce5337",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "review",
+                    "aiStatus": "review",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "6fddb508-eaeb-4998-bc16-c4f899dfb8cc"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "0b764578-4b66-42bd-9225-825de19258ad",
+            "at": "2026-11-15T17:58:30.364Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "139d2aef-95ca-4050-8b25-7b0ba1dff961",
+            "at": "2026-11-15T17:58:30.363Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객의 환불 예정일 문의에 대해 업체가 환불 날짜를 확인할 수 없다고 안내했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 8702,
+            "output_tokens": 1170,
+            "total_tokens": 9872,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 8448
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 960
+            }
+          },
+          "attempts": 1,
+          "boundaryReview": {
+            "model": "gpt-5-mini-2025-08-07",
+            "questions": 1
+          },
+          "at": "2026-11-15T17:58:45.644Z",
+          "comparison": {
+            "at": "2026-11-15T17:58:45.644Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "6fddb508-eaeb-4998-bc16-c4f899dfb8cc"
+            ],
+            "questions": [
+              {
+                "id": "1a5bf69c-b621-4d8e-a93f-7f35e6ce5337",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "review",
+                  "aiStatus": "review",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "6fddb508-eaeb-4998-bc16-c4f899dfb8cc"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "unrelated",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 4920,
+          "usage": {
+            "input_tokens": 6428,
+            "output_tokens": 381,
+            "total_tokens": 6809,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 4922,
+      "result": {
+        "id": "20a22053-8fe2-4250-a15e-4f33b4de9245",
+        "title": "unrelated",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:58:30.583Z",
+        "updatedAt": "2026-11-15T17:58:35.505Z",
+        "messages": [
+          {
+            "id": "9426d00b-c391-43d5-88fa-c147af6563e4",
+            "role": "customer",
+            "text": "How much is the replacement fee?",
+            "sentAt": null
+          },
+          {
+            "id": "4c25800c-fb47-45f9-9d99-922139d3430f",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "87167a8c-2d9b-449a-aecb-b195ad360f67",
+            "role": "agent",
+            "text": "You can update your delivery address in settings.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "94fba543-d7fc-491c-89ee-81ed78f9adf8",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "9426d00b-c391-43d5-88fa-c147af6563e4",
+              "quote": "How much is the replacement fee?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "evidence": [],
+            "followUp": "",
+            "aiStatus": "unanswered",
+            "aiReason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "52686e83-f6c2-4f6a-96c8-d07136c1f36c",
+            "at": "2026-11-15T17:58:35.505Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "질문 변화 0건 · 약속 변화 0건",
+            "comparison": {
+              "at": "2026-11-15T17:58:35.505Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "87167a8c-2d9b-449a-aecb-b195ad360f67"
+              ],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "2d2ea6c2-e17a-49a1-b6c5-7ffb3f38d205",
+            "at": "2026-11-15T17:58:30.583Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "243b3e37-9707-4b72-9081-92c3568f190f",
+            "at": "2026-11-15T17:58:30.583Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "교체 수수료 금액 문의에 대해 답변이 제공되지 않았습니다. 상담원 안내에는 비용 관련 정보가 포함되어 있지 않습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 6428,
+            "output_tokens": 381,
+            "total_tokens": 6809,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:58:35.505Z",
+          "comparison": {
+            "at": "2026-11-15T17:58:35.505Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "87167a8c-2d9b-449a-aecb-b195ad360f67"
+            ],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "method-not-state",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 7222,
+          "usage": {
+            "input_tokens": 6430,
+            "output_tokens": 633,
+            "total_tokens": 7063,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 448
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 7224,
+      "result": {
+        "id": "1958224e-f177-4d2a-94db-9e63b54687a3",
+        "title": "method-not-state",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:58:30.832Z",
+        "updatedAt": "2026-11-15T17:58:38.056Z",
+        "messages": [
+          {
+            "id": "b95909df-19bd-4e73-9ce4-644e8fb0102e",
+            "role": "customer",
+            "text": "Is automatic renewal disabled on my account?",
+            "sentAt": null
+          },
+          {
+            "id": "48e9633c-c7dc-4f8a-bdf8-0feae15baed9",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "f272df1c-daa8-4f39-aa45-9afdcdc8aa83",
+            "role": "agent",
+            "text": "You can disable automatic renewal in Billing settings.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "c09e625c-9d84-4f93-96cc-d8119fbeb0a3",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "b95909df-19bd-4e73-9ce4-644e8fb0102e",
+              "quote": "Is automatic renewal disabled on my account?"
+            },
+            "status": "partial",
+            "reason": "'Billing settings에서 자동 갱신을 끌 수 있다'는 안내는 받았지만 계정에 현재 비활성화되어 있는지는 확인되지 않았습니다.",
+            "evidence": [
+              {
+                "messageId": "f272df1c-daa8-4f39-aa45-9afdcdc8aa83",
+                "quote": "You can disable automatic renewal in Billing settings."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "partial",
+            "aiReason": "'Billing settings에서 자동 갱신을 끌 수 있다'는 안내는 받았지만 계정에 현재 비활성화되어 있는지는 확인되지 않았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "b187b4aa-5a91-4c4f-987e-0fe076e8744c",
+            "at": "2026-11-15T17:58:38.056Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 부분 답변",
+            "comparison": {
+              "at": "2026-11-15T17:58:38.056Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "f272df1c-daa8-4f39-aa45-9afdcdc8aa83"
+              ],
+              "questions": [
+                {
+                  "id": "c09e625c-9d84-4f93-96cc-d8119fbeb0a3",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "partial",
+                    "aiStatus": "partial",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "f272df1c-daa8-4f39-aa45-9afdcdc8aa83"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "70428c1d-097c-40fd-90d2-0c33b9c29f8d",
+            "at": "2026-11-15T17:58:30.832Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "0070df7b-4856-47b4-909c-a52eb75cadca",
+            "at": "2026-11-15T17:58:30.832Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "상담원은 Billing settings에서 자동 갱신을 끌 수 있다고 안내했으나, 고객 계정의 현재 자동 갱신 비활성화 여부는 확인되지 않았습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 6430,
+            "output_tokens": 633,
+            "total_tokens": 7063,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 448
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:58:38.056Z",
+          "comparison": {
+            "at": "2026-11-15T17:58:38.056Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "f272df1c-daa8-4f39-aa45-9afdcdc8aa83"
+            ],
+            "questions": [
+              {
+                "id": "c09e625c-9d84-4f93-96cc-d8119fbeb0a3",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "partial",
+                  "aiStatus": "partial",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "f272df1c-daa8-4f39-aa45-9afdcdc8aa83"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "date-promise",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 8428,
+          "usage": {
+            "input_tokens": 6434,
+            "output_tokens": 735,
+            "total_tokens": 7169,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 448
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 8429,
+      "result": {
+        "id": "c0165b17-f570-4add-8065-dbedcf6a3d8b",
+        "title": "date-promise",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:58:35.506Z",
+        "updatedAt": "2026-11-15T17:58:43.935Z",
+        "messages": [
+          {
+            "id": "1b247f11-1ce6-4a1f-9af2-b838751c4be3",
+            "role": "customer",
+            "text": "On which date will you send the file?",
+            "sentAt": null
+          },
+          {
+            "id": "a3ce8702-0d25-4416-8188-3564867c4cac",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "c77b5f23-8810-40ef-9b0a-05e6502ba9bd",
+            "role": "agent",
+            "text": "We will check the dispatch date and tell you tomorrow.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "445046dd-3360-41a5-b992-9bd4dcd95904",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "1b247f11-1ce6-4a1f-9af2-b838751c4be3",
+              "quote": "On which date will you send the file?"
+            },
+            "status": "waiting",
+            "reason": "발송 날짜를 확인해 안내하겠다는 약속을 받았습니다.",
+            "evidence": [
+              {
+                "messageId": "c77b5f23-8810-40ef-9b0a-05e6502ba9bd",
+                "quote": "We will check the dispatch date and tell you tomorrow."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "waiting",
+            "aiReason": "발송 날짜를 확인해 안내하겠다는 약속을 받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "8cb7e79d-5460-4b77-9a27-26e2f03b3c82",
+            "title": "발송 날짜 확인 및 안내",
+            "questionIds": [
+              "445046dd-3360-41a5-b992-9bd4dcd95904"
+            ],
+            "evidence": {
+              "messageId": "c77b5f23-8810-40ef-9b0a-05e6502ba9bd",
+              "quote": "We will check the dispatch date and tell you tomorrow."
+            },
+            "dueText": "tomorrow.",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "6edffd94-0dde-4285-ba5c-c0554df4e847",
+            "at": "2026-11-15T17:58:43.935Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 답변 대기",
+            "comparison": {
+              "at": "2026-11-15T17:58:43.935Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "c77b5f23-8810-40ef-9b0a-05e6502ba9bd"
+              ],
+              "questions": [
+                {
+                  "id": "445046dd-3360-41a5-b992-9bd4dcd95904",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "waiting",
+                    "aiStatus": "waiting",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "c77b5f23-8810-40ef-9b0a-05e6502ba9bd"
+                  ]
+                }
+              ],
+              "promises": [
+                {
+                  "id": "8cb7e79d-5460-4b77-9a27-26e2f03b3c82",
+                  "title": "발송 날짜 확인 및 안내",
+                  "before": null,
+                  "after": {
+                    "title": "발송 날짜 확인 및 안내",
+                    "state": "promised",
+                    "dueAt": null,
+                    "dueText": "tomorrow.",
+                    "confirmedAt": null
+                  },
+                  "fields": [
+                    "added"
+                  ],
+                  "evidenceMessageIds": [
+                    "c77b5f23-8810-40ef-9b0a-05e6502ba9bd"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "265f2c0b-6338-4832-a3f4-79b3d3059208",
+            "at": "2026-11-15T17:58:35.506Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "ea7ae203-7b25-40d8-af6a-db01edde239b",
+            "at": "2026-11-15T17:58:35.506Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "상담 안내가 발송 날짜를 확인해 내일 알려주겠다고 약속했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 6434,
+            "output_tokens": 735,
+            "total_tokens": 7169,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 448
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:58:43.935Z",
+          "comparison": {
+            "at": "2026-11-15T17:58:43.935Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "c77b5f23-8810-40ef-9b0a-05e6502ba9bd"
+            ],
+            "questions": [
+              {
+                "id": "445046dd-3360-41a5-b992-9bd4dcd95904",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "waiting",
+                  "aiStatus": "waiting",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "c77b5f23-8810-40ef-9b0a-05e6502ba9bd"
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "8cb7e79d-5460-4b77-9a27-26e2f03b3c82",
+                "title": "발송 날짜 확인 및 안내",
+                "before": null,
+                "after": {
+                  "title": "발송 날짜 확인 및 안내",
+                  "state": "promised",
+                  "dueAt": null,
+                  "dueText": "tomorrow.",
+                  "confirmedAt": null
+                },
+                "fields": [
+                  "added"
+                ],
+                "evidenceMessageIds": [
+                  "c77b5f23-8810-40ef-9b0a-05e6502ba9bd"
+                ]
+              }
+            ]
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "action-date",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 8214,
+          "usage": {
+            "input_tokens": 6430,
+            "output_tokens": 659,
+            "total_tokens": 7089,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 448
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 8215,
+      "result": {
+        "id": "2c62bf7f-1a2d-4a23-a52d-e1b2abadf4db",
+        "title": "action-date",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:58:38.057Z",
+        "updatedAt": "2026-11-15T17:58:46.272Z",
+        "messages": [
+          {
+            "id": "ad5b6794-590f-4a9f-aca8-67ecf542516c",
+            "role": "customer",
+            "text": "On which date will you send the file?",
+            "sentAt": null
+          },
+          {
+            "id": "8b5e6f09-9226-4d0e-9d85-e3a196b812db",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "cecff822-27a3-400e-9a54-ead8c05bfc0f",
+            "role": "agent",
+            "text": "We will send the file tomorrow.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "f16f5b6a-212b-483b-83a9-e81ca6d277e6",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "ad5b6794-590f-4a9f-aca8-67ecf542516c",
+              "quote": "On which date will you send the file?"
+            },
+            "status": "answered",
+            "reason": "내일 파일을 보내겠다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "cecff822-27a3-400e-9a54-ead8c05bfc0f",
+                "quote": "We will send the file tomorrow."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "내일 파일을 보내겠다고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "53e0d3d7-2c06-422b-83a1-2b3697702e8d",
+            "title": "파일 전송 약속",
+            "questionIds": [
+              "f16f5b6a-212b-483b-83a9-e81ca6d277e6"
+            ],
+            "evidence": {
+              "messageId": "cecff822-27a3-400e-9a54-ead8c05bfc0f",
+              "quote": "We will send the file tomorrow."
+            },
+            "dueText": "We will send the file tomorrow.",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "ba44cb6d-dcd3-4c0c-a28f-760b41315cbc",
+            "at": "2026-11-15T17:58:46.272Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T17:58:46.272Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "cecff822-27a3-400e-9a54-ead8c05bfc0f"
+              ],
+              "questions": [
+                {
+                  "id": "f16f5b6a-212b-483b-83a9-e81ca6d277e6",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "cecff822-27a3-400e-9a54-ead8c05bfc0f"
+                  ]
+                }
+              ],
+              "promises": [
+                {
+                  "id": "53e0d3d7-2c06-422b-83a1-2b3697702e8d",
+                  "title": "파일 전송 약속",
+                  "before": null,
+                  "after": {
+                    "title": "파일 전송 약속",
+                    "state": "promised",
+                    "dueAt": null,
+                    "dueText": "We will send the file tomorrow.",
+                    "confirmedAt": null
+                  },
+                  "fields": [
+                    "added"
+                  ],
+                  "evidenceMessageIds": [
+                    "cecff822-27a3-400e-9a54-ead8c05bfc0f"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "f0ec5f58-a92e-4dbd-93c0-b536869e389d",
+            "at": "2026-11-15T17:58:38.057Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "227894ed-190c-49d7-9295-95173ce839a3",
+            "at": "2026-11-15T17:58:38.057Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 파일 발송일을 물었고 상담원이 '내일 보내겠다'고 회신했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 6430,
+            "output_tokens": 659,
+            "total_tokens": 7089,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 448
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:58:46.272Z",
+          "comparison": {
+            "at": "2026-11-15T17:58:46.272Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "cecff822-27a3-400e-9a54-ead8c05bfc0f"
+            ],
+            "questions": [
+              {
+                "id": "f16f5b6a-212b-483b-83a9-e81ca6d277e6",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "cecff822-27a3-400e-9a54-ead8c05bfc0f"
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "53e0d3d7-2c06-422b-83a1-2b3697702e8d",
+                "title": "파일 전송 약속",
+                "before": null,
+                "after": {
+                  "title": "파일 전송 약속",
+                  "state": "promised",
+                  "dueAt": null,
+                  "dueText": "We will send the file tomorrow.",
+                  "confirmedAt": null
+                },
+                "fields": [
+                  "added"
+                ],
+                "evidenceMessageIds": [
+                  "cecff822-27a3-400e-9a54-ead8c05bfc0f"
+                ]
+              }
+            ]
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "refund-processed",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 6826,
+          "usage": {
+            "input_tokens": 6423,
+            "output_tokens": 506,
+            "total_tokens": 6929,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 320
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 6827,
+      "result": {
+        "id": "8d769f62-7538-40a1-9ea9-132111935114",
+        "title": "refund-processed",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:58:43.936Z",
+        "updatedAt": "2026-11-15T17:58:50.763Z",
+        "messages": [
+          {
+            "id": "68959d1e-c326-4bd2-8b39-6e4497797334",
+            "role": "customer",
+            "text": "Has my refund been processed?",
+            "sentAt": null
+          },
+          {
+            "id": "37a728cf-7fe1-4799-af68-c0fc7bd7938c",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "82ec1821-da8a-4b36-a27c-74730d0288fc",
+            "role": "agent",
+            "text": "We have processed your refund.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "94aa363a-bd0f-4b90-9c7c-9afea426cb58",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "68959d1e-c326-4bd2-8b39-6e4497797334",
+              "quote": "Has my refund been processed?"
+            },
+            "status": "answered",
+            "reason": "We have processed your refund.라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "82ec1821-da8a-4b36-a27c-74730d0288fc",
+                "quote": "We have processed your refund."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "We have processed your refund.라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "a502608d-c2b2-4fe8-ba8a-c463a625b797",
+            "title": "Refund processed notification",
+            "questionIds": [
+              "94aa363a-bd0f-4b90-9c7c-9afea426cb58"
+            ],
+            "evidence": {
+              "messageId": "82ec1821-da8a-4b36-a27c-74730d0288fc",
+              "quote": "We have processed your refund."
+            },
+            "dueText": "",
+            "dueAt": null,
+            "state": "reported",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "228d2e84-29ba-4a18-9d26-397a03980920",
+            "at": "2026-11-15T17:58:50.763Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T17:58:50.763Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "82ec1821-da8a-4b36-a27c-74730d0288fc"
+              ],
+              "questions": [
+                {
+                  "id": "94aa363a-bd0f-4b90-9c7c-9afea426cb58",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "82ec1821-da8a-4b36-a27c-74730d0288fc"
+                  ]
+                }
+              ],
+              "promises": [
+                {
+                  "id": "a502608d-c2b2-4fe8-ba8a-c463a625b797",
+                  "title": "Refund processed notification",
+                  "before": null,
+                  "after": {
+                    "title": "Refund processed notification",
+                    "state": "reported",
+                    "dueAt": null,
+                    "dueText": "",
+                    "confirmedAt": null
+                  },
+                  "fields": [
+                    "added"
+                  ],
+                  "evidenceMessageIds": [
+                    "82ec1821-da8a-4b36-a27c-74730d0288fc"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "2b735bec-d967-4a7e-9331-bdc926229292",
+            "at": "2026-11-15T17:58:43.936Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "0a504a83-04ed-49c9-92ff-f791534ecd13",
+            "at": "2026-11-15T17:58:43.936Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "상담사가 환불을 처리했다고 안내했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 6423,
+            "output_tokens": 506,
+            "total_tokens": 6929,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 320
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:58:50.763Z",
+          "comparison": {
+            "at": "2026-11-15T17:58:50.763Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "82ec1821-da8a-4b36-a27c-74730d0288fc"
+            ],
+            "questions": [
+              {
+                "id": "94aa363a-bd0f-4b90-9c7c-9afea426cb58",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "82ec1821-da8a-4b36-a27c-74730d0288fc"
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "a502608d-c2b2-4fe8-ba8a-c463a625b797",
+                "title": "Refund processed notification",
+                "before": null,
+                "after": {
+                  "title": "Refund processed notification",
+                  "state": "reported",
+                  "dueAt": null,
+                  "dueText": "",
+                  "confirmedAt": null
+                },
+                "fields": [
+                  "added"
+                ],
+                "evidenceMessageIds": [
+                  "82ec1821-da8a-4b36-a27c-74730d0288fc"
+                ]
+              }
+            ]
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "account-locked",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 4367,
+          "usage": {
+            "input_tokens": 6421,
+            "output_tokens": 312,
+            "total_tokens": 6733,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 4368,
+      "result": {
+        "id": "7563521c-0bb2-4699-bf09-e3402fc2f936",
+        "title": "account-locked",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:58:45.645Z",
+        "updatedAt": "2026-11-15T17:58:50.013Z",
+        "messages": [
+          {
+            "id": "550ade28-c0a3-48ee-8c16-2aad96fc263c",
+            "role": "customer",
+            "text": "Is my account unlocked?",
+            "sentAt": null
+          },
+          {
+            "id": "4e4db7d8-d8c9-4213-8d6e-726b0704484d",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "6e302395-cca3-4b27-a74e-50e659854083",
+            "role": "agent",
+            "text": "Your account is still locked.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "774759ce-981d-4a04-a218-0f829f4957cb",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "550ade28-c0a3-48ee-8c16-2aad96fc263c",
+              "quote": "Is my account unlocked?"
+            },
+            "status": "answered",
+            "reason": "계정은 아직 잠겨 있다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "6e302395-cca3-4b27-a74e-50e659854083",
+                "quote": "Your account is still locked."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "계정은 아직 잠겨 있다고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "d7243ebe-b12b-4e44-ac18-a03006dc42cf",
+            "at": "2026-11-15T17:58:50.013Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T17:58:50.013Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "6e302395-cca3-4b27-a74e-50e659854083"
+              ],
+              "questions": [
+                {
+                  "id": "774759ce-981d-4a04-a218-0f829f4957cb",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "6e302395-cca3-4b27-a74e-50e659854083"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "3e672b94-575b-4ecc-9ac8-d8217a806394",
+            "at": "2026-11-15T17:58:45.645Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "fc22fa69-f2b0-4993-a08a-343e584d37da",
+            "at": "2026-11-15T17:58:45.645Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객 문의에 대해 상담 안내가 계정이 아직 잠겨 있다고 답변했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 6421,
+            "output_tokens": 312,
+            "total_tokens": 6733,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:58:50.013Z",
+          "comparison": {
+            "at": "2026-11-15T17:58:50.013Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "6e302395-cca3-4b27-a74e-50e659854083"
+            ],
+            "questions": [
+              {
+                "id": "774759ce-981d-4a04-a218-0f829f4957cb",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "6e302395-cca3-4b27-a74e-50e659854083"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "receipt",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 6519,
+          "usage": {
+            "input_tokens": 6425,
+            "output_tokens": 463,
+            "total_tokens": 6888,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 320
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_completion_review",
+          "effort": "medium",
+          "ms": 7419,
+          "usage": {
+            "input_tokens": 717,
+            "output_tokens": 683,
+            "total_tokens": 1400,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 576
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 13941,
+      "result": {
+        "id": "fbd35214-6279-4553-b107-074177796910",
+        "title": "receipt",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:58:46.273Z",
+        "updatedAt": "2026-11-15T17:59:00.214Z",
+        "messages": [
+          {
+            "id": "49806985-677f-4cf7-b162-4fa7536af96e",
+            "role": "customer",
+            "text": "Have you received my transaction ID?",
+            "sentAt": null
+          },
+          {
+            "id": "0672223b-e92c-4cd8-9f6d-405cbae63580",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "eacf8c94-e7fc-4ce8-bd67-5cdf4f59d907",
+            "role": "agent",
+            "text": "We received your transaction ID.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "20551e8a-3c8c-4846-b6c7-82fbeb42a941",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "49806985-677f-4cf7-b162-4fa7536af96e",
+              "quote": "Have you received my transaction ID?"
+            },
+            "status": "answered",
+            "reason": "We received your transaction ID.라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "eacf8c94-e7fc-4ce8-bd67-5cdf4f59d907",
+                "quote": "We received your transaction ID."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "We received your transaction ID.라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "45c6d6ea-b78f-42f4-bca2-a50f43d2d6b5",
+            "title": "Received transaction ID",
+            "questionIds": [
+              "20551e8a-3c8c-4846-b6c7-82fbeb42a941"
+            ],
+            "evidence": {
+              "messageId": "eacf8c94-e7fc-4ce8-bd67-5cdf4f59d907",
+              "quote": "We received your transaction ID."
+            },
+            "dueText": "",
+            "dueAt": null,
+            "state": "reported",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "5736c1db-7bb5-42fe-b8f4-a00e40b34d1c",
+            "at": "2026-11-15T17:59:00.214Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T17:59:00.214Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "eacf8c94-e7fc-4ce8-bd67-5cdf4f59d907"
+              ],
+              "questions": [
+                {
+                  "id": "20551e8a-3c8c-4846-b6c7-82fbeb42a941",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "eacf8c94-e7fc-4ce8-bd67-5cdf4f59d907"
+                  ]
+                }
+              ],
+              "promises": [
+                {
+                  "id": "45c6d6ea-b78f-42f4-bca2-a50f43d2d6b5",
+                  "title": "Received transaction ID",
+                  "before": null,
+                  "after": {
+                    "title": "Received transaction ID",
+                    "state": "reported",
+                    "dueAt": null,
+                    "dueText": "",
+                    "confirmedAt": null
+                  },
+                  "fields": [
+                    "added"
+                  ],
+                  "evidenceMessageIds": [
+                    "eacf8c94-e7fc-4ce8-bd67-5cdf4f59d907"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "23677973-bf04-42cb-8dc4-060a4053a40a",
+            "at": "2026-11-15T17:58:46.273Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "ba619a30-135c-4bfa-a23e-d1da979328fe",
+            "at": "2026-11-15T17:58:46.273Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 거래 ID 수신 여부를 물었고, 상담 안내가 거래 ID를 수신했다는 답변을 했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 7142,
+            "output_tokens": 1146,
+            "total_tokens": 8288,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 896
+            }
+          },
+          "attempts": 1,
+          "completionReview": {
+            "model": "gpt-5-mini-2025-08-07",
+            "promises": 1
+          },
+          "at": "2026-11-15T17:59:00.214Z",
+          "comparison": {
+            "at": "2026-11-15T17:59:00.214Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "eacf8c94-e7fc-4ce8-bd67-5cdf4f59d907"
+            ],
+            "questions": [
+              {
+                "id": "20551e8a-3c8c-4846-b6c7-82fbeb42a941",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "eacf8c94-e7fc-4ce8-bd67-5cdf4f59d907"
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "45c6d6ea-b78f-42f4-bca2-a50f43d2d6b5",
+                "title": "Received transaction ID",
+                "before": null,
+                "after": {
+                  "title": "Received transaction ID",
+                  "state": "reported",
+                  "dueAt": null,
+                  "dueText": "",
+                  "confirmedAt": null
+                },
+                "fields": [
+                  "added"
+                ],
+                "evidenceMessageIds": [
+                  "eacf8c94-e7fc-4ce8-bd67-5cdf4f59d907"
+                ]
+              }
+            ]
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "review-length",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 4699,
+          "usage": {
+            "input_tokens": 6427,
+            "output_tokens": 332,
+            "total_tokens": 6759,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 4700,
+      "result": {
+        "id": "b6bb1419-7b1a-4eed-9ffd-6073c2c28853",
+        "title": "review-length",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:58:50.014Z",
+        "updatedAt": "2026-11-15T17:58:54.714Z",
+        "messages": [
+          {
+            "id": "734a67b9-470e-4fa1-9bf7-f574bbaa60bb",
+            "role": "customer",
+            "text": "How long does the review take?",
+            "sentAt": null
+          },
+          {
+            "id": "e50c1fd5-866b-47f2-a1d7-c1990203c886",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "94a0566f-f1b7-4430-8efc-392c345d8c5d",
+            "role": "agent",
+            "text": "The review takes 3 business days.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "e7a0892c-ea3d-41ad-9d96-073aafe45889",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "734a67b9-470e-4fa1-9bf7-f574bbaa60bb",
+              "quote": "How long does the review take?"
+            },
+            "status": "answered",
+            "reason": "리뷰는 3영업일 걸린다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "94a0566f-f1b7-4430-8efc-392c345d8c5d",
+                "quote": "The review takes 3 business days."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "리뷰는 3영업일 걸린다고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "fdfe2b4c-872a-4658-b777-0aef9eb9f0c7",
+            "at": "2026-11-15T17:58:54.714Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T17:58:54.714Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "94a0566f-f1b7-4430-8efc-392c345d8c5d"
+              ],
+              "questions": [
+                {
+                  "id": "e7a0892c-ea3d-41ad-9d96-073aafe45889",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "94a0566f-f1b7-4430-8efc-392c345d8c5d"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "a3582aff-25c0-4c13-9685-5ab1d4d74b8e",
+            "at": "2026-11-15T17:58:50.014Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "ffabda81-c123-496c-b91e-1af12ab4e8ec",
+            "at": "2026-11-15T17:58:50.014Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "리뷰 소요 기간은 3영업일이라고 안내받았습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 6427,
+            "output_tokens": 332,
+            "total_tokens": 6759,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:58:54.714Z",
+          "comparison": {
+            "at": "2026-11-15T17:58:54.714Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "94a0566f-f1b7-4430-8efc-392c345d8c5d"
+            ],
+            "questions": [
+              {
+                "id": "e7a0892c-ea3d-41ad-9d96-073aafe45889",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "94a0566f-f1b7-4430-8efc-392c345d8c5d"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "optional-proof",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 4900,
+          "usage": {
+            "input_tokens": 6423,
+            "output_tokens": 343,
+            "total_tokens": 6766,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 4901,
+      "result": {
+        "id": "e8c31ac9-9c19-4a69-b5db-6ae257d2e47d",
+        "title": "optional-proof",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:58:50.765Z",
+        "updatedAt": "2026-11-15T17:58:55.666Z",
+        "messages": [
+          {
+            "id": "595f48f1-b488-4bcb-b0a5-cfb1b7f11c06",
+            "role": "customer",
+            "text": "Is a screenshot required?",
+            "sentAt": null
+          },
+          {
+            "id": "a9777c9d-d2f4-45c4-ad6e-77bd98dd6765",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "f02c1c5d-ec7a-4d06-b2ab-8c765a16d6aa",
+            "role": "agent",
+            "text": "A screenshot is optional, not required.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "eade03d7-41c8-4095-b9c2-243ad81a0003",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "595f48f1-b488-4bcb-b0a5-cfb1b7f11c06",
+              "quote": "Is a screenshot required?"
+            },
+            "status": "answered",
+            "reason": "스크린샷은 선택 사항이며 필수가 아니라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "f02c1c5d-ec7a-4d06-b2ab-8c765a16d6aa",
+                "quote": "A screenshot is optional, not required."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "스크린샷은 선택 사항이며 필수가 아니라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "2cdb3699-d2a4-4058-badd-17b9f11ca760",
+            "at": "2026-11-15T17:58:55.666Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T17:58:55.666Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "f02c1c5d-ec7a-4d06-b2ab-8c765a16d6aa"
+              ],
+              "questions": [
+                {
+                  "id": "eade03d7-41c8-4095-b9c2-243ad81a0003",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "f02c1c5d-ec7a-4d06-b2ab-8c765a16d6aa"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "6e90e10f-4d46-4853-9bac-e9e7346d0273",
+            "at": "2026-11-15T17:58:50.765Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "1b88ccff-17db-4d09-bdf5-3d7b7d19bde9",
+            "at": "2026-11-15T17:58:50.765Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "스크린샷 제출은 선택 사항이며 필수가 아닙니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 6423,
+            "output_tokens": 343,
+            "total_tokens": 6766,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:58:55.666Z",
+          "comparison": {
+            "at": "2026-11-15T17:58:55.666Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "f02c1c5d-ec7a-4d06-b2ab-8c765a16d6aa"
+            ],
+            "questions": [
+              {
+                "id": "eade03d7-41c8-4095-b9c2-243ad81a0003",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "f02c1c5d-ec7a-4d06-b2ab-8c765a16d6aa"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "receipt-only",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 4923,
+          "usage": {
+            "input_tokens": 6425,
+            "output_tokens": 384,
+            "total_tokens": 6809,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 4924,
+      "result": {
+        "id": "e14caf65-19d6-431f-b5e5-b10765515de1",
+        "title": "receipt-only",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:58:54.715Z",
+        "updatedAt": "2026-11-15T17:58:59.640Z",
+        "messages": [
+          {
+            "id": "ce863fd7-84a7-47e6-8b8b-60bd8fb6c76f",
+            "role": "customer",
+            "text": "What is my case reference number?",
+            "sentAt": null
+          },
+          {
+            "id": "5f35063a-5daf-4464-a5be-9662171f7249",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "35a57918-ae72-414e-9ae1-8075a03531b7",
+            "role": "agent",
+            "text": "Thank you for contacting us.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "e99624e6-f49d-40e1-9f4a-64c54ce8a622",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "ce863fd7-84a7-47e6-8b8b-60bd8fb6c76f",
+              "quote": "What is my case reference number?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "evidence": [],
+            "followUp": "",
+            "aiStatus": "unanswered",
+            "aiReason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "44b80ea5-e93d-466b-aa2e-4aa0a97a31b9",
+            "at": "2026-11-15T17:58:59.640Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "질문 변화 0건 · 약속 변화 0건",
+            "comparison": {
+              "at": "2026-11-15T17:58:59.640Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "35a57918-ae72-414e-9ae1-8075a03531b7"
+              ],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "10d3d334-029e-4549-89ab-b5e532ac78e4",
+            "at": "2026-11-15T17:58:54.715Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "cc9dee5f-6290-4b73-a8ca-21da07b66359",
+            "at": "2026-11-15T17:58:54.715Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 사건 참조번호를 문의했으나, 상담원의 답변에는 해당 정보가 포함되어 있지 않습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 6425,
+            "output_tokens": 384,
+            "total_tokens": 6809,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:58:59.640Z",
+          "comparison": {
+            "at": "2026-11-15T17:58:59.640Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "35a57918-ae72-414e-9ae1-8075a03531b7"
+            ],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "conditional",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "medium",
+          "ms": 16332,
+          "usage": {
+            "input_tokens": 6439,
+            "output_tokens": 1690,
+            "total_tokens": 8129,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1536
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "medium",
+      "ms": 16334,
+      "result": {
+        "id": "156808f6-0d93-4b40-8919-900b03cded09",
+        "title": "conditional",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:58:55.667Z",
+        "updatedAt": "2026-11-15T17:59:12.001Z",
+        "messages": [
+          {
+            "id": "596c3f48-01d3-451e-a8f9-ce2d1f3dcbe6",
+            "role": "customer",
+            "text": "Am I eligible for a refund?",
+            "sentAt": null
+          },
+          {
+            "id": "e69e38f2-cf36-41fd-9623-fba60b80f69f",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "74d081ba-7bf1-4326-acbe-3ba1929e14ee",
+            "role": "agent",
+            "text": "A refund is available only if a duplicate charge is confirmed. We cannot confirm a duplicate charge yet.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "b88925d3-04b5-45a7-bb57-f7c685e90915",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "596c3f48-01d3-451e-a8f9-ce2d1f3dcbe6",
+              "quote": "Am I eligible for a refund?"
+            },
+            "status": "partial",
+            "reason": "중복 청구가 확인되어야 환불 가능하다고 안내받았지만 중복 청구 여부는 확인되지 않았습니다.",
+            "evidence": [
+              {
+                "messageId": "74d081ba-7bf1-4326-acbe-3ba1929e14ee",
+                "quote": "A refund is available only if a duplicate charge is confirmed. We cannot confirm a duplicate charge yet."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "partial",
+            "aiReason": "중복 청구가 확인되어야 환불 가능하다고 안내받았지만 중복 청구 여부는 확인되지 않았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "00976c3f-219b-44c2-af3b-1e61f42a6a9a",
+            "at": "2026-11-15T17:59:12.001Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 부분 답변",
+            "comparison": {
+              "at": "2026-11-15T17:59:12.001Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "74d081ba-7bf1-4326-acbe-3ba1929e14ee"
+              ],
+              "questions": [
+                {
+                  "id": "b88925d3-04b5-45a7-bb57-f7c685e90915",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "partial",
+                    "aiStatus": "partial",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "74d081ba-7bf1-4326-acbe-3ba1929e14ee"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "b64ec4ff-85fd-494b-885a-78581855b66a",
+            "at": "2026-11-15T17:58:55.667Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "0cf494a2-9211-4cc0-9698-c62694d77664",
+            "at": "2026-11-15T17:58:55.667Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "업체는 환불은 중복 청구 확인 시에만 가능하다고 안내했으며, 현재 중복 청구는 확인되지 않았다고 답변했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 6439,
+            "output_tokens": 1690,
+            "total_tokens": 8129,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1536
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:59:12.001Z",
+          "comparison": {
+            "at": "2026-11-15T17:59:12.001Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "74d081ba-7bf1-4326-acbe-3ba1929e14ee"
+            ],
+            "questions": [
+              {
+                "id": "b88925d3-04b5-45a7-bb57-f7c685e90915",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "partial",
+                  "aiStatus": "partial",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "74d081ba-7bf1-4326-acbe-3ba1929e14ee"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "corrected-price",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "medium",
+          "ms": 11563,
+          "usage": {
+            "input_tokens": 5324,
+            "output_tokens": 1150,
+            "total_tokens": 6474,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1024
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "medium",
+      "ms": 11564,
+      "result": {
+        "id": "31c07602-0f0d-4823-bb10-1a41643edd65",
+        "title": "corrected-price",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:58:59.641Z",
+        "updatedAt": "2026-11-15T17:59:11.205Z",
+        "messages": [
+          {
+            "id": "7e3a95b4-79df-4e0a-9545-86046b9ca5d4",
+            "role": "customer",
+            "text": "What is the repair cost?",
+            "sentAt": null
+          },
+          {
+            "id": "10dac612-e204-4857-ae67-54894f243bd8",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "8202c2b1-e0f1-4016-a915-d0c51137dc1f",
+            "role": "agent",
+            "text": "Correction: the previously quoted USD 80 was incorrect. The repair cost is USD 60.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "0020d961-3d9b-44bd-a635-abbcf577d1a4",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "7e3a95b4-79df-4e0a-9545-86046b9ca5d4",
+              "quote": "What is the repair cost?"
+            },
+            "status": "answered",
+            "reason": "수리비는 USD 60이라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "8202c2b1-e0f1-4016-a915-d0c51137dc1f",
+                "quote": "Correction: the previously quoted USD 80 was incorrect. The repair cost is USD 60."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "수리비는 USD 60이라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "04ab5905-5919-45d8-a2ca-2dcc7a42a27b",
+            "at": "2026-11-15T17:59:11.205Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T17:59:11.205Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "8202c2b1-e0f1-4016-a915-d0c51137dc1f"
+              ],
+              "questions": [
+                {
+                  "id": "0020d961-3d9b-44bd-a635-abbcf577d1a4",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "8202c2b1-e0f1-4016-a915-d0c51137dc1f"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "19d9e139-7e08-40d3-87ce-aaef61ae383d",
+            "at": "2026-11-15T17:58:59.641Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "c50add94-52f2-460c-8a00-2bab761ce72c",
+            "at": "2026-11-15T17:58:59.641Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 수리비를 문의했고, 상담 안내가 이전에 제시한 USD 80이 잘못되었으며 수리비는 USD 60이라고 정정 안내했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 5324,
+            "output_tokens": 1150,
+            "total_tokens": 6474,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1024
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:59:11.205Z",
+          "comparison": {
+            "at": "2026-11-15T17:59:11.205Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "8202c2b1-e0f1-4016-a915-d0c51137dc1f"
+            ],
+            "questions": [
+              {
+                "id": "0020d961-3d9b-44bd-a635-abbcf577d1a4",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "8202c2b1-e0f1-4016-a915-d0c51137dc1f"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "waiting-price",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 5849,
+          "usage": {
+            "input_tokens": 6428,
+            "output_tokens": 522,
+            "total_tokens": 6950,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 320
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 5851,
+      "result": {
+        "id": "ae02e522-aa3e-44c3-b717-21fd45b20491",
+        "title": "waiting-price",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:59:00.215Z",
+        "updatedAt": "2026-11-15T17:59:06.066Z",
+        "messages": [
+          {
+            "id": "a8a3f525-5e84-4aff-b116-715a05750f8b",
+            "role": "customer",
+            "text": "What is the repair cost?",
+            "sentAt": null
+          },
+          {
+            "id": "6b85c033-b226-4191-b4dc-cf8602806617",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "30d7aaff-ce73-4d1a-ba2d-cfc3d7fa8c89",
+            "role": "agent",
+            "text": "We will check the cost and email you by Friday.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "ca7a4dfa-aafb-493d-ab53-a5d075011c9a",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "a8a3f525-5e84-4aff-b116-715a05750f8b",
+              "quote": "What is the repair cost?"
+            },
+            "status": "waiting",
+            "reason": "수리비를 확인해 안내하겠다는 약속을 받았습니다.",
+            "evidence": [
+              {
+                "messageId": "30d7aaff-ce73-4d1a-ba2d-cfc3d7fa8c89",
+                "quote": "We will check the cost and email you by Friday."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "waiting",
+            "aiReason": "수리비를 확인해 안내하겠다는 약속을 받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "2019288e-cabb-4ed3-a52f-55412f49b7f4",
+            "title": "수리비 확인 및 이메일 안내",
+            "questionIds": [
+              "ca7a4dfa-aafb-493d-ab53-a5d075011c9a"
+            ],
+            "evidence": {
+              "messageId": "30d7aaff-ce73-4d1a-ba2d-cfc3d7fa8c89",
+              "quote": "We will check the cost and email you by Friday."
+            },
+            "dueText": "by Friday.",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "377bd240-7e33-4dea-8c86-4a96c60bf22e",
+            "at": "2026-11-15T17:59:06.066Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 답변 대기",
+            "comparison": {
+              "at": "2026-11-15T17:59:06.066Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "30d7aaff-ce73-4d1a-ba2d-cfc3d7fa8c89"
+              ],
+              "questions": [
+                {
+                  "id": "ca7a4dfa-aafb-493d-ab53-a5d075011c9a",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "waiting",
+                    "aiStatus": "waiting",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "30d7aaff-ce73-4d1a-ba2d-cfc3d7fa8c89"
+                  ]
+                }
+              ],
+              "promises": [
+                {
+                  "id": "2019288e-cabb-4ed3-a52f-55412f49b7f4",
+                  "title": "수리비 확인 및 이메일 안내",
+                  "before": null,
+                  "after": {
+                    "title": "수리비 확인 및 이메일 안내",
+                    "state": "promised",
+                    "dueAt": null,
+                    "dueText": "by Friday.",
+                    "confirmedAt": null
+                  },
+                  "fields": [
+                    "added"
+                  ],
+                  "evidenceMessageIds": [
+                    "30d7aaff-ce73-4d1a-ba2d-cfc3d7fa8c89"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "721edcc7-b97e-4438-a190-213e0cd0fc53",
+            "at": "2026-11-15T17:59:00.215Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "0537ad21-fe9b-46d5-8965-bb4139250a8e",
+            "at": "2026-11-15T17:59:00.215Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "업체가 수리비를 확인해 금요일까지 이메일로 안내하겠다고 답했습니다. 비용 문의는 안내 약속이 있어 waiting 상태입니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 6428,
+            "output_tokens": 522,
+            "total_tokens": 6950,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 320
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:59:06.066Z",
+          "comparison": {
+            "at": "2026-11-15T17:59:06.066Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "30d7aaff-ce73-4d1a-ba2d-cfc3d7fa8c89"
+            ],
+            "questions": [
+              {
+                "id": "ca7a4dfa-aafb-493d-ab53-a5d075011c9a",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "waiting",
+                  "aiStatus": "waiting",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "30d7aaff-ce73-4d1a-ba2d-cfc3d7fa8c89"
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "2019288e-cabb-4ed3-a52f-55412f49b7f4",
+                "title": "수리비 확인 및 이메일 안내",
+                "before": null,
+                "after": {
+                  "title": "수리비 확인 및 이메일 안내",
+                  "state": "promised",
+                  "dueAt": null,
+                  "dueText": "by Friday.",
+                  "confirmedAt": null
+                },
+                "fields": [
+                  "added"
+                ],
+                "evidenceMessageIds": [
+                  "30d7aaff-ce73-4d1a-ba2d-cfc3d7fa8c89"
+                ]
+              }
+            ]
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "unknown-reference",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 5740,
+          "usage": {
+            "input_tokens": 6427,
+            "output_tokens": 516,
+            "total_tokens": 6943,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 384
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_boundary_review",
+          "effort": "medium",
+          "ms": 7278,
+          "usage": {
+            "input_tokens": 2277,
+            "output_tokens": 704,
+            "total_tokens": 2981,
+            "input_tokens_details": {
+              "cached_tokens": 2176
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 576
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 13020,
+      "result": {
+        "id": "b82fddf3-7dfa-47f3-88ea-d67d02d9a65e",
+        "title": "unknown-reference",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:59:06.067Z",
+        "updatedAt": "2026-11-15T17:59:19.087Z",
+        "messages": [
+          {
+            "id": "a5b1c21b-1153-45ac-a190-39d5c6d2d90c",
+            "role": "customer",
+            "text": "What is my case reference number?",
+            "sentAt": null
+          },
+          {
+            "id": "eea37222-9ba0-4741-8f44-42a802cfab08",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "b66e929a-4717-4df2-a6a4-3627b27001a1",
+            "role": "agent",
+            "text": "We cannot locate your case reference number.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "3b2a822a-5856-4135-a216-c423edf66730",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "a5b1c21b-1153-45ac-a190-39d5c6d2d90c",
+              "quote": "What is my case reference number?"
+            },
+            "status": "review",
+            "reason": "업체가 케이스 참조 번호를 알 수 없다고 안내했습니다.",
+            "evidence": [
+              {
+                "messageId": "b66e929a-4717-4df2-a6a4-3627b27001a1",
+                "quote": "We cannot locate your case reference number."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "review",
+            "aiReason": "업체가 케이스 참조 번호를 알 수 없다고 안내했습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "6164515a-32c1-4743-8926-de4620792fc6",
+            "at": "2026-11-15T17:59:19.087Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 확인 필요",
+            "comparison": {
+              "at": "2026-11-15T17:59:19.087Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "b66e929a-4717-4df2-a6a4-3627b27001a1"
+              ],
+              "questions": [
+                {
+                  "id": "3b2a822a-5856-4135-a216-c423edf66730",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "review",
+                    "aiStatus": "review",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "b66e929a-4717-4df2-a6a4-3627b27001a1"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "47378626-d75d-4b79-8b47-c2e2536d28b6",
+            "at": "2026-11-15T17:59:06.067Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "6177b882-82ff-4d1d-aa06-b61f146e673d",
+            "at": "2026-11-15T17:59:06.067Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "상담원이 고객의 사례(reference) 번호를 찾을 수 없다고 안내했습니다. 해당 질문은 업체가 확인 불가하다고 답해 정보가 제공되지 않았습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 8704,
+            "output_tokens": 1220,
+            "total_tokens": 9924,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 8448
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 960
+            }
+          },
+          "attempts": 1,
+          "boundaryReview": {
+            "model": "gpt-5-mini-2025-08-07",
+            "questions": 1
+          },
+          "at": "2026-11-15T17:59:19.087Z",
+          "comparison": {
+            "at": "2026-11-15T17:59:19.087Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "b66e929a-4717-4df2-a6a4-3627b27001a1"
+            ],
+            "questions": [
+              {
+                "id": "3b2a822a-5856-4135-a216-c423edf66730",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "review",
+                  "aiStatus": "review",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "b66e929a-4717-4df2-a6a4-3627b27001a1"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "how-recover",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 3687,
+          "usage": {
+            "input_tokens": 6428,
+            "output_tokens": 372,
+            "total_tokens": 6800,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 3688,
+      "result": {
+        "id": "d6d4884b-7b16-4017-a97a-04227d337b86",
+        "title": "how-recover",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:59:11.206Z",
+        "updatedAt": "2026-11-15T17:59:14.895Z",
+        "messages": [
+          {
+            "id": "b5516c29-6e3b-4d62-82ae-55ad332ad01a",
+            "role": "customer",
+            "text": "How do I request account recovery?",
+            "sentAt": null
+          },
+          {
+            "id": "3171fcb8-8abf-4d2d-a25b-55f02ea7bf41",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "ebe1eeb7-c097-4b17-9e8e-a5df28a24af4",
+            "role": "agent",
+            "text": "Submit the recovery form from your account settings.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "a30e9ccd-ced3-458a-adec-0f1455b946a7",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "b5516c29-6e3b-4d62-82ae-55ad332ad01a",
+              "quote": "How do I request account recovery?"
+            },
+            "status": "answered",
+            "reason": "계정 설정에서 복구 양식을 제출하라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "ebe1eeb7-c097-4b17-9e8e-a5df28a24af4",
+                "quote": "Submit the recovery form from your account settings."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "계정 설정에서 복구 양식을 제출하라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "3d3b62d6-570a-4a2e-9d0f-2df46732b6d0",
+            "at": "2026-11-15T17:59:14.895Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T17:59:14.895Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "ebe1eeb7-c097-4b17-9e8e-a5df28a24af4"
+              ],
+              "questions": [
+                {
+                  "id": "a30e9ccd-ced3-458a-adec-0f1455b946a7",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "ebe1eeb7-c097-4b17-9e8e-a5df28a24af4"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "712a3a0b-cbb4-42ed-ae74-c43d696347e5",
+            "at": "2026-11-15T17:59:11.207Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "977f9b95-531a-4b16-ac11-de2baeae70dd",
+            "at": "2026-11-15T17:59:11.206Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객의 계정 복구 요청 방법에 대해 '계정 설정에서 복구 양식을 제출하라'고 안내받았습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 6428,
+            "output_tokens": 372,
+            "total_tokens": 6800,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:59:14.895Z",
+          "comparison": {
+            "at": "2026-11-15T17:59:14.895Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "ebe1eeb7-c097-4b17-9e8e-a5df28a24af4"
+            ],
+            "questions": [
+              {
+                "id": "a30e9ccd-ced3-458a-adec-0f1455b946a7",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "ebe1eeb7-c097-4b17-9e8e-a5df28a24af4"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "cancel-reported",
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 6664,
+          "usage": {
+            "input_tokens": 6423,
+            "output_tokens": 635,
+            "total_tokens": 7058,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 384
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "effort": "low",
+      "ms": 6665,
+      "result": {
+        "id": "a1de4a22-6901-4a2e-85c9-fd1f45461d10",
+        "title": "cancel-reported",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:59:12.002Z",
+        "updatedAt": "2026-11-15T17:59:18.667Z",
+        "messages": [
+          {
+            "id": "f5188d9a-5e8a-4829-9e76-6e8925f8081b",
+            "role": "customer",
+            "text": "Has my subscription been cancelled?",
+            "sentAt": null
+          },
+          {
+            "id": "09f63b5b-2623-4278-884d-f0fa23b42e01",
+            "role": "agent",
+            "text": "Thank you for contacting support.",
+            "sentAt": null
+          },
+          {
+            "id": "5c990cec-0248-4337-9ce9-934c7e89e8c9",
+            "role": "agent",
+            "text": "We have cancelled your subscription.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "b00786e9-391c-40ab-af23-ece422b32188",
+            "title": "확인할 질문",
+            "source": {
+              "messageId": "f5188d9a-5e8a-4829-9e76-6e8925f8081b",
+              "quote": "Has my subscription been cancelled?"
+            },
+            "status": "answered",
+            "reason": "구독을 취소했다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "5c990cec-0248-4337-9ce9-934c7e89e8c9",
+                "quote": "We have cancelled your subscription."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "구독을 취소했다고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "9c0478ea-6bc3-45b6-84bb-19c96145149b",
+            "title": "Subscription cancellation reported",
+            "questionIds": [
+              "b00786e9-391c-40ab-af23-ece422b32188"
+            ],
+            "evidence": {
+              "messageId": "5c990cec-0248-4337-9ce9-934c7e89e8c9",
+              "quote": "We have cancelled your subscription."
+            },
+            "dueText": "",
+            "dueAt": null,
+            "state": "reported",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "edbb7b7b-1526-4e19-b842-6b3c0b224b6d",
+            "at": "2026-11-15T17:59:18.667Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "확인할 질문: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T17:59:18.667Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "5c990cec-0248-4337-9ce9-934c7e89e8c9"
+              ],
+              "questions": [
+                {
+                  "id": "b00786e9-391c-40ab-af23-ece422b32188",
+                  "title": "확인할 질문",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "5c990cec-0248-4337-9ce9-934c7e89e8c9"
+                  ]
+                }
+              ],
+              "promises": [
+                {
+                  "id": "9c0478ea-6bc3-45b6-84bb-19c96145149b",
+                  "title": "Subscription cancellation reported",
+                  "before": null,
+                  "after": {
+                    "title": "Subscription cancellation reported",
+                    "state": "reported",
+                    "dueAt": null,
+                    "dueText": "",
+                    "confirmedAt": null
+                  },
+                  "fields": [
+                    "added"
+                  ],
+                  "evidenceMessageIds": [
+                    "5c990cec-0248-4337-9ce9-934c7e89e8c9"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "6194eca5-efda-484b-98e5-ebe9195c52d9",
+            "at": "2026-11-15T17:59:12.002Z",
+            "type": "message",
+            "label": "새 이메일을 저장했어요",
+            "details": "1개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다."
+          },
+          {
+            "id": "74d16421-9580-428e-bfe8-b35e0dcf2de3",
+            "at": "2026-11-15T17:59:12.002Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "상담 안내에 따르면 고객의 구독을 이미 취소했다고 통지했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 6423,
+            "output_tokens": 635,
+            "total_tokens": 7058,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 6272
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 384
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T17:59:18.667Z",
+          "comparison": {
+            "at": "2026-11-15T17:59:18.667Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "5c990cec-0248-4337-9ce9-934c7e89e8c9"
+            ],
+            "questions": [
+              {
+                "id": "b00786e9-391c-40ab-af23-ece422b32188",
+                "title": "확인할 질문",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "5c990cec-0248-4337-9ce9-934c7e89e8c9"
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "9c0478ea-6bc3-45b6-84bb-19c96145149b",
+                "title": "Subscription cancellation reported",
+                "before": null,
+                "after": {
+                  "title": "Subscription cancellation reported",
+                  "state": "reported",
+                  "dueAt": null,
+                  "dueText": "",
+                  "confirmedAt": null
+                },
+                "fields": [
+                  "added"
+                ],
+                "evidenceMessageIds": [
+                  "5c990cec-0248-4337-9ce9-934c7e89e8c9"
+                ]
+              }
+            ]
+          }
+        },
+        "channel": "email",
+        "version": 4
+      },
+      "passed": true
+    }
+  ],
+  "passed": true
+}
