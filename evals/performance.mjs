@@ -11,6 +11,8 @@ export function performanceSummary(results) {
     totalTokens: sum(c => c.usage?.input_tokens) + sum(c => c.usage?.output_tokens), calls: calls.length,
     callsWithoutUsage: calls.filter(c => !c.usage).length,
     analysisMs: distribution(operations.filter(o => o.kind === 'analysis').map(o => o.ms)),
+    initialAnalysisMs: distribution(results.flatMap(r => r.operations?.filter(o => o.kind === 'analysis').slice(0, 1).map(o => o.ms) || [])),
+    replyAnalysisMs: distribution(results.flatMap(r => r.operations?.filter(o => o.kind === 'analysis').slice(1).map(o => o.ms) || [])),
     draftMs: distribution(operations.filter(o => o.kind === 'draft').map(o => o.ms)),
     failedOperations: operations.filter(o => !o.success).length,
   };
@@ -32,10 +34,11 @@ export function compareRuns(before, after) {
     for (const [i, stage] of old.stages.entries()) {
       const actual = current.stages[i]?.grade;
       if (stage.grade?.pass && !actual?.pass) regressions.push(`${old.id}: analysis ${i + 1}`);
+      if (stage.reasonGrade?.pass && !current.stages[i]?.reasonGrade?.pass) regressions.push(`${old.id}: analysis ${i + 1} reason quality`);
       for (const key of ['found', 'correct', 'evidenceCorrect', 'correctPromises']) if (stage.grade?.metrics?.[key] > (actual?.metrics?.[key] ?? -1)) regressions.push(`${old.id}: analysis ${i + 1} ${key} decreased`);
       if ((actual?.metrics?.falseAnswered ?? 0) > (stage.grade?.metrics?.falseAnswered ?? 0)) regressions.push(`${old.id}: analysis ${i + 1} false answered increased`);
     }
     if (old.draft?.body && !current.draft?.body) regressions.push(`${old.id}: draft failed`);
   }
-  return { before: b, after: a, reductionPercent: { totalTokens: b.callsWithoutUsage || a.callsWithoutUsage ? null : reduction(b.totalTokens, a.totalTokens), inputTokens: b.callsWithoutUsage || a.callsWithoutUsage ? null : reduction(b.inputTokens, a.inputTokens), outputTokens: b.callsWithoutUsage || a.callsWithoutUsage ? null : reduction(b.outputTokens, a.outputTokens), analysisMedian: reduction(b.analysisMs.median, a.analysisMs.median), draftMedian: reduction(b.draftMs.median, a.draftMs.median) }, regressions, semanticReview: 'Draft meaning must also be reviewed against the source; automated comparison is insufficient.' };
+  return { before: b, after: a, reductionPercent: { totalTokens: b.callsWithoutUsage || a.callsWithoutUsage ? null : reduction(b.totalTokens, a.totalTokens), inputTokens: b.callsWithoutUsage || a.callsWithoutUsage ? null : reduction(b.inputTokens, a.inputTokens), outputTokens: b.callsWithoutUsage || a.callsWithoutUsage ? null : reduction(b.outputTokens, a.outputTokens), analysisMedian: reduction(b.analysisMs.median, a.analysisMs.median), initialAnalysisMedian: reduction(b.initialAnalysisMs.median, a.initialAnalysisMs.median), replyAnalysisMedian: reduction(b.replyAnalysisMs.median, a.replyAnalysisMs.median), draftMedian: reduction(b.draftMs.median, a.draftMs.median) }, regressions, semanticReview: 'Saved reasons, evidence and draft meaning must also be reviewed against the source; automated comparison is insufficient.' };
 }

@@ -29,3 +29,15 @@ test('a case that already failed cannot hide worse metrics and unknown usage is 
   assert.equal(comparison.reductionPercent.totalTokens, null);
   assert.deepEqual(comparison.regressions, ['A: analysis 1 correct decreased', 'A: analysis 1 false answered increased']);
 });
+
+test('first analysis and reply latency are separated, including failed operations', () => {
+  const r = result();
+  r.operations.push({ kind: 'analysis', ms: 110, success: true }, { kind: 'analysis', ms: 510, success: false });
+  const summary = performanceSummary([r]);
+  assert.deepEqual(summary.initialAnalysisMs, { count: 1, median: 310, p95: 310 });
+  assert.deepEqual(summary.replyAnalysisMs, { count: 2, median: 510, p95: 510 });
+  const before = report(), after = report();
+  before.results[0].stages[0].reasonGrade = { pass: true };
+  after.results[0].stages[0].reasonGrade = { pass: false };
+  assert(compareRuns(before, after).regressions.includes('A: analysis 1 reason quality'));
+});

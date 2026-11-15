@@ -4,6 +4,10 @@ import { compareAnalysis } from './analysis-changes.mjs';
 
 export const statuses = ['unanswered', 'partial', 'waiting', 'answered', 'review'];
 export const statusNames = { unanswered: '미답변', partial: '부분 답변', waiting: '답변 대기', answered: '답변 받음', review: '확인 필요' };
+// Remove a copied schema label only; never rewrite facts, numbers or source quotes.
+export function normalizeAnalysisReason(reason) {
+  return reason.replace(/^(?:unanswered|partial|waiting|answered|review)\s*:\s*(?=\S)/, '');
+}
 export const uid = () => randomUUID();
 export const cleanText = (value, max, name) => {
   assert(typeof value === 'string' && value.trim().length > 0 && value.length <= max, `${name}을(를) 1~${max}자로 입력해 주세요.`);
@@ -108,7 +112,7 @@ export function applyAnalysis(record, raw, meta = {}) {
     const refs = Array.isArray(q.evidence) ? q.evidence : [];
     const evidence = refs.filter(e => validEvidence(e, record.messages, 'agent'));
     let status = statuses.includes(q.status) ? q.status : 'review';
-    let reason = typeof q.reason === 'string' ? q.reason.slice(0, 1200) : '판단 이유를 확인해 주세요.';
+    let reason = typeof q.reason === 'string' ? normalizeAnalysisReason(q.reason).slice(0, 1200) : '판단 이유를 확인해 주세요.';
     if (refs.length !== evidence.length || (['answered', 'waiting', 'partial'].includes(status) && !evidence.length)) {
       status = 'review'; reason = 'AI가 제시한 답변 근거를 원문에서 확인하지 못했습니다. 직접 확인해 주세요.';
       warnings.push('일부 답변 근거가 검증되지 않아 확인 필요로 표시했습니다.');
