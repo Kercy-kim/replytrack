@@ -25,6 +25,22 @@ test('email transcription preserves original language, quoted-only messages and 
   assert.equal(validateEmailTranscript([{ ...messages[1], sentAt: '2026-11-15T00:00:00.000Z' }], messages[1].text, [{ ...messages[1], sentAt: '2026-11-14T00:00:00.000Z' }]).length, 1);
 });
 
+test('dated email extraction orders by instant across timezones without editing input or equal-date order', () => {
+  const earlier = { role: 'customer', text: 'Question', sentAt: '2026-11-14T09:00:00+09:00' };
+  const later = { role: 'agent', text: 'Reply', sentAt: '2026-11-14T01:00:00Z' };
+  const same = { role: 'agent', text: 'Attachment note', sentAt: '2026-11-14T10:00:00+09:00' };
+  const input = [later, same, earlier], before = structuredClone(input);
+  assert.deepEqual(validateEmailTranscript(input, 'Reply Attachment note Question'), [earlier, later, same]);
+  assert.deepEqual(input, before);
+});
+
+test('undated, invalid or timezone-ambiguous email keeps its review order', () => {
+  for (const sentAt of [null, 'invalid', '2026-11-14T09:00:00']) {
+    const input = [{ role: 'agent', text: 'Reply', sentAt: '2026-11-14T01:00:00Z' }, { role: 'customer', text: 'Question', sentAt }];
+    assert.deepEqual(validateEmailTranscript(input, 'Reply Question'), input);
+  }
+});
+
 test('explanation rejects incomplete, translated, wrong-role and fabricated source quotes', t => {
   const { store, c } = fixture(); t.after(() => store.close());
   validateEmailExplanation(explanation(c), c.messages);

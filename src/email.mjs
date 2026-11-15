@@ -40,12 +40,19 @@ export function validateEmailTranscript(messages, source, existing = []) {
   const normalized = emailComparableText(source);
   if (messages.some(m => !normalized.includes(emailComparableText(m.text)))) throw new AppError(502, '이메일 원문과 읽은 내용이 달라 저장하지 않았어요. 직접 나누어 입력하거나 다시 읽어 주세요.', 'EMAIL_TRANSCRIPT');
   const seen = [...existing];
-  return messages.filter(m => {
+  const unique = messages.filter(m => {
     const duplicate = seen.some(previous => previous.role === m.role && emailComparableText(previous.text) === emailComparableText(m.text)
       && (!previous.sentAt || !m.sentAt || previous.sentAt === m.sentAt));
     if (duplicate) return false;
     seen.push(m); return true;
   });
+  // Email threads commonly put the newest message first. Sort only when every
+  // extracted message has an explicit, valid timezone-qualified timestamp;
+  // otherwise keep the review order instead of guessing where undated mail fits.
+  const dated = unique.every(m => typeof m.sentAt === 'string'
+    && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:\d{2})$/.test(m.sentAt)
+    && Number.isFinite(Date.parse(m.sentAt)));
+  return dated ? unique.toSorted((a, b) => Date.parse(a.sentAt) - Date.parse(b.sentAt)) : unique;
 }
 export function draftLanguagePrompt(language) {
   return language === 'en' ? '\n출력 언어: 영어. 한국어 작성 지시 대신 body 전체를 정중한 영어로 작성한다. 원문 인용을 번역하더라도 의미·조건·부정을 보존한다. 첨부·전송·제출·복구가 완료되었다고 원문 없이 주장하지 않는다. 검토 시에도 영어 출력, 선택 질문 보존과 원문의 의미를 확인한다.' : '';

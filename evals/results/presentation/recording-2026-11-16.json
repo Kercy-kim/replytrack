@@ -1,0 +1,96 @@
+{
+  "synthetic": true,
+  "fixture": "account-recovery",
+  "mode": "live OpenAI Responses API",
+  "startedAt": "2026-11-15T17:30:31.910Z",
+  "baseCommit": "b677de7a9e63cab4fcc33c54c46288c87b810fd7",
+  "sourceHashes": {
+    "src/service.mjs": "9148356ae71793a143a3aeec3f58637b1998b10dbb0b28d890d04793f0e14a28",
+    "src/prompts.mjs": "dcf829288dc8e94bd9d1561b0b5a397e243009f678575c06293544ed73fdc33b",
+    "src/email.mjs": "4c8a0c9c30b282bb9676efa6fe1abf0e1207f28412eed9e06b619f7604d814d6",
+    "src/schema.mjs": "6076ecdb794744d3fd30522c729b3b15c22d7194b32f3cb0e23e17f91256f94d",
+    "src/next-actions.mjs": "1af0f43d4cd352b52e56559f8bf078633e433e3e33eba8f438b26372ed5cf2d0",
+    "src/feature-review.mjs": "3e11dcdf8c98b1f0489597ba0f56ee176ab1edddda67d8b77ed1efa61ea592df",
+    "src/analysis-focus.mjs": "c1124dcf59f9b7e931d3a7e867b1699a3d96c7b3768ca25e7599b07e8a4f552c",
+    "src/email-reply.mjs": "ff53c93997b0f307c1ba2e2f39b9053c4b3aa94f5d3367be63143b169cb9e742"
+  },
+  "calls": [
+    {
+      "name": "replytrack_transcript",
+      "ms": 6238,
+      "data": {
+        "messages": [
+          {
+            "role": "agent",
+            "text": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes. After we verify the transaction ID, we will review your recovery request.",
+            "sentAt": "2026-11-14T10:00:00+09:00"
+          },
+          {
+            "role": "customer",
+            "text": "What documents do you need to recover my account? How long will the review take?",
+            "sentAt": "2026-11-14T09:00:00+09:00"
+          }
+        ],
+        "notes": []
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "transport": {
+        "elapsedMs": 6237,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 6232,
+            "httpStatus": 200,
+            "bodyMs": 4,
+            "usage": {
+              "input_tokens": 870,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 0
+              },
+              "output_tokens": 445,
+              "output_tokens_details": {
+                "reasoning_tokens": 320
+              },
+              "total_tokens": 1315
+            },
+            "elapsedMs": 6236
+          }
+        ]
+      },
+      "usage": {
+        "input_tokens": 870,
+        "output_tokens": 445,
+        "total_tokens": 1315,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 320
+        },
+        "unobserved_requests": 0
+      }
+    }
+  ],
+  "steps": [
+    {
+      "name": "extract",
+      "ms": 6239
+    }
+  ],
+  "passed": false,
+  "error": {
+    "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n+   'Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes. After we verify the transaction ID, we will review your recovery request.',\n    'What documents do you need to recover my account? How long will the review take?',\n-   'Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes. After we verify the transaction ID, we will review your recovery request.'\n  ]\n",
+    "code": "ERR_ASSERTION"
+  },
+  "finishedAt": "2026-11-15T17:30:38.180Z"
+}
