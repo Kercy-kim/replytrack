@@ -312,6 +312,7 @@ function showModal(title, content, wide = false) {
   if (!modal.open) modalReturnFocus = focusBookmark();
   modal.innerHTML = `<div class="modal-head"><div><h2>${title}</h2></div><button class="btn icon-btn" data-action="close-modal" aria-label="닫기">${icon('close')}</button></div><section class="operation-panel" data-progress hidden aria-label="작업 진행 상황"></section>${content}<p id="modal-error" class="modal-error" role="alert"></p><p id="modal-status" role="status"></p>`;
   if (!modal.open) modal.showModal();
+  updateReviewStatus();
 }
 function connectionLabel() {
   return state.config.connection?.state === 'ready' ? 'AI 연결 점검 통과' : state.config.connection?.state === 'failed' ? 'AI 연결 점검 실패' : state.config.configured ? 'API 키 등록 · 점검 전' : 'AI 연결 설정';
@@ -381,6 +382,27 @@ function showReview() {
   const data = state.onboarding;
   data.stage = 'review';
   showModal('원문을 한 번 확인해 주세요', `<p class="modal-intro">이 내용이 분석의 기준이 돼요. 발화자와 인식 오류를 고치고, 실제 상담 날짜를 아는 경우 입력해 주세요.</p>${onboardingConnection()}${data.notes.map(n => `<p class="warning-note">${esc(n)}</p>`).join('')}<form id="review-form"><div class="form-grid"><label class="field">상담 제목<input name="title" value="${esc(data.title)}" maxlength="100" ${data.targetCaseId ? 'readonly' : ''} required></label><label class="field">업체명<input name="company" value="${esc(data.company)}" maxlength="60" ${data.targetCaseId ? 'readonly' : ''}></label></div><div id="review-rows">${data.messages.map(reviewRow).join('')}</div><button class="btn secondary" type="button" data-action="add-row">${icon('plus')}메시지 추가</button><div class="form-note">날짜가 없는 “내일” 같은 표현은 기한 미정으로 남겨요. 전화번호·주소는 저장 전 다시 가리고, 가린 원문만 OpenAI에 전달해요. 인식 오류와 누락된 개인정보를 확인해 주세요.</div><div class="modal-actions"><button class="btn secondary" type="button" data-action="onboarding-back">이전 단계</button><button class="btn primary" type="submit">${data.targetCaseId ? '저장하고 새 답변 분석' : '저장하고 질문 분석하기'} ${icon('arrow')}</button></div></form>`, true);
+}
+function updateReviewStatus() {
+  const form = $('#review-form');
+  if (!form) return;
+  let notice = $('#review-role-status');
+  if (!notice) {
+    notice = document.createElement('p');
+    notice.id = 'review-role-status'; notice.className = 'warning-note'; notice.setAttribute('role', 'status');
+    $('#review-rows').before(notice);
+  }
+  const roles = [...form.querySelectorAll('[name=role]')];
+  const unknown = roles.filter(el => el.value === 'unknown');
+  notice.hidden = !unknown.length;
+  notice.textContent = unknown.length ? `발화자를 확인할 메시지가 ${unknown.length}개 있어요. 원문을 보고 ‘나’ 또는 ‘고객센터’를 선택해 주세요.` : '';
+  if (!unknown.length && $('#modal-error').textContent === '저장하기 전에 발화자를 확인해 주세요.') $('#modal-error').textContent = '';
+  for (const el of roles) {
+    el.setAttribute('aria-invalid', String(el.value === 'unknown'));
+    if (el.value === 'unknown') el.setAttribute('aria-describedby', notice.id);
+    else el.removeAttribute('aria-describedby');
+  }
+  return unknown;
 }
 function showAppend() {
   if (state.current.channel === 'email') {
@@ -505,11 +527,15 @@ document.addEventListener('click', async event => {
   if (action === 'onboarding-back') { captureOnboarding(); if (state.onboarding.prepared) showPrivacyPreview(state.onboarding.prepared); else showNew(); }
   if (action === 'remove-capture') { state.onboarding.file = null; state.onboarding.prepared = null; $('#import-form [name=image]').value = ''; showNew(); }
   if (action === 'add-row') { const rows = $('#review-rows'); if(rows.children.length < 60) rows.insertAdjacentHTML('beforeend',reviewRow({role:'agent',text:'',sentAt:null},rows.children.length)); captureOnboarding(); }
-  if (action === 'remove-row') { target.closest('.review-row').remove(); captureOnboarding(); }
+  if (action === 'remove-row') { target.closest('.review-row').remove(); captureOnboarding(); updateReviewStatus(); }
 });
 document.addEventListener('change', event => {
   if (event.target.dataset.guideAnswer) { if (event.target.value) state.guide.answers[event.target.dataset.guideAnswer] = event.target.value; else delete state.guide.answers[event.target.dataset.guideAnswer]; render(); }
   if (event.target.closest('#import-form, #privacy-form, #review-form')) captureOnboarding();
+  if (event.target.matches('#review-form [name=role]')) {
+    updateReviewStatus();
+    $('#modal-error').textContent = '';
+  }
   if (event.target.id === 'case-sort') { state.sort = event.target.value; $('#workspace-results').innerHTML = caseResults(); }
   if (event.target.name === 'channel') { readNewMetadata(); state.onboarding.prepared = null; state.onboarding.messages = []; state.onboarding.ocrLanguage = state.onboarding.channel === 'email' ? 'eng' : 'kor+eng'; showNew(); }
   if (event.target.id === 'reply-language') state.replyLanguages[state.current.id] = event.target.value;
@@ -598,6 +624,13 @@ document.addEventListener('submit', async event => {
     });
   }
   if (form.id === 'review-form') {
+    const unknown = updateReviewStatus();
+    if (unknown?.length) {
+      $('#modal-error').textContent = '저장하기 전에 발화자를 확인해 주세요.';
+      unknown[0].focus({ preventScroll: true });
+      unknown[0].scrollIntoView({ block: 'center', behavior: 'instant' });
+      return;
+    }
     captureOnboarding();
     if (!state.config.configured) { showSettings(); return; }
     const title = form.elements.title.value, company = form.elements.company.value;
