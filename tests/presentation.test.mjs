@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto';
 import { presentationData } from '../src/presentation.mjs';
 import { renderPresentation } from '../public/presentation-view.js';
 
-const source = 'evals/results/presentation/recording.json';
+const source = JSON.parse(readFileSync('public/presentation-data.json')).provenance.source;
 const raw = readFileSync(source), report = JSON.parse(raw);
 const provenance = { source, sha256: createHash('sha256').update(raw).digest('hex') };
 

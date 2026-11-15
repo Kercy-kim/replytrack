@@ -12,7 +12,7 @@ assert(process.argv.includes('--run'), 'Pass --run for paid synthetic recording.
 const out = process.argv[process.argv.indexOf('--out') + 1];
 assert(process.argv.includes('--out') && out && !existsSync(out), 'Choose a new --out file.');
 mkdirSync('evals/results/presentation', { recursive: true });
-const files = ['src/service.mjs', 'src/prompts.mjs', 'src/email.mjs', 'src/schema.mjs', 'src/next-actions.mjs'];
+const files = ['src/service.mjs', 'src/prompts.mjs', 'src/email.mjs', 'src/schema.mjs', 'src/next-actions.mjs', 'src/feature-review.mjs', 'src/analysis-focus.mjs', 'src/email-reply.mjs'];
 const report = { synthetic: true, fixture: 'account-recovery', mode: 'live OpenAI Responses API', startedAt: new Date().toISOString(), baseCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), sourceHashes: Object.fromEntries(files.map(f => [f, createHash('sha256').update(readFileSync(f)).digest('hex')])), calls: [], steps: [], passed: false };
 const save = () => writeFileSync(out, JSON.stringify(report, null, 2) + '\n');
 const client = new OpenAIClient({ apiKey: process.env.OPENAI_API_KEY, model: 'gpt-5-mini-2025-08-07' });
