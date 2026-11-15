@@ -26,6 +26,7 @@ sourceFiles.push('src/privacy.mjs');
 sourceFiles.push('evals/reason-cases.mjs', 'evals/reason-quality.mjs');
 if (existsSync(resolve(root, 'src/ai-wire.mjs'))) sourceFiles.push('src/ai-wire.mjs');
 if (existsSync(resolve(root, 'src/handoff.mjs'))) sourceFiles.push('src/handoff.mjs');
+if (existsSync(resolve(root, 'src/ai-race.mjs'))) sourceFiles.push('src/ai-race.mjs');
 const suites = { support: cases, boundary: boundaryCases, all: [...cases, ...boundaryCases], unseen: unseenCases, full: [...cases, ...boundaryCases, ...unseenCases], reasons: reasonCases };
 const args = process.argv.slice(2);
 const option = (name, fallback) => args.includes(name) ? args[args.indexOf(name) + 1] : fallback;
@@ -97,10 +98,10 @@ async function run({ out, only = '', model = process.env.OPENAI_MODEL || 'gpt-5-
         const start = performance.now();
         try {
           const response = await client.structured(input);
-          result.calls.push({ name: input.name, reasoningEffort: input.reasoningEffort || 'low', ms: Math.round(performance.now()-start), model: response.model, usage: response.usage, data: response.data });
+          result.calls.push({ name: input.name, reasoningEffort: input.reasoningEffort || 'low', ms: Math.round(performance.now()-start), model: response.model, usage: response.usage, transport: response.transport, data: response.data });
           return response;
         } catch (error) {
-          result.calls.push({ name: input.name, ms: Math.round(performance.now()-start), error: { code: error.code || 'UNKNOWN', message: error.message } });
+          result.calls.push({ name: input.name, ms: Math.round(performance.now()-start), transport: error.transport, error: { code: error.code || 'UNKNOWN', message: error.message } });
           throw error;
         }
       } };

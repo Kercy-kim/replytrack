@@ -12,7 +12,7 @@ assert(process.env.OPENAI_API_KEY, 'Local API configuration required.');
 const output = process.env.EMAIL_EVAL_REPORT || 'evals/results/email-inquiries/initial.json';
 assert(!existsSync(output), 'Preserve previous reports; choose a new EMAIL_EVAL_REPORT.');
 const analysisOnly = process.argv.includes('--analysis-only');
-const report = { at: new Date().toISOString(), analysisOnly, cases: [], hashes: Object.fromEntries(['src/service.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/openai.mjs', 'evals/email-cases.mjs', 'scripts/evaluate-email.mjs'].map(f => [f, createHash('sha256').update(readFileSync(f)).digest('hex')])) };
+const report = { at: new Date().toISOString(), analysisOnly, cases: [], hashes: Object.fromEntries(['src/service.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/openai.mjs', 'src/ai-race.mjs', 'evals/email-cases.mjs', 'scripts/evaluate-email.mjs'].map(f => [f, createHash('sha256').update(readFileSync(f)).digest('hex')])) };
 // Line wrapping is allowed by email import; words, punctuation and order are not.
 const normalizedText = text => text.replace(/\s+/g, ' ').trim();
 const save = () => { mkdirSync(dirname(output), { recursive: true }); writeFileSync(output, JSON.stringify(report, null, 2)); };

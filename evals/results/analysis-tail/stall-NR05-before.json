@@ -1,0 +1,730 @@
+{
+  "mode": "before",
+  "id": "NR05",
+  "stage": "reply",
+  "holdMs": 75000,
+  "experiment": "Injected delivery stall after an actual API response; not a naturally recurring 75-second API delay.",
+  "at": "2026-11-15T13:32:56.898Z",
+  "model": "gpt-5-mini-2025-08-07",
+  "calls": [
+    {
+      "phase": "initial",
+      "name": "replytrack_analysis",
+      "ms": 6552,
+      "data": {
+        "summary": "고객이 환불 수단을 문의했으며, 상담사의 답변이 '카드'와 '계좌'로 서로 상충합니다.",
+        "questions": [
+          {
+            "id": "fc3913fc-c7d0-4213-baa9-d92b478ebb30",
+            "title": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?",
+            "source": {
+              "messageId": "fc3913fc-c7d0-4213-baa9-d92b478ebb30",
+              "quote": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?"
+            },
+            "status": "review",
+            "reason": "카드와 계좌라는 두 답으로 안내가 엇갈립니다.",
+            "evidence": [
+              {
+                "messageId": "878b3f99-cf92-4d0e-8f66-7e952af059f9",
+                "quote": "이 주문의 환불 수단은 카드입니다."
+              },
+              {
+                "messageId": "eed140bf-1a61-47cd-90f9-8ae0d2273566",
+                "quote": "이 주문의 환불 수단은 계좌입니다."
+              }
+            ],
+            "followUp": "환불 수단을 확정해서 알려주세요."
+          }
+        ],
+        "promises": []
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "transport": {
+        "elapsedMs": 6551,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 6550,
+            "httpStatus": 200,
+            "bodyMs": 0,
+            "usage": {
+              "input_tokens": 4674,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 4608
+              },
+              "output_tokens": 581,
+              "output_tokens_details": {
+                "reasoning_tokens": 320
+              },
+              "total_tokens": 5255
+            },
+            "elapsedMs": 6551
+          }
+        ]
+      },
+      "usage": {
+        "input_tokens": 4674,
+        "output_tokens": 581,
+        "total_tokens": 5255,
+        "input_tokens_details": {
+          "cached_tokens": 4608
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 320
+        },
+        "unobserved_requests": 0
+      }
+    },
+    {
+      "phase": "initial",
+      "name": "replytrack_boundary_review",
+      "ms": 9058,
+      "data": {
+        "questions": [
+          {
+            "id": "fc3913fc-c7d0-4213-baa9-d92b478ebb30",
+            "status": "review",
+            "reason": "카드와 계좌로 안내가 엇갈립니다.",
+            "evidence": [
+              {
+                "messageId": "878b3f99-cf92-4d0e-8f66-7e952af059f9",
+                "quote": "이 주문의 환불 수단은 카드입니다."
+              },
+              {
+                "messageId": "eed140bf-1a61-47cd-90f9-8ae0d2273566",
+                "quote": "이 주문의 환불 수단은 계좌입니다."
+              }
+            ]
+          }
+        ]
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "transport": {
+        "elapsedMs": 9058,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 9058,
+            "httpStatus": 200,
+            "bodyMs": 0,
+            "usage": {
+              "input_tokens": 2316,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 1792
+              },
+              "output_tokens": 815,
+              "output_tokens_details": {
+                "reasoning_tokens": 704
+              },
+              "total_tokens": 3131
+            },
+            "elapsedMs": 9058
+          }
+        ]
+      },
+      "usage": {
+        "input_tokens": 2316,
+        "output_tokens": 815,
+        "total_tokens": 3131,
+        "input_tokens_details": {
+          "cached_tokens": 1792
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 704
+        },
+        "unobserved_requests": 0
+      }
+    },
+    {
+      "phase": "reply",
+      "name": "replytrack_analysis",
+      "ms": 75010,
+      "data": {
+        "summary": "상담 중 환불 수단 안내가 엇갈렸으나, 최종적으로 카드로 환불된다고 정정 안내되었습니다.",
+        "questions": [
+          {
+            "id": "2e3bbf1e-8c49-4ce7-b258-0cfc03779289",
+            "title": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?",
+            "source": {
+              "messageId": "fc3913fc-c7d0-4213-baa9-d92b478ebb30",
+              "quote": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?"
+            },
+            "status": "answered",
+            "reason": "카드로 환불된다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "81027c65-ceef-4099-8952-093d6e94559a",
+                "quote": "앞서 계좌로 환불된다는 설명은 잘못된 안내였습니다. 정정합니다. 이 주문의 환불 수단은 카드입니다."
+              },
+              {
+                "messageId": "878b3f99-cf92-4d0e-8f66-7e952af059f9",
+                "quote": "이 주문의 환불 수단은 카드입니다."
+              },
+              {
+                "messageId": "eed140bf-1a61-47cd-90f9-8ae0d2273566",
+                "quote": "이 주문의 환불 수단은 계좌입니다."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": []
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "transport": {
+        "elapsedMs": 75010,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 75009,
+            "httpStatus": 200,
+            "bodyMs": 0,
+            "usage": {
+              "input_tokens": 4837,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 3840
+              },
+              "output_tokens": 1705,
+              "output_tokens_details": {
+                "reasoning_tokens": 1472
+              },
+              "total_tokens": 6542
+            },
+            "elapsedMs": 75010
+          }
+        ]
+      },
+      "usage": {
+        "input_tokens": 4837,
+        "output_tokens": 1705,
+        "total_tokens": 6542,
+        "input_tokens_details": {
+          "cached_tokens": 3840
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 1472
+        },
+        "unobserved_requests": 0
+      }
+    }
+  ],
+  "providerRequests": [
+    {
+      "phase": "initial",
+      "name": "replytrack_analysis",
+      "injected": false,
+      "providerMs": 6548,
+      "status": 200,
+      "usage": {
+        "input_tokens": 4674,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 4608
+        },
+        "output_tokens": 581,
+        "output_tokens_details": {
+          "reasoning_tokens": 320
+        },
+        "total_tokens": 5255
+      }
+    },
+    {
+      "phase": "initial",
+      "name": "replytrack_boundary_review",
+      "injected": false,
+      "providerMs": 9057,
+      "status": 200,
+      "usage": {
+        "input_tokens": 2316,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 1792
+        },
+        "output_tokens": 815,
+        "output_tokens_details": {
+          "reasoning_tokens": 704
+        },
+        "total_tokens": 3131
+      }
+    },
+    {
+      "phase": "reply",
+      "name": "replytrack_analysis",
+      "injected": true,
+      "providerMs": 16117,
+      "status": 200,
+      "usage": {
+        "input_tokens": 4837,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 3840
+        },
+        "output_tokens": 1705,
+        "output_tokens_details": {
+          "reasoning_tokens": 1472
+        },
+        "total_tokens": 6542
+      }
+    }
+  ],
+  "stages": [
+    {
+      "phase": "initial",
+      "ms": 15614,
+      "record": {
+        "id": "d86ba4e3-9ad4-457f-8d44-bc7ea242cc65",
+        "title": "환불 수단 충돌이 명시적 정정으로 해소",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T13:32:56.902Z",
+        "updatedAt": "2026-11-15T13:33:12.517Z",
+        "messages": [
+          {
+            "id": "fc3913fc-c7d0-4213-baa9-d92b478ebb30",
+            "role": "customer",
+            "text": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?",
+            "sentAt": null
+          },
+          {
+            "id": "878b3f99-cf92-4d0e-8f66-7e952af059f9",
+            "role": "agent",
+            "text": "이 주문의 환불 수단은 카드입니다.",
+            "sentAt": null
+          },
+          {
+            "id": "eed140bf-1a61-47cd-90f9-8ae0d2273566",
+            "role": "agent",
+            "text": "이 주문의 환불 수단은 계좌입니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "2e3bbf1e-8c49-4ce7-b258-0cfc03779289",
+            "title": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?",
+            "source": {
+              "messageId": "fc3913fc-c7d0-4213-baa9-d92b478ebb30",
+              "quote": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?"
+            },
+            "status": "review",
+            "reason": "카드와 계좌로 안내가 엇갈립니다.",
+            "evidence": [
+              {
+                "messageId": "878b3f99-cf92-4d0e-8f66-7e952af059f9",
+                "quote": "이 주문의 환불 수단은 카드입니다."
+              },
+              {
+                "messageId": "eed140bf-1a61-47cd-90f9-8ae0d2273566",
+                "quote": "이 주문의 환불 수단은 계좌입니다."
+              }
+            ],
+            "followUp": "환불 수단을 확정해서 알려주세요.",
+            "aiStatus": "review",
+            "aiReason": "카드와 계좌로 안내가 엇갈립니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "bee51de0-6952-4eff-bfe8-6335abfb2390",
+            "at": "2026-11-15T13:33:12.517Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "1개 질문 · 0개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T13:33:12.517Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 3,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "7cac13bb-c779-46d5-bdd0-1495ad0ff45c",
+            "at": "2026-11-15T13:32:56.902Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "3개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 환불 수단을 문의했으며, 상담사의 답변이 '카드'와 '계좌'로 서로 상충합니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 6990,
+            "output_tokens": 1396,
+            "total_tokens": 8386,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 6400
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1024
+            }
+          },
+          "attempts": 1,
+          "boundaryReview": {
+            "model": "gpt-5-mini-2025-08-07",
+            "questions": 1
+          },
+          "at": "2026-11-15T13:33:12.517Z",
+          "comparison": {
+            "at": "2026-11-15T13:33:12.517Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 3,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "version": 2
+      },
+      "grade": {
+        "pass": true,
+        "issues": [],
+        "questions": [
+          {
+            "gold": {
+              "message": 0,
+              "topic": "수단|환불",
+              "status": "review",
+              "evidence": [
+                1,
+                2
+              ]
+            },
+            "actual": {
+              "id": "2e3bbf1e-8c49-4ce7-b258-0cfc03779289",
+              "title": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?",
+              "status": "review",
+              "evidence": [
+                1,
+                2
+              ]
+            },
+            "evidenceOK": true
+          }
+        ],
+        "promises": [],
+        "metrics": {
+          "expectedQuestions": 1,
+          "found": 1,
+          "correct": 1,
+          "falseAnswered": 0,
+          "expectedUnresolved": 1,
+          "evidenceCorrect": 1,
+          "expectedPromises": 0,
+          "correctPromises": 0,
+          "references": 3,
+          "grounded": 3
+        }
+      },
+      "reasonGrade": {
+        "pass": true,
+        "issues": [],
+        "checkedQuestions": 1,
+        "scopedChecks": 0
+      }
+    },
+    {
+      "phase": "reply",
+      "ms": 75012,
+      "record": {
+        "id": "d86ba4e3-9ad4-457f-8d44-bc7ea242cc65",
+        "title": "환불 수단 충돌이 명시적 정정으로 해소",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T13:32:56.902Z",
+        "updatedAt": "2026-11-15T13:34:27.531Z",
+        "messages": [
+          {
+            "id": "fc3913fc-c7d0-4213-baa9-d92b478ebb30",
+            "role": "customer",
+            "text": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?",
+            "sentAt": null
+          },
+          {
+            "id": "878b3f99-cf92-4d0e-8f66-7e952af059f9",
+            "role": "agent",
+            "text": "이 주문의 환불 수단은 카드입니다.",
+            "sentAt": null
+          },
+          {
+            "id": "eed140bf-1a61-47cd-90f9-8ae0d2273566",
+            "role": "agent",
+            "text": "이 주문의 환불 수단은 계좌입니다.",
+            "sentAt": null
+          },
+          {
+            "id": "81027c65-ceef-4099-8952-093d6e94559a",
+            "role": "agent",
+            "text": "앞서 계좌로 환불된다는 설명은 잘못된 안내였습니다. 정정합니다. 이 주문의 환불 수단은 카드입니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "2e3bbf1e-8c49-4ce7-b258-0cfc03779289",
+            "title": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?",
+            "source": {
+              "messageId": "fc3913fc-c7d0-4213-baa9-d92b478ebb30",
+              "quote": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?"
+            },
+            "status": "answered",
+            "reason": "카드로 환불된다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "81027c65-ceef-4099-8952-093d6e94559a",
+                "quote": "앞서 계좌로 환불된다는 설명은 잘못된 안내였습니다. 정정합니다. 이 주문의 환불 수단은 카드입니다."
+              },
+              {
+                "messageId": "878b3f99-cf92-4d0e-8f66-7e952af059f9",
+                "quote": "이 주문의 환불 수단은 카드입니다."
+              },
+              {
+                "messageId": "eed140bf-1a61-47cd-90f9-8ae0d2273566",
+                "quote": "이 주문의 환불 수단은 계좌입니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "카드로 환불된다고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "07ef40f9-eea9-40a4-a429-b69ae45aaf48",
+            "at": "2026-11-15T13:34:27.531Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?: 확인 필요 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T13:34:27.531Z",
+              "kind": "reply",
+              "fromMessageCount": 3,
+              "toMessageCount": 4,
+              "messageIds": [
+                "81027c65-ceef-4099-8952-093d6e94559a"
+              ],
+              "questions": [
+                {
+                  "id": "2e3bbf1e-8c49-4ce7-b258-0cfc03779289",
+                  "title": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?",
+                  "before": {
+                    "status": "review",
+                    "aiStatus": "review",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "81027c65-ceef-4099-8952-093d6e94559a",
+                    "878b3f99-cf92-4d0e-8f66-7e952af059f9",
+                    "eed140bf-1a61-47cd-90f9-8ae0d2273566"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "60e0d63e-9233-42dd-be06-6a5135fc67f2",
+            "at": "2026-11-15T13:33:12.519Z",
+            "type": "message",
+            "label": "고객센터의 새 답변을 저장했어요",
+            "details": "분석 전에도 원문은 보존됩니다."
+          },
+          {
+            "id": "bee51de0-6952-4eff-bfe8-6335abfb2390",
+            "at": "2026-11-15T13:33:12.517Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "1개 질문 · 0개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T13:33:12.517Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 3,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "7cac13bb-c779-46d5-bdd0-1495ad0ff45c",
+            "at": "2026-11-15T13:32:56.902Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "3개 메시지 등록"
+          }
+        ],
+        "summary": "상담 중 환불 수단 안내가 엇갈렸으나, 최종적으로 카드로 환불된다고 정정 안내되었습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 4,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 4837,
+            "output_tokens": 1705,
+            "total_tokens": 6542,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1472
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T13:34:27.531Z",
+          "comparison": {
+            "at": "2026-11-15T13:34:27.531Z",
+            "kind": "reply",
+            "fromMessageCount": 3,
+            "toMessageCount": 4,
+            "messageIds": [
+              "81027c65-ceef-4099-8952-093d6e94559a"
+            ],
+            "questions": [
+              {
+                "id": "2e3bbf1e-8c49-4ce7-b258-0cfc03779289",
+                "title": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?",
+                "before": {
+                  "status": "review",
+                  "aiStatus": "review",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "81027c65-ceef-4099-8952-093d6e94559a",
+                  "878b3f99-cf92-4d0e-8f66-7e952af059f9",
+                  "eed140bf-1a61-47cd-90f9-8ae0d2273566"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "version": 4
+      },
+      "grade": {
+        "pass": true,
+        "issues": [],
+        "questions": [
+          {
+            "gold": {
+              "message": 0,
+              "topic": "수단|환불",
+              "status": "answered",
+              "evidence": [
+                3
+              ]
+            },
+            "actual": {
+              "id": "2e3bbf1e-8c49-4ce7-b258-0cfc03779289",
+              "title": "이 주문 환불금은 어떤 결제 수단으로 돌아오나요?",
+              "status": "answered",
+              "evidence": [
+                3,
+                1,
+                2
+              ]
+            },
+            "evidenceOK": true
+          }
+        ],
+        "promises": [],
+        "metrics": {
+          "expectedQuestions": 1,
+          "found": 1,
+          "correct": 1,
+          "falseAnswered": 0,
+          "expectedUnresolved": 0,
+          "evidenceCorrect": 1,
+          "expectedPromises": 0,
+          "correctPromises": 0,
+          "references": 4,
+          "grounded": 4
+        }
+      },
+      "reasonGrade": {
+        "pass": true,
+        "issues": [],
+        "checkedQuestions": 1,
+        "scopedChecks": 0
+      }
+    }
+  ],
+  "hashes": {
+    "src/openai.mjs": "6874a46f1ffe02d928782cb9d003e09f58f5ab058a1f7d6a77415de2e8b24a95",
+    "src/ai-race.mjs": "c030a8f5707a745b34407ed8233ab957099f2dda5435b5869ded3dffda04c4f2",
+    "src/service.mjs": "b9df24108d55598aa3415604b1e391b8baf022e07fd05abdb58a211d79e8e696",
+    "src/prompts.mjs": "a383a4de23f08beffda10d7cf94a4a3047a6576efea0c1431ed49af2e6e1afd5",
+    "src/schema.mjs": "75ce56734b6f520f528c9434b6a516cc3eae600eea96e9a38a136340abb271d9",
+    "scripts/check-analysis-tail.mjs": "feacc6b2ab32e7c3175b215baed9795a96151720b3f899f364ae917b1a8bad62"
+  },
+  "observedProviderTokens": 14928,
+  "passed": true,
+  "completedAt": "2026-11-15T13:34:27.532Z"
+}

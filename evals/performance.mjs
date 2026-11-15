@@ -10,6 +10,9 @@ export function performanceSummary(results) {
     outputTokens: sum(c => c.usage?.output_tokens), reasoningTokens: sum(c => c.usage?.output_tokens_details?.reasoning_tokens),
     totalTokens: sum(c => c.usage?.input_tokens) + sum(c => c.usage?.output_tokens), calls: calls.length,
     callsWithoutUsage: calls.filter(c => !c.usage).length,
+    requests: calls.reduce((n, c) => n + (c.transport?.attempts.length ?? 1), 0),
+    hedgedCalls: calls.filter(c => c.transport?.hedged).length,
+    unobservedRequests: sum(c => c.transport?.unobservedRequests ?? c.usage?.unobserved_requests ?? (c.usage ? 0 : 1)),
     analysisMs: distribution(operations.filter(o => o.kind === 'analysis').map(o => o.ms)),
     initialAnalysisMs: distribution(results.flatMap(r => r.operations?.filter(o => o.kind === 'analysis').slice(0, 1).map(o => o.ms) || [])),
     replyAnalysisMs: distribution(results.flatMap(r => r.operations?.filter(o => o.kind === 'analysis').slice(1).map(o => o.ms) || [])),
@@ -26,6 +29,7 @@ export function compareRuns(before, after) {
   }
   if (JSON.stringify(before.results.map(r => r.id).sort()) !== JSON.stringify(after.results.map(r => r.id).sort())) throw new Error('Case selection changed');
   const b = performanceSummary(before.results), a = performanceSummary(after.results);
+  const incompleteUsage = b.callsWithoutUsage || a.callsWithoutUsage || b.unobservedRequests || a.unobservedRequests;
   const reduction = (x, y) => x > 0 ? Math.round((x - y) / x * 10000) / 100 : null;
   const regressions = [];
   for (const old of before.results) {
@@ -40,5 +44,5 @@ export function compareRuns(before, after) {
     }
     if (old.draft?.body && !current.draft?.body) regressions.push(`${old.id}: draft failed`);
   }
-  return { before: b, after: a, reductionPercent: { totalTokens: b.callsWithoutUsage || a.callsWithoutUsage ? null : reduction(b.totalTokens, a.totalTokens), inputTokens: b.callsWithoutUsage || a.callsWithoutUsage ? null : reduction(b.inputTokens, a.inputTokens), outputTokens: b.callsWithoutUsage || a.callsWithoutUsage ? null : reduction(b.outputTokens, a.outputTokens), analysisMedian: reduction(b.analysisMs.median, a.analysisMs.median), initialAnalysisMedian: reduction(b.initialAnalysisMs.median, a.initialAnalysisMs.median), replyAnalysisMedian: reduction(b.replyAnalysisMs.median, a.replyAnalysisMs.median), draftMedian: reduction(b.draftMs.median, a.draftMs.median) }, regressions, semanticReview: 'Saved reasons, evidence and draft meaning must also be reviewed against the source; automated comparison is insufficient.' };
+  return { before: b, after: a, reductionPercent: { totalTokens: incompleteUsage ? null : reduction(b.totalTokens, a.totalTokens), inputTokens: incompleteUsage ? null : reduction(b.inputTokens, a.inputTokens), outputTokens: incompleteUsage ? null : reduction(b.outputTokens, a.outputTokens), analysisMedian: reduction(b.analysisMs.median, a.analysisMs.median), initialAnalysisMedian: reduction(b.initialAnalysisMs.median, a.initialAnalysisMs.median), replyAnalysisMedian: reduction(b.replyAnalysisMs.median, a.replyAnalysisMs.median), draftMedian: reduction(b.draftMs.median, a.draftMs.median) }, regressions, semanticReview: 'Saved reasons, evidence and draft meaning must also be reviewed against the source; automated comparison is insufficient.' };
 }
