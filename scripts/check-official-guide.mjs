@@ -38,6 +38,7 @@ try {
   const idle = () => page.waitForFunction(() => !document.querySelector('.busy-bar'));
   const submit = async () => { await page.locator('#guide-form button[type=submit]').click(); await idle(); };
   await page.goto(origin);
+  await page.locator('.sidebar-extras > summary').click();
   await page.getByRole('button', { name: 'SSG 공식 안내 찾기', exact: true }).click();
   const goal = 'SSG에서 산 옷이 작아서 큰 사이즈로 바꾸고 싶어요.';
   await page.locator('#guide-goal').fill(goal); await submit();

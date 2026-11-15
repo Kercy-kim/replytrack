@@ -64,6 +64,7 @@ try {
   await page.locator('[data-action=new]').first().click();
   await page.locator('[name=channel]').selectOption('email');
   await page.locator('#import-form [name=title]').fill('캡처 이메일');
+  await page.locator('.capture-options > summary').click();
   await page.locator('[name=image]').setInputFiles(`${dir}/email-capture.png`);
   await page.locator('#import-form button[type=submit]').click(); await idle();
   const ocr = await page.locator('#privacy-form textarea').inputValue();

@@ -15,6 +15,7 @@ const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
 const errors = []; page.on('pageerror', e => errors.push(e.message));
 try {
   await page.goto(base);
+  await page.locator('.sidebar-extras > summary').click();
   const link = page.getByRole('link', { name: '실제 AI 결과 30초 보기' });
   assert.equal(await link.getAttribute('href'), '/presentation'); assert.equal(await link.getAttribute('target'), '_blank');
   await page.goto(base + '/presentation'); await page.locator('#scene').waitFor();

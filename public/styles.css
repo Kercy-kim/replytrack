@@ -112,3 +112,64 @@
 .demo-focus footer { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 20px; }
 .demo-focus footer > div { display: flex; gap: 8px; }
 @media (max-width: 700px) { .demo-focus-columns { grid-template-columns: 1fr; gap: 24px; } .demo-focus-content { padding: 20px; } .demo-focus footer { flex-wrap: wrap; } .demo-focus-steps .btn { flex: 1 0 40%; } }
+
+/* Keep everyday tasks prominent; optional tools remain available on demand. */
+.sidebar-extras { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 8px; }
+.sidebar-extras summary, .capture-options summary, .handoff-section > summary, .action-suggestions > summary {
+  cursor: pointer; padding: 12px 0; min-height: 44px; color: var(--green); font-size: 14px; font-weight: 600;
+}
+summary:focus-visible { outline: 3px solid #517e61; outline-offset: 3px; border-radius: 5px; }
+.sidebar-extras .btn { justify-content: flex-start; white-space: normal; text-align: left; min-height: 44px; padding: 10px 4px; font-size: 13px; }
+.sidebar-extras > div { padding-bottom: 8px; }
+.capture-options { border-block: 1px solid var(--line); margin: 20px 0; }
+.capture-options[open] { padding-bottom: 16px; }
+.handoff-section > summary { font-size: 16px; }
+.handoff-section[open] > summary { margin-bottom: 12px; }
+.action-suggestions { margin-top: 12px; }
+.case-company { color: var(--supporting-ink); font-size: 13px; margin-top: 8px; }
+.welcome h1 { letter-spacing: -.035em; }
+.welcome-copy > p, .benefits p { font-size: 15px; line-height: 1.85; color: var(--supporting-ink); }
+.welcome-footnote { font-size: 13px; color: var(--supporting-ink); }
+.case-heading p, .reason, .message-text, .agent .message-text { font-size: 15px; line-height: 1.85; color: var(--supporting-ink); }
+.question-card h3, .promise-card h3, .section-tools h2, .section-title h2 { font-size: 16px; line-height: 1.65; }
+.section-tools p, .section-description, .modal-intro { font-size: 14px; color: var(--supporting-ink); }
+.modal input, .modal textarea, .modal select { font-size: 16px; }
+.field { font-size: 14px; }
+input::placeholder, textarea::placeholder { color: #69766c; opacity: 1; }
+.message-meta time, .analysis-meta { font-size: 12px; }
+.tabs button { font-size: 14px; min-height: 44px; }
+.edit-button { min-width: 44px; min-height: 44px; color: var(--supporting-ink); }
+.mobile-switch button { color: var(--supporting-ink); }
+.question-choices label { font-size: 14px; }
+.section-tools select { font-size: 14px; min-height: 44px; }
+@media (max-width: 650px) {
+  .sidebar { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 12px; padding: 16px 18px; }
+  .sidebar .brand { margin-right: auto; }
+  .sidebar > .btn { float: none; margin: 0; min-height: 44px; font-size: 12px; }
+  .sidebar > .workspace-home { width: auto; flex: 1; margin: 0; }
+  .sidebar-extras { flex: 1; margin: 0; padding: 0; border: 0; }
+  .sidebar-extras[open] { flex-basis: 100%; }
+  .sidebar-extras summary { font-size: 13px; text-align: center; }
+  .sidebar-extras[open] summary { text-align: left; }
+  .sidebar-extras > div { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; }
+  .case-list { flex: 0 0 100%; order: 1; margin: 0; }
+  .case-list:has(.sidebar-empty) { display: none; }
+  .case-item strong { font-size: 12px; }
+  .case-item small { font-size: 11px; }
+  .case-item b { min-width: 20px; height: 20px; font-size: 11px; }
+  .stats { display: flex; flex-wrap: wrap; gap: 0; border-block: 1px solid var(--line); padding: 10px 0; }
+  .stats > div { width: 50%; border: 0; background: transparent; padding: 8px 0; border-radius: 0; }
+  .stats .stat-icon { display: none; }
+  .stats > div > span:last-child { display: flex; align-items: baseline; gap: 8px; font-size: 12px; }
+  .stats strong { display: inline; font-size: 20px; }
+  .mobile-switch button, .tabs button { font-size: 13px; min-height: 44px; }
+  .tabs { height: auto; gap: 18px; }
+  .form-grid { grid-template-columns: minmax(0, 1fr); }
+  .welcome-actions { flex-wrap: wrap; }
+  .welcome-actions .btn, .modal-actions .btn, .next-step .btn { font-size: 13px; min-height: 44px; }
+  .next-step > span, .promise-label, .due, .demo-banner { font-size: 12px; }
+  .topbar { font-size: 12px; }
+  .topbar .avatar { width: 40px; height: 40px; font-size: 13px; }
+  .section-tools { flex-wrap: wrap; gap: 12px; }
+  .email-explanation { padding: 18px 16px; }
+}
