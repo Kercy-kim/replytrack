@@ -18,7 +18,7 @@ export class EmailFixtureAI {
       const reply = data.messages.find(m => m.role === 'agent' && m.text === f.reply);
       result = { promises: reply ? [{ id: 'receipt-notice', title: '거래 번호 수신', questionIds: [], evidence: { messageId: reply.id, quote: 'We received your transaction ID.' }, dueText: '', deadlineCleared: false, state: 'reported' }] : [] };
     }
-    else if (name.endsWith('_review')) result = { valid: true, feedback: '', ...(name === 'replytrack_draft_review' ? { checks: { consumerVoice: true, selectedQuestionsCovered: true, sourceFactsOnly: true, noExtraRequests: true } } : {}) };
+    else if (name.endsWith('_review')) result = { valid: true, feedback: '', ...(name === 'replytrack_draft_review' ? { checks: { consumerVoice: true, selectedQuestionsCovered: true, sourceFactsOnly: true, noExtraRequests: true, noAnsweredRequests: true } } : {}) };
     else if (name === 'replytrack_draft') result = { body: 'How long will the review of my recovery request take?', sourceMessageIds: data.messages.map(m => m.id) };
     else throw new Error(`Unexpected fixture request: ${name}`);
     return { data: result, model: this.model };

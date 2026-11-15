@@ -16,10 +16,11 @@ import { FOCUSED_ANALYSIS_PROMPT, semanticReviewPlan, unsupportedDeadlineClear }
 import { EMAIL_TRANSCRIPT_PROMPT, EMAIL_ANALYSIS_PROMPT, EMAIL_ACTIONS_PROMPT, EMAIL_EXPLANATION_PROMPT, EMAIL_EXPLANATION_REVIEW_PROMPT, emailReviewSchema, emailExplanationSchema, validateEmailExplanation, validateEmailTranscript, draftLanguagePrompt } from './email.mjs';
 
 // Derived reasoning and suggested follow-ups are not independent source facts.
-export const draftQuestionContext = questions => questions.map(({ id, title, source, status, evidence }) => ({ id, title, source, status, evidence }));
+export const draftQuestionContext = questions => questions.map(({ id, title, source, status, evidence }) => ({ id, topicHint: title, source, status, evidence }));
 export const draftSourceContext = (record, kind) => ({
   messages: record.messages.map(({ id, role, text }) => ({ id, role, text })),
   promises: record.promises.map(({ id, title, questionIds, evidence, dueText, state, confirmedAt }) => ({ id, title, questionIds, evidence, dueText, state, ...(confirmedAt ? { confirmedByUser: true } : {}) })),
+  ...(kind === 'followup' ? { answeredQuestions: draftQuestionContext(record.questions.filter(q => q.status === 'answered')) } : {}),
   ...(kind === 'handoff' ? { pendingQuestions: record.questions.filter(q => q.status !== 'answered').map(({ id, title }) => ({ id, title })) } : {}),
 });
 export const analysisContext = record => ({
@@ -368,7 +369,7 @@ export class ReplyTrack {
         // A reviewer can itself invent a requirement. Retry from authoritative source
         // data instead of promoting its suggested facts or the rejected draft to input.
         previousDraft = null;
-        revisionFeedback = '이전 초안이 독립 검토를 통과하지 못했습니다. 원문 messages와 사용자가 선택한 questions만 다시 대조해 소비자 입장의 새 재문의를 작성하세요. 선택 질문은 빠짐없이 묻되 새 질문이나 미확인 배경 사실을 추가하지 마세요.';
+        revisionFeedback = '이전 초안이 독립 검토를 통과하지 못했습니다. 원문 messages와 사용자가 선택한 questions를 다시 대조해 소비자 입장의 새 재문의를 작성하세요. 부분 답변의 이미 받은 정보는 제외하고 실제 남은 정보만 빠짐없이 묻되 새 질문이나 미확인 배경 사실을 추가하지 마세요.';
       }
       if (!draft) throw new AppError(502, '초안을 검토했지만 선택한 질문이나 원문과 맞지 않는 부분이 남아 저장하지 않았습니다. 다시 작성해 주세요.', 'DRAFT_REVIEW');
     }

@@ -105,9 +105,9 @@ test('HTTP real stages, analysis/draft/reading cancellation preserve input, save
       if (blockedName === 'replytrack_boundary_review') result.questions[0].status = 'review';
     }
     else if (name === 'replytrack_boundary_review') result = { questions: [] };
-    else if (name === 'replytrack_draft_review') result = { valid: true, feedback: '', checks: { consumerVoice: true, selectedQuestionsCovered: true, sourceFactsOnly: true, noExtraRequests: true } };
+    else if (name === 'replytrack_draft_review') result = { valid: true, feedback: '', checks: { consumerVoice: true, selectedQuestionsCovered: true, sourceFactsOnly: true, noExtraRequests: true, noAnsweredRequests: true } };
     else if (name === 'replytrack_transcript') result = { messages: [{ role: 'customer', text: data.text }], notes: [] };
-    else result = demoDraft({ messages: data.messages, questions: data.questions, promises: data.promises }, data.kind, data.questions.map(q => q.id));
+    else result = demoDraft({ messages: data.messages, questions: data.questions.map(q => ({ ...q, title: q.topicHint ?? q.title })), promises: data.promises }, data.kind, data.questions.map(q => q.id));
     return { data: result, model: 'fixture' };
   } };
   const app = createApp({ store: new CaseStore(':memory:'), ai });

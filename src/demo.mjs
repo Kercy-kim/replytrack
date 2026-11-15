@@ -15,7 +15,7 @@ export function demoAnalysis(c) {
   return {
     summary: third ? '수리비·기간·배송비 안내를 받았어요. 실제 견적 수신을 확인하고 수리 진행 여부를 답하면 됩니다.' : second ? '배송비는 업체 부담으로 확인됐어요. 내일까지 안내받기로 한 견적을 기다리고 있어요.' : '수리 기간은 확인됐어요. 수리비는 점검 후 안내 예정이며, 배송비는 아직 답변이 없어요.',
     questions: [
-      { id: qid(0), title: '수리비는 얼마인가요?', source: ref(customer, '수리비는 얼마인가요?'), status: third ? 'answered' : 'waiting', reason: third ? '수리비가 25,000원으로 안내됐어요. 실제 견적을 받았는지는 별도로 확인해 주세요.' : '점검 후 금액을 안내하겠다는 답변으로, 구체적인 비용은 아직 미정이에요.', evidence: [ref(third ?? second ?? first, third ? '점검 결과 수리비는 25,000원입니다.' : second ? '내일까지 견적을 안내하겠습니다.' : '수리비는 점검 후 안내하겠습니다.')], followUp: third ? '' : '견적을 언제 안내받을 수 있을까요?' },
+      { id: qid(0), title: '수리비는 얼마인가요?', source: ref(customer, '수리비는 얼마인가요?'), status: third ? 'answered' : 'waiting', reason: third ? '수리비가 25,000원으로 안내됐어요. 실제 견적을 받았는지는 별도로 확인해 주세요.' : '점검 후 금액을 안내하겠다는 답변으로, 구체적인 비용은 아직 미정이에요.', evidence: [ref(third ?? second ?? first, third ? '점검 결과 수리비는 25,000원입니다.' : second ? '내일까지 견적을 안내하겠습니다.' : '수리비는 점검 후 안내하겠습니다.')], followUp: third ? '' : '수리비가 얼마인지 알려주세요.' },
       { id: qid(1), title: '입고 후 수리는 며칠 걸리나요?', source: ref(customer, '입고 후 수리는 며칠 걸리나요?'), status: 'answered', reason: '입고 이후 예상 소요 기간을 안내받았어요. 실제 수리 완료를 뜻하지는 않아요.', evidence: [ref(first, '입고 후 수리는 3~5영업일 정도 소요되며')], followUp: '' },
       { id: qid(2), title: '왕복 배송비는 누가 부담하나요?', source: ref(customer, '왕복 배송비는 누가 부담하나요?'), status: second ? 'answered' : 'unanswered', reason: second ? '왕복 배송비의 부담 주체가 업체로 명시됐어요.' : '고객센터 답변에 왕복 배송비에 관한 안내가 없어요.', evidence: second ? [ref(second, '왕복 배송비는 업체에서 부담하며')] : [], followUp: second ? '' : '왕복 배송비는 누가 부담하나요?' },
     ],
@@ -45,13 +45,13 @@ export function demoDraft(c, kind, ids) {
   const questions = c.questions.filter(q => ids.includes(q.id) && q.status !== 'answered');
   if (c.demoScenario === 'refund') return {
     body: kind === 'handoff' ? `불량 이어폰 환불 문의를 이어서 상담받고 싶습니다. ${c.summary} ${c.questions.map(q => `${q.title} — ${q.reason}`).join(' ')}${c.promises.some(p => p.confirmedAt) ? '처리 결과는 제가 직접 확인했습니다.' : '실제 환불 결과는 아직 직접 확인하지 않았습니다.'}`
-      : `안녕하세요. 불량 이어폰 환불 건으로 추가 확인 부탁드립니다. ${questions.map(q => q.followUp || q.title).join(' ')} 감사합니다.`,
+      : questions.map(q => q.followUp || q.title).join(' '),
     sourceMessageIds: c.messages.map(m => m.id),
   };
   return {
     body: kind === 'handoff'
       ? `무선 청소기 A/S 문의를 이어서 상담받고 싶습니다. ${c.summary} ${c.questions.map(q => `${q.title} — ${q.reason}`).join(' ')}${c.promises.some(p => p.confirmedAt) ? '견적 수신은 제가 확인했습니다.' : '견적 수신 여부는 아직 직접 확인하지 않았습니다.'}`
-      : `안녕하세요. 앞서 문의한 무선 청소기 A/S 건으로 추가 확인 부탁드립니다. ${questions.map(q => q.followUp || q.title).join(' ')} 감사합니다.`,
+      : questions.map(q => q.followUp || q.title).join(' '),
     sourceMessageIds: c.messages.map(m => m.id),
   };
 }
@@ -78,7 +78,7 @@ function refundAnalysis(c) {
   return {
     summary: third ? '환불 금액과 결제 취소 안내를 받았어요. 실제 환불 결과는 직접 확인해 주세요.' : second ? '업체가 사진 수신을 확인했고 반품 배송비를 부담하기로 했어요. 환불 금액 안내를 기다리고 있어요.' : '불량 사진 제출을 요청받았어요. 환불 금액 안내를 기다리고 있으며 반품 배송비는 아직 답변이 없어요.',
     questions: [
-      { id: qid(0), title: '환불 금액은 얼마인가요?', source: ref(customer, '환불 금액은 얼마인가요?'), status: third ? 'answered' : 'waiting', reason: third ? '환불 금액을 49,000원으로 안내받았어요.' : '환불 금액을 확인한 뒤 안내하겠다고 했어요.', evidence: [ref(third ?? second ?? first, third ? '환불 금액은 49,000원입니다.' : second ? '내일까지 환불 금액을 안내하겠습니다.' : '환불 금액은 검수 후 안내하겠습니다.')], followUp: third ? '' : '환불 금액을 언제 안내받을 수 있을까요?' },
+      { id: qid(0), title: '환불 금액은 얼마인가요?', source: ref(customer, '환불 금액은 얼마인가요?'), status: third ? 'answered' : 'waiting', reason: third ? '환불 금액을 49,000원으로 안내받았어요.' : '환불 금액을 확인한 뒤 안내하겠다고 했어요.', evidence: [ref(third ?? second ?? first, third ? '환불 금액은 49,000원입니다.' : second ? '내일까지 환불 금액을 안내하겠습니다.' : '환불 금액은 검수 후 안내하겠습니다.')], followUp: third ? '' : '환불 금액을 알려주세요.' },
       { id: qid(1), title: '반품 입고 후 환불은 며칠 걸리나요?', source: ref(customer, '반품 입고 후 환불은 며칠 걸리나요?'), status: 'answered', reason: '반품 입고 후 3~5영업일이 걸린다고 안내받았어요.', evidence: [ref(first, '반품 입고 후 환불은 3~5영업일 정도 소요됩니다.')], followUp: '' },
       { id: qid(2), title: '반품 배송비는 누가 부담하나요?', source: ref(customer, '반품 배송비는 누가 부담하나요?'), status: second ? 'answered' : 'unanswered', reason: second ? '반품 배송비는 업체가 부담한다고 안내받았어요.' : '반품 배송비에 관한 안내가 없어요.', evidence: second ? [ref(second, '반품 배송비는 업체에서 부담하며')] : [], followUp: second ? '' : '반품 배송비는 누가 부담하나요?' },
     ],

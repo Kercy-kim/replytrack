@@ -1,0 +1,709 @@
+{
+  "at": "2026-11-15T17:17:14.114Z",
+  "variant": "after",
+  "probes": true,
+  "model": "gpt-5-mini-2025-08-07",
+  "scope": "Live production reviewer on frozen good/bad drafts; not a generation accuracy measure.",
+  "hashes": {
+    "src/service.mjs": "9148356ae71793a143a3aeec3f58637b1998b10dbb0b28d890d04793f0e14a28",
+    "src/prompts.mjs": "60e22f509e3c8f71fa48e37d59c4ba42d9b7332533a11df8b78a09e591b80b03",
+    "src/feature-review.mjs": "ecc2e0856fc897119195a193bf3e775775c6b7151c4bbc0bc1594ca50e41a3c7",
+    "src/schema.mjs": "6076ecdb794744d3fd30522c729b3b15c22d7194b32f3cb0e23e17f91256f94d",
+    "src/email.mjs": "4c8a0c9c30b282bb9676efa6fe1abf0e1207f28412eed9e06b619f7604d814d6"
+  },
+  "fixturesHash": "942732db5628bb2a6fa5e30ebe77069ba9cd87d036ec0f8b274dcfb158abef3b",
+  "results": [
+    {
+      "id": "F03",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 6329,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 6328,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 6217,
+                "httpStatus": 200,
+                "bodyMs": 110,
+                "usage": {
+                  "input_tokens": 3190,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 582,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 512
+                  },
+                  "total_tokens": 3772
+                },
+                "elapsedMs": 6328
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 3190,
+            "output_tokens": 582,
+            "total_tokens": 3772,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 512
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 15283,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": false
+            },
+            "feedback": "The draft repeats an already-answered question about required documents. The agent already specified to send the transaction ID from your purchase receipt, so re-asking “What documents do I need?” counts as requesting answered information.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 15283,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 15281,
+                "httpStatus": 200,
+                "bodyMs": 2,
+                "usage": {
+                  "input_tokens": 3196,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3072
+                  },
+                  "output_tokens": 1492,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1344
+                  },
+                  "total_tokens": 4688
+                },
+                "elapsedMs": 15283
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 3196,
+            "output_tokens": 1492,
+            "total_tokens": 4688,
+            "input_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1344
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 17047,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": false,
+              "noAnsweredRequests": true
+            },
+            "feedback": "The draft asks “Which additional documents do you need besides the transaction ID?”, which requests new information beyond the unresolved review-duration item. The agent already specified the required document (transaction ID); asking for additional documents is an extra request and should be removed.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 17047,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 16746,
+                "httpStatus": 200,
+                "bodyMs": 301,
+                "usage": {
+                  "input_tokens": 3203,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3072
+                  },
+                  "output_tokens": 1659,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1536
+                  },
+                  "total_tokens": 4862
+                },
+                "elapsedMs": 17047
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 3203,
+            "output_tokens": 1659,
+            "total_tokens": 4862,
+            "input_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1536
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "292affc4-2af9-4b2b-ba5b-73651871b5a3",
+        "title": "영어 복합 질문의 서류 답변 제외",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:17:14.117Z",
+        "updatedAt": "2026-11-15T17:17:14.117Z",
+        "messages": [
+          {
+            "id": "74bec51a-36d7-490d-9c7b-b27b80d34ccd",
+            "role": "customer",
+            "text": "What documents do I need and how long does the review take?",
+            "sentAt": null
+          },
+          {
+            "id": "0372c0fd-f3b1-47c1-85a4-1deb2c9d5623",
+            "role": "agent",
+            "text": "Please send the transaction ID from your purchase receipt. The review duration is not known yet.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "a8890976-9737-4132-a274-d7e69439cf61",
+            "title": "필요한 자료와 심사 기간",
+            "source": {
+              "messageId": "74bec51a-36d7-490d-9c7b-b27b80d34ccd",
+              "quote": "What documents do I need and how long does the review take?"
+            },
+            "status": "partial",
+            "aiStatus": "partial",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "0372c0fd-f3b1-47c1-85a4-1deb2c9d5623",
+                "quote": "Please send the transaction ID from your purchase receipt. The review duration is not known yet."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "921b3cd1-d0df-47a3-b94b-dc2f2535d4be",
+            "at": "2026-11-15T17:17:14.117Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "How long will the review take?",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "What documents do I need and how long will the review take?",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        },
+        {
+          "label": "alternative",
+          "body": "Which additional documents do you need besides the transaction ID? Also, how long will the review take?",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "F11",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 6840,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 6839,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 6768,
+                "httpStatus": 200,
+                "bodyMs": 56,
+                "usage": {
+                  "input_tokens": 3195,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 645,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 576
+                  },
+                  "total_tokens": 3840
+                },
+                "elapsedMs": 6839
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 3195,
+            "output_tokens": 645,
+            "total_tokens": 3840,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 576
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 12377,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": false
+            },
+            "feedback": "The draft re-asks for the receipt ID even though the agent already requested it. Only the unresolved item (whether a photo of the ID card is required) remains to be asked.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 12377,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 12375,
+                "httpStatus": 200,
+                "bodyMs": 2,
+                "usage": {
+                  "input_tokens": 3200,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3072
+                  },
+                  "output_tokens": 1141,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1024
+                  },
+                  "total_tokens": 4341
+                },
+                "elapsedMs": 12377
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 3200,
+            "output_tokens": 1141,
+            "total_tokens": 4341,
+            "input_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1024
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "93179481-7ddf-48b3-862b-d0313293ca9d",
+        "title": "실제로 물은 두 서류 중 하나가 미정",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:17:14.119Z",
+        "updatedAt": "2026-11-15T17:17:14.119Z",
+        "messages": [
+          {
+            "id": "814b881e-e0fe-4fac-9a1b-34f15d721885",
+            "role": "customer",
+            "text": "Do you need my receipt ID and a photo of my ID card?",
+            "sentAt": null
+          },
+          {
+            "id": "c8ed51f3-4408-4275-8e1b-caaa111e4a9d",
+            "role": "agent",
+            "text": "Please send your receipt ID. We have not determined whether an ID photo is required.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "0286d22e-2d17-4837-88b2-e9af41999dbf",
+            "title": "영수증 ID와 신분증 사진 필요 여부",
+            "source": {
+              "messageId": "814b881e-e0fe-4fac-9a1b-34f15d721885",
+              "quote": "Do you need my receipt ID and a photo of my ID card?"
+            },
+            "status": "partial",
+            "aiStatus": "partial",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "c8ed51f3-4408-4275-8e1b-caaa111e4a9d",
+                "quote": "Please send your receipt ID. We have not determined whether an ID photo is required."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "7dcd968d-e026-42ac-874b-0f460f576955",
+            "at": "2026-11-15T17:17:14.119Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "Is a photo of my ID card required?",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "Do you need my receipt ID and a photo of my ID card?",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "F12",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 4864,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 4863,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 4862,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 3181,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 2816
+                  },
+                  "output_tokens": 462,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 384
+                  },
+                  "total_tokens": 3643
+                },
+                "elapsedMs": 4863
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 3181,
+            "output_tokens": 462,
+            "total_tokens": 3643,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 384
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 18138,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": false,
+              "sourceFactsOnly": true,
+              "noExtraRequests": false,
+              "noAnsweredRequests": false
+            },
+            "feedback": "The draft asks whether the receipt ID is required even though the agent already stated “Your receipt ID is required.” It does not request the remaining unknown items (the complete list of required documents) that are still unresolved. Therefore it re-asks answered information and fails to cover the outstanding question.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 18138,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 18137,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 3177,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3072
+                  },
+                  "output_tokens": 1172,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1024
+                  },
+                  "total_tokens": 4349
+                },
+                "elapsedMs": 18138
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 3177,
+            "output_tokens": 1172,
+            "total_tokens": 4349,
+            "input_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1024
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "5951727e-4132-4cc8-a4f8-6437d9b1f6a5",
+        "title": "명시적인 일부 서류 목록의 실제 누락",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:17:33.338Z",
+        "updatedAt": "2026-11-15T17:17:33.338Z",
+        "messages": [
+          {
+            "id": "fcb15745-03c9-449e-bb5a-fb0f93bf4abd",
+            "role": "customer",
+            "text": "What documents are required?",
+            "sentAt": null
+          },
+          {
+            "id": "922c168a-4c06-41c5-b40d-2ddee5e772ae",
+            "role": "agent",
+            "text": "Your receipt ID is required. This is only a partial list; the other required documents are still unknown.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "66923083-e859-4adf-b8ce-b0229b72a2e0",
+            "title": "필수 서류 전체 목록",
+            "source": {
+              "messageId": "fcb15745-03c9-449e-bb5a-fb0f93bf4abd",
+              "quote": "What documents are required?"
+            },
+            "status": "partial",
+            "aiStatus": "partial",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "922c168a-4c06-41c5-b40d-2ddee5e772ae",
+                "quote": "Your receipt ID is required. This is only a partial list; the other required documents are still unknown."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "d9370970-edd7-42cf-ae2c-80c2a5cf5557",
+            "at": "2026-11-15T17:17:33.338Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "What other documents are required besides my receipt ID?",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "Is my receipt ID required?",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    }
+  ],
+  "complete": true,
+  "passed": true
+}

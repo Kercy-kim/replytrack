@@ -1,0 +1,3308 @@
+{
+  "at": "2026-11-15T17:24:42.312Z",
+  "variant": "after",
+  "probes": true,
+  "model": "gpt-5-mini-2025-08-07",
+  "scope": "Live production reviewer on frozen good/bad drafts; not a generation accuracy measure.",
+  "hashes": {
+    "src/service.mjs": "9148356ae71793a143a3aeec3f58637b1998b10dbb0b28d890d04793f0e14a28",
+    "src/prompts.mjs": "6b968193b317b891ac3cadffc699cdc25ee93be933ddd3fa50db5f5b7e90312a",
+    "src/feature-review.mjs": "3e11dcdf8c98b1f0489597ba0f56ee176ab1edddda67d8b77ed1efa61ea592df",
+    "src/schema.mjs": "6076ecdb794744d3fd30522c729b3b15c22d7194b32f3cb0e23e17f91256f94d",
+    "src/email.mjs": "4c8a0c9c30b282bb9676efa6fe1abf0e1207f28412eed9e06b619f7604d814d6"
+  },
+  "fixturesHash": "184afb44d07434184b3cbced0f0b0bd2527994ca238edaf293667f47f9ecd5b9",
+  "results": [
+    {
+      "id": "OBSERVED",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 10021,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 10018,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 10015,
+                "httpStatus": 200,
+                "bodyMs": 2,
+                "usage": {
+                  "input_tokens": 5280,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 920,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 832
+                  },
+                  "total_tokens": 6200
+                },
+                "elapsedMs": 10018
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5280,
+            "output_tokens": 920,
+            "total_tokens": 6200,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 832
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 12877,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": false
+            },
+            "feedback": "초안은 '언제 안내받을 수 있는지'를 다시 묻고 있는데, 상담원이 이미 ‘11월 18일까지 안내하겠다’고 명확한 안내 기한을 제시했습니다. 즉 초안이 이미 안내된 항목을 재요청하고 있으므로 해당 문구를 삭제하고 아직 답변되지 않은 '환불 예정일'만 묻도록 하십시오.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 12877,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 12618,
+                "httpStatus": 200,
+                "bodyMs": 259,
+                "usage": {
+                  "input_tokens": 5287,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 5120
+                  },
+                  "output_tokens": 1529,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1344
+                  },
+                  "total_tokens": 6816
+                },
+                "elapsedMs": 12877
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5287,
+            "output_tokens": 1529,
+            "total_tokens": 6816,
+            "input_tokens_details": {
+              "cached_tokens": 5120
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1344
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 19554,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": false,
+              "sourceFactsOnly": true,
+              "noExtraRequests": false,
+              "noAnsweredRequests": true
+            },
+            "feedback": "초안이 원문에서 요청한 ‘환불 예정일’ 대신 ‘카드사에 환불 금액이 입금 반영될 날짜’를 묻고 있어 선택한 질문 범위와 다릅니다(선택 질문 미포함). 또한 ‘카드사 입금·반영일’은 원문에서 요청하지 않은 다른 단계(추가 항목)이므로 초안에서 새로 요구하는 항목으로 간주됩니다. 원문 범위(환불 예정일)를 그대로 묻도록 수정하세요.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 19554,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 19548,
+                "httpStatus": 200,
+                "bodyMs": 6,
+                "usage": {
+                  "input_tokens": 5291,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 5120
+                  },
+                  "output_tokens": 1697,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1472
+                  },
+                  "total_tokens": 6988
+                },
+                "elapsedMs": 19554
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5291,
+            "output_tokens": 1697,
+            "total_tokens": 6988,
+            "input_tokens_details": {
+              "cached_tokens": 5120
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1472
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "0d988403-6c57-49fd-8539-cb4d6f035ba3",
+        "title": "가상 환불 문의 — 실제 API 웹 검증",
+        "company": "가상 테스트 상점",
+        "mode": "live",
+        "createdAt": "2026-11-15T16:43:19.001Z",
+        "updatedAt": "2026-11-15T16:44:24.796Z",
+        "messages": [
+          {
+            "id": "7229cc8c-1aa4-4b6f-baa7-0ff7bf258cb8",
+            "role": "customer",
+            "text": "반품한 이어폰의 환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "73c3fa2c-253c-4f7b-b615-31ab8fc42b88",
+            "role": "agent",
+            "text": "환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          },
+          {
+            "id": "853bd721-8f73-4ae3-b007-a3fb43c1072d",
+            "role": "agent",
+            "text": "환불은 원래 결제하신 카드로 진행됩니다. 환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "95c0f18c-1536-4dea-a892-35b5156834c4",
+            "title": "반품한 이어폰의 환불 금액",
+            "source": {
+              "messageId": "7229cc8c-1aa4-4b6f-baa7-0ff7bf258cb8",
+              "quote": "반품한 이어폰의 환불 금액은 얼마인가요?"
+            },
+            "status": "answered",
+            "reason": "업체가 환불 금액을 명확히 '79,000원'으로 안내했습니다.",
+            "evidence": [
+              {
+                "messageId": "73c3fa2c-253c-4f7b-b615-31ab8fc42b88",
+                "quote": "환불 금액은 79,000원입니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "업체가 환불 금액을 명확히 '79,000원'으로 안내했습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "a32c4d57-2b69-4c31-9850-401767308594",
+            "title": "어떤 결제수단으로 환불되는지",
+            "source": {
+              "messageId": "7229cc8c-1aa4-4b6f-baa7-0ff7bf258cb8",
+              "quote": "어떤 결제수단으로 환불되나요?"
+            },
+            "status": "answered",
+            "reason": "업체가 환불 수단을 '원래 결제하신 카드'로 환불한다고 명확히 안내했습니다.",
+            "evidence": [
+              {
+                "messageId": "853bd721-8f73-4ae3-b007-a3fb43c1072d",
+                "quote": "환불은 원래 결제하신 카드로 진행됩니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "업체가 환불 수단을 '원래 결제하신 카드'로 환불한다고 명확히 안내했습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "6dcb508b-3206-4a59-a2a5-e12467405053",
+            "title": "환불 예정일(언제 안내받을지/언제 환불되는지)",
+            "source": {
+              "messageId": "7229cc8c-1aa4-4b6f-baa7-0ff7bf258cb8",
+              "quote": "환불 예정일은 언제인가요?"
+            },
+            "status": "waiting",
+            "reason": "업체가 환불 예정일을 담당 부서 확인 후 '11월 18일까지 안내하겠다'고 안내해 추가 확인 안내를 약속했습니다.",
+            "evidence": [
+              {
+                "messageId": "73c3fa2c-253c-4f7b-b615-31ab8fc42b88",
+                "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+              },
+              {
+                "messageId": "853bd721-8f73-4ae3-b007-a3fb43c1072d",
+                "quote": "환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "waiting",
+            "aiReason": "업체가 환불 예정일을 담당 부서 확인 후 '11월 18일까지 안내하겠다'고 안내해 추가 확인 안내를 약속했습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "01913369-dfbc-4c44-a52c-3e4a76caa297",
+            "title": "환불 예정일 안내 예정",
+            "questionIds": [
+              "6dcb508b-3206-4a59-a2a5-e12467405053"
+            ],
+            "evidence": {
+              "messageId": "73c3fa2c-253c-4f7b-b615-31ab8fc42b88",
+              "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+            },
+            "dueText": "11월 18일까지 안내하겠습니다.",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "82c0f6c5-33df-4aea-8532-520be46230d0",
+            "at": "2026-11-15T16:44:24.796Z",
+            "type": "draft",
+            "label": "남은 질문으로 재문의 초안을 만들었어요",
+            "details": ""
+          },
+          {
+            "id": "a088a689-6dff-4df7-afc7-b5de22d4ce5f",
+            "at": "2026-11-15T16:43:41.260Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "어떤 결제수단으로 환불되는지: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-15T16:43:41.260Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "853bd721-8f73-4ae3-b007-a3fb43c1072d"
+              ],
+              "questions": [
+                {
+                  "id": "a32c4d57-2b69-4c31-9850-401767308594",
+                  "title": "어떤 결제수단으로 환불되는지",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "853bd721-8f73-4ae3-b007-a3fb43c1072d"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "eadc5f1c-fc2d-4054-a1af-1f3b8fb0b7e3",
+            "at": "2026-11-15T16:43:31.366Z",
+            "type": "message",
+            "label": "고객센터의 새 답변을 저장했어요",
+            "details": "분석 전에도 원문은 보존됩니다."
+          },
+          {
+            "id": "636d41bb-4467-4511-b9a5-dc17e3091da0",
+            "at": "2026-11-15T16:43:30.929Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-15T16:43:30.929Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "c3a7732e-fb8f-4b95-8e34-02877ba8ed3f",
+            "at": "2026-11-15T16:43:19.001Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 반품한 이어폰의 환불 금액·환불수단·환불 예정일을 문의했고, 상담원은 환불 금액을 79,000원으로 안내했으며 환불은 원래 결제 카드로 진행된다고 안내했고 환불 예정일은 담당 부서 확인 후 '11월 18일까지' 안내하겠다고 두 차례 안내했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {
+          "followup": {
+            "body": "반품한 이어폰의 환불 예정일(언제 안내받을지와 실제 환불일)을 알려주시기 바랍니다.",
+            "sourceMessageIds": [
+              "7229cc8c-1aa4-4b6f-baa7-0ff7bf258cb8",
+              "73c3fa2c-253c-4f7b-b615-31ab8fc42b88",
+              "853bd721-8f73-4ae3-b007-a3fb43c1072d"
+            ],
+            "questionIds": [
+              "6dcb508b-3206-4a59-a2a5-e12467405053"
+            ],
+            "language": "ko",
+            "at": "2026-11-15T16:44:24.796Z",
+            "model": "gpt-5-mini-2025-08-07",
+            "review": {
+              "model": "gpt-5-mini-2025-08-07",
+              "attempts": 2
+            }
+          }
+        },
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3546,
+            "output_tokens": 893,
+            "total_tokens": 4439,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 320
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-15T16:43:41.260Z",
+          "comparison": {
+            "at": "2026-11-15T16:43:41.260Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "853bd721-8f73-4ae3-b007-a3fb43c1072d"
+            ],
+            "questions": [
+              {
+                "id": "a32c4d57-2b69-4c31-9850-401767308594",
+                "title": "어떤 결제수단으로 환불되는지",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "853bd721-8f73-4ae3-b007-a3fb43c1072d"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "version": 1
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "환불 예정일을 알려주세요.",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "환불 예정일과 언제 안내받을 수 있는지 알려주세요.",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        },
+        {
+          "label": "alternative",
+          "body": "카드사에 환불 금액이 입금 반영될 날짜를 알려주세요.",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "F01",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 8852,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 8852,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 8832,
+                "httpStatus": 200,
+                "bodyMs": 4,
+                "usage": {
+                  "input_tokens": 5180,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 751,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 640
+                  },
+                  "total_tokens": 5931
+                },
+                "elapsedMs": 8851
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5180,
+            "output_tokens": 751,
+            "total_tokens": 5931,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 20197,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": false,
+              "noAnsweredRequests": false
+            },
+            "feedback": "문제 1: 초안에 \"언제 안내받을 수 있는지\"를 추가했는데, 원문(고객 질문)은 환불 예정일만 물었으므로 원문에 없는 추가 요청입니다. 문제 2: 같은 문구(\"언제 안내받을 수 있는지\")는 상담원이 이미 \"확인 후 11월 18일까지 안내하겠습니다\"라고 답변한 내용이라 재요청하면 안 됩니다. 고칠 방향(간단히): 원문 범위에 맞게 '환불 예정일'만 묻도록 초안에서 추가된 문구를 삭제하거나, 이미 안내된 부분은 제외하고 미확정인 환불 예정일만 문의하세요.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 20197,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 20084,
+                "httpStatus": 200,
+                "bodyMs": 113,
+                "usage": {
+                  "input_tokens": 5187,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 5120
+                  },
+                  "output_tokens": 2340,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 2112
+                  },
+                  "total_tokens": 7527
+                },
+                "elapsedMs": 20197
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5187,
+            "output_tokens": 2340,
+            "total_tokens": 7527,
+            "input_tokens_details": {
+              "cached_tokens": 5120
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 2112
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 18555,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": false,
+              "noAnsweredRequests": true
+            },
+            "feedback": "초안이 원문에서 묻지 않은 세부항목('카드사에 입금 반영되는 날짜')을 새로 요청하고 있습니다. 원문은 단순히 '환불 예정일'을 물었으므로 '카드사 반영일'로 단계를 바꾸지 말고 원문 범위인 환불 예정일만 문의하도록 수정하세요.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 18555,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 18290,
+                "httpStatus": 200,
+                "bodyMs": 265,
+                "usage": {
+                  "input_tokens": 5191,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4864
+                  },
+                  "output_tokens": 1476,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1344
+                  },
+                  "total_tokens": 6667
+                },
+                "elapsedMs": 18555
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5191,
+            "output_tokens": 1476,
+            "total_tokens": 6667,
+            "input_tokens_details": {
+              "cached_tokens": 4864
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1344
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "5babaf29-c1ad-48c9-a7ab-5e6dafd0aca9",
+        "title": "안내 기한이 있는 환불일과 넓어진 제목",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:24:42.317Z",
+        "updatedAt": "2026-11-15T17:24:42.317Z",
+        "messages": [
+          {
+            "id": "0e47cdfb-e29f-4efb-958e-a347e8f7ee5e",
+            "role": "customer",
+            "text": "환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "4d399929-48f7-430d-8089-c608f7a2a606",
+            "role": "agent",
+            "text": "환불 금액은 79,000원이며 원래 결제한 카드로 환불됩니다. 환불 예정일은 확인 후 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "981a3118-1018-4c5a-94d2-760ebb22d488",
+            "title": "환불 금액",
+            "source": {
+              "messageId": "0e47cdfb-e29f-4efb-958e-a347e8f7ee5e",
+              "quote": "환불 금액은 얼마인가요?"
+            },
+            "status": "answered",
+            "aiStatus": "answered",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "4d399929-48f7-430d-8089-c608f7a2a606",
+                "quote": "환불 금액은 79,000원이며 원래 결제한 카드로 환불됩니다. 환불 예정일은 확인 후 11월 18일까지 안내하겠습니다."
+              }
+            ],
+            "followUp": ""
+          },
+          {
+            "id": "74f2828c-95a7-4cce-93d8-36fe707d84ea",
+            "title": "환불 수단",
+            "source": {
+              "messageId": "0e47cdfb-e29f-4efb-958e-a347e8f7ee5e",
+              "quote": "어떤 결제수단으로 환불되나요?"
+            },
+            "status": "answered",
+            "aiStatus": "answered",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "4d399929-48f7-430d-8089-c608f7a2a606",
+                "quote": "환불 금액은 79,000원이며 원래 결제한 카드로 환불됩니다. 환불 예정일은 확인 후 11월 18일까지 안내하겠습니다."
+              }
+            ],
+            "followUp": ""
+          },
+          {
+            "id": "2ade3d74-a50c-46d3-9282-dd45d096a671",
+            "title": "환불 예정일(언제 안내받을지/언제 환불되는지)",
+            "source": {
+              "messageId": "0e47cdfb-e29f-4efb-958e-a347e8f7ee5e",
+              "quote": "환불 예정일은 언제인가요?"
+            },
+            "status": "waiting",
+            "aiStatus": "waiting",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "4d399929-48f7-430d-8089-c608f7a2a606",
+                "quote": "환불 금액은 79,000원이며 원래 결제한 카드로 환불됩니다. 환불 예정일은 확인 후 11월 18일까지 안내하겠습니다."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "61e38c8f-3f48-4284-9aa5-d7eafd680745",
+            "at": "2026-11-15T17:24:42.317Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "환불 예정일을 알려주세요.",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "환불 예정일과 언제 안내받을 수 있는지 알려주세요.",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        },
+        {
+          "label": "alternative",
+          "body": "카드사에 환불 금액이 입금 반영될 날짜를 알려주세요.",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "F02",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 6512,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 6512,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 6511,
+                "httpStatus": 200,
+                "bodyMs": 0,
+                "usage": {
+                  "input_tokens": 4941,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3840
+                  },
+                  "output_tokens": 478,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 384
+                  },
+                  "total_tokens": 5419
+                },
+                "elapsedMs": 6512
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4941,
+            "output_tokens": 478,
+            "total_tokens": 5419,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 384
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 11691,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": false
+            },
+            "feedback": "초안이 이미 안내된 항목(반품비)을 다시 묻고 있습니다. 상담원이 반품비를 '3,000원'이라고 안내했으므로 초안에서 반품비 문구를 삭제하고 '최종 환불액'(또는 확인 시점)만 문의하도록 수정하세요.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 11691,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 11391,
+                "httpStatus": 200,
+                "bodyMs": 300,
+                "usage": {
+                  "input_tokens": 4943,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4864
+                  },
+                  "output_tokens": 1272,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1152
+                  },
+                  "total_tokens": 6215
+                },
+                "elapsedMs": 11691
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4943,
+            "output_tokens": 1272,
+            "total_tokens": 6215,
+            "input_tokens_details": {
+              "cached_tokens": 4864
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1152
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "4f6d8a6f-5a22-41ba-897b-81f02784e80a",
+        "title": "복합 질문에서 이미 받은 반품비 제외",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:25:24.770Z",
+        "updatedAt": "2026-11-15T17:25:24.770Z",
+        "messages": [
+          {
+            "id": "b549a1c4-51b7-4d4c-b8c4-115d80c078c1",
+            "role": "customer",
+            "text": "반품비와 최종 환불액은 얼마인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "17e5a70d-2e6d-4038-b5d9-bc4de0b8521d",
+            "role": "agent",
+            "text": "반품비는 3,000원입니다. 최종 환불액은 아직 확인되지 않았습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "a103b9b1-af65-43de-8daa-9caba72fce4d",
+            "title": "반품비와 최종 환불액",
+            "source": {
+              "messageId": "b549a1c4-51b7-4d4c-b8c4-115d80c078c1",
+              "quote": "반품비와 최종 환불액은 얼마인가요?"
+            },
+            "status": "partial",
+            "aiStatus": "partial",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "17e5a70d-2e6d-4038-b5d9-bc4de0b8521d",
+                "quote": "반품비는 3,000원입니다. 최종 환불액은 아직 확인되지 않았습니다."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "a30b1087-e880-4154-acc2-975b7d6974c4",
+            "at": "2026-11-15T17:25:24.770Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "최종 환불액은 얼마인지 알려주세요.",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "반품비와 최종 환불액을 알려주세요.",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "F03",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 7722,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 7721,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 7721,
+                "httpStatus": 200,
+                "bodyMs": 0,
+                "usage": {
+                  "input_tokens": 5012,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3840
+                  },
+                  "output_tokens": 741,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 640
+                  },
+                  "total_tokens": 5753
+                },
+                "elapsedMs": 7721
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5012,
+            "output_tokens": 741,
+            "total_tokens": 5753,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 8791,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": false
+            },
+            "feedback": "The draft re-asks for required documents even though the agent already instructed: “Please send the transaction ID from your purchase receipt.” Do not repeat that already-answered request; instead, ask only the remaining unanswered item (the review duration).",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 8792,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 8526,
+                "httpStatus": 200,
+                "bodyMs": 265,
+                "usage": {
+                  "input_tokens": 5018,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4864
+                  },
+                  "output_tokens": 1073,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 960
+                  },
+                  "total_tokens": 6091
+                },
+                "elapsedMs": 8791
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5018,
+            "output_tokens": 1073,
+            "total_tokens": 6091,
+            "input_tokens_details": {
+              "cached_tokens": 4864
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 960
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 25557,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": false,
+              "sourceFactsOnly": false,
+              "noExtraRequests": false,
+              "noAnsweredRequests": true
+            },
+            "feedback": "The draft wrongly presumes there are other documents beyond the transaction ID and asks for them. The agent explicitly requested the transaction ID (a concrete submission); asking “Which additional documents…besides the transaction ID?” introduces an unsupported extra request and asserts a fact not in the source. Fix: remove the clause about “additional documents” and only follow up on the unresolved item (the review duration).",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 25557,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 25309,
+                "httpStatus": 200,
+                "bodyMs": 248,
+                "usage": {
+                  "input_tokens": 5025,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4864
+                  },
+                  "output_tokens": 2538,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 2368
+                  },
+                  "total_tokens": 7563
+                },
+                "elapsedMs": 25557
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5025,
+            "output_tokens": 2538,
+            "total_tokens": 7563,
+            "input_tokens_details": {
+              "cached_tokens": 4864
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 2368
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "57c2b75e-09c6-477e-b929-5b5ed55fa17f",
+        "title": "영어 복합 질문의 서류 답변 제외",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:25:29.925Z",
+        "updatedAt": "2026-11-15T17:25:29.925Z",
+        "messages": [
+          {
+            "id": "521b7b76-dea7-4765-bb08-40318ba8a15c",
+            "role": "customer",
+            "text": "What documents do I need and how long does the review take?",
+            "sentAt": null
+          },
+          {
+            "id": "555154b2-10de-4115-971d-2b676422fc88",
+            "role": "agent",
+            "text": "Please send the transaction ID from your purchase receipt. The review duration is not known yet.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "b93e5444-696b-46b9-9830-0a1a74b8b824",
+            "title": "필요한 자료와 심사 기간",
+            "source": {
+              "messageId": "521b7b76-dea7-4765-bb08-40318ba8a15c",
+              "quote": "What documents do I need and how long does the review take?"
+            },
+            "status": "partial",
+            "aiStatus": "partial",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "555154b2-10de-4115-971d-2b676422fc88",
+                "quote": "Please send the transaction ID from your purchase receipt. The review duration is not known yet."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "3a330780-e658-42f0-99cb-bc291d56abdd",
+            "at": "2026-11-15T17:25:29.925Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "How long will the review take?",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "What documents do I need and how long will the review take?",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        },
+        {
+          "label": "alternative",
+          "body": "Which additional documents do you need besides the transaction ID? Also, how long will the review take?",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "F04",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 4343,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 4342,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 4341,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 5066,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3840
+                  },
+                  "output_tokens": 477,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 384
+                  },
+                  "total_tokens": 5543
+                },
+                "elapsedMs": 4342
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5066,
+            "output_tokens": 477,
+            "total_tokens": 5543,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 384
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 10745,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": false
+            },
+            "feedback": "Draft re-asks an already answered question. The agent message states “We received your receipt.” Asking “Have you received my receipt?” duplicates that answered item. Remove the receipt question and keep only the unresolved account-restoration question.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 10745,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 10484,
+                "httpStatus": 200,
+                "bodyMs": 261,
+                "usage": {
+                  "input_tokens": 5072,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4992
+                  },
+                  "output_tokens": 1075,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 960
+                  },
+                  "total_tokens": 6147
+                },
+                "elapsedMs": 10745
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5072,
+            "output_tokens": 1075,
+            "total_tokens": 6147,
+            "input_tokens_details": {
+              "cached_tokens": 4992
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 960
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "0020e7c7-92bc-4ab0-b59c-1bbc76b8ee1e",
+        "title": "자료 수신과 실제 계정 복구 구분",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:25:42.975Z",
+        "updatedAt": "2026-11-15T17:25:42.975Z",
+        "messages": [
+          {
+            "id": "d56c7e63-911e-4e23-ab9f-4ef7815bb492",
+            "role": "customer",
+            "text": "Have you received my receipt? Has my account been restored?",
+            "sentAt": null
+          },
+          {
+            "id": "b006f889-3cba-4333-9269-49e99c6d3d4a",
+            "role": "agent",
+            "text": "We received your receipt. We cannot determine whether your account has been restored yet.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "e447a24c-6f0f-4f79-99ef-1adaea194762",
+            "title": "영수증 수신",
+            "source": {
+              "messageId": "d56c7e63-911e-4e23-ab9f-4ef7815bb492",
+              "quote": "Have you received my receipt?"
+            },
+            "status": "answered",
+            "aiStatus": "answered",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "b006f889-3cba-4333-9269-49e99c6d3d4a",
+                "quote": "We received your receipt. We cannot determine whether your account has been restored yet."
+              }
+            ],
+            "followUp": ""
+          },
+          {
+            "id": "1dfc2c5c-1bfe-410e-9dc6-b0289e917298",
+            "title": "실제 계정 복구",
+            "source": {
+              "messageId": "d56c7e63-911e-4e23-ab9f-4ef7815bb492",
+              "quote": "Has my account been restored?"
+            },
+            "status": "review",
+            "aiStatus": "review",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "b006f889-3cba-4333-9269-49e99c6d3d4a",
+                "quote": "We received your receipt. We cannot determine whether your account has been restored yet."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "a81b4d87-38d5-4286-9a9d-1a942f25e59c",
+            "at": "2026-11-15T17:25:42.975Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "Has my account been restored?",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "Have you received my receipt and has my account been restored?",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "F05",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 6763,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 6763,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 6762,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 4913,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3840
+                  },
+                  "output_tokens": 564,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 512
+                  },
+                  "total_tokens": 5477
+                },
+                "elapsedMs": 6763
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4913,
+            "output_tokens": 564,
+            "total_tokens": 5477,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 512
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 14555,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": false,
+              "sourceFactsOnly": true,
+              "noExtraRequests": false,
+              "noAnsweredRequests": true
+            },
+            "feedback": "초안 오류:\n- 원문은 ‘심사 결과 안내 시점(언제까지 알려주시나요?)’를 묻고 있습니다. 초안은 ‘심사 결과를 알려주세요’로 범위를 변경해 안내 시점 문의를 포함하지 않습니다. 안내 시점(언제까지 알려줄지)을 묻는 문구를 포함해야 합니다.\n- 초안에 '필요한 추가 서류도 알려주세요'라는 항목이 새로 추가되어 있는데, 원문(고객·상담원 메시지)에 해당 요청이 없습니다. 원문에 없는 추가 서류 요청은 삭제하세요.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 14555,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 14554,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 4914,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3840
+                  },
+                  "output_tokens": 1518,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1280
+                  },
+                  "total_tokens": 6432
+                },
+                "elapsedMs": 14555
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4914,
+            "output_tokens": 1518,
+            "total_tokens": 6432,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1280
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "89ab1cc5-1fe6-4a5d-9d98-f937f1cf2a83",
+        "title": "안내 시점 자체가 미답변이면 유지",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:25:58.066Z",
+        "updatedAt": "2026-11-15T17:25:58.066Z",
+        "messages": [
+          {
+            "id": "6d1f553f-a42a-4e6a-9c87-8d66bc4021fc",
+            "role": "customer",
+            "text": "심사 결과를 언제까지 알려주시나요?",
+            "sentAt": null
+          },
+          {
+            "id": "1d3cfafa-0fca-4b3a-bd4a-1adeb76e866b",
+            "role": "agent",
+            "text": "현재 심사 중이며 안내 시점은 미정입니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "1826ab1b-f252-4938-8d34-f16b83ba6910",
+            "title": "심사 결과 안내 시점",
+            "source": {
+              "messageId": "6d1f553f-a42a-4e6a-9c87-8d66bc4021fc",
+              "quote": "심사 결과를 언제까지 알려주시나요?"
+            },
+            "status": "review",
+            "aiStatus": "review",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "1d3cfafa-0fca-4b3a-bd4a-1adeb76e866b",
+                "quote": "현재 심사 중이며 안내 시점은 미정입니다."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "ad59dee9-ddc1-4caa-b6af-a79a5c3a5b12",
+            "at": "2026-11-15T17:25:58.066Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "심사 결과를 언제까지 알려주실 수 있나요?",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "심사 결과를 알려주시고 필요한 추가 서류도 알려주세요.",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "F06",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 6123,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 6122,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 5846,
+                "httpStatus": 200,
+                "bodyMs": 276,
+                "usage": {
+                  "input_tokens": 4958,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3840
+                  },
+                  "output_tokens": 589,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 512
+                  },
+                  "total_tokens": 5547
+                },
+                "elapsedMs": 6122
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4958,
+            "output_tokens": 589,
+            "total_tokens": 5547,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 512
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 17313,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": false,
+              "noAnsweredRequests": true
+            },
+            "feedback": "초안에 '특별 승인 여부' 문의가 추가되어 있습니다. 원문(질문)은 ‘제 주문의 추가 배송비(적용 요금)’만 요청하였으므로, ‘특별 승인 여부’는 원문에 없는 추가 요청입니다. 초안에서 해당 항목을 삭제하고 원문에 남은 미확인 정보인 고객님 주문의 적용 추가배송비만 재문의하세요.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 17313,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 17025,
+                "httpStatus": 200,
+                "bodyMs": 288,
+                "usage": {
+                  "input_tokens": 4958,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4864
+                  },
+                  "output_tokens": 1875,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1728
+                  },
+                  "total_tokens": 6833
+                },
+                "elapsedMs": 17313
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4958,
+            "output_tokens": 1875,
+            "total_tokens": 6833,
+            "input_tokens_details": {
+              "cached_tokens": 4864
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1728
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "456b9efb-57b0-4b0e-b7d8-f9360014d9de",
+        "title": "조건표와 내 주문 요금 구분",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:26:11.999Z",
+        "updatedAt": "2026-11-15T17:26:11.999Z",
+        "messages": [
+          {
+            "id": "81566abd-2fc5-4988-b147-38186351a29c",
+            "role": "customer",
+            "text": "제 주문의 추가 배송비는 얼마인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "08e9e876-4e95-4fbf-8b03-ced2e3f7ed44",
+            "role": "agent",
+            "text": "추가 배송비는 특별 승인이 있으면 무료, 없으면 3,000원입니다. 고객님 주문의 적용 요금은 아직 확인되지 않았습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "02ccb1da-acd0-4d64-ba24-1b644ac410c3",
+            "title": "내 주문 추가 배송비",
+            "source": {
+              "messageId": "81566abd-2fc5-4988-b147-38186351a29c",
+              "quote": "제 주문의 추가 배송비는 얼마인가요?"
+            },
+            "status": "partial",
+            "aiStatus": "partial",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "08e9e876-4e95-4fbf-8b03-ced2e3f7ed44",
+                "quote": "추가 배송비는 특별 승인이 있으면 무료, 없으면 3,000원입니다. 고객님 주문의 적용 요금은 아직 확인되지 않았습니다."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "fb58d27e-7cd5-48d1-bacf-33f5f8263388",
+            "at": "2026-11-15T17:26:11.999Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "제 주문에 적용되는 추가 배송비는 얼마인가요?",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "제 주문의 추가 배송비와 특별 승인 여부를 알려주세요.",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "F07",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 5921,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 5921,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 5920,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 4948,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4864
+                  },
+                  "output_tokens": 619,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 512
+                  },
+                  "total_tokens": 5567
+                },
+                "elapsedMs": 5921
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4948,
+            "output_tokens": 619,
+            "total_tokens": 5567,
+            "input_tokens_details": {
+              "cached_tokens": 4864
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 512
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 13593,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": false,
+              "noAnsweredRequests": true
+            },
+            "feedback": "원문은 환불 수단만 묻고 있습니다. 초안에 '환불 날짜' 항목이 추가되어 있어 원문에 없는 추가 요청이 포함됩니다. 원문 범위대로 '환불 수단'만 문의하도록 초안에서 '환불 날짜'를 제거하세요.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 13593,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 13592,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 4946,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4864
+                  },
+                  "output_tokens": 1442,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1280
+                  },
+                  "total_tokens": 6388
+                },
+                "elapsedMs": 13593
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4946,
+            "output_tokens": 1442,
+            "total_tokens": 6388,
+            "input_tokens_details": {
+              "cached_tokens": 4864
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1280
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "04b15e87-caf0-4297-ae05-8a2b0d2e94dc",
+        "title": "해소되지 않은 상충은 재문의 유지",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:26:19.387Z",
+        "updatedAt": "2026-11-15T17:26:19.387Z",
+        "messages": [
+          {
+            "id": "94331df7-6766-48bc-9831-c15e86ec1204",
+            "role": "customer",
+            "text": "어떤 수단으로 환불되나요?",
+            "sentAt": null
+          },
+          {
+            "id": "5770cc05-ed90-4b69-b7a2-12693b3ba7ae",
+            "role": "agent",
+            "text": "환불은 카드로 진행됩니다.",
+            "sentAt": null
+          },
+          {
+            "id": "a39fcf73-b79e-4c96-a530-5a39372b6473",
+            "role": "agent",
+            "text": "환불은 계좌로 진행됩니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "28c678b9-665f-47e6-8095-e04b42318a12",
+            "title": "환불 수단 상충",
+            "source": {
+              "messageId": "94331df7-6766-48bc-9831-c15e86ec1204",
+              "quote": "어떤 수단으로 환불되나요?"
+            },
+            "status": "review",
+            "aiStatus": "review",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "5770cc05-ed90-4b69-b7a2-12693b3ba7ae",
+                "quote": "환불은 카드로 진행됩니다."
+              },
+              {
+                "messageId": "a39fcf73-b79e-4c96-a530-5a39372b6473",
+                "quote": "환불은 계좌로 진행됩니다."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "2c990e40-2b41-4e72-81f9-1db46cd832ee",
+            "at": "2026-11-15T17:26:19.387Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "3개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "환불 수단이 카드인지 계좌인지 확인해 주세요.",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "환불 수단과 환불 날짜를 알려주세요.",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "F08",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 6579,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 6579,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 6578,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 5112,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4992
+                  },
+                  "output_tokens": 620,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 512
+                  },
+                  "total_tokens": 5732
+                },
+                "elapsedMs": 6579
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5112,
+            "output_tokens": 620,
+            "total_tokens": 5732,
+            "input_tokens_details": {
+              "cached_tokens": 4992
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 512
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 16601,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": false
+            },
+            "feedback": "초안이 이미 답변된 항목인 '환불 금액'을 다시 묻고 있습니다(앞선 답변: 정정된 환불 금액 45,000원). 이미 안내된 항목은 재요청하지 말고, 남은 미해결 항목인 '실제 환불 날짜'만 문의하도록 수정하세요.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 16600,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 16311,
+                "httpStatus": 200,
+                "bodyMs": 289,
+                "usage": {
+                  "input_tokens": 5119,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4992
+                  },
+                  "output_tokens": 1550,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1408
+                  },
+                  "total_tokens": 6669
+                },
+                "elapsedMs": 16600
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5119,
+            "output_tokens": 1550,
+            "total_tokens": 6669,
+            "input_tokens_details": {
+              "cached_tokens": 4992
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1408
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "5f378e36-6061-44ff-bdd8-07aa7965703d",
+        "title": "정정으로 답변된 금액 제외",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:26:35.438Z",
+        "updatedAt": "2026-11-15T17:26:35.438Z",
+        "messages": [
+          {
+            "id": "7681fd5b-3991-4472-b398-0ab2723abe45",
+            "role": "customer",
+            "text": "환불 금액과 실제 환불 날짜는 무엇인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "aa004fcf-a0c7-43f8-b6ce-8745b2ed5010",
+            "role": "agent",
+            "text": "환불 금액은 40,000원입니다.",
+            "sentAt": null
+          },
+          {
+            "id": "6ef4eda3-6575-4902-a5dc-8ba5dcff9659",
+            "role": "agent",
+            "text": "앞선 금액을 정정합니다. 환불 금액은 45,000원입니다. 실제 환불 날짜는 미정입니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "5c005e02-afc4-467d-a367-d893bd7e5ee8",
+            "title": "환불 금액",
+            "source": {
+              "messageId": "7681fd5b-3991-4472-b398-0ab2723abe45",
+              "quote": "환불 금액과 실제 환불 날짜는 무엇인가요?"
+            },
+            "status": "answered",
+            "aiStatus": "answered",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "aa004fcf-a0c7-43f8-b6ce-8745b2ed5010",
+                "quote": "환불 금액은 40,000원입니다."
+              },
+              {
+                "messageId": "6ef4eda3-6575-4902-a5dc-8ba5dcff9659",
+                "quote": "앞선 금액을 정정합니다. 환불 금액은 45,000원입니다. 실제 환불 날짜는 미정입니다."
+              }
+            ],
+            "followUp": ""
+          },
+          {
+            "id": "58c1f41e-97da-493b-8d74-1cbfd0b1d4f7",
+            "title": "실제 환불 날짜",
+            "source": {
+              "messageId": "7681fd5b-3991-4472-b398-0ab2723abe45",
+              "quote": "환불 금액과 실제 환불 날짜는 무엇인가요?"
+            },
+            "status": "review",
+            "aiStatus": "review",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "aa004fcf-a0c7-43f8-b6ce-8745b2ed5010",
+                "quote": "환불 금액은 40,000원입니다."
+              },
+              {
+                "messageId": "6ef4eda3-6575-4902-a5dc-8ba5dcff9659",
+                "quote": "앞선 금액을 정정합니다. 환불 금액은 45,000원입니다. 실제 환불 날짜는 미정입니다."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "b7de1fc8-9f58-4230-8ce0-0d0c72a41157",
+            "at": "2026-11-15T17:26:35.438Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "3개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "실제 환불 날짜를 알려주세요.",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "정정된 환불 금액과 실제 환불 날짜를 알려주세요.",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "F09",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 7051,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 7050,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 6785,
+                "httpStatus": 200,
+                "bodyMs": 265,
+                "usage": {
+                  "input_tokens": 5107,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4992
+                  },
+                  "output_tokens": 642,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 576
+                  },
+                  "total_tokens": 5749
+                },
+                "elapsedMs": 7050
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5107,
+            "output_tokens": 642,
+            "total_tokens": 5749,
+            "input_tokens_details": {
+              "cached_tokens": 4992
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 576
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 10065,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": false,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "초안이 ‘환불 금액’만 요청하고 ‘환불 날짜’를 빠뜨렸습니다. 원문에서 환불 날짜는 아직 미정이므로 초안에 포함해야 합니다.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 10064,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 10064,
+                "httpStatus": 200,
+                "bodyMs": 0,
+                "usage": {
+                  "input_tokens": 5103,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4992
+                  },
+                  "output_tokens": 887,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 768
+                  },
+                  "total_tokens": 5990
+                },
+                "elapsedMs": 10064
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5103,
+            "output_tokens": 887,
+            "total_tokens": 5990,
+            "input_tokens_details": {
+              "cached_tokens": 4992
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 768
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "82d3dd99-ee3e-4027-982e-a6769efa8e22",
+        "title": "같은 원문의 남은 두 항목 보존",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:26:38.904Z",
+        "updatedAt": "2026-11-15T17:26:38.904Z",
+        "messages": [
+          {
+            "id": "4926f222-b5ba-4cc7-8114-81f004788add",
+            "role": "customer",
+            "text": "환불 금액, 결제수단, 환불 날짜를 알려주세요.",
+            "sentAt": null
+          },
+          {
+            "id": "473acce5-36f8-4d71-a061-73e4b3e9900c",
+            "role": "agent",
+            "text": "원래 결제한 카드로 환불됩니다. 금액과 날짜는 아직 미정입니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "d96c3c36-21db-4ef1-8ed7-d0088be02b97",
+            "title": "환불 금액",
+            "source": {
+              "messageId": "4926f222-b5ba-4cc7-8114-81f004788add",
+              "quote": "환불 금액, 결제수단, 환불 날짜를 알려주세요."
+            },
+            "status": "review",
+            "aiStatus": "review",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "473acce5-36f8-4d71-a061-73e4b3e9900c",
+                "quote": "원래 결제한 카드로 환불됩니다. 금액과 날짜는 아직 미정입니다."
+              }
+            ],
+            "followUp": ""
+          },
+          {
+            "id": "c32d8c4d-53f4-475d-8e9d-74316303027f",
+            "title": "환불 결제수단",
+            "source": {
+              "messageId": "4926f222-b5ba-4cc7-8114-81f004788add",
+              "quote": "환불 금액, 결제수단, 환불 날짜를 알려주세요."
+            },
+            "status": "answered",
+            "aiStatus": "answered",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "473acce5-36f8-4d71-a061-73e4b3e9900c",
+                "quote": "원래 결제한 카드로 환불됩니다. 금액과 날짜는 아직 미정입니다."
+              }
+            ],
+            "followUp": ""
+          },
+          {
+            "id": "9f727c0f-3d4f-44c6-a2ef-498e343d8809",
+            "title": "환불 날짜",
+            "source": {
+              "messageId": "4926f222-b5ba-4cc7-8114-81f004788add",
+              "quote": "환불 금액, 결제수단, 환불 날짜를 알려주세요."
+            },
+            "status": "review",
+            "aiStatus": "review",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "473acce5-36f8-4d71-a061-73e4b3e9900c",
+                "quote": "원래 결제한 카드로 환불됩니다. 금액과 날짜는 아직 미정입니다."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "1d694427-d0a9-484a-9145-3cd720786c47",
+            "at": "2026-11-15T17:26:38.904Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "환불 금액과 환불 날짜를 알려주세요.",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "환불 금액만 알려주세요.",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "F10",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 6363,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 6363,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 6363,
+                "httpStatus": 200,
+                "bodyMs": 0,
+                "usage": {
+                  "input_tokens": 4943,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3840
+                  },
+                  "output_tokens": 532,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 448
+                  },
+                  "total_tokens": 5475
+                },
+                "elapsedMs": 6363
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4943,
+            "output_tokens": 532,
+            "total_tokens": 5475,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 448
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 12221,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": false
+            },
+            "feedback": "초안이 이미 안내된 사항(접수일)을 다시 요청하고 있습니다. 상담원이 접수일을 안내했으므로 초안에서는 접수일 문의를 빼고 아직 답을 받지 못한 '실제 처리 완료일'만 요청하도록 수정하세요.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 12222,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 11960,
+                "httpStatus": 200,
+                "bodyMs": 262,
+                "usage": {
+                  "input_tokens": 4944,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4864
+                  },
+                  "output_tokens": 1335,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1216
+                  },
+                  "total_tokens": 6279
+                },
+                "elapsedMs": 12222
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4944,
+            "output_tokens": 1335,
+            "total_tokens": 6279,
+            "input_tokens_details": {
+              "cached_tokens": 4864
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1216
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 12742,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": false,
+              "noAnsweredRequests": true
+            },
+            "feedback": "초안이 원문에서 날짜를 묻는 '실제 처리 완료일' 질문을 '완료일 또는 완료 여부'로 범위를 넓혀 원문에 없는 추가 요청(단순 완료 여부)을 포함하고 있습니다. 원문 범위에 맞게 '실제 처리 완료일'(날짜)만 요청하도록 수정하세요.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 12741,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 12442,
+                "httpStatus": 200,
+                "bodyMs": 299,
+                "usage": {
+                  "input_tokens": 4944,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4864
+                  },
+                  "output_tokens": 1371,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1216
+                  },
+                  "total_tokens": 6315
+                },
+                "elapsedMs": 12741
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4944,
+            "output_tokens": 1371,
+            "total_tokens": 6315,
+            "input_tokens_details": {
+              "cached_tokens": 4864
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1216
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "2983883c-fa10-474a-9099-9dd6c2c535e7",
+        "title": "접수일과 실제 처리일 구분",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:26:56.022Z",
+        "updatedAt": "2026-11-15T17:26:56.022Z",
+        "messages": [
+          {
+            "id": "81580e79-a70c-4c09-9b0c-17a25cadc5dd",
+            "role": "customer",
+            "text": "접수는 언제 됐고 실제 처리는 언제 완료되나요?",
+            "sentAt": null
+          },
+          {
+            "id": "d4f4bb86-1edf-48e6-9f41-8062200c80d9",
+            "role": "agent",
+            "text": "접수는 11월 12일에 완료됐습니다. 실제 처리 완료일은 아직 알 수 없습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "cb6542d0-5304-4dd7-9bc3-c3b57a5d3185",
+            "title": "접수일과 처리 완료일",
+            "source": {
+              "messageId": "81580e79-a70c-4c09-9b0c-17a25cadc5dd",
+              "quote": "접수는 언제 됐고 실제 처리는 언제 완료되나요?"
+            },
+            "status": "partial",
+            "aiStatus": "partial",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "d4f4bb86-1edf-48e6-9f41-8062200c80d9",
+                "quote": "접수는 11월 12일에 완료됐습니다. 실제 처리 완료일은 아직 알 수 없습니다."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "1c202307-2e64-4c42-971a-207f48c49862",
+            "at": "2026-11-15T17:26:56.022Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "실제 처리는 언제 완료되는지 알려주세요.",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "접수 날짜와 실제 처리 완료일을 알려주세요.",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        },
+        {
+          "label": "alternative",
+          "body": "실제 처리 완료일 또는 완료 여부를 알려주세요.",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "F11",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 7954,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 7954,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 7954,
+                "httpStatus": 200,
+                "bodyMs": 0,
+                "usage": {
+                  "input_tokens": 5017,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3840
+                  },
+                  "output_tokens": 751,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 640
+                  },
+                  "total_tokens": 5768
+                },
+                "elapsedMs": 7954
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5017,
+            "output_tokens": 751,
+            "total_tokens": 5768,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 11922,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": false
+            },
+            "feedback": "The draft re-asks an item the agent already answered: the agent has requested the receipt ID. Remove the already-answered receipt ID request and only ask the unresolved question (whether an ID photo is required), or explicitly reference the agent’s prior instruction rather than repeating it.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 11922,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 11921,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 5022,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4864
+                  },
+                  "output_tokens": 1469,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1344
+                  },
+                  "total_tokens": 6491
+                },
+                "elapsedMs": 11922
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5022,
+            "output_tokens": 1469,
+            "total_tokens": 6491,
+            "input_tokens_details": {
+              "cached_tokens": 4864
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1344
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "31f4f721-6e3d-4035-b5c4-3b398a6d990f",
+        "title": "실제로 물은 두 서류 중 하나가 미정",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:26:58.621Z",
+        "updatedAt": "2026-11-15T17:26:58.621Z",
+        "messages": [
+          {
+            "id": "988d0b16-7856-4cf8-a70d-9fdcc591d965",
+            "role": "customer",
+            "text": "Do you need my receipt ID and a photo of my ID card?",
+            "sentAt": null
+          },
+          {
+            "id": "b3e440f2-8309-4a8b-bc52-e8edccd5d7d2",
+            "role": "agent",
+            "text": "Please send your receipt ID. We have not determined whether an ID photo is required.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "848cd327-e610-46de-8783-db7d58097a65",
+            "title": "영수증 ID와 신분증 사진 필요 여부",
+            "source": {
+              "messageId": "988d0b16-7856-4cf8-a70d-9fdcc591d965",
+              "quote": "Do you need my receipt ID and a photo of my ID card?"
+            },
+            "status": "partial",
+            "aiStatus": "partial",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "b3e440f2-8309-4a8b-bc52-e8edccd5d7d2",
+                "quote": "Please send your receipt ID. We have not determined whether an ID photo is required."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "5021db58-f5d1-4583-8bc3-420a560355f5",
+            "at": "2026-11-15T17:26:58.621Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "Is a photo of my ID card required?",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "Do you need my receipt ID and a photo of my ID card?",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "F12",
+      "calls": [
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 6157,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": true,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": true
+            },
+            "feedback": "",
+            "valid": true
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 6157,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 6156,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 5003,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3840
+                  },
+                  "output_tokens": 607,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 512
+                  },
+                  "total_tokens": 5610
+                },
+                "elapsedMs": 6157
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5003,
+            "output_tokens": 607,
+            "total_tokens": 5610,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 512
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_draft_review",
+          "effort": "medium",
+          "ms": 11173,
+          "data": {
+            "checks": {
+              "consumerVoice": true,
+              "selectedQuestionsCovered": false,
+              "sourceFactsOnly": true,
+              "noExtraRequests": true,
+              "noAnsweredRequests": false
+            },
+            "feedback": "The draft fails to ask for the remaining required documents that the agent said are unknown—the original question asked for the full list but the draft only repeats the receipt ID. Also, the receipt ID was already stated as required by the agent, so re-asking that answered item is incorrect.",
+            "valid": false
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 11173,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 11172,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 4999,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 4864
+                  },
+                  "output_tokens": 1058,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 896
+                  },
+                  "total_tokens": 6057
+                },
+                "elapsedMs": 11173
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 4999,
+            "output_tokens": 1058,
+            "total_tokens": 6057,
+            "input_tokens_details": {
+              "cached_tokens": 4864
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 896
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "input": {
+        "id": "6bce5b7d-e055-4a8e-9e49-5018e4228f14",
+        "title": "명시적인 일부 서류 목록의 실제 누락",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-15T17:27:18.501Z",
+        "updatedAt": "2026-11-15T17:27:18.501Z",
+        "messages": [
+          {
+            "id": "759e4f4c-bf99-42cc-aa06-ebab38960324",
+            "role": "customer",
+            "text": "What documents are required?",
+            "sentAt": null
+          },
+          {
+            "id": "240c9d99-0e3a-4c25-9c63-d4d9a5dba17f",
+            "role": "agent",
+            "text": "Your receipt ID is required. This is only a partial list; the other required documents are still unknown.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "a17600d4-fc67-4e6a-adcb-d775b9ef957e",
+            "title": "필수 서류 전체 목록",
+            "source": {
+              "messageId": "759e4f4c-bf99-42cc-aa06-ebab38960324",
+              "quote": "What documents are required?"
+            },
+            "status": "partial",
+            "aiStatus": "partial",
+            "reason": "평가용 상태",
+            "evidence": [
+              {
+                "messageId": "240c9d99-0e3a-4c25-9c63-d4d9a5dba17f",
+                "quote": "Your receipt ID is required. This is only a partial list; the other required documents are still unknown."
+              }
+            ],
+            "followUp": ""
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "669223f9-24f9-437b-8cf5-735590c6c606",
+            "at": "2026-11-15T17:27:18.501Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "seeded-states"
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "probes": [
+        {
+          "label": "good",
+          "body": "What other documents are required besides my receipt ID?",
+          "expected": true,
+          "approved": true,
+          "passed": true
+        },
+        {
+          "label": "bad",
+          "body": "Is my receipt ID required?",
+          "expected": false,
+          "approved": false,
+          "passed": true
+        }
+      ],
+      "passed": true
+    }
+  ],
+  "complete": true,
+  "passed": true
+}
