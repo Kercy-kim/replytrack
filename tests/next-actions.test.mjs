@@ -12,6 +12,8 @@ import { createRefundDemo, demoActions } from '../src/demo.mjs';
 import { actionsSchemaFor, validateActions, applyActions } from '../src/next-actions.mjs';
 import { actionPlan, actionsFresh, actionsMarkdown } from '../public/next-actions.js';
 import { cancelled } from '../src/operation.mjs';
+import { actionChecks } from '../src/feature-review.mjs';
+const reviewed=valid=>({checks:Object.fromEntries(Object.keys(actionChecks).map(key=>[key,valid])),valid,feedback:''});
 
 function fixture(structured) {
   const store = new CaseStore(':memory:');
@@ -74,7 +76,7 @@ test('completion survives refresh and re-extraction without changing questions, 
     const before = structuredClone({ questions: c.questions, promises: c.promises, drafts: c.drafts });
     c = f.service.completeAction(c.id,id,{version:c.version,completed:true});
     assert(c.nextActions.items[0].completedAt);
-    f.ai.structured = async p => p.name === 'replytrack_actions' ? result(c) : { data: { valid: true, feedback: '' }, usage: {total_tokens:5} };
+    f.ai.structured = async p => p.name === 'replytrack_actions' ? result(c) : { data: reviewed(true), usage: {total_tokens:5} };
     c = await f.service.actions(c.id,c.version);
     assert.equal(c.nextActions.usage.total_tokens,15);
     assert(c.nextActions.items[0].completedAt);

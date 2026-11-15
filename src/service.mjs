@@ -1,7 +1,8 @@
 import { assert, AppError } from './errors.mjs';
 import { newCase, message, history, applyAnalysis, analysisValidationErrors, validateDraft, statuses, cleanText } from './domain.mjs';
 import { createDemo, createRefundDemo, advanceDemo, demoAnalysis, demoDraft, demoActions } from './demo.mjs';
-import { actionsSchemaFor, ACTIONS_PROMPT, ACTIONS_REVIEW_PROMPT, validateActions, applyActions } from './next-actions.mjs';
+import { actionsSchemaFor, actionsReviewSchema, ACTIONS_PROMPT, ACTIONS_REVIEW_PROMPT, validateActions, applyActions } from './next-actions.mjs';
+import { actionChecks, reviewPassed } from './feature-review.mjs';
 import { actionsFresh } from '../public/next-actions.js';
 import { analysisSchemaFor, transcriptSchema, draftSchemaFor, draftReviewSchema, boundaryReviewSchemaFor } from './schema.mjs';
 import { ANALYSIS_PROMPT, TRANSCRIPT_PROMPT, DRAFT_PROMPT, DRAFT_REVIEW_PROMPT, BOUNDARY_REVIEW_PROMPT } from './prompts.mjs';
@@ -103,8 +104,8 @@ export class ReplyTrack {
       checkpoint(context, 'validation');
       validateActions(result.data, c);
       this.getVersion(id, version);
-      checked = await this.ask({ name: 'replytrack_actions_review', schema: draftReviewSchema, instructions: ACTIONS_REVIEW_PROMPT, reasoningEffort: 'medium', data: { ...data, items: result.data.items } }, context, 'actions_review');
-      if (checked.data?.valid !== true) throw new AppError(502, '업체 요청에 누락되거나 원문과 맞지 않는 부분이 있어 저장하지 않았어요. 원문을 확인하고 다시 시도해 주세요. 이전 할 일은 유지됩니다.', 'ACTIONS_REVIEW');
+      checked = await this.ask({ name: 'replytrack_actions_review', schema: actionsReviewSchema, instructions: ACTIONS_REVIEW_PROMPT, reasoningEffort: 'medium', data: { ...data, items: result.data.items } }, context, 'actions_review');
+      if (!reviewPassed(checked.data,actionChecks)) throw new AppError(502, '업체 요청에 누락되거나 원문과 맞지 않는 부분이 있어 저장하지 않았어요. 원문을 확인하고 다시 시도해 주세요. 이전 할 일은 유지됩니다.', 'ACTIONS_REVIEW');
     }
     checkpoint(context, 'saving');
     applyActions(c, result.data, { model: result.model, usage: analysisUsage([result, checked].filter(Boolean)), reviewed: !!checked });
