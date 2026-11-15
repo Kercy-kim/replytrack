@@ -6,7 +6,6 @@ import { actionChecks, reviewPassed } from './feature-review.mjs';
 import { actionsFresh } from '../public/next-actions.js';
 import { analysisSchemaFor, transcriptSchema, draftSchemaFor, draftReviewSchema, boundaryReviewSchemaFor, completionReviewSchemaFor } from './schema.mjs';
 import { ANALYSIS_PROMPT, TRANSCRIPT_PROMPT, DRAFT_PROMPT, DRAFT_REVIEW_PROMPT, BOUNDARY_REVIEW_PROMPT, COMPLETION_REVIEW_PROMPT } from './prompts.mjs';
-import { HANDOFF_PROMPT, HANDOFF_REPAIR_PROMPT, HANDOFF_REVIEW_PROMPT, stripInternalCitations, normalizeHandoffAttribution } from './handoff.mjs';
 import { checkpoint } from './operation.mjs';
 import { maskPrivate, privacyEnvelope } from './privacy.mjs';
 import { readImage } from './ocr.mjs';
@@ -294,35 +293,34 @@ export class ReplyTrack {
     checkpoint(context);
     const c = this.getVersion(id, input.version);
     assert(c.analyzedMessageCount === c.messages.length && c.questions.length, '새 답변을 먼저 분석해 주세요.');
-    assert(['followup', 'handoff'].includes(input.kind), '초안 종류를 선택해 주세요.');
+    assert(input.kind === 'followup', '현재는 남은 질문의 재문의 초안만 작성할 수 있어요.');
     const language = input.language ?? (c.channel === 'email' && input.kind === 'followup' ? 'en' : 'ko');
     assert(['ko', 'en'].includes(language) && (language !== 'en' || ((c.mode !== 'demo' || c.demoScenario === 'email') && input.kind === 'followup')), '영어는 실제 상담이나 이메일 예제의 재문의 초안에서 선택해 주세요.');
     const ids = Array.isArray(input.questionIds) ? input.questionIds : [];
     const selected = c.questions.filter(q => ids.includes(q.id) && q.status !== 'answered');
-    assert(input.kind === 'handoff' || selected.length, '재문의할 미해결 질문을 선택해 주세요.');
+    assert(selected.length, '재문의할 미해결 질문을 선택해 주세요.');
     let draft, model, review = null;
     if (c.mode === 'demo') {
       draft = validateDraft(demoDraft(c, input.kind, ids), c); model = '준비된 예제';
     } else {
-      const source = { kind: input.kind, ...draftSourceContext(c, input.kind), questions: draftQuestionContext(input.kind === 'followup' ? selected : c.questions) };
+      const source = { kind: input.kind, ...draftSourceContext(c, input.kind), questions: draftQuestionContext(selected) };
       let revisionFeedback = '', previousDraft = null;
       // Bound paid calls: one generation + review, with at most one repair attempt.
       for (let attempt = 0; attempt < 2; attempt++) {
-        const result = await this.ask({ name: 'replytrack_draft', schema: draftSchemaFor(c.messages), instructions: input.kind === 'handoff' ? (attempt === 0 ? HANDOFF_PROMPT : HANDOFF_REPAIR_PROMPT) : DRAFT_PROMPT + draftLanguagePrompt(language), reasoningEffort: attempt === 0 ? 'low' : 'medium',
+        const result = await this.ask({ name: 'replytrack_draft', schema: draftSchemaFor(c.messages), instructions: DRAFT_PROMPT + draftLanguagePrompt(language), reasoningEffort: attempt === 0 ? 'low' : 'medium',
           data: { ...source, ...(revisionFeedback ? { revisionFeedback, previousDraft } : {}) } }, context, attempt ? 'draft_repair' : 'draft');
         checkpoint(context, 'validation');
         model = result.model; previousDraft = result.data;
         let candidate;
         try {
-          candidate = validateDraft(input.kind === 'handoff' ? normalizeHandoffAttribution(stripInternalCitations(result.data, c), c) : result.data, c);
+          candidate = validateDraft(result.data, c);
           if (language === 'en' && (candidate.body.match(/[A-Za-z]/g)?.length || 0) <= (candidate.body.replace(/\[[^\]]+\]/g, '').match(/[가-힣]/g)?.length || 0)) throw new AppError(502, '영어 답장 본문을 영어로 작성해 주세요.', 'DRAFT_LANGUAGE');
-          if (input.kind === 'handoff') previousDraft = candidate;
         }
         catch (error) {
           if (attempt === 1) throw error;
           revisionFeedback = error.message; continue;
         }
-        const checked = await this.ask({ name: 'replytrack_draft_review', schema: draftReviewSchema, instructions: input.kind === 'handoff' ? HANDOFF_REVIEW_PROMPT : DRAFT_REVIEW_PROMPT + draftLanguagePrompt(language), reasoningEffort: 'medium',
+        const checked = await this.ask({ name: 'replytrack_draft_review', schema: draftReviewSchema, instructions: DRAFT_REVIEW_PROMPT + draftLanguagePrompt(language), reasoningEffort: 'medium',
           data: { ...source, draft: candidate } }, context, 'draft_review');
         if (checked.data?.valid === true) {
           draft = candidate; review = { model: checked.model, attempts: attempt + 1 }; break;
@@ -332,8 +330,8 @@ export class ReplyTrack {
       if (!draft) throw new AppError(502, '초안을 검토했지만 선택한 질문이나 원문과 맞지 않는 부분이 남아 저장하지 않았습니다. 다시 작성해 주세요.', 'DRAFT_REVIEW');
     }
     checkpoint(context, 'saving');
-    c.drafts[input.kind] = { ...draft, language, at: new Date().toISOString(), model, ...(review ? { review } : {}) };
-    history(c, 'draft', input.kind === 'followup' ? '남은 질문으로 재문의 초안을 만들었어요' : '상담 인계 요약을 만들었어요');
+    c.drafts.followup = { ...draft, questionIds: selected.map(q => q.id), language, at: new Date().toISOString(), model, ...(review ? { review } : {}) };
+    history(c, 'draft', '남은 질문으로 재문의 초안을 만들었어요');
     return this.store.save(c, input.version);
   }
   async prepare(input, context = {}) {

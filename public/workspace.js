@@ -47,8 +47,11 @@ export function dirtyDraftKinds(drafts, edits) {
 }
 export function selectedQuestionIds(previous, next, selected) {
   const remaining = next.questions.filter(q => q.status !== 'answered').map(q => q.id);
-  // Select all on first analysis/open; same-case updates preserve deliberate exclusions.
-  if (previous?.id !== next.id || !previous.questions.length) return remaining;
+  // Reopening a saved draft restores its generation scope. Old records select all.
+  if (previous?.id !== next.id || !previous.questions.length) {
+    const saved = next.drafts?.followup?.questionIds;
+    return Array.isArray(saved) ? remaining.filter(id => saved.includes(id)) : remaining;
+  }
   return remaining.filter(id => selected.has(id));
 }
 

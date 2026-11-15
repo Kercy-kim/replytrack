@@ -3,8 +3,6 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { normalizeHandoffAttribution } from '../src/handoff.mjs';
 import { validateDraft } from '../src/domain.mjs';
-import { CaseStore } from '../src/store.mjs';
-import { ReplyTrack } from '../src/service.mjs';
 
 const record = JSON.parse(readFileSync(new URL('../evals/handoff-tail-cases.json',import.meta.url))).cases.find(c=>c.id==='U06').record;
 const raw = JSON.parse(readFileSync(new URL('../evals/results/handoff-tail/full.json',import.meta.url))).results.find(r=>r.caseId==='U06'&&r.variant==='after').calls[0].data;
@@ -102,31 +100,4 @@ test('paired side attribution removes invented staff identities while preserving
   ]) assert.equal(normalizeHandoffAttribution(unsafe,record),unsafe);
   assert.throws(()=>validateDraft({...candidate,body:'상담원 중 한 분에게 다시 확인해 주세요.'},record),{code:'DRAFT_ACTOR'});
   assert.throws(()=>validateDraft(normalizeHandoffAttribution({...candidate,body:body+' 금액은 999999원입니다.'},record),record),{code:'DRAFT_FACT'});
-});
-
-test('handoff attribution uses the original full-context medium review without a regeneration',async()=>{
-  const store=new CaseStore(':memory:'), c=store.create({...structuredClone(record),drafts:{}}), calls=[];
-  const service=new ReplyTrack(store,{async structured(input){calls.push(input);return {data:input.name==='replytrack_draft'?structuredClone(raw):{valid:true,feedback:''},model:'fixture'};}});
-  try {
-    const saved=await service.draft(c.id,{kind:'handoff',version:c.version});
-    assert.deepEqual(calls.map(c=>c.reasoningEffort),['low','medium']);
-    assert.deepEqual(calls[1].data.messages,calls[0].data.messages);
-    assert.deepEqual(calls[1].data.questions,calls[0].data.questions);
-    assert.deepEqual(calls[1].data.promises,calls[0].data.promises);
-    assert.equal(saved.drafts.handoff.body,normalizeHandoffAttribution(raw,record).body);
-    assert.equal(calls[1].data.draft.body,saved.drafts.handoff.body);
-  } finally {store.close();}
-});
-
-test('failed reviews after normalization preserve an edited handoff and followup still repairs normally',async()=>{
-  for(const kind of ['handoff','followup']) {
-    const store=new CaseStore(':memory:'), c=store.create({...structuredClone(record),drafts:{handoff:{body:'직접 편집한 내용',edited:true}}}), calls=[];
-    const service=new ReplyTrack(store,{async structured(input){calls.push(input);return {data:input.name==='replytrack_draft'?structuredClone(raw):{valid:false,feedback:'원문과 다름'},model:'fixture'};}});
-    try {
-      await assert.rejects(()=>service.draft(c.id,{kind,version:c.version,questionIds:[c.questions[0].id]}),{code:kind==='handoff'?'DRAFT_REVIEW':'DRAFT_ACTOR'});
-      assert.equal(store.get(c.id).drafts.handoff.body,'직접 편집한 내용');
-      assert.equal(store.get(c.id).version,c.version);
-      assert.deepEqual(calls.map(c=>c.reasoningEffort),kind==='handoff'?['low','medium','medium','medium']:['low','medium']);
-    } finally {store.close();}
-  }
 });

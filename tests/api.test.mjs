@@ -25,8 +25,7 @@ test('HTTP demo lifecycle, state updates, drafts, deletion and isolation',async(
     assert.equal(c.promises[0].confirmedAt,null);
     c=(await call(`/api/cases/${c.id}/promises/${c.promises[0].id}`,'PATCH',{version:c.version,confirmed:true})).data;
     assert(c.promises[0].confirmedAt);
-    c=(await call(`/api/cases/${c.id}/drafts`,'POST',{version:c.version,kind:'handoff'})).data;
-    assert.match(c.drafts.handoff.body,/제가 확인/);
+    assert.equal((await call(`/api/cases/${c.id}/drafts`,'POST',{version:c.version,kind:'handoff'})).status,400);
     assert.equal((await call('/.env')).status,404); assert.equal((await call('/data/replytrack.sqlite')).status,404);
     const cross=await fetch(base+'/api/demo',{method:'POST',headers:{'Content-Type':'application/json',Origin:'https://evil.example'},body:'{}'});
     assert.equal(cross.status,403);

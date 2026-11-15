@@ -58,15 +58,20 @@ try {
   assert(Number(await page.locator('.message-text').first().evaluate(el => parseFloat(getComputedStyle(el).fontSize))) >= 15);
   await page.locator('[data-action=mobile][data-value=analysis]').click();
   await page.locator('[data-action=tab][data-value=drafts]').click();
-  assert.equal(await page.locator('.handoff-section').evaluate(el => el.open), false);
-  await page.locator('.handoff-section > summary').click();
-  await page.locator('[data-action=generate-draft][data-kind=handoff]').click(); await idle();
-  assert(await page.locator('#draft-handoff').isVisible());
-  await page.locator('#draft-handoff').fill('직접 편집한 인계 내용 유지');
+  assert.equal(await page.locator('.handoff-section').count(), 0);
+  await page.locator('[data-action=generate-draft][data-kind=followup]').click(); await idle();
+  assert(await page.locator('#draft-followup').isVisible());
+  await page.locator('#draft-followup').fill('직접 편집한 답장 내용 유지');
+  assert.match(await page.locator('#draft-scope').innerText(), /초안 생성에 사용한 질문/);
+  const choice=page.locator('[name=draft-question]').first();await choice.uncheck();
+  assert.match(await page.locator('#draft-scope').innerText(), /달라요/);
+  assert.equal(await page.locator('#draft-followup').inputValue(), '직접 편집한 답장 내용 유지');
+  await page.screenshot({path:`${dir}/draft-scope-390.png`,fullPage:true});
+  await choice.check();assert.equal(await page.locator('#draft-scope .warning-note').count(),0);
   await page.locator('[data-action=tab][data-value=questions]').click();
   await page.locator('[data-action=tab][data-value=drafts]').click();
-  assert.equal(await page.locator('#draft-handoff').inputValue(), '직접 편집한 인계 내용 유지');
-  await page.locator('[data-action=save-draft][data-kind=handoff]').click(); await idle();
+  assert.equal(await page.locator('#draft-followup').inputValue(), '직접 편집한 답장 내용 유지');
+  await page.locator('[data-action=save-draft][data-kind=followup]').click(); await idle();
   await page.locator('[data-action=case-settings]').click();
   await page.locator('#modal [data-action=delete]').click();
   assert(await page.locator('[data-action=delete-yes]').isVisible());
@@ -97,6 +102,6 @@ try {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.screenshot({ path: `${dir}/input-desktop.png`, fullPage: true });
   assert.equal(calls, 0); assert.deepEqual(errors, []);
-  await writeFile(`${dir}/result.json`, JSON.stringify({ passed: true, widths, errors, paidApiCalls: calls, checks: ['compact navigation', 'keyboard disclosure', 'preserved disclosure state', 'readable questions and source', 'mobile view semantics', 'handoff edits preserved', 'delete cancel', 'answered follow-up hidden', 'email input retained'] }, null, 2));
+  await writeFile(`${dir}/result.json`, JSON.stringify({ passed: true, widths, errors, paidApiCalls: calls, checks: ['compact navigation', 'keyboard disclosure', 'preserved disclosure state', 'readable questions and source', 'mobile view semantics', 'follow-up edits preserved; handoff generation removed', 'delete cancel', 'answered follow-up hidden', 'email input retained'] }, null, 2));
   console.log('UI refinement passed: 5 viewport widths, keyboard menus, preserved edits, optional tools, deletion cancel and answered-case actions.');
 } finally { await browser.close(); await new Promise(r => app.server.close(r)); app.store.close(); }

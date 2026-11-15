@@ -126,7 +126,8 @@ async function run({ out, only = '', model = process.env.OPENAI_MODEL || 'gpt-5-
           if (record.messages.slice(previous.messages.length).some((m, i) => m.text !== testCase.next[i].text)) throw Object.assign(new Error('Synthetic follow-up text changed during masking'), { code: 'SOURCE_ALTERED' });
           record = await analyze(record, testCase.after, previous);
         }
-        if (testCase.draft && !analysisOnly) {
+        if (testCase.draft === 'handoff' && !analysisOnly) result.retiredDraft = 'handoff generation removed; analysis still evaluated; draft excluded';
+        if (testCase.draft === 'followup' && !analysisOnly) {
           const selectedQuestions = record.questions.filter(q => q.status !== 'answered');
           const start = performance.now(); let success = false;
           try {

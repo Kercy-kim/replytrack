@@ -9,7 +9,7 @@ const require=createRequire(import.meta.url),{chromium}=require(process.env.REPL
 const dir='.artifacts/official-context';await mkdir(dir,{recursive:true});
 const source={id:'s',title:'계정 복구 안내',url:'https://support.google.com/accounts/answer/7682439?hl=ko',checkedAt:'2026-11-15',body:'계정 복구 절차를 따라 소유자임을 확인해야 합니다.'};
 let release,calls=0;
-const ai={configured:true,model:'fixture',async structured(args){calls++;return {data:args.name.endsWith('_review')?{applicable:true,grounded:true,conditionsPreserved:true,noConflict:true}:{items:[{sourceId:'s',quote:source.body,text:'계정 복구 절차에서 소유자 확인이 필요해요.'}]}};}};
+const ai={configured:true,model:'fixture',async structured(args){calls++;return {data:args.name.endsWith('_review')?{applicable:true,answersQuestion:true,grounded:true,conditionsPreserved:true,noConflict:true}:{items:[{sourceId:'s',quote:source.body,text:'계정 복구 절차에서 소유자 확인이 필요해요.'}]}};}};
 const official=new OfficialContext({ai});official.sources=()=>new Promise(r=>release=()=>r([source]));
 const store=new CaseStore(':memory:'),app=createApp({store,ai,official});
 let c=app.service.create({title:'계정 복구 문의',company:'Google',channel:'email',messages:[{role:'customer',text:'계정 복구가 필요합니다.'}]});
