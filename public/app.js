@@ -123,7 +123,10 @@ function setCase(c) {
   c = views.remember(c);
   // Retain local edits during conflict recovery, even if another window invalidated a draft.
   const edits = state.current?.id === c.id ? { ...state.draftEdits } : {};
-  if (state.current?.id !== c.id) state.mobile = 'analysis';
+  if (state.current?.id !== c.id) {
+    state.mobile = 'analysis';
+    state.filter = 'all';
+  }
   state.selected = new Set(selectedQuestionIds(state.current, c, state.selected));
   state.current = c; state.draftEdits = edits;
   localStorage.setItem('replytrack:last-case', c.id);

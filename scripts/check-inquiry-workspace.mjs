@@ -39,6 +39,15 @@ try {
   assert.match(await page.locator('.question-card').innerText(), /답변 대기/);
   await page.locator('[data-action=inquiry-section][data-value=actions]').click();
   assert.equal(await page.evaluate(() => document.activeElement.id), 'next-actions-title');
+  // A summary shortcut is local to its inquiry, not a global filter for the next one.
+  await page.locator('[data-action=inquiry-section][data-value=waiting]').click();
+  await page.locator(`.sidebar [data-action=open][data-id="${waiting.id}"]`).click(); await idle();
+  assert.equal(await page.locator('#question-filter').inputValue(), 'all', 'Another inquiry must start with all its questions');
+  await page.locator(`.sidebar [data-action=open][data-id="${refund.id}"]`).click(); await idle();
+  assert.equal(await page.locator('.question-card').count(), refund.questions.length);
+  await page.locator('[data-action=inquiry-section][data-value=waiting]').click();
+  await page.locator(`.sidebar [data-action=open][data-id="${refund.id}"]`).click(); await idle();
+  assert.equal(await page.locator('#question-filter').inputValue(), 'waiting', 'Refreshing the same inquiry preserves its filter');
   await page.locator('[data-action=demo-next]').click(); await idle();
   assert.match(await page.locator('.inquiry-overview').innerText(), /추가로 확인할 질문 없음/);
   await page.locator('[data-action=inquiry-section][data-value=questions]').click();

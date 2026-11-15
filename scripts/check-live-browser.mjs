@@ -18,7 +18,7 @@ const analysisEffort = process.argv.find(arg => arg.startsWith('--analysis-effor
 const coreOnly = process.argv.includes('--core-only');
 assert(['product', 'low', 'medium'].includes(analysisEffort), 'Use product, low or medium analysis effort.');
 const report = { at: new Date().toISOString(), analysisEffort, coreOnly, passed: false, cases: [], calls: [], browserErrors: [],
-  hashes: Object.fromEntries(['src/service.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/openai.mjs', 'src/ai-race.mjs', 'public/app.js', 'scripts/check-live-browser.mjs'].map(f => [f, createHash('sha256').update(readFileSync(f)).digest('hex')])) };
+  hashes: Object.fromEntries(['src/service.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/openai.mjs', 'src/ai-race.mjs', 'src/store.mjs', 'public/app.js', 'public/inquiry-overview.js', 'public/workspace.js', 'public/styles.css', 'scripts/check-live-browser.mjs'].map(f => [f, createHash('sha256').update(readFileSync(f)).digest('hex')])) };
 const save = () => writeFile(`${dir}/result.json`, JSON.stringify(report, null, 2));
 class MeasuredOpenAI extends OpenAIClient {
   async structured(args) {
@@ -70,6 +70,38 @@ const grounded = c => {
   }
   assert(c.promises.every(p => !p.confirmedAt));
 };
+async function checkOverview(result, stage, expectedStatuses) {
+  const c = current();
+  const fresh = !!c.nextActions && c.nextActions.messageIds.length === c.messages.length && c.nextActions.messageIds.every((id, i) => id === c.messages[i].id);
+  const expected = {
+    followups: expectedStatuses.filter(s => ['unanswered', 'partial', 'review'].includes(s)).length,
+    waitingAnswers: expectedStatuses.filter(s => s === 'waiting').length,
+    waitingPromises: c.promises.filter(p => !p.confirmedAt && p.state === 'promised').length,
+    confirmations: c.promises.filter(p => !p.confirmedAt && p.state === 'reported').length,
+    requests: fresh ? c.nextActions.items.filter(a => !a.completedAt && ['requested', 'review'].includes(a.state)).length : null,
+  };
+  const cards = await page.locator('.inquiry-overview-items > div > p').allTextContents();
+  assert.equal(cards.length, 3);
+  assert(expected.followups ? cards[0].startsWith(`${expected.followups}개`) : cards[0].includes('질문 없음'));
+  if (expected.waitingAnswers) assert(cards[1].includes(`답변 대기 질문 ${expected.waitingAnswers}개`));
+  if (expected.waitingPromises) assert(cards[1].includes(`처리 약속 ${expected.waitingPromises}개`));
+  if (!expected.waitingAnswers && !expected.waitingPromises) assert(cards[1].includes('대기 항목 없음'));
+  if (fresh) assert(cards[2].includes(`수행·확인할 요청 ${expected.requests}개`));
+  else assert(cards[2].includes('업체 요청은 별도로'));
+  if (expected.confirmations) assert(cards[2].includes(`실제 처리 결과 확인 ${expected.confirmations}개`));
+  result.overviews ??= []; result.overviews.push({ stage, expected, cards });
+  const stored = app.store.list().find(r => r.id === c.id).overview;
+  for (const [key, value] of Object.entries(expected)) if (value !== null) assert.equal(stored[key], value, `List/detail mismatch: ${key}`);
+  await page.locator('[data-action=inquiry-section][data-value=questions]').click();
+  assert.equal(await page.locator('.question-card').count(), expected.followups);
+  assert.equal(await page.evaluate(() => document.activeElement.id), 'inquiry-questions');
+  await page.locator('[data-action=inquiry-section][data-value=waiting]').click();
+  assert.equal(await page.locator('.question-card').count(), expected.waitingAnswers);
+  await page.locator('[data-action=inquiry-section][data-value=actions]').click();
+  assert.equal(await page.evaluate(() => document.activeElement.id), 'next-actions-title');
+  await page.locator('#question-filter').selectOption('all');
+  await page.locator('.case-heading').scrollIntoViewIfNeeded();
+}
 try {
   await page.goto(base); await page.locator('.welcome').waitFor();
   for (const fixture of fixtures.filter(f => !requestedCase || f.name === requestedCase)) {
@@ -95,6 +127,7 @@ try {
       const c = current(); result.initial = c; grounded(c);
       assert.deepEqual(c.questions.map(q => q.status).sort(), fixture.initial);
       if (fixture.channel === 'email') assert(c.questions.every(q => /[가-힣]/.test(q.title)), 'Email question titles must be understandable in Korean.');
+      await checkOverview(result, 'initial', fixture.initial);
       await page.screenshot({ path: `${dir}/${fixture.name}-initial.png`, fullPage: true });
     });
     if (fixture.channel === 'email' && !coreOnly) await step('korean-explanation-and-actions', async () => {
@@ -103,6 +136,7 @@ try {
       await page.locator('[data-action=read-actions]').click(); await idle();
       const c = current(); assert.equal(c.nextActions.items.length, 1); assert(!c.nextActions.items[0].completedAt);
       result.initialWithExplanation = c;
+      await checkOverview(result, 'requests-extracted', fixture.initial);
     });
     await step('append-and-compare', async () => {
       await page.setViewportSize({ width: 390, height: 844 });
@@ -128,6 +162,7 @@ try {
       assert(await page.locator('#analysis-changes').isVisible());
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
       if (fixture.channel === 'email' && !coreOnly) assert.match(await page.locator('.email-explanation').innerText(), /이전 답변 기준/);
+      await checkOverview(result, 'updated', fixture.updated);
       await page.screenshot({ path: `${dir}/${fixture.name}-updated-mobile.png`, fullPage: true });
     });
     await step('followup-edit-save-copy-reload', async () => {
