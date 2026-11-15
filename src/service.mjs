@@ -9,6 +9,7 @@ import { HANDOFF_PROMPT, HANDOFF_REPAIR_PROMPT, HANDOFF_REVIEW_PROMPT, stripInte
 import { checkpoint } from './operation.mjs';
 import { maskPrivate, privacyEnvelope } from './privacy.mjs';
 import { readImage } from './ocr.mjs';
+import { OfficialFaq, officialGuide } from './official-guide.mjs';
 
 // Derived reasoning and suggested follow-ups are not independent source facts.
 export const draftQuestionContext = questions => questions.map(({ id, title, source, status, evidence }) => ({ id, title, source, status, evidence }));
@@ -33,11 +34,13 @@ function analysisUsage(results) {
 }
 
 export class ReplyTrack {
-  constructor(store, ai, { ocr = readImage } = {}) {
+  constructor(store, ai, { ocr = readImage, faq = new OfficialFaq() } = {}) {
+    this.faq = faq;
     this.store = store; this.ai = ai; this.busy = new Set(); this.activeAI = 0; this.ocr = ocr;
     this.configRevision = 0; this.connection = { state: 'unchecked', checkedAt: null };
   }
   config() { return { configured: this.ai.configured, model: this.ai.model, connection: { ...this.connection } }; }
+  guide(input, context = {}) { return officialGuide(this, input, context); }
   configure(input) { this.ai.configure(input); this.configRevision++; this.connection = { state: 'unchecked', checkedAt: null }; return this.config(); }
   async preflight(context = {}) {
     const revision = this.configRevision;
