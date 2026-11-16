@@ -1,0 +1,207 @@
+{
+  "synthetic": true,
+  "fixture": "account-recovery",
+  "mode": "live OpenAI Responses API",
+  "startedAt": "2026-11-16T09:22:48.671Z",
+  "baseCommit": "29e2c16fcf1ae4e148138bd1576eba1c9f48aca8",
+  "sourceHashes": {
+    "src/service.mjs": "41649b593765b3bd2c35d35fcea605d77151e44a42eb1f6ce3ba2a1013201f6a",
+    "src/prompts.mjs": "aeea41418566ba3fbdc29ec34e50bf02b9a90c6e16413dd82dbcfa38e8ac73ac",
+    "src/email.mjs": "4e1d0a1882fa2f4ec05c34957062461b33592dbda02ef227aba663a8b9a85ac4",
+    "src/schema.mjs": "30ec698321be5cc4c5f569a929f9bc2d620438717744d65f74696f2ee6fe94e8",
+    "src/next-actions.mjs": "1af0f43d4cd352b52e56559f8bf078633e433e3e33eba8f438b26372ed5cf2d0",
+    "src/feature-review.mjs": "3e11dcdf8c98b1f0489597ba0f56ee176ab1edddda67d8b77ed1efa61ea592df",
+    "src/analysis-focus.mjs": "5132d638b6810a518a6e3cd663ddfdcacae88e5b1c18f9af630bfeb672f9ed1b",
+    "src/email-reply.mjs": "88bbd8a3a3ad5491dada07e097360a475b52f473306f24225ad21c751a46b52f"
+  },
+  "calls": [
+    {
+      "name": "replytrack_transcript",
+      "ms": 4851,
+      "data": {
+        "messages": [
+          {
+            "role": "customer",
+            "text": "What documents do you need to recover my account? How long will the review take?",
+            "sentAt": "2026-11-14T09:00:00+09:00"
+          },
+          {
+            "role": "agent",
+            "text": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes. After we verify the transaction ID, we will review your recovery request.",
+            "sentAt": "2026-11-14T10:00:00+09:00"
+          }
+        ],
+        "notes": []
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "transport": {
+        "elapsedMs": 4849,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 4844,
+            "httpStatus": 200,
+            "bodyMs": 4,
+            "usage": {
+              "input_tokens": 870,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 0
+              },
+              "output_tokens": 490,
+              "output_tokens_details": {
+                "reasoning_tokens": 320
+              },
+              "total_tokens": 1360
+            },
+            "elapsedMs": 4849
+          }
+        ]
+      },
+      "usage": {
+        "input_tokens": 870,
+        "output_tokens": 490,
+        "total_tokens": 1360,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 320
+        },
+        "unobserved_requests": 0
+      }
+    },
+    {
+      "name": "replytrack_analysis",
+      "ms": 25262,
+      "data": {
+        "summary": "구매 영수증의 거래 ID 제출을 요청받았고, 거래 ID 확인 후 복구 요청을 검토하겠다고 안내받았습니다.",
+        "questions": [
+          {
+            "id": "new-q-1",
+            "title": "계정 복구에 필요한 서류는 무엇인가요?",
+            "source": {
+              "messageId": "66417956-e6b2-4452-b5fc-feafbe9c6be3",
+              "quote": "What documents do you need to recover my account?"
+            },
+            "status": "answered",
+            "reason": "구매 영수증의 거래 ID를 제출하라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "7207d29a-a1b7-4332-99d3-f1a2347df0b5",
+                "quote": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes."
+              }
+            ],
+            "followUp": ""
+          },
+          {
+            "id": "new-q-2",
+            "title": "검토는 얼마나 걸리나요?",
+            "source": {
+              "messageId": "66417956-e6b2-4452-b5fc-feafbe9c6be3",
+              "quote": "How long will the review take?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없습니다.",
+            "evidence": [],
+            "followUp": "검토 소요 기간을 알려주세요."
+          }
+        ],
+        "promises": [
+          {
+            "id": "new-p-1",
+            "title": "계정 복구 요청 검토",
+            "questionIds": [
+              "new-q-2"
+            ],
+            "evidence": {
+              "messageId": "7207d29a-a1b7-4332-99d3-f1a2347df0b5",
+              "quote": "After we verify the transaction ID, we will review your recovery request."
+            },
+            "dueText": "",
+            "deadlineCleared": false,
+            "state": "promised"
+          }
+        ]
+      },
+      "model": "gpt-5-mini-2025-08-07",
+      "transport": {
+        "elapsedMs": 25262,
+        "hedged": true,
+        "hedgeSkipped": false,
+        "unobservedRequests": 1,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 25016,
+            "httpStatus": 200,
+            "bodyMs": 244,
+            "usage": {
+              "input_tokens": 5307,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 5120
+              },
+              "output_tokens": 2590,
+              "output_tokens_details": {
+                "reasoning_tokens": 2240
+              },
+              "total_tokens": 7897
+            },
+            "elapsedMs": 25260
+          },
+          {
+            "attempt": 2,
+            "startedMs": 25013,
+            "state": "cancelled",
+            "elapsedMs": 247
+          }
+        ]
+      },
+      "usage": {
+        "input_tokens": 5307,
+        "output_tokens": 2590,
+        "total_tokens": 7897,
+        "input_tokens_details": {
+          "cached_tokens": 5120
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 2240
+        },
+        "unobserved_requests": 1
+      }
+    }
+  ],
+  "steps": [
+    {
+      "name": "extract",
+      "ms": 4853
+    },
+    {
+      "name": "analyze",
+      "ms": 25266
+    }
+  ],
+  "passed": false,
+  "senderReview": "Synthetic fixture roles confirmed at the user review step",
+  "error": {
+    "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    'answered',\n+   'unanswered'\n-   'partial'\n  ]\n",
+    "code": "ERR_ASSERTION"
+  },
+  "finishedAt": "2026-11-16T09:23:18.836Z"
+}

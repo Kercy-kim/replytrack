@@ -60,6 +60,10 @@ export function futureAnswerNeedsReview(data, record) {
 // Review a potentially invented omission, without deciding whether the answer is complete.
 export const partialScopeNeedsReview = (data, record) => record.channel === 'email' && data.questions.some(q => q.status === 'partial' && /(?:다른|추가|나머지|그\s*밖)[^.!?\n]{0,24}(?:서류|자료|문서|요건|요구사항|항목)/.test(q.reason));
 export const durationPromiseNeedsReview = (data, record) => record.channel === 'email' && data.promises.some(p => p.state === 'promised' && /\b(?:review|processing|assessment|verification)\s+(?:(?:usually|typically|generally)\s+)?(?:will\s+take|takes?)\b/i.test(p.evidence.quote));
+// A linked action is relevant context, or its question link is wrong. Ask the
+// model to resolve that inconsistency; never assign partial by a keyword rule.
+export const linkedUnansweredNeedsReview = (data, record) => record.channel === 'email'
+  && data.questions.some(q => q.status === 'unanswered' && data.promises.some(p => p.questionIds.includes(q.id)));
 
 function analysisUsage(results) {
   const usages = results.map(r => r.usage).filter(Boolean);
@@ -289,12 +293,13 @@ export class ReplyTrack {
           if (!validationErrors.length && replyPlan?.emailActionScope && receiptFulfillsDifferentAction(result.data, c)) validationErrors.push('기존 검증·심사 약속의 행동이 자료 수신만으로 이행됐다고 바뀌었습니다. 자료 수신과 검증·심사는 별개입니다. 기존 약속 ID는 같은 행동에만 쓰고, 수신은 별도의 reported로 보존하세요. 원문에서 해당 검증·심사 자체의 수행이 명시된 경우만 기존 약속을 reported로 바꾸세요');
           if (!validationErrors.length && unsupportedDeadlineClear(result.data)) validationErrors.push('기한 삭제 표시에 명시적인 철회·미정 정정 근거가 없습니다. 업무 완료·수신·접수 통보나 기한 생략만으로 deadlineCleared=true를 쓰지 마세요. 실제 철회인지 전체 원문을 재검토하고, 단순 완료 통보라면 reported와 deadlineCleared=false로 기존 기한 이력을 보존하세요');
           if (!validationErrors.length && effort === 'low' && futureAnswerNeedsReview(result.data, c)) validationErrors.push('질문과 향후 확인·안내 약속의 시간 대상을 대조하세요. 질문한 행동의 처리 날짜와 답을 알려줄 날짜가 같은지 원문을 다시 대조하세요. 안내 시점 자체를 물었고 그 시점을 받았다면 answered가 맞을 수도 있습니다. 자동으로 waiting으로 바꾸거나 유지하지 마세요');
+          if (!validationErrors.length && linkedUnansweredNeedsReview(result.data, c)) validationErrors.push('관련 안내가 전혀 없다는 unanswered 질문에 처리 약속이 연결돼 있습니다. 같은 처리의 선행 절차·진행 단계가 실제로 안내됐다면 partial 등 맞는 상태와 원문 근거를 보존하세요. 기간을 확인해 알려주겠다는 별도 확약이면 waiting입니다. 약속이 다른 업무라면 잘못된 questionIds 연결을 제거하고 unanswered를 유지할 수 있습니다. 연결만 보고 자동으로 partial로 바꾸지 말고 전체 원문에서 관련성을 판단하세요');
           if (!attempt && !validationErrors.length && partialScopeNeedsReview(result.data, c)) validationErrors.push('부분 답변의 누락 사유가 원문에 실제 존재하는지 다시 확인하세요. 필요한 자료가 무엇인지 물었고 업체가 제출할 항목을 명확히 제시했다면, 그 밖의 자료가 더 있을 것이라고 추측해 partial로 낮추지 마세요. 사용자가 실제로 여러 항목을 물었거나 업체가 일부 목록이라고 명시했다면 빠진 항목을 유지해야 합니다. 자동으로 answered로 바꾸지 말고 원문에서 요구 범위를 다시 판단하세요');
           if (!attempt && !validationErrors.length && durationPromiseNeedsReview(result.data, c)) validationErrors.push('검토·처리 소요 기간 답변을 별도 업무 약속으로 만들었는지 다시 확인하세요. The review will take 3 business days처럼 기간만 설명하면 심사 기간 질문의 답이지 독립 처리 약속이 아닙니다. 원문에 이 고객 건을 검토하겠다거나 결과를 보내겠다는 별도 행동의 확약이 있을 때만 그 행동 약속을 유지하세요. 자료를 받았다는 실제 수신 통보는 reported로 보존하고 일반 심사 기간을 그 수신 기한으로 옮기지 마세요');
           if (!validationErrors.length) break;
           if (attempt === 1) throw new AppError(502, '분석의 원문 인용과 상태를 다시 확인했지만 맞지 않아 저장하지 않았습니다. 기존 기록은 유지됩니다.', 'AI_EVIDENCE');
           if (semanticRepair) {
-            const ids = result.data.questions.filter(q => (effort === 'low' && futureAnswerNeedsReview({ ...result.data, questions: [q] }, c)) || partialScopeNeedsReview({ questions: [q] }, c)).map(q => q.id);
+            const ids = result.data.questions.filter(q => (effort === 'low' && futureAnswerNeedsReview({ ...result.data, questions: [q] }, c)) || partialScopeNeedsReview({ questions: [q] }, c) || linkedUnansweredNeedsReview({ ...result.data, questions: [q] }, c)).map(q => q.id);
             repairPlan = semanticReviewPlan(c, result.data, ids);
           }
           revision = { revisionFeedback: `앞선 생성에서 다음 원문 인용 또는 상태·근거의 일관성 오류가 있었습니다: ${validationErrors.join(', ')}. source는 customer, evidence는 agent의 실제 ID와 정확한 원문 부분 문자열이어야 합니다. 동의어 치환·조사 생략·띄어쓰기 수정·요약을 하지 말고 원문을 그대로 복사하세요. 미답변인데 근거가 있다면 그 근거의 관련성을 다시 판단하고, 관련 안내가 있으면 맞는 상태를 선택하고 무관한 안내면 근거에서 제외하세요. 최종 상태를 답하지 않았어도 같은 처리의 실행 방법을 안내했다면 partial이며 방법 안내를 근거에 보존하세요. 미답변 형식에 맞추려고 관련 근거만 삭제하지 마세요. 잘못된 출력을 재사용하지 말고 제공된 원문과 기존 기록에서 전체 분석을 다시 반환하세요.` };

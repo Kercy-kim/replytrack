@@ -1,35 +1,35 @@
 {
   "schemaVersion": 1,
   "provenance": {
-    "source": "evals/results/presentation/recording-2026-11-16-final.json",
-    "sha256": "836b62a78cbdbbd667ba05a5044c3c238ec067196e9f76a4652c2b719f3ffdcd",
+    "source": "evals/results/presentation/recording-2026-11-16-readiness-fixed.json",
+    "sha256": "ffa82d40cc97c79890659376004471024e98247b72e6a761aad006bf66d443b2",
     "fixture": "account-recovery",
     "synthetic": true,
     "model": "gpt-5-mini-2025-08-07",
-    "recordedAt": "2026-11-15T17:34:55.601Z",
+    "recordedAt": "2026-11-16T09:29:06.404Z",
     "apiCalls": 15,
-    "operationMs": 214413,
+    "operationMs": 150190,
     "sourceHashes": {
-      "src/service.mjs": "9148356ae71793a143a3aeec3f58637b1998b10dbb0b28d890d04793f0e14a28",
-      "src/prompts.mjs": "dcf829288dc8e94bd9d1561b0b5a397e243009f678575c06293544ed73fdc33b",
-      "src/email.mjs": "4e1d0a1882fa2f4ec05c34957062461b33592dbda02ef227aba663a8b9a85ac4",
-      "src/schema.mjs": "6076ecdb794744d3fd30522c729b3b15c22d7194b32f3cb0e23e17f91256f94d",
+      "src/service.mjs": "171d403001e0612409306d0c4bf8c08c8850c4d2c29024ec9c2baf99294697ad",
+      "src/prompts.mjs": "aeea41418566ba3fbdc29ec34e50bf02b9a90c6e16413dd82dbcfa38e8ac73ac",
+      "src/email.mjs": "dd48e157252eab8f974b9888b32f5ae90973c3e1a62cee3c29fd50215d728ee0",
+      "src/schema.mjs": "30ec698321be5cc4c5f569a929f9bc2d620438717744d65f74696f2ee6fe94e8",
       "src/next-actions.mjs": "1af0f43d4cd352b52e56559f8bf078633e433e3e33eba8f438b26372ed5cf2d0",
       "src/feature-review.mjs": "3e11dcdf8c98b1f0489597ba0f56ee176ab1edddda67d8b77ed1efa61ea592df",
-      "src/analysis-focus.mjs": "c1124dcf59f9b7e931d3a7e867b1699a3d96c7b3768ca25e7599b07e8a4f552c",
-      "src/email-reply.mjs": "ff53c93997b0f307c1ba2e2f39b9053c4b3aa94f5d3367be63143b169cb9e742"
+      "src/analysis-focus.mjs": "5132d638b6810a518a6e3cd663ddfdcacae88e5b1c18f9af630bfeb672f9ed1b",
+      "src/email-reply.mjs": "88bbd8a3a3ad5491dada07e097360a475b52f473306f24225ad21c751a46b52f"
     }
   },
   "before": {
     "messages": [
       {
-        "id": "15645a13-466f-4e0a-8a40-d2870f6713be",
+        "id": "41ff8c46-a73e-416f-8043-74c5ba013209",
         "role": "customer",
         "text": "What documents do you need to recover my account? How long will the review take?",
         "sentAt": "2026-11-14T00:00:00.000Z"
       },
       {
-        "id": "4820483f-1510-49a4-96fa-b530530454e3",
+        "id": "a40e2411-7f9c-4a8f-b604-babc2dab8dce",
         "role": "agent",
         "text": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes. After we verify the transaction ID, we will review your recovery request.",
         "sentAt": "2026-11-14T01:00:00.000Z"
@@ -37,17 +37,17 @@
     ],
     "questions": [
       {
-        "id": "d10f97f2-631e-46d5-a34d-df533166b497",
-        "title": "계정 복구에 필요한 서류는 무엇인가요?",
+        "id": "e256b491-afdd-4376-9625-1ff469053337",
+        "title": "계정 복구에 필요한 서류",
         "source": {
-          "messageId": "15645a13-466f-4e0a-8a40-d2870f6713be",
+          "messageId": "41ff8c46-a73e-416f-8043-74c5ba013209",
           "quote": "What documents do you need to recover my account?"
         },
         "status": "answered",
         "reason": "구매 영수증의 거래 ID를 제출하라고 안내받았습니다.",
         "evidence": [
           {
-            "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+            "messageId": "a40e2411-7f9c-4a8f-b604-babc2dab8dce",
             "quote": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes."
           }
         ],
@@ -58,36 +58,36 @@
         "manualTitle": null
       },
       {
-        "id": "ef0ab401-6c86-49bb-9590-23de723ceadb",
-        "title": "심사(검토)는 얼마나 걸리나요?",
+        "id": "acf549d7-27e8-49f0-b9f1-93973c6e8583",
+        "title": "심사 소요 기간",
         "source": {
-          "messageId": "15645a13-466f-4e0a-8a40-d2870f6713be",
+          "messageId": "41ff8c46-a73e-416f-8043-74c5ba013209",
           "quote": "How long will the review take?"
         },
         "status": "partial",
-        "reason": "거래 ID 확인 후 심사를 진행한다고 안내받았지만 심사 소요 기간은 확인되지 않았습니다.",
+        "reason": "거래 ID 확인 후 심사하겠다는 안내는 받았지만 심사 소요 기간은 확인되지 않았습니다.",
         "evidence": [
           {
-            "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+            "messageId": "a40e2411-7f9c-4a8f-b604-babc2dab8dce",
             "quote": "After we verify the transaction ID, we will review your recovery request."
           }
         ],
-        "followUp": "심사 소요 기간을 알려 주세요.",
+        "followUp": "심사 소요 기간을 알려주세요.",
         "aiStatus": "partial",
-        "aiReason": "거래 ID 확인 후 심사를 진행한다고 안내받았지만 심사 소요 기간은 확인되지 않았습니다.",
+        "aiReason": "거래 ID 확인 후 심사하겠다는 안내는 받았지만 심사 소요 기간은 확인되지 않았습니다.",
         "manualStatus": null,
         "manualTitle": null
       }
     ],
     "promises": [
       {
-        "id": "ac81888d-7058-4cb1-9b0a-8bddb99e95fb",
-        "title": "거래 ID 확인 후 복구 요청 검토 진행",
+        "id": "2466e7a2-b41c-4ed7-b2c3-cec8c1368bad",
+        "title": "복구 요청 심사 진행",
         "questionIds": [
-          "ef0ab401-6c86-49bb-9590-23de723ceadb"
+          "acf549d7-27e8-49f0-b9f1-93973c6e8583"
         ],
         "evidence": {
-          "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+          "messageId": "a40e2411-7f9c-4a8f-b604-babc2dab8dce",
           "quote": "After we verify the transaction ID, we will review your recovery request."
         },
         "dueText": "",
@@ -99,38 +99,38 @@
     "emailExplanation": {
       "items": [
         {
-          "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+          "messageId": "a40e2411-7f9c-4a8f-b604-babc2dab8dce",
           "quote": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes. After we verify the transaction ID, we will review your recovery request.",
-          "korean": "구매 영수증에 있는 거래 ID를 알려 달라는 요청입니다. 비밀번호나 인증 코드는 절대 보내지 말라고 명시된 예외가 있습니다. 회사(또는 상담원)가 거래 ID를 확인한 뒤에 귀하의 복구(리커버리) 요청을 검토하겠다고 약속하는 안내입니다."
+          "korean": "구매 영수증에 있는 거래 ID(transaction ID)를 알려달라는 요청입니다. 비밀번호나 인증 코드를 절대 보내지 말라고 명확히 안내하고 있습니다. 저희가 거래 ID를 확인한 뒤에 귀하의 복구 요청을 검토하겠다고 안내하고 있습니다."
         }
       ],
       "messageCount": 2,
-      "at": "2026-11-15T17:32:10.637Z",
+      "at": "2026-11-16T09:27:17.030Z",
       "model": "gpt-5-mini-2025-08-07",
       "usage": {
-        "input_tokens": 841,
-        "output_tokens": 1349,
-        "total_tokens": 2190,
+        "input_tokens": 830,
+        "output_tokens": 1256,
+        "total_tokens": 2086,
         "unobserved_requests": 0,
         "input_tokens_details": {
           "cached_tokens": 0
         },
         "output_tokens_details": {
-          "reasoning_tokens": 960
+          "reasoning_tokens": 896
         }
       }
     },
     "nextActions": {
       "items": [
         {
-          "id": "786df2b7-f430-47ee-a36e-44212b1b1eae",
+          "id": "ee173aaf-54a4-4123-aae6-3cdb71577051",
           "source": {
-            "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+            "messageId": "a40e2411-7f9c-4a8f-b604-babc2dab8dce",
             "quote": "Please provide the transaction ID from your purchase receipt."
           },
           "state": "requested",
           "update": null,
-          "title": "구매 영수증의 거래 ID 제출",
+          "title": "구매 영수증의 transaction ID 제출",
           "condition": "",
           "dueText": "",
           "dueAt": null,
@@ -138,37 +138,37 @@
         }
       ],
       "messageIds": [
-        "15645a13-466f-4e0a-8a40-d2870f6713be",
-        "4820483f-1510-49a4-96fa-b530530454e3"
+        "41ff8c46-a73e-416f-8043-74c5ba013209",
+        "a40e2411-7f9c-4a8f-b604-babc2dab8dce"
       ],
-      "at": "2026-11-15T17:32:31.022Z",
+      "at": "2026-11-16T09:27:38.377Z",
       "model": "gpt-5-mini-2025-08-07",
       "usage": {
-        "input_tokens": 4426,
-        "output_tokens": 1511,
-        "total_tokens": 5937,
+        "input_tokens": 4428,
+        "output_tokens": 2095,
+        "total_tokens": 6523,
         "unobserved_requests": 0,
         "input_tokens_details": {
           "cached_tokens": 0
         },
         "output_tokens_details": {
-          "reasoning_tokens": 1344
+          "reasoning_tokens": 1920
         }
       },
       "reviewed": true
     },
     "drafts": {
       "followup": {
-        "body": "Could you please tell me how long the review of my account recovery request will take after you verify the transaction ID?",
+        "body": "Please tell me how long the review of my recovery request will take after you verify the transaction ID.",
         "sourceMessageIds": [
-          "15645a13-466f-4e0a-8a40-d2870f6713be",
-          "4820483f-1510-49a4-96fa-b530530454e3"
+          "41ff8c46-a73e-416f-8043-74c5ba013209",
+          "a40e2411-7f9c-4a8f-b604-babc2dab8dce"
         ],
         "questionIds": [
-          "ef0ab401-6c86-49bb-9590-23de723ceadb"
+          "acf549d7-27e8-49f0-b9f1-93973c6e8583"
         ],
         "language": "en",
-        "at": "2026-11-15T17:32:42.322Z",
+        "at": "2026-11-16T09:27:49.990Z",
         "model": "gpt-5-mini-2025-08-07",
         "review": {
           "model": "gpt-5-mini-2025-08-07",
@@ -177,7 +177,7 @@
       }
     },
     "comparison": {
-      "at": "2026-11-15T17:31:52.118Z",
+      "at": "2026-11-16T09:27:01.426Z",
       "kind": "initial",
       "fromMessageCount": 0,
       "toMessageCount": 2,
@@ -189,19 +189,19 @@
   "after": {
     "messages": [
       {
-        "id": "15645a13-466f-4e0a-8a40-d2870f6713be",
+        "id": "41ff8c46-a73e-416f-8043-74c5ba013209",
         "role": "customer",
         "text": "What documents do you need to recover my account? How long will the review take?",
         "sentAt": "2026-11-14T00:00:00.000Z"
       },
       {
-        "id": "4820483f-1510-49a4-96fa-b530530454e3",
+        "id": "a40e2411-7f9c-4a8f-b604-babc2dab8dce",
         "role": "agent",
         "text": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes. After we verify the transaction ID, we will review your recovery request.",
         "sentAt": "2026-11-14T01:00:00.000Z"
       },
       {
-        "id": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+        "id": "672b5375-a11e-4059-86a4-7208bd834a2b",
         "role": "agent",
         "text": "We received your transaction ID. The review will take 3 business days. Your account has not been restored yet. We will email you after the review.",
         "sentAt": "2026-11-15T01:00:00.000Z"
@@ -209,43 +209,51 @@
     ],
     "questions": [
       {
-        "id": "d10f97f2-631e-46d5-a34d-df533166b497",
-        "title": "계정 복구에 필요한 서류는 무엇인가요?",
+        "id": "e256b491-afdd-4376-9625-1ff469053337",
+        "title": "계정 복구에 필요한 서류",
         "source": {
-          "messageId": "15645a13-466f-4e0a-8a40-d2870f6713be",
+          "messageId": "41ff8c46-a73e-416f-8043-74c5ba013209",
           "quote": "What documents do you need to recover my account?"
         },
         "status": "answered",
-        "reason": "구매 영수증의 거래 ID를 제공하라고 안내받았습니다.",
+        "reason": "구입 영수증의 거래 ID를 제출하라고 안내받았습니다.",
         "evidence": [
           {
-            "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+            "messageId": "a40e2411-7f9c-4a8f-b604-babc2dab8dce",
             "quote": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes."
+          },
+          {
+            "messageId": "672b5375-a11e-4059-86a4-7208bd834a2b",
+            "quote": "We received your transaction ID."
           }
         ],
         "followUp": "",
         "aiStatus": "answered",
-        "aiReason": "구매 영수증의 거래 ID를 제공하라고 안내받았습니다.",
+        "aiReason": "구입 영수증의 거래 ID를 제출하라고 안내받았습니다.",
         "manualStatus": null,
         "manualTitle": null
       },
       {
-        "id": "ef0ab401-6c86-49bb-9590-23de723ceadb",
-        "title": "심사(검토)는 얼마나 걸리나요?",
+        "id": "acf549d7-27e8-49f0-b9f1-93973c6e8583",
+        "title": "심사 소요 기간",
         "source": {
-          "messageId": "15645a13-466f-4e0a-8a40-d2870f6713be",
+          "messageId": "41ff8c46-a73e-416f-8043-74c5ba013209",
           "quote": "How long will the review take?"
         },
         "status": "answered",
         "reason": "심사는 3영업일이 소요된다고 안내받았습니다.",
         "evidence": [
           {
-            "messageId": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+            "messageId": "a40e2411-7f9c-4a8f-b604-babc2dab8dce",
+            "quote": "After we verify the transaction ID, we will review your recovery request."
+          },
+          {
+            "messageId": "672b5375-a11e-4059-86a4-7208bd834a2b",
             "quote": "The review will take 3 business days."
           },
           {
-            "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
-            "quote": "After we verify the transaction ID, we will review your recovery request."
+            "messageId": "672b5375-a11e-4059-86a4-7208bd834a2b",
+            "quote": "We will email you after the review."
           }
         ],
         "followUp": "",
@@ -257,11 +265,13 @@
     ],
     "promises": [
       {
-        "id": "ac81888d-7058-4cb1-9b0a-8bddb99e95fb",
-        "title": "거래 ID 확인 후 복구 요청 검토 진행",
-        "questionIds": [],
+        "id": "2466e7a2-b41c-4ed7-b2c3-cec8c1368bad",
+        "title": "복구 요청 심사 진행",
+        "questionIds": [
+          "acf549d7-27e8-49f0-b9f1-93973c6e8583"
+        ],
         "evidence": {
-          "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+          "messageId": "a40e2411-7f9c-4a8f-b604-babc2dab8dce",
           "quote": "After we verify the transaction ID, we will review your recovery request."
         },
         "dueText": "",
@@ -270,11 +280,13 @@
         "confirmedAt": null
       },
       {
-        "id": "570564e0-802d-436c-abb1-b278c0faa43e",
+        "id": "e3c8379f-86f1-45ed-a48c-5add2aa1bfb6",
         "title": "거래 ID 수신",
-        "questionIds": [],
+        "questionIds": [
+          "e256b491-afdd-4376-9625-1ff469053337"
+        ],
         "evidence": {
-          "messageId": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+          "messageId": "672b5375-a11e-4059-86a4-7208bd834a2b",
           "quote": "We received your transaction ID."
         },
         "dueText": "",
@@ -283,11 +295,13 @@
         "confirmedAt": null
       },
       {
-        "id": "73b4747c-c509-4364-81e3-9a4c56a2277f",
+        "id": "e61bc1bc-5c46-40ee-998f-3cdf0608083c",
         "title": "심사 완료 후 이메일 통지",
-        "questionIds": [],
+        "questionIds": [
+          "acf549d7-27e8-49f0-b9f1-93973c6e8583"
+        ],
         "evidence": {
-          "messageId": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+          "messageId": "672b5375-a11e-4059-86a4-7208bd834a2b",
           "quote": "We will email you after the review."
         },
         "dueText": "",
@@ -299,46 +313,46 @@
     "emailExplanation": {
       "items": [
         {
-          "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+          "messageId": "a40e2411-7f9c-4a8f-b604-babc2dab8dce",
           "quote": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes. After we verify the transaction ID, we will review your recovery request.",
-          "korean": "구매 영수증에 있는 거래 ID를 알려주세요. 비밀번호나 인증 코드를 보내지 마세요. 저희가 거래 ID를 확인한 후 귀하의 복구 요청을 심사하겠습니다."
+          "korean": "구매 영수증에 있는 거래 ID(transaction ID)를 제공해 달라는 요청입니다. 비밀번호나 인증 코드는 보내지 말라고 명시된 예외가 있습니다. 담당자가 거래 ID를 확인한 다음 귀하의 복구 요청을 검토하겠다고 안내하고 있습니다."
         },
         {
-          "messageId": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+          "messageId": "672b5375-a11e-4059-86a4-7208bd834a2b",
           "quote": "We received your transaction ID. The review will take 3 business days. Your account has not been restored yet. We will email you after the review.",
-          "korean": "거래 ID를 접수했습니다. 심사는 영업일 기준 3일이 소요됩니다. 귀하의 계정은 아직 복원되지 않았습니다. 심사 완료 후 이메일로 연락드리겠습니다."
+          "korean": "거래 ID를 받았다는 안내입니다. 심사는 영업일 기준 3일이 소요된다고 밝혔습니다. 귀하의 계정은 아직 복구되지 않았으며(복구가 완료된 상태가 아님), 심사 완료 후 이메일로 연락하겠다고 약속하고 있습니다."
         }
       ],
       "messageCount": 3,
-      "at": "2026-11-15T17:34:35.371Z",
+      "at": "2026-11-16T09:28:51.439Z",
       "model": "gpt-5-mini-2025-08-07",
       "usage": {
-        "input_tokens": 1030,
-        "output_tokens": 2330,
-        "total_tokens": 3360,
+        "input_tokens": 1066,
+        "output_tokens": 2003,
+        "total_tokens": 3069,
         "unobserved_requests": 0,
         "input_tokens_details": {
           "cached_tokens": 0
         },
         "output_tokens_details": {
-          "reasoning_tokens": 1856
+          "reasoning_tokens": 1472
         }
       }
     },
     "nextActions": {
       "items": [
         {
-          "id": "786df2b7-f430-47ee-a36e-44212b1b1eae",
+          "id": "ee173aaf-54a4-4123-aae6-3cdb71577051",
           "source": {
-            "messageId": "4820483f-1510-49a4-96fa-b530530454e3",
+            "messageId": "a40e2411-7f9c-4a8f-b604-babc2dab8dce",
             "quote": "Please provide the transaction ID from your purchase receipt."
           },
           "state": "reported_done",
           "update": {
-            "messageId": "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
+            "messageId": "672b5375-a11e-4059-86a4-7208bd834a2b",
             "quote": "We received your transaction ID."
           },
-          "title": "구매 영수증의 거래 ID 제출",
+          "title": "구매 영수증의 transaction ID 제출",
           "condition": "",
           "dueText": "",
           "dueAt": null,
@@ -346,39 +360,39 @@
         }
       ],
       "messageIds": [
-        "15645a13-466f-4e0a-8a40-d2870f6713be",
-        "4820483f-1510-49a4-96fa-b530530454e3",
-        "defe8bf6-3ef9-4d35-8516-2ba98ac56e99"
+        "41ff8c46-a73e-416f-8043-74c5ba013209",
+        "a40e2411-7f9c-4a8f-b604-babc2dab8dce",
+        "672b5375-a11e-4059-86a4-7208bd834a2b"
       ],
-      "at": "2026-11-15T17:34:55.599Z",
+      "at": "2026-11-16T09:29:06.403Z",
       "model": "gpt-5-mini-2025-08-07",
       "usage": {
         "input_tokens": 4683,
-        "output_tokens": 1618,
-        "total_tokens": 6301,
+        "output_tokens": 1750,
+        "total_tokens": 6433,
         "unobserved_requests": 0,
         "input_tokens_details": {
           "cached_tokens": 1792
         },
         "output_tokens_details": {
-          "reasoning_tokens": 1408
+          "reasoning_tokens": 1536
         }
       },
       "reviewed": true
     },
     "drafts": {},
     "comparison": {
-      "at": "2026-11-15T17:34:11.270Z",
+      "at": "2026-11-16T09:28:36.381Z",
       "kind": "reply",
       "fromMessageCount": 2,
       "toMessageCount": 3,
       "messageIds": [
-        "defe8bf6-3ef9-4d35-8516-2ba98ac56e99"
+        "672b5375-a11e-4059-86a4-7208bd834a2b"
       ],
       "questions": [
         {
-          "id": "ef0ab401-6c86-49bb-9590-23de723ceadb",
-          "title": "심사(검토)는 얼마나 걸리나요?",
+          "id": "acf549d7-27e8-49f0-b9f1-93973c6e8583",
+          "title": "심사 소요 기간",
           "before": {
             "status": "partial",
             "aiStatus": "partial",
@@ -390,14 +404,14 @@
             "manualStatus": null
           },
           "evidenceMessageIds": [
-            "defe8bf6-3ef9-4d35-8516-2ba98ac56e99",
-            "4820483f-1510-49a4-96fa-b530530454e3"
+            "a40e2411-7f9c-4a8f-b604-babc2dab8dce",
+            "672b5375-a11e-4059-86a4-7208bd834a2b"
           ]
         }
       ],
       "promises": [
         {
-          "id": "570564e0-802d-436c-abb1-b278c0faa43e",
+          "id": "e3c8379f-86f1-45ed-a48c-5add2aa1bfb6",
           "title": "거래 ID 수신",
           "before": null,
           "after": {
@@ -411,11 +425,11 @@
             "added"
           ],
           "evidenceMessageIds": [
-            "defe8bf6-3ef9-4d35-8516-2ba98ac56e99"
+            "672b5375-a11e-4059-86a4-7208bd834a2b"
           ]
         },
         {
-          "id": "73b4747c-c509-4364-81e3-9a4c56a2277f",
+          "id": "e61bc1bc-5c46-40ee-998f-3cdf0608083c",
           "title": "심사 완료 후 이메일 통지",
           "before": null,
           "after": {
@@ -429,7 +443,7 @@
             "added"
           ],
           "evidenceMessageIds": [
-            "defe8bf6-3ef9-4d35-8516-2ba98ac56e99"
+            "672b5375-a11e-4059-86a4-7208bd834a2b"
           ]
         }
       ]

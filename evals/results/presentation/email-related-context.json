@@ -1,0 +1,1400 @@
+{
+  "at": "2026-11-16T09:26:36.613Z",
+  "scope": "Question status and relevant evidence contrast checks; not a full promise-quality benchmark.",
+  "hashes": {
+    "src/service.mjs": "171d403001e0612409306d0c4bf8c08c8850c4d2c29024ec9c2baf99294697ad",
+    "src/email.mjs": "dd48e157252eab8f974b9888b32f5ae90973c3e1a62cee3c29fd50215d728ee0"
+  },
+  "results": [
+    {
+      "id": "procedure",
+      "expected": [
+        "partial"
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "ms": 14615,
+          "request": {
+            "messages": [
+              {
+                "id": "b123110e-483c-4c7a-bf6f-2ca68103f5ae",
+                "role": "customer",
+                "text": "How long will the review take?",
+                "sentAt": null
+              },
+              {
+                "id": "1bf2d707-a2de-4970-8b7e-e7a084e9bc1f",
+                "role": "agent",
+                "text": "After we verify your receipt, we will review your recovery request.",
+                "sentAt": null
+              }
+            ],
+            "existingQuestions": [],
+            "existingPromises": []
+          },
+          "data": {
+            "summary": "고객이 검토 소요 기간을 문의했고, 상담원은 영수증 확인 후 회복 요청을 검토하겠다고 안내했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "검토 소요 기간",
+                "source": {
+                  "messageId": "b123110e-483c-4c7a-bf6f-2ca68103f5ae",
+                  "quote": "How long will the review take?"
+                },
+                "status": "partial",
+                "reason": "영수증 확인 후 검토한다는 절차는 안내받았지만 소요 기간은 확인되지 않았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "1bf2d707-a2de-4970-8b7e-e7a084e9bc1f",
+                    "quote": "After we verify your receipt, we will review your recovery request."
+                  }
+                ],
+                "followUp": "검토에 걸리는 소요 기간을 알려주세요."
+              }
+            ],
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "회복 요청 검토 진행",
+                "questionIds": [
+                  "new-q-1"
+                ],
+                "evidence": {
+                  "messageId": "1bf2d707-a2de-4970-8b7e-e7a084e9bc1f",
+                  "quote": "After we verify your receipt, we will review your recovery request."
+                },
+                "dueText": "",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 14614,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 14610,
+                "httpStatus": 200,
+                "bodyMs": 2,
+                "usage": {
+                  "input_tokens": 5400,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3840
+                  },
+                  "output_tokens": 1513,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1280
+                  },
+                  "total_tokens": 6913
+                },
+                "elapsedMs": 14614
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5400,
+            "output_tokens": 1513,
+            "total_tokens": 6913,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1280
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "record": {
+        "id": "cb0af7c5-19fd-4897-a20e-23855fadd531",
+        "title": "procedure",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-16T09:26:36.615Z",
+        "updatedAt": "2026-11-16T09:26:51.233Z",
+        "messages": [
+          {
+            "id": "b123110e-483c-4c7a-bf6f-2ca68103f5ae",
+            "role": "customer",
+            "text": "How long will the review take?",
+            "sentAt": null
+          },
+          {
+            "id": "1bf2d707-a2de-4970-8b7e-e7a084e9bc1f",
+            "role": "agent",
+            "text": "After we verify your receipt, we will review your recovery request.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "bdcecb00-0874-4377-a983-4f635329a47e",
+            "title": "검토 소요 기간",
+            "source": {
+              "messageId": "b123110e-483c-4c7a-bf6f-2ca68103f5ae",
+              "quote": "How long will the review take?"
+            },
+            "status": "partial",
+            "reason": "영수증 확인 후 검토한다는 절차는 안내받았지만 소요 기간은 확인되지 않았습니다.",
+            "evidence": [
+              {
+                "messageId": "1bf2d707-a2de-4970-8b7e-e7a084e9bc1f",
+                "quote": "After we verify your receipt, we will review your recovery request."
+              }
+            ],
+            "followUp": "검토에 걸리는 소요 기간을 알려주세요.",
+            "aiStatus": "partial",
+            "aiReason": "영수증 확인 후 검토한다는 절차는 안내받았지만 소요 기간은 확인되지 않았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "373f7018-2b07-44b7-9de6-9bb95ae3eb00",
+            "title": "회복 요청 검토 진행",
+            "questionIds": [
+              "bdcecb00-0874-4377-a983-4f635329a47e"
+            ],
+            "evidence": {
+              "messageId": "1bf2d707-a2de-4970-8b7e-e7a084e9bc1f",
+              "quote": "After we verify your receipt, we will review your recovery request."
+            },
+            "dueText": "",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "cce0c704-6bcf-4b12-bac7-17c548d2802f",
+            "at": "2026-11-16T09:26:51.233Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "1개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-16T09:26:51.233Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "ffbbb59b-2cce-4be1-9c54-0301e84b3ad1",
+            "at": "2026-11-16T09:26:36.615Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 검토 소요 기간을 문의했고, 상담원은 영수증 확인 후 회복 요청을 검토하겠다고 안내했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 5400,
+            "output_tokens": 1513,
+            "total_tokens": 6913,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1280
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-16T09:26:51.233Z",
+          "comparison": {
+            "at": "2026-11-16T09:26:51.233Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "passed": true
+    },
+    {
+      "id": "unknown",
+      "expected": [
+        "review"
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "ms": 7244,
+          "request": {
+            "messages": [
+              {
+                "id": "084b8b72-266f-4d74-a5df-c3a1abd72f76",
+                "role": "customer",
+                "text": "How long will the review take?",
+                "sentAt": null
+              },
+              {
+                "id": "2263c2e2-d9bb-4e0e-a1b4-c31e078d2534",
+                "role": "agent",
+                "text": "We do not know how long your review will take.",
+                "sentAt": null
+              }
+            ],
+            "existingQuestions": [],
+            "existingPromises": []
+          },
+          "data": {
+            "summary": "검토 소요 기간을 문의했으나 상담원이 기간을 알 수 없다고 안내했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "검토 소요 기간 문의",
+                "source": {
+                  "messageId": "084b8b72-266f-4d74-a5df-c3a1abd72f76",
+                  "quote": "How long will the review take?"
+                },
+                "status": "review",
+                "reason": "업체가 검토 소요 기간을 알 수 없다고 안내했습니다.",
+                "evidence": [
+                  {
+                    "messageId": "2263c2e2-d9bb-4e0e-a1b4-c31e078d2534",
+                    "quote": "We do not know how long your review will take."
+                  }
+                ]
+              }
+            ],
+            "promises": []
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 7244,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 6964,
+                "httpStatus": 200,
+                "bodyMs": 262,
+                "usage": {
+                  "input_tokens": 5373,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3840
+                  },
+                  "output_tokens": 766,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 640
+                  },
+                  "total_tokens": 6139
+                },
+                "elapsedMs": 7244
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5373,
+            "output_tokens": 766,
+            "total_tokens": 6139,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_boundary_review",
+          "ms": 4966,
+          "request": {
+            "messages": [
+              {
+                "id": "084b8b72-266f-4d74-a5df-c3a1abd72f76",
+                "role": "customer",
+                "text": "How long will the review take?",
+                "sentAt": null
+              },
+              {
+                "id": "2263c2e2-d9bb-4e0e-a1b4-c31e078d2534",
+                "role": "agent",
+                "text": "We do not know how long your review will take.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "검토 소요 기간 문의",
+                "source": {
+                  "messageId": "084b8b72-266f-4d74-a5df-c3a1abd72f76",
+                  "quote": "How long will the review take?"
+                }
+              }
+            ],
+            "otherQuestions": []
+          },
+          "data": {
+            "questions": [
+              {
+                "id": "new-q-1",
+                "status": "review",
+                "reason": "업체가 검토 소요 기간을 알 수 없다고 안내했습니다.",
+                "evidence": [
+                  {
+                    "messageId": "2263c2e2-d9bb-4e0e-a1b4-c31e078d2534",
+                    "quote": "We do not know how long your review will take."
+                  }
+                ]
+              }
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 4965,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 4964,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 2257,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 1792
+                  },
+                  "output_tokens": 644,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 512
+                  },
+                  "total_tokens": 2901
+                },
+                "elapsedMs": 4965
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 2257,
+            "output_tokens": 644,
+            "total_tokens": 2901,
+            "input_tokens_details": {
+              "cached_tokens": 1792
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 512
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "record": {
+        "id": "a588fad7-0b71-4d8b-b6c5-bb56d81cb348",
+        "title": "unknown",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-16T09:26:36.619Z",
+        "updatedAt": "2026-11-16T09:26:48.832Z",
+        "messages": [
+          {
+            "id": "084b8b72-266f-4d74-a5df-c3a1abd72f76",
+            "role": "customer",
+            "text": "How long will the review take?",
+            "sentAt": null
+          },
+          {
+            "id": "2263c2e2-d9bb-4e0e-a1b4-c31e078d2534",
+            "role": "agent",
+            "text": "We do not know how long your review will take.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "f5a3d639-1a12-4111-9fcc-582a89997684",
+            "title": "검토 소요 기간 문의",
+            "source": {
+              "messageId": "084b8b72-266f-4d74-a5df-c3a1abd72f76",
+              "quote": "How long will the review take?"
+            },
+            "status": "review",
+            "reason": "업체가 검토 소요 기간을 알 수 없다고 안내했습니다.",
+            "evidence": [
+              {
+                "messageId": "2263c2e2-d9bb-4e0e-a1b4-c31e078d2534",
+                "quote": "We do not know how long your review will take."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "review",
+            "aiReason": "업체가 검토 소요 기간을 알 수 없다고 안내했습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "05186cb1-afba-4cd9-950e-bb322ebb6f41",
+            "at": "2026-11-16T09:26:48.832Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "1개 질문 · 0개 처리 약속",
+            "comparison": {
+              "at": "2026-11-16T09:26:48.832Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "a79be001-1782-41b3-9a8d-f3ab3abf9b13",
+            "at": "2026-11-16T09:26:36.619Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "검토 소요 기간을 문의했으나 상담원이 기간을 알 수 없다고 안내했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 7630,
+            "output_tokens": 1410,
+            "total_tokens": 9040,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 5632
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1152
+            }
+          },
+          "attempts": 1,
+          "boundaryReview": {
+            "model": "gpt-5-mini-2025-08-07",
+            "questions": 1
+          },
+          "at": "2026-11-16T09:26:48.832Z",
+          "comparison": {
+            "at": "2026-11-16T09:26:48.832Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "passed": true
+    },
+    {
+      "id": "greeting",
+      "expected": [
+        "unanswered"
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "ms": 5415,
+          "request": {
+            "messages": [
+              {
+                "id": "59ce9535-a94c-4c48-9cb7-90770ac83951",
+                "role": "customer",
+                "text": "How long will the review take?",
+                "sentAt": null
+              },
+              {
+                "id": "53dfe2eb-efc5-4ec4-8748-79da21faf8b5",
+                "role": "agent",
+                "text": "Hello. Thank you for contacting support.",
+                "sentAt": null
+              }
+            ],
+            "existingQuestions": [],
+            "existingPromises": []
+          },
+          "data": {
+            "summary": "고객이 검토 소요 기간을 물었으나 상담원이 인사만 했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "검토 소요 기간은 얼마나 걸리나요?",
+                "source": {
+                  "messageId": "59ce9535-a94c-4c48-9cb7-90770ac83951",
+                  "quote": "How long will the review take?"
+                },
+                "status": "unanswered",
+                "reason": "이 질문에 대한 관련 안내가 아직 없습니다.",
+                "evidence": []
+              }
+            ],
+            "promises": []
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 5414,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 5411,
+                "httpStatus": 200,
+                "bodyMs": 3,
+                "usage": {
+                  "input_tokens": 5370,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 5248
+                  },
+                  "output_tokens": 729,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 576
+                  },
+                  "total_tokens": 6099
+                },
+                "elapsedMs": 5414
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5370,
+            "output_tokens": 729,
+            "total_tokens": 6099,
+            "input_tokens_details": {
+              "cached_tokens": 5248
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 576
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "record": {
+        "id": "74d3f2bb-bde0-4197-9698-095c4ae42679",
+        "title": "greeting",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-16T09:26:48.834Z",
+        "updatedAt": "2026-11-16T09:26:54.250Z",
+        "messages": [
+          {
+            "id": "59ce9535-a94c-4c48-9cb7-90770ac83951",
+            "role": "customer",
+            "text": "How long will the review take?",
+            "sentAt": null
+          },
+          {
+            "id": "53dfe2eb-efc5-4ec4-8748-79da21faf8b5",
+            "role": "agent",
+            "text": "Hello. Thank you for contacting support.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "b36189ae-512b-4d17-970d-ab4c9844957b",
+            "title": "검토 소요 기간은 얼마나 걸리나요?",
+            "source": {
+              "messageId": "59ce9535-a94c-4c48-9cb7-90770ac83951",
+              "quote": "How long will the review take?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "evidence": [],
+            "followUp": "",
+            "aiStatus": "unanswered",
+            "aiReason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "59f5bd2c-7567-4450-af92-d79c15e1d9f8",
+            "at": "2026-11-16T09:26:54.250Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "1개 질문 · 0개 처리 약속",
+            "comparison": {
+              "at": "2026-11-16T09:26:54.250Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "6e0f972a-8731-4389-9f05-1a211f8e4d68",
+            "at": "2026-11-16T09:26:48.834Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 검토 소요 기간을 물었으나 상담원이 인사만 했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 5370,
+            "output_tokens": 729,
+            "total_tokens": 6099,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 5248
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 576
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-16T09:26:54.250Z",
+          "comparison": {
+            "at": "2026-11-16T09:26:54.250Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "passed": true
+    },
+    {
+      "id": "duration",
+      "expected": [
+        "answered"
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "ms": 7113,
+          "request": {
+            "messages": [
+              {
+                "id": "065a6b2c-d9b7-4dbc-9236-ef03fbf550ce",
+                "role": "customer",
+                "text": "How long will the review take?",
+                "sentAt": null
+              },
+              {
+                "id": "e8dafaa0-1baa-4941-a4f6-f7b5d0e790e1",
+                "role": "agent",
+                "text": "The review usually takes 3 business days.",
+                "sentAt": null
+              }
+            ],
+            "existingQuestions": [],
+            "existingPromises": []
+          },
+          "data": {
+            "summary": "검토 소요 기간을 문의했고, 상담 안내가 '보통 영업일 기준 3일'이라고 답했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "검토 소요 기간이 얼마나 걸리는지",
+                "source": {
+                  "messageId": "065a6b2c-d9b7-4dbc-9236-ef03fbf550ce",
+                  "quote": "How long will the review take?"
+                },
+                "status": "answered",
+                "reason": "검토는 보통 영업일 3일이 걸린다고 안내받았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "e8dafaa0-1baa-4941-a4f6-f7b5d0e790e1",
+                    "quote": "The review usually takes 3 business days."
+                  }
+                ]
+              }
+            ],
+            "promises": []
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 7113,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 6829,
+                "httpStatus": 200,
+                "bodyMs": 284,
+                "usage": {
+                  "input_tokens": 5371,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 5248
+                  },
+                  "output_tokens": 964,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 768
+                  },
+                  "total_tokens": 6335
+                },
+                "elapsedMs": 7113
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5371,
+            "output_tokens": 964,
+            "total_tokens": 6335,
+            "input_tokens_details": {
+              "cached_tokens": 5248
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 768
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "record": {
+        "id": "c7f8b3c6-0e08-4c0e-923f-bc7d12f87749",
+        "title": "duration",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-16T09:26:51.234Z",
+        "updatedAt": "2026-11-16T09:26:58.349Z",
+        "messages": [
+          {
+            "id": "065a6b2c-d9b7-4dbc-9236-ef03fbf550ce",
+            "role": "customer",
+            "text": "How long will the review take?",
+            "sentAt": null
+          },
+          {
+            "id": "e8dafaa0-1baa-4941-a4f6-f7b5d0e790e1",
+            "role": "agent",
+            "text": "The review usually takes 3 business days.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "4b46e728-169f-4b80-af3f-0fa582676f0b",
+            "title": "검토 소요 기간이 얼마나 걸리는지",
+            "source": {
+              "messageId": "065a6b2c-d9b7-4dbc-9236-ef03fbf550ce",
+              "quote": "How long will the review take?"
+            },
+            "status": "answered",
+            "reason": "검토는 보통 영업일 3일이 걸린다고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "e8dafaa0-1baa-4941-a4f6-f7b5d0e790e1",
+                "quote": "The review usually takes 3 business days."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "검토는 보통 영업일 3일이 걸린다고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "ddffa25e-7a25-4df1-810a-e9305072c23b",
+            "at": "2026-11-16T09:26:58.349Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "1개 질문 · 0개 처리 약속",
+            "comparison": {
+              "at": "2026-11-16T09:26:58.349Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "e9545a0e-4974-4556-8786-0e2cdf085989",
+            "at": "2026-11-16T09:26:51.234Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "검토 소요 기간을 문의했고, 상담 안내가 '보통 영업일 기준 3일'이라고 답했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 5371,
+            "output_tokens": 964,
+            "total_tokens": 6335,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 5248
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 768
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-16T09:26:58.349Z",
+          "comparison": {
+            "at": "2026-11-16T09:26:58.349Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "passed": true
+    },
+    {
+      "id": "future-answer",
+      "expected": [
+        "waiting"
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "ms": 13006,
+          "request": {
+            "messages": [
+              {
+                "id": "278c0376-8f71-4f92-983e-5001c69626b4",
+                "role": "customer",
+                "text": "How long will the review take?",
+                "sentAt": null
+              },
+              {
+                "id": "1d490335-79d8-4df3-a566-16f24d6a26b1",
+                "role": "agent",
+                "text": "We will check the expected review duration and email you tomorrow.",
+                "sentAt": null
+              }
+            ],
+            "existingQuestions": [],
+            "existingPromises": []
+          },
+          "data": {
+            "summary": "고객이 검토 소요 기간을 문의했고, 상담 안내가 확인 후 내일 이메일로 안내하겠다고 약속했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "검토 소요 기간은 얼마나 걸리나요?",
+                "source": {
+                  "messageId": "278c0376-8f71-4f92-983e-5001c69626b4",
+                  "quote": "How long will the review take?"
+                },
+                "status": "waiting",
+                "reason": "검토 소요 기간을 확인해 안내하겠다는 약속을 받았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "1d490335-79d8-4df3-a566-16f24d6a26b1",
+                    "quote": "We will check the expected review duration and email you tomorrow."
+                  }
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "검토 소요 기간 확인 및 안내",
+                "questionIds": [
+                  "new-q-1"
+                ],
+                "evidence": {
+                  "messageId": "1d490335-79d8-4df3-a566-16f24d6a26b1",
+                  "quote": "We will check the expected review duration and email you tomorrow."
+                },
+                "dueText": "tomorrow.",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 13006,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 12740,
+                "httpStatus": 200,
+                "bodyMs": 266,
+                "usage": {
+                  "input_tokens": 5374,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 5248
+                  },
+                  "output_tokens": 1493,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1280
+                  },
+                  "total_tokens": 6867
+                },
+                "elapsedMs": 13006
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5374,
+            "output_tokens": 1493,
+            "total_tokens": 6867,
+            "input_tokens_details": {
+              "cached_tokens": 5248
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1280
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "record": {
+        "id": "b8100c00-5f08-4ef4-862c-caf8f1619f78",
+        "title": "future-answer",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-16T09:26:54.250Z",
+        "updatedAt": "2026-11-16T09:27:07.259Z",
+        "messages": [
+          {
+            "id": "278c0376-8f71-4f92-983e-5001c69626b4",
+            "role": "customer",
+            "text": "How long will the review take?",
+            "sentAt": null
+          },
+          {
+            "id": "1d490335-79d8-4df3-a566-16f24d6a26b1",
+            "role": "agent",
+            "text": "We will check the expected review duration and email you tomorrow.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "5b239c1d-333e-4992-ad59-039634f84ac0",
+            "title": "검토 소요 기간은 얼마나 걸리나요?",
+            "source": {
+              "messageId": "278c0376-8f71-4f92-983e-5001c69626b4",
+              "quote": "How long will the review take?"
+            },
+            "status": "waiting",
+            "reason": "검토 소요 기간을 확인해 안내하겠다는 약속을 받았습니다.",
+            "evidence": [
+              {
+                "messageId": "1d490335-79d8-4df3-a566-16f24d6a26b1",
+                "quote": "We will check the expected review duration and email you tomorrow."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "waiting",
+            "aiReason": "검토 소요 기간을 확인해 안내하겠다는 약속을 받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "c63166d7-468d-4555-a498-17c408e13f9d",
+            "title": "검토 소요 기간 확인 및 안내",
+            "questionIds": [
+              "5b239c1d-333e-4992-ad59-039634f84ac0"
+            ],
+            "evidence": {
+              "messageId": "1d490335-79d8-4df3-a566-16f24d6a26b1",
+              "quote": "We will check the expected review duration and email you tomorrow."
+            },
+            "dueText": "tomorrow.",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "a2370a53-b19f-45ec-a65a-57a4775fa719",
+            "at": "2026-11-16T09:27:07.259Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "1개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-16T09:27:07.259Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "88db98c6-8e61-4d3a-8c8a-d1d2d2a5173b",
+            "at": "2026-11-16T09:26:54.250Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 검토 소요 기간을 문의했고, 상담 안내가 확인 후 내일 이메일로 안내하겠다고 약속했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 5374,
+            "output_tokens": 1493,
+            "total_tokens": 6867,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 5248
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1280
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-16T09:27:07.259Z",
+          "comparison": {
+            "at": "2026-11-16T09:27:07.259Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "passed": true
+    },
+    {
+      "id": "documents-only",
+      "expected": [
+        "answered",
+        "unanswered"
+      ],
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "ms": 12053,
+          "request": {
+            "messages": [
+              {
+                "id": "21680a96-15f7-4c5c-abf9-357b8a76c332",
+                "role": "customer",
+                "text": "What documents should I send? How long will the review take?",
+                "sentAt": null
+              },
+              {
+                "id": "6fa81dd6-faf4-481f-ab7d-73c8735adf51",
+                "role": "agent",
+                "text": "Please send your purchase receipt.",
+                "sentAt": null
+              }
+            ],
+            "existingQuestions": [],
+            "existingPromises": []
+          },
+          "data": {
+            "summary": "고객이 제출할 서류와 심사 소요기간을 문의했고, 상담 안내는 구매 영수증만 요청했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "보낼 서류는 무엇인가요?",
+                "source": {
+                  "messageId": "21680a96-15f7-4c5c-abf9-357b8a76c332",
+                  "quote": "What documents should I send?"
+                },
+                "status": "answered",
+                "reason": "구매 영수증을 보내라고 안내받았습니다.",
+                "evidence": [
+                  {
+                    "messageId": "6fa81dd6-faf4-481f-ab7d-73c8735adf51",
+                    "quote": "Please send your purchase receipt."
+                  }
+                ]
+              },
+              {
+                "id": "new-q-2",
+                "title": "심사 소요 기간은 얼마나 걸리나요?",
+                "source": {
+                  "messageId": "21680a96-15f7-4c5c-abf9-357b8a76c332",
+                  "quote": "How long will the review take?"
+                },
+                "status": "unanswered",
+                "reason": "이 질문에 대한 관련 안내가 아직 없습니다.",
+                "evidence": []
+              }
+            ],
+            "promises": []
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 12053,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 12036,
+                "httpStatus": 200,
+                "bodyMs": 16,
+                "usage": {
+                  "input_tokens": 5374,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 5248
+                  },
+                  "output_tokens": 1318,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1024
+                  },
+                  "total_tokens": 6692
+                },
+                "elapsedMs": 12052
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 5374,
+            "output_tokens": 1318,
+            "total_tokens": 6692,
+            "input_tokens_details": {
+              "cached_tokens": 5248
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1024
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "record": {
+        "id": "6e4c9dfa-32ed-4502-93aa-e57166f3168b",
+        "title": "documents-only",
+        "company": "고객센터",
+        "mode": "live",
+        "createdAt": "2026-11-16T09:26:58.349Z",
+        "updatedAt": "2026-11-16T09:27:10.403Z",
+        "messages": [
+          {
+            "id": "21680a96-15f7-4c5c-abf9-357b8a76c332",
+            "role": "customer",
+            "text": "What documents should I send? How long will the review take?",
+            "sentAt": null
+          },
+          {
+            "id": "6fa81dd6-faf4-481f-ab7d-73c8735adf51",
+            "role": "agent",
+            "text": "Please send your purchase receipt.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "a87444b4-8f46-41d9-935b-dc3c6da4748b",
+            "title": "보낼 서류는 무엇인가요?",
+            "source": {
+              "messageId": "21680a96-15f7-4c5c-abf9-357b8a76c332",
+              "quote": "What documents should I send?"
+            },
+            "status": "answered",
+            "reason": "구매 영수증을 보내라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "6fa81dd6-faf4-481f-ab7d-73c8735adf51",
+                "quote": "Please send your purchase receipt."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "구매 영수증을 보내라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "695a9a0d-4bfb-4957-884e-b2a18d25ca4a",
+            "title": "심사 소요 기간은 얼마나 걸리나요?",
+            "source": {
+              "messageId": "21680a96-15f7-4c5c-abf9-357b8a76c332",
+              "quote": "How long will the review take?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "evidence": [],
+            "followUp": "",
+            "aiStatus": "unanswered",
+            "aiReason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "bd10eb24-9060-4c96-9961-7df5235bf941",
+            "at": "2026-11-16T09:27:10.403Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "2개 질문 · 0개 처리 약속",
+            "comparison": {
+              "at": "2026-11-16T09:27:10.403Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "7079a165-3320-4e8c-ad00-7708887cb228",
+            "at": "2026-11-16T09:26:58.350Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 제출할 서류와 심사 소요기간을 문의했고, 상담 안내는 구매 영수증만 요청했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 5374,
+            "output_tokens": 1318,
+            "total_tokens": 6692,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 5248
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1024
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-16T09:27:10.403Z",
+          "comparison": {
+            "at": "2026-11-16T09:27:10.403Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "passed": true
+    }
+  ],
+  "passed": true
+}
