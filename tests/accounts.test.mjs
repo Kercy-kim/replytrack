@@ -31,8 +31,8 @@ test('PostgreSQL accounts: single-use invites, 10 participants, password/session
   } finally { await db.close(); }
 });
 
-test('PostgreSQL ownership, atomic version updates and quota reservations remain isolated', async () => {
-  const db = await testDatabase({dailyLimit:2});
+test('PostgreSQL ownership, atomic version updates and usage records remain isolated without daily caps', async () => {
+  const db = await testDatabase();
   try {
     const admin = (await db.accounts.login({username:'replytrack',password:'Local-test-admin-12345'})).user;
     const users = await Promise.all(['alpha','beta'].map(async username => db.accounts.register({username,password:'Participant-test-1234',invite:(await db.accounts.invite(admin)).code})));
@@ -43,9 +43,13 @@ test('PostgreSQL ownership, atomic version updates and quota reservations remain
     const edits = await Promise.allSettled([a.save({...c,title:'A'},1),a.save({...c,title:'B'},1)]);
     assert.equal(edits.filter(r=>r.status==='fulfilled').length,1); assert.equal(edits.find(r=>r.status==='rejected').reason.status,409);
     assert.equal((await db.forUser(users[0].user.id).get(c.id)).version,2);
-    const limits=await Promise.allSettled(Array.from({length:10},()=>db.accounts.reserve(users[0].user,randomUUID())));
-    assert.equal(limits.filter(r=>r.status==='fulfilled').length,2); assert(limits.filter(r=>r.status==='rejected').every(r=>r.reason.status===429));
-    assert.deepEqual(await db.accounts.usage(users[1].user),{used:0,limit:2});
+    await db.pool.query("INSERT INTO rt_usage(user_id,day,count) VALUES($1,(now() AT TIME ZONE 'Asia/Seoul')::date,30),($2,(now() AT TIME ZONE 'Asia/Seoul')::date,100)",[users[0].user.id,admin.id]);
+    await Promise.all(Array.from({length:10},()=>db.accounts.recordOperation(users[0].user,randomUUID())));
+    assert.deepEqual(await db.accounts.usage(users[0].user),{used:40});
+    assert.deepEqual(await db.accounts.usage(users[1].user),{used:0});
+    const operationId=randomUUID(); await db.accounts.recordOperation(admin,operationId);
+    await assert.rejects(db.accounts.recordOperation(admin,operationId),{status:409});
+    assert.deepEqual(await db.accounts.usage(admin),{used:101});
   } finally { await db.close(); }
 });
 

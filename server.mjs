@@ -116,7 +116,7 @@ export function createApp({ store, ai, ocr, faq, official, database, hosting = h
         if (kind === 'extract' && input.caseId) await currentService.getVersion(input.caseId, input.version);
         operations.validateStart(id, owner);
         return json(operations.start(id, async context => {
-          if (database && kind !== 'prepare') await database.accounts.reserve(user, id);
+          if (database && kind !== 'prepare') await database.accounts.recordOperation(user, id);
           checkpoint(context);
           if (kind === 'preflight') return currentService.preflight(context);
           if (kind === 'prepare') return currentService.prepare(input, context);
@@ -143,11 +143,11 @@ export function createApp({ store, ai, ocr, faq, official, database, hosting = h
           const key = officialKey(c);
           if (!officialStarts.has(key)) {
             const start = officialAdmission.then(async () => {
-              if (officialContext.shouldStart(c)) await database.accounts.reserve(user, randomUUID());
+              if (officialContext.shouldStart(c)) await database.accounts.recordOperation(user, randomUUID());
               return officialContext.start(c);
             });
-            // Reserve only after a slot/cache decision that cannot race another
-            // case's admission; omitted work must not consume the daily quota.
+            // Count only after a slot/cache decision that cannot race another
+            // case's admission; omitted work must not inflate usage.
             officialAdmission = start.catch(() => {});
             officialStarts.set(key, start);
             start.finally(() => officialStarts.delete(key)).catch(() => {});
