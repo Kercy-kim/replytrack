@@ -10,6 +10,9 @@ import { AppError, assert } from './src/errors.mjs';
 import { Operations, checkpoint } from './src/operation.mjs';
 import { OfficialContext, officialKey } from './src/official-context.mjs';
 import { hostingConfig, createRequestGuard } from './src/hosting.mjs';
+import { connectPostgres } from './src/postgres.mjs';
+import { readSession, sessionCookie } from './src/accounts.mjs';
+import { randomUUID } from 'node:crypto';
 
 const root = dirname(fileURLToPath(import.meta.url));
 try { process.loadEnvFile(join(root, '.env')); } catch (error) { if (error.code !== 'ENOENT') throw error; }
@@ -28,14 +31,27 @@ staticFiles.set('/next-actions.js', ['next-actions.js', 'text/javascript']);
 staticFiles.set('/inquiry-overview.js', ['inquiry-overview.js', 'text/javascript']);
 staticFiles.set('/official-context.js', ['official-context.js', 'text/javascript']);
 staticFiles.set('/draft-scope.js', ['draft-scope.js', 'text/javascript']);
+staticFiles.set('/login', ['login.html', 'text/html']);
+staticFiles.set('/login.js', ['login.js', 'text/javascript']);
+staticFiles.set('/login.css', ['login.css', 'text/css']);
+const publicAssets = new Set(['/login', '/login.js', '/login.css', '/styles.css', '/favicon.svg']);
 
-export function createApp({ store, ai, ocr, faq, official, hosting = hostingConfig() } = {}) {
-  const guard = createRequestGuard(hosting);
-  const db = store ?? new CaseStore(resolve(root, process.env.REPLYTRACK_DATA_DIR || 'data', 'replytrack.sqlite'));
+export function createApp({ store, ai, ocr, faq, official, database, hosting = hostingConfig() } = {}) {
+  const guard = createRequestGuard({ ...hosting, sessionAuth: !!database });
+  const db = store ?? (database ? database.forUser('no-session') : new CaseStore(resolve(root, process.env.REPLYTRACK_DATA_DIR || 'data', 'replytrack.sqlite')));
   const client = ai ?? new OpenAIClient({ apiKey: process.env.OPENAI_API_KEY || '', model: process.env.OPENAI_MODEL || 'gpt-5-mini' });
   const service = new ReplyTrack(db, client, { ocr, faq });
-  const operations = new Operations();
+  const operations = new Operations({ queue: !!database });
+  const users = new Map();
+  const userContext = user => {
+    if (!users.has(user.id)) {
+      const store = database.forUser(user.id);
+      users.set(user.id, { store, service: new ReplyTrack(store, client, { ocr, faq }) });
+    }
+    return users.get(user.id);
+  };
   const officialContext = official ?? new OfficialContext({ ai: client, ...(faq ? { faq } : {}) });
+  const officialStarts = new Map();
   const server = createServer(async (req, res) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Referrer-Policy', 'no-referrer');
@@ -47,63 +63,110 @@ export function createApp({ store, ai, ocr, faq, official, hosting = hostingConf
       const path = guard(req, res, port);
       if (path === null) return;
       const method = req.method;
+      if (method === 'GET' && path === '/api/health') return json({ ok: true, app: 'ReplyTrack' });
+      const sessionToken = database ? readSession(req) : null;
+      const user = database ? await database.accounts.authenticate(sessionToken) : null;
+      if (method === 'GET' && path === '/api/auth/me') return json({ enabled: !!database, user, ...(user ? { usage: await database.accounts.usage(user) } : {}) });
+      const loginRequest = ['POST'].includes(method) && ['/api/auth/login', '/api/auth/register'].includes(path);
+      if (database && !user && !loginRequest && !publicAssets.has(path)) {
+        if (!path.startsWith('/api/') && method === 'GET') { res.writeHead(303, { Location: '/login' }); return res.end(); }
+        throw new AppError(401, '로그인이 필요합니다.', 'LOGIN_REQUIRED');
+      }
+      if (database && ['POST','PUT','PATCH','DELETE'].includes(method)) {
+        assert(req.headers.origin === (hosting.publicOrigin || `http://${req.headers.host}`), '이 요청의 출처를 허용하지 않습니다.', 403);
+      }
+      const current = database && user ? userContext(user) : { service, store: db };
+      const currentService = current.service, currentStore = current.store;
+      const owner = user?.id || 'local';
+      const adminOnly = () => assert(!database || user?.role === 'admin', '관리자만 사용할 수 있어요.', 403);
       let body = {};
       if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
         assert(req.headers['content-type']?.split(';')[0] === 'application/json', 'JSON 요청만 지원합니다.', 415);
         const chunks = []; let size = 0;
-        for await (const chunk of req) { size += chunk.length; assert(size <= 6 * 1024 * 1024, '업로드 용량이 너무 큽니다.', 413); chunks.push(chunk); }
+        for await (const chunk of req) { size += chunk.length; assert(size <= (path.startsWith('/api/auth/') ? 8192 : 6 * 1024 * 1024), '업로드 용량이 너무 큽니다.', 413); chunks.push(chunk); }
         try { body = JSON.parse(Buffer.concat(chunks).toString() || '{}'); } catch { throw new AppError(400, '요청 내용을 읽을 수 없습니다.'); }
         assert(body && typeof body === 'object' && !Array.isArray(body), '요청 형식을 확인해 주세요.');
       }
-      if (method === 'GET' && path === '/api/health') return json({ ok: true, app: 'ReplyTrack' });
-      if (method === 'GET' && path === '/api/config') return json(service.config());
-      if (method === 'PUT' && path === '/api/config') return json(service.configure(body));
+      if (database && loginRequest) {
+        const result = path.endsWith('/login') ? await database.accounts.login(body) : await database.accounts.register(body);
+        await database.accounts.logout(sessionToken);
+        res.setHeader('Set-Cookie', sessionCookie(result.token, !!hosting.publicOrigin));
+        return json({ user: result.user }, path.endsWith('/register') ? 201 : 200);
+      }
+      if (database && method === 'POST' && path === '/api/auth/logout') {
+        operations.cancelOwner(owner); await database.accounts.logout(sessionToken);
+        res.setHeader('Set-Cookie', sessionCookie('', !!hosting.publicOrigin, true));
+        return json({ ok: true });
+      }
+      if (database && method === 'POST' && path === '/api/admin/invites') { adminOnly(); return json(await database.accounts.invite(user), 201); }
+      if (method === 'GET' && path === '/api/config') return json({ ...currentService.config(), managed: !!database && user?.role !== 'admin' });
+      if (method === 'PUT' && path === '/api/config') {
+        adminOnly(); const config = service.configure(body);
+        for (const context of users.values()) { context.service.configRevision++; context.service.connection = { state: 'unchecked', checkedAt: null }; }
+        return json(config);
+      }
       if (method === 'POST' && path === '/api/operations') {
         const { id, kind, caseId, input = {} } = body;
         assert(['preflight', 'prepare', 'extract', 'analyze', 'draft', 'actions', 'email-explanation'].includes(kind), '작업 종류를 확인해 주세요.');
         assert(input && typeof input === 'object' && !Array.isArray(input), '작업 입력을 확인해 주세요.');
         if (kind === 'draft') assert(input.kind === 'followup', '현재는 남은 질문의 재문의 초안만 작성할 수 있어요.');
         // Do optimistic-version validation before spending any provider tokens.
-        const record = ['analyze', 'draft', 'actions', 'email-explanation'].includes(kind) ? service.getVersion(caseId, input.version) : null;
+        const record = ['analyze', 'draft', 'actions', 'email-explanation'].includes(kind) ? await currentService.getVersion(caseId, input.version) : null;
+        if (kind === 'extract' && input.caseId) await currentService.getVersion(input.caseId, input.version);
+        operations.validateStart(id, owner);
         return json(operations.start(id, async context => {
-          if (kind === 'preflight') return service.preflight(context);
-          if (kind === 'prepare') return service.prepare(input, context);
-          if (record?.mode !== 'demo') await service.ensureConnection(context);
+          if (database && kind !== 'prepare') await database.accounts.reserve(user, id);
           checkpoint(context);
-          if (kind === 'extract') return service.extract(input, context);
-          if (kind === 'analyze') return service.analyze(caseId, input.version, context);
-          if (kind === 'actions') return service.actions(caseId, input.version, context);
-          if (kind === 'email-explanation') return service.explainEmail(caseId, input.version, context);
-          return service.draft(caseId, input, context);
-        }), 202);
+          if (kind === 'preflight') return currentService.preflight(context);
+          if (kind === 'prepare') return currentService.prepare(input, context);
+          if (record?.mode !== 'demo') await currentService.ensureConnection(context);
+          checkpoint(context);
+          if (kind === 'extract') return currentService.extract(input, context);
+          if (kind === 'analyze') return currentService.analyze(caseId, input.version, context);
+          if (kind === 'actions') return currentService.actions(caseId, input.version, context);
+          if (kind === 'email-explanation') return currentService.explainEmail(caseId, input.version, context);
+          return currentService.draft(caseId, input, context);
+        }, owner, kind === 'prepare' && input.image ? 'ocr' : 'general'), 202);
       }
       const operation = path.match(/^\/api\/operations\/([\w-]+)$/);
-      if (operation && method === 'GET') return json(operations.get(operation[1]));
-      if (operation && method === 'DELETE') return json(operations.cancel(operation[1]));
-      if (method === 'GET' && path === '/api/cases') return json(db.list());
-      if (method === 'POST' && path === '/api/cases') return json(service.create(body), 201);
-      if (method === 'POST' && path === '/api/demo') return json(service.demo(body), 201);
-      if (method === 'POST' && path === '/api/extract') return json(await service.extract(body));
+      if (operation && method === 'GET') return json(operations.get(operation[1], owner));
+      if (operation && method === 'DELETE') return json(operations.cancel(operation[1], owner));
+      if (method === 'GET' && path === '/api/cases') return json(await currentStore.list());
+      if (method === 'POST' && path === '/api/cases') return json(await currentService.create(body), 201);
+      if (method === 'POST' && path === '/api/demo') { adminOnly(); return json(await currentService.demo(body), 201); }
+      if (method === 'POST' && path === '/api/extract') { assert(!database, '진행 상태가 있는 작업 요청을 사용해 주세요.', 400); return json(await currentService.extract(body)); }
       const officialMatch = path.match(/^\/api\/cases\/([\w-]+)\/official-context$/);
       if (officialMatch && ['GET', 'POST'].includes(method)) {
-        const c = db.get(officialMatch[1]);
+        const c = await currentStore.get(officialMatch[1]);
+        if (database && method === 'POST') {
+          const key = officialKey(c);
+          if (!officialStarts.has(key)) {
+            const start = (async () => {
+              if (officialContext.shouldStart(c)) await database.accounts.reserve(user, randomUUID());
+              return officialContext.start(c);
+            })();
+            officialStarts.set(key, start);
+            start.finally(() => officialStarts.delete(key)).catch(() => {});
+          }
+          return json(await officialStarts.get(key));
+        }
         return json(method === 'POST' ? officialContext.start(c) : officialContext.entries.get(officialKey(c))?.result ?? { key: officialKey(c), state: 'omitted' });
       }
       const match = path.match(/^\/api\/cases\/([\w-]+)(?:\/(analyze|messages|email-messages|questions|promises|drafts|actions|demo-next)(?:\/([\w-]+))?)?$/);
       if (match) {
         const [, id, action, item] = match;
-        if (!action && method === 'GET') return json(db.get(id));
-        if (!action && method === 'PATCH') return json(service.metadata(id, body));
-        if (!action && method === 'DELETE') { service.getVersion(id, body.version); db.delete(id, body.version); return json({ deleted: true }); }
-        if (action === 'analyze' && method === 'POST') return json(await service.analyze(id, body.version));
-        if (action === 'messages' && method === 'POST') return json(service.append(id, body));
-        if (action === 'email-messages' && method === 'POST') return json(service.appendEmail(id, body));
-        if (action === 'demo-next' && method === 'POST') return json(service.advance(id, body.version));
-        if (action === 'questions' && item && method === 'PATCH') return json(service.question(id, item, body));
-        if (action === 'promises' && item && method === 'PATCH') return json(service.promise(id, item, body));
-        if (action === 'actions' && item && method === 'PATCH') return json(service.completeAction(id, item, body));
-        if (action === 'drafts' && method === 'POST') return json(await service.draft(id, body));
-        if (action === 'drafts' && item && method === 'PATCH') return json(service.saveDraft(id, item, body));
+        if (!action && method === 'GET') return json(await currentStore.get(id));
+        if (!action && method === 'PATCH') return json(await currentService.metadata(id, body));
+        if (!action && method === 'DELETE') { await currentService.getVersion(id, body.version); await currentStore.delete(id, body.version); return json({ deleted: true }); }
+        if (action === 'analyze' && method === 'POST') { assert(!database, '진행 상태가 있는 작업 요청을 사용해 주세요.', 400); return json(await currentService.analyze(id, body.version)); }
+        if (action === 'messages' && method === 'POST') return json(await currentService.append(id, body));
+        if (action === 'email-messages' && method === 'POST') return json(await currentService.appendEmail(id, body));
+        if (action === 'demo-next' && method === 'POST') { adminOnly(); return json(await currentService.advance(id, body.version)); }
+        if (action === 'questions' && item && method === 'PATCH') return json(await currentService.question(id, item, body));
+        if (action === 'promises' && item && method === 'PATCH') return json(await currentService.promise(id, item, body));
+        if (action === 'actions' && item && method === 'PATCH') return json(await currentService.completeAction(id, item, body));
+        if (action === 'drafts' && method === 'POST') { assert(!database, '진행 상태가 있는 작업 요청을 사용해 주세요.', 400); return json(await currentService.draft(id, body)); }
+        if (action === 'drafts' && item && method === 'PATCH') return json(await currentService.saveDraft(id, item, body));
       }
       if (method === 'GET' && staticFiles.has(path)) {
         const [file, mime] = staticFiles.get(path);
@@ -121,12 +184,13 @@ export function createApp({ store, ai, ocr, faq, official, hosting = hostingConf
   });
   server.requestTimeout = 120000;
   server.on('close', () => { operations.close(); officialContext.close(); });
-  return { server, service, store: db, ai: client, operations };
+  return { server, service, store: db, ai: client, operations, database };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const hosting = hostingConfig();
-  const app = createApp({ hosting });
+  const database = process.env.DATABASE_URL ? await connectPostgres(process.env.DATABASE_URL, process.env.REPLYTRACK_DEMO_PASSWORD) : null;
+  const app = createApp({ hosting, database });
   const port = Number(process.env.PORT || 3100);
   app.server.listen(port, hosting.bindHost, () => console.log(`ReplyTrack: ${hosting.publicOrigin || `http://127.0.0.1:${port}`}`));
   app.server.on('error', error => { console.error(error.code === 'EADDRINUSE' ? `Port ${port} is already in use.` : 'Server could not start.'); process.exitCode = 1; });
@@ -140,6 +204,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       catch { console.log('AI credential configuration failed.'); }
     });
   }
-  const stop = () => app.server.close(() => { app.store.close(); process.exit(0); });
+  const stop = () => { app.operations.close(); app.server.close(async () => { await database?.close(); app.store.close(); process.exit(0); }); };
   process.on('SIGINT', stop); process.on('SIGTERM', stop);
 }

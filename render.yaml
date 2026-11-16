@@ -14,3 +14,12 @@ services:
         value: gpt-5-mini
       - key: REPLYTRACK_DEMO_PASSWORD
         sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: replytrack
+          property: connectionString
+databases:
+  - name: replytrack
+    plan: free
+    region: singapore
+    ipAllowList: []

@@ -145,6 +145,7 @@ test('cancel during generation prevents even a late provider response from savin
     const controller=new AbortController();
     f.ai.structured=async()=>{calls++; await new Promise(r=>{release=r;}); return result(f.c);};
     const pending=f.service.actions(f.c.id,f.c.version,{signal:controller.signal});
+    await new Promise(resolve => setImmediate(resolve)); // Wait for the asynchronous repository read before the provider response.
     controller.abort(cancelled()); release();
     await assert.rejects(pending,{code:'OPERATION_CANCELLED'});
     assert.equal(calls,1); assert.deepEqual(f.store.get(f.c.id),f.c);
@@ -156,6 +157,7 @@ test('concurrent record edits cannot be overwritten by an old action result', as
   try {
     f.ai.structured=async()=>{await new Promise(r=>{release=r;}); return result(f.c);};
     const pending=f.service.actions(f.c.id,f.c.version);
+    await new Promise(resolve => setImmediate(resolve)); // Wait for the asynchronous repository read before the provider response.
     const edited=f.service.metadata(f.c.id,{version:f.c.version,title:'수정한 환불 문의'}); release();
     await assert.rejects(pending,e=>e.status===409);
     assert.deepEqual(f.store.get(f.c.id),edited);

@@ -51,6 +51,10 @@ export class OfficialContext {
     this.ai = ai; this.fetch = fetchImpl; this.faq = faq; this.timeoutMs = timeoutMs; this.entries = new Map(); this.controllers = new Set();
   }
   close() { for (const controller of this.controllers) controller.abort(); }
+  shouldStart(c) {
+    const previous = this.entries.get(officialKey(c));
+    return !(previous && Date.now() - previous.at < 1800000) && c.mode === 'live' && !!c.analysis && c.analyzedMessageCount === c.messages.length && this.ai.configured && !!officialProvider(c) && this.controllers.size < 2;
+  }
   async sources(c, provider, signal) {
     if (provider.id === 'ssg') {
       const body = c.messages.map(m => m.text).join('\n');
