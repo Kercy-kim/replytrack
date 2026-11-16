@@ -35,9 +35,9 @@ try {
   const page=await browser.newPage({viewport:{width:1440,height:1050}});
   page.on('pageerror',e=>errors.push(e.message)); page.setDefaultTimeout(12000);
   const idle=()=>page.waitForFunction(()=>!document.querySelector('.busy-bar'));
-  await page.goto(origin);
-  await page.locator('.sidebar-extras > summary').click();
-  await page.locator('.sidebar [data-action="demo"]').click(); await idle();
+  const seeded = await page.request.post(origin + '/api/demo', { data: { scenario: 'refund' } });
+  assert(seeded.ok());
+  await page.goto(`${origin}/?case=${(await seeded.json()).id}`); await idle();
   await page.getByRole('heading',{name:'지금 내가 할 일',exact:true}).waitFor();
   assert.match(await page.locator('#next-actions').innerText(),/불량 사진 보내기/);
   assert.match(await page.locator('#next-actions').innerText(),/AI 제안 · 업체 요청 아님/);
