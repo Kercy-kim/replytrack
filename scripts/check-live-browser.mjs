@@ -18,7 +18,7 @@ const analysisEffort = process.argv.find(arg => arg.startsWith('--analysis-effor
 const coreOnly = process.argv.includes('--core-only');
 assert(['product', 'low', 'medium'].includes(analysisEffort), 'Use product, low or medium analysis effort.');
 const report = { at: new Date().toISOString(), analysisEffort, coreOnly, passed: false, cases: [], calls: [], browserErrors: [],
-  hashes: Object.fromEntries(['src/service.mjs', 'src/email-reply.mjs', 'src/email.mjs', 'src/analysis-focus.mjs', 'src/official-context.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/openai.mjs', 'src/ai-race.mjs', 'src/store.mjs', 'public/app.js', 'public/inquiry-overview.js', 'public/workspace.js', 'public/styles.css', 'scripts/check-live-browser.mjs'].map(f => [f, createHash('sha256').update(readFileSync(f)).digest('hex')])) };
+  hashes: Object.fromEntries(['src/service.mjs', 'src/email-reply.mjs', 'src/email.mjs', 'src/analysis-focus.mjs', 'src/official-context.mjs', 'src/prompts.mjs', 'src/schema.mjs', 'src/openai.mjs', 'src/ai-race.mjs', 'src/store.mjs', 'public/app.js', 'public/email.js', 'public/next-actions.js', 'public/operations.js', 'public/inquiry-overview.js', 'public/workspace.js', 'public/styles.css', 'scripts/check-live-browser.mjs'].map(f => [f, createHash('sha256').update(readFileSync(f)).digest('hex')])) };
 const save = () => writeFile(`${dir}/result.json`, JSON.stringify(report, null, 2));
 class MeasuredOpenAI extends OpenAIClient {
   async structured(args) {
@@ -136,6 +136,12 @@ try {
       assert.deepEqual(c.questions.map(q => q.status).sort(), fixture.initial);
       if (fixture.channel === 'email') assert(c.questions.every(q => /[가-힣]/.test(q.title)), 'Email question titles must be understandable in Korean.');
       await checkOverview(result, 'initial', fixture.initial);
+      assert.doesNotMatch(await page.locator('.connection').innerText(), /gpt-|API 키|점검 통과/);
+      assert.equal(await page.locator('.analysis-details').evaluate(el=>el.open), false);
+      assert.doesNotMatch(await page.locator('.analysis-meta').last().innerText(), /gpt-|tokens|토큰/);
+      await page.locator('.analysis-details > summary').click();
+      assert.match(await page.locator('.analysis-details').innerText(), /사용 모델:.*gpt-/);
+      await page.locator('.analysis-details > summary').click();
       await page.screenshot({ path: `${dir}/${fixture.name}-initial.png`, fullPage: true });
     });
     if (fixture.channel === 'email' && !coreOnly) await step('korean-explanation-and-actions', async () => {
@@ -187,8 +193,27 @@ try {
       await checkOverview(result, 'updated', fixture.updated);
       await page.screenshot({ path: `${dir}/${fixture.name}-updated-mobile.png`, fullPage: true });
     });
+    if (fixture.channel === 'email' && !coreOnly) await step('refresh-explanation-and-actions', async () => {
+      assert.equal(await page.locator('[data-action=explain-email]').innerText(), '새 답변까지 설명 업데이트');
+      assert.equal(await page.locator('[data-action=read-actions]').innerText(), '새 답변으로 할 일 업데이트');
+      await page.locator('[data-action=explain-email]').click(); await idle();
+      assert.equal(await page.locator('.email-explanation .warning-note').count(), 0);
+      await page.locator('[data-action=read-actions]').click(); await idle();
+      const c = current();
+      assert.equal(c.emailExplanation.messageCount, c.messages.length);
+      assert(c.nextActions.items.some(a=>a.state==='reported_done'));
+      assert(c.nextActions.items.every(a=>!a.completedAt));
+      assert(c.promises.every(p=>!p.confirmedAt));
+      result.refreshed = c;
+      await checkOverview(result, 'requests-updated', fixture.updated);
+      await page.screenshot({path:`${dir}/email-refreshed-mobile.png`,fullPage:true});
+    });
     await step('followup-edit-save-copy-reload', async () => {
-      await page.locator('[data-action=tab][data-value=drafts]').click();
+      await page.locator('[data-action=draft-tab]').click();
+      assert.equal(await page.evaluate(()=>document.activeElement.id), 'panel-drafts');
+      const top = await page.locator('#panel-drafts').evaluate(el=>el.getBoundingClientRect().top);
+      const bottom = await page.locator('#panel-drafts').evaluate(el=>el.getBoundingClientRect().bottom);
+      assert(top >= 0 && (top < 150 || bottom <= 844), 'Reply shortcut must reveal the form, including at the document bottom');
       assert.equal(await page.locator('[name=draft-question]:checked').count(), 1);
       await page.locator('[data-action=generate-draft][data-kind=followup]').click(); await idle();
       const c = current(); const draft = c.drafts.followup;
