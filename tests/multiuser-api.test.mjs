@@ -4,6 +4,8 @@ import { randomUUID } from 'node:crypto';
 import { once } from 'node:events';
 import { createApp } from '../server.mjs';
 import { testDatabase } from './helpers/postgres.mjs';
+import { OfficialContext } from '../src/official-context.mjs';
+import { newCase } from '../src/domain.mjs';
 
 test('web API isolates 10 users, all case writes and job polling; blocks CSRF and participant configuration', async () => {
   const database=await testDatabase(); let active=0,peak=0,calls=0,pair=[];
@@ -17,7 +19,10 @@ test('web API isolates 10 users, all case writes and job polling; blocks CSRF an
     });
     active--;return {data:{ok:true}};
   }};
-  const app=createApp({database,ai,hosting:{publicOrigin:null,password:''}});
+  const guideReleases=[];
+  const official=new OfficialContext({ai});
+  official.run=async()=>{await new Promise(r=>guideReleases.push(r));return {state:'omitted'};};
+  const app=createApp({database,ai,official,hosting:{publicOrigin:null,password:''}});
   app.server.listen(0,'127.0.0.1'); await once(app.server,'listening');
   const base=`http://127.0.0.1:${app.server.address().port}`;
   const request=async(path,method='GET',body,token,headers={})=>{
@@ -56,7 +61,23 @@ test('web API isolates 10 users, all case writes and job polling; blocks CSRF an
     // Unsupported official guidance is omitted without using a quota unit.
     assert.equal((await request(`/api/cases/${id}/official-context`,'POST',{},a.cookie)).body.state,'omitted');
     assert.equal((await request('/api/auth/me','GET',null,a.cookie)).body.usage.used,1);
+    const guideRecords=await Promise.all(users.slice(7).map(u=>{
+      const c=newCase({title:'계정 복구',company:'Google',messages:[{role:'customer',text:'계정을 복구할 때 어떤 자료가 필요한가요?'}]});
+      c.analysis={model:'test'};c.analyzedMessageCount=1;
+      return database.forUser(u.body.user.id).create(c);
+    }));
+    const guides=await Promise.all(guideRecords.map((c,i)=>request(`/api/cases/${c.id}/official-context`,'POST',{},users[i+7].cookie)));
+    assert.equal(guides.filter(r=>r.body.state==='loading').length,2);
+    assert.equal(guides.filter(r=>r.body.state==='omitted').length,1);
+    for(let i=0;i<3;i++) {
+      assert.equal((await request('/api/auth/me','GET',null,users[i+7].cookie)).body.usage.used,guides[i].body.state==='loading'?2:1);
+      if(guides[i].body.state==='loading') {
+        await request(`/api/cases/${guideRecords[i].id}/official-context`,'POST',{},users[i+7].cookie);
+        assert.equal((await request('/api/auth/me','GET',null,users[i+7].cookie)).body.usage.used,2);
+      }
+    }
+    guideReleases.forEach(r=>r());await Promise.all([...official.entries.values()].map(e=>e.done));
     await request('/api/auth/logout','POST',{},a.cookie); assert.equal((await request('/api/cases','GET',null,a.cookie)).status,401);
     const again=await request('/api/auth/login','POST',{username:'webuser0',password:'Participant-test-1234'}); assert.equal((await request('/api/cases','GET',null,again.cookie)).body[0].id,id);
-  } finally { app.operations.close(); await new Promise(r=>app.server.close(r)); await database.close(); }
+  } finally { guideReleases.forEach(r=>r());app.operations.close(); await new Promise(r=>app.server.close(r)); await database.close(); }
 });

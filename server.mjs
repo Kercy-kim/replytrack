@@ -52,6 +52,7 @@ export function createApp({ store, ai, ocr, faq, official, database, hosting = h
   };
   const officialContext = official ?? new OfficialContext({ ai: client, ...(faq ? { faq } : {}) });
   const officialStarts = new Map();
+  let officialAdmission = Promise.resolve();
   const server = createServer(async (req, res) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Referrer-Policy', 'no-referrer');
@@ -141,10 +142,13 @@ export function createApp({ store, ai, ocr, faq, official, database, hosting = h
         if (database && method === 'POST') {
           const key = officialKey(c);
           if (!officialStarts.has(key)) {
-            const start = (async () => {
+            const start = officialAdmission.then(async () => {
               if (officialContext.shouldStart(c)) await database.accounts.reserve(user, randomUUID());
               return officialContext.start(c);
-            })();
+            });
+            // Reserve only after a slot/cache decision that cannot race another
+            // case's admission; omitted work must not consume the daily quota.
+            officialAdmission = start.catch(() => {});
             officialStarts.set(key, start);
             start.finally(() => officialStarts.delete(key)).catch(() => {});
           }
