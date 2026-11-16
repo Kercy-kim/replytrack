@@ -2,11 +2,22 @@
 
 Render의 Node.js Web Service에 배포하면 학교 PC에서 프로그램 설치 없이 HTTPS 주소를 열 수 있다. 공개 배포는 시연용 로그인으로 보호하며, 기존 로컬 실행 방식은 그대로 유지한다.
 
+## 실제 접속 주소와 확인 결과
+
+- 일반 서비스: https://replytrack.onrender.com
+- 발표 결과 재생: https://replytrack.onrender.com/presentation
+- 로그인 사용자 이름: `replytrack`. 비밀번호는 Render에서 직접 설정한 값을 사용한다.
+- 2026-11-17 00:20 KST, `a804002` 배포가 Render에서 Live로 전환됐다.
+- 외부 요청으로 `/api/health` 정상 응답(200)을 확인했다. 비로그인 상태의 메인·상담 목록·AI 설정·발표 화면은 모두 401로 차단됐다.
+- 사용자가 일반 브라우저에서 로그인 후 메인 화면이 열리는 것을 확인했다. 자동 조작용 내장 브라우저는 Basic 인증창을 열지 못해 로그인 후 기능과 실제 OpenAI 호출은 이번 배포 점검에서 직접 재검증하지 않았다. 기존 로컬 테스트 결과와 구분한다.
+
+학교 PC에서는 Chrome 또는 Edge의 시크릿 창을 이용한다. 이 호스팅 버전의 개인정보 가림과 OCR은 Render 서버에서 수행하므로 입력 원문·캡처는 해당 서버로 전송된다. 가림 검토 전 OpenAI로 전송하는 것은 아니다. 수업 시연에는 가상 자료를 사용한다.
+
 ## 배포 설정
 
 - 저장소: `https://github.com/Kercy-kim/tripsketch-ai`
 - 유형: Web Service / Node
-- 서비스 이름: `replytrack` (실제 URL은 Render가 확정)
+- 서비스 이름: `replytrack`
 - 지역: Singapore / 요금제: Free
 - Build Command: `npm ci --omit=dev`
 - Start Command: `npm start`

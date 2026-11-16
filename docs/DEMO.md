@@ -2,6 +2,8 @@
 
 최신 원본·실제 처리 시간·테스트는 [발표 전 최종 점검](FINAL-CHECK.md), 말할 내용은 [설명 4분 + 시연 30초 대본](PRESENTATION-4MIN-SCRIPT.md)을 사용합니다. 현재 원본의 실제 작업 합계는 150.2초입니다. 30초 구간에는 API 대기를 넣지 않습니다.
 
+**학교 PC:** 설치 없이 [일반 서비스](https://replytrack.onrender.com)와 [발표 화면](https://replytrack.onrender.com/presentation)을 두 탭으로 엽니다. 사용자 이름 `replytrack`과 Render에서 설정한 비밀번호로 로그인합니다. 무료 인스턴스의 시작 지연이 있으므로 수업 전에 두 화면을 열어 둡니다. [배포 안내](RENDER-DEPLOYMENT.md)의 저장 기록 제한과 검증 범위를 참고합니다. 아래 로컬 실행 명령은 본인 PC에서 실행할 때만 필요합니다.
+
 ## 발표용 실제 AI 결과 30초
 
 1. 서버를 실행한 뒤 `http://127.0.0.1:3100/presentation`을 직접 엽니다. 일반 서비스 화면에는 발표용 링크를 두지 않습니다. 첫 장면을 준비합니다.
