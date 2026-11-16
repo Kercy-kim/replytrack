@@ -32,15 +32,20 @@ test('web API isolates 10 users, all case writes and job polling; blocks CSRF an
   try {
     assert.equal((await request('/')).status,303); assert.equal((await request('/api/cases')).status,401); assert.equal((await request('/login')).status,200);
     assert.equal((await request('/api/auth/login','POST',{username:'replytrack',password:'Local-test-admin-12345'},null,{Origin:'https://evil.example'})).status,403);
+    assert.equal((await request('/api/auth/register','POST',{username:'blocked',password:'Participant-test-1234'},null,{Origin:'https://evil.example'})).status,403);
+    assert.equal((await request('/api/auth/register','POST',{username:'blocked',password:'Participant-test-1234'},null,{Origin:''})).status,403);
     const admin=await request('/api/auth/login','POST',{username:'replytrack',password:'Local-test-admin-12345'}); assert.equal(admin.status,200);
     const users=[];
     for(let i=0;i<10;i++) {
-      const invite=await request('/api/admin/invites','POST',{},admin.cookie);
-      const user=await request('/api/auth/register','POST',{username:`webuser${i}`,password:'Participant-test-1234',invite:invite.body.code});
-      assert.equal(user.status,201); users.push(user);
+      const user=await request('/api/auth/register','POST',{username:`webuser${i}`,password:'Participant-test-1234',role:'admin'});
+      assert.equal(user.status,201); assert.equal(user.body.user.role,'participant');
+      assert.equal((await request('/api/auth/me','GET',null,user.cookie)).body.user.id,user.body.user.id); users.push(user);
     }
     const [a,b]=users;
-    for(const path of ['/api/config','/api/admin/invites','/api/demo']) assert.equal((await request(path,path==='/api/config'?'PUT':'POST',{},b.cookie)).status,403);
+    for(const path of ['/api/config','/api/demo']) assert.equal((await request(path,path==='/api/config'?'PUT':'POST',{},b.cookie)).status,403);
+    assert.equal((await request('/api/admin/invites','POST',{},admin.cookie)).status,404);
+    assert.equal((await request('/api/auth/register','POST',{username:'webuser0',password:'Participant-test-1234'})).status,409);
+    assert.equal((await request('/api/auth/register','POST',{username:'eleventh',password:'Participant-test-1234'})).status,409);
     const record=(await request('/api/cases','POST',{title:'A만의 문의',company:'시험몰',messages:[{role:'customer',text:'환불 언제인가요?'}]},a.cookie)).body;
     assert.equal((await request('/api/cases','GET',null,b.cookie)).body.length,0);
     const id=record.id;

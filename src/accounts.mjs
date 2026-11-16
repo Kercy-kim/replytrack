@@ -31,7 +31,7 @@ export function readSession(req) {
   return value && /^[A-Za-z0-9_-]{43}$/.test(value) ? value : null;
 }
 
-// Identity, invite, session and usage state is in PostgreSQL, not a browser ID.
+// Identity, session and usage state is in PostgreSQL, not a browser ID.
 export class Accounts {
   constructor(pool, { participants = 10 } = {}) {
     this.pool = pool; this.participants = participants;
@@ -49,7 +49,6 @@ export class Accounts {
       INSERT INTO rt_control(id) VALUES(1) ON CONFLICT DO NOTHING;
       CREATE TABLE IF NOT EXISTS rt_users (id text PRIMARY KEY, username text UNIQUE NOT NULL, password_hash text NOT NULL, role text NOT NULL CHECK(role IN ('admin','participant')), created_at timestamptz NOT NULL DEFAULT now());
       CREATE TABLE IF NOT EXISTS rt_sessions (token_hash text PRIMARY KEY, user_id text NOT NULL REFERENCES rt_users(id) ON DELETE CASCADE, expires_at timestamptz NOT NULL);
-      CREATE TABLE IF NOT EXISTS rt_invites (token_hash text PRIMARY KEY, expires_at timestamptz NOT NULL, used_by text REFERENCES rt_users(id), created_at timestamptz NOT NULL DEFAULT now());
       CREATE TABLE IF NOT EXISTS rt_cases (id text PRIMARY KEY, owner_id text NOT NULL REFERENCES rt_users(id), version integer NOT NULL, document jsonb NOT NULL, updated_at timestamptz NOT NULL);
       CREATE INDEX IF NOT EXISTS rt_cases_owner_updated ON rt_cases(owner_id,updated_at DESC);
       CREATE TABLE IF NOT EXISTS rt_auth_limits (bucket text PRIMARY KEY, count integer NOT NULL, expires_at timestamptz NOT NULL);
@@ -93,35 +92,20 @@ export class Accounts {
     return rows[0] || null;
   }
   async logout(token) { if (token) await this.pool.query('DELETE FROM rt_sessions WHERE token_hash=$1', [digest(token)]); }
-  async invite(user) {
-    assert(user.role === 'admin', '관리자만 초대 코드를 만들 수 있어요.', 403);
-    const code = secret();
-    await this.transaction(async client => {
-      await client.query('SELECT id FROM rt_control WHERE id=1 FOR UPDATE');
-      const { rows } = await client.query("SELECT (SELECT count(*) FROM rt_users WHERE role='participant')+(SELECT count(*) FROM rt_invites WHERE used_by IS NULL AND expires_at>now()) AS total");
-      assert(Number(rows[0].total) < this.participants, '참여자와 사용 가능한 초대 코드는 합쳐서 10개까지 만들 수 있어요.', 409);
-      await client.query('INSERT INTO rt_invites(token_hash,expires_at) VALUES($1,now()+interval \'14 days\')', [digest(code)]);
-    });
-    return { code, expiresInDays: 14 };
-  }
   async register(input) {
     await this.limit('global', 100);
     await this.limit('registration', 30);
     const { username, password } = credentials(input);
-    assert(typeof input.invite === 'string' && /^[A-Za-z0-9_-]{43}$/.test(input.invite), '초대 코드를 확인해 주세요.');
     assert(username !== 'replytrack', '다른 아이디를 사용해 주세요.', 409);
     const passwordHash = await hashPassword(password);
     const user = await this.transaction(async client => {
       await client.query('SELECT id FROM rt_control WHERE id=1 FOR UPDATE');
-      const invite = await client.query('SELECT token_hash FROM rt_invites WHERE token_hash=$1 AND used_by IS NULL AND expires_at>now() FOR UPDATE', [digest(input.invite)]);
-      assert(invite.rows.length, '사용할 수 없는 초대 코드입니다. 관리자에게 확인해 주세요.');
-      const count = await client.query("SELECT count(*) AS total FROM rt_users WHERE role='participant'");
-      assert(Number(count.rows[0].total) < this.participants, '참여 인원이 모두 등록됐어요.', 409);
       const exists = await client.query('SELECT id FROM rt_users WHERE username=$1', [username]);
       assert(!exists.rows.length, '이미 사용 중인 아이디입니다.', 409);
+      const count = await client.query("SELECT count(*) AS total FROM rt_users WHERE role='participant'");
+      assert(Number(count.rows[0].total) < this.participants, '현재 가입 가능한 인원이 모두 등록됐어요. 기존 계정이 있다면 로그인해 주세요.', 409);
       const u = { id: randomUUID(), username, role: 'participant' };
       await client.query('INSERT INTO rt_users(id,username,password_hash,role) VALUES($1,$2,$3,$4)', [u.id, username, passwordHash, u.role]);
-      await client.query('UPDATE rt_invites SET used_by=$1 WHERE token_hash=$2', [u.id, digest(input.invite)]);
       return u;
     });
     return this.newSession(user);
