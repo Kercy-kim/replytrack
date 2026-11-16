@@ -9,6 +9,7 @@ import { ReplyTrack } from './src/service.mjs';
 import { AppError, assert } from './src/errors.mjs';
 import { Operations, checkpoint } from './src/operation.mjs';
 import { OfficialContext, officialKey } from './src/official-context.mjs';
+import { hostingConfig, createRequestGuard } from './src/hosting.mjs';
 
 const root = dirname(fileURLToPath(import.meta.url));
 try { process.loadEnvFile(join(root, '.env')); } catch (error) { if (error.code !== 'ENOENT') throw error; }
@@ -28,7 +29,8 @@ staticFiles.set('/inquiry-overview.js', ['inquiry-overview.js', 'text/javascript
 staticFiles.set('/official-context.js', ['official-context.js', 'text/javascript']);
 staticFiles.set('/draft-scope.js', ['draft-scope.js', 'text/javascript']);
 
-export function createApp({ store, ai, ocr, faq, official } = {}) {
+export function createApp({ store, ai, ocr, faq, official, hosting = hostingConfig() } = {}) {
+  const guard = createRequestGuard(hosting);
   const db = store ?? new CaseStore(resolve(root, process.env.REPLYTRACK_DATA_DIR || 'data', 'replytrack.sqlite'));
   const client = ai ?? new OpenAIClient({ apiKey: process.env.OPENAI_API_KEY || '', model: process.env.OPENAI_MODEL || 'gpt-5-mini' });
   const service = new ReplyTrack(db, client, { ocr, faq });
@@ -41,11 +43,9 @@ export function createApp({ store, ai, ocr, faq, official } = {}) {
     res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'");
     const json = (value, status = 200) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' }); res.end(JSON.stringify(value)); };
     try {
-      const host = req.headers.host;
       const port = server.address()?.port;
-      assert([`localhost:${port}`, `127.0.0.1:${port}`].includes(host), '로컬 주소로 접속해 주세요.', 403);
-      const path = new URL(req.url, `http://${host}`).pathname;
-      assert(!req.headers.origin || req.headers.origin === `http://${host}`, '이 요청의 출처를 허용하지 않습니다.', 403);
+      const path = guard(req, res, port);
+      if (path === null) return;
       const method = req.method;
       let body = {};
       if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
@@ -125,9 +125,10 @@ export function createApp({ store, ai, ocr, faq, official } = {}) {
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const app = createApp();
+  const hosting = hostingConfig();
+  const app = createApp({ hosting });
   const port = Number(process.env.PORT || 3100);
-  app.server.listen(port, '127.0.0.1', () => console.log(`ReplyTrack: http://127.0.0.1:${port}`));
+  app.server.listen(port, hosting.bindHost, () => console.log(`ReplyTrack: ${hosting.publicOrigin || `http://127.0.0.1:${port}`}`));
   app.server.on('error', error => { console.error(error.code === 'EADDRINUSE' ? `Port ${port} is already in use.` : 'Server could not start.'); process.exitCode = 1; });
   if (process.argv.includes('--key-stdin')) {
     // Raw input disables terminal echo; credentials never enter shell history.

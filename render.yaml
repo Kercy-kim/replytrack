@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: replytrack
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-5-mini
+      - key: REPLYTRACK_DEMO_PASSWORD
+        sync: false
