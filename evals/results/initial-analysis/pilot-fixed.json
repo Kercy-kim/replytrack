@@ -1,0 +1,2829 @@
+{
+  "at": "2026-11-16T08:27:34.537Z",
+  "baseline": "fc25f087bb3ec547e9d367293b9cfee8153d46a0",
+  "model": "gpt-5-mini-2025-08-07",
+  "scope": "Initial analysis/validation/save only; 2 workers; counterbalanced variants; full sources; no simultaneous paid suites during comparison.",
+  "fixtures": [
+    {
+      "id": "S06",
+      "category": "배송",
+      "title": "명시적 정정과 발송 완료 통보",
+      "messages": [
+        {
+          "role": "customer",
+          "text": "배송비는 얼마인가요? 발송됐나요?",
+          "sentAt": null
+        },
+        {
+          "role": "agent",
+          "text": "배송비는 3,000원입니다. 발송 여부는 확인해서 안내하겠습니다.",
+          "sentAt": null
+        }
+      ],
+      "expected": {
+        "questions": [
+          {
+            "message": 0,
+            "topic": "배송비",
+            "status": "answered",
+            "evidence": [
+              1
+            ]
+          },
+          {
+            "message": 0,
+            "topic": "발송",
+            "status": "waiting",
+            "evidence": [
+              1
+            ]
+          }
+        ],
+        "promises": [
+          {
+            "message": 1,
+            "topic": "발송|안내",
+            "state": "promised",
+            "dueAt": null,
+            "deadline": ""
+          }
+        ]
+      },
+      "draft": "handoff"
+    },
+    {
+      "id": "R03",
+      "category": "환불",
+      "title": "확정했던 안내 기한을 철회",
+      "messages": [
+        {
+          "role": "customer",
+          "text": "환불 예정일이 언제인가요?",
+          "sentAt": null
+        },
+        {
+          "role": "agent",
+          "text": "환불 예정일을 확인해 2026년 11월 16일까지 안내하겠습니다.",
+          "sentAt": null
+        }
+      ],
+      "expected": {
+        "questions": [
+          {
+            "message": 0,
+            "topic": "환불",
+            "status": "waiting",
+            "evidence": [
+              1
+            ]
+          }
+        ],
+        "promises": [
+          {
+            "message": 1,
+            "topic": "안내|확인",
+            "state": "promised",
+            "dueAt": "2026-11-16",
+            "deadline": "2026년 11월 16일"
+          }
+        ]
+      },
+      "draft": "handoff"
+    },
+    {
+      "id": "NS03",
+      "category": "배송",
+      "title": "오배송 사진 확인 뒤 실제 장소 안내",
+      "messages": [
+        {
+          "role": "customer",
+          "text": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?",
+          "sentAt": null
+        },
+        {
+          "role": "agent",
+          "text": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다.",
+          "sentAt": "2026-11-20T15:40:00Z"
+        }
+      ],
+      "expected": {
+        "questions": [
+          {
+            "message": 0,
+            "topic": "장소|위치|택배",
+            "status": "waiting",
+            "evidence": [
+              1
+            ]
+          }
+        ],
+        "promises": [
+          {
+            "message": 1,
+            "topic": "장소|확인|안내",
+            "state": "promised",
+            "dueAt": "2026-11-22",
+            "deadline": "내일"
+          }
+        ]
+      },
+      "draft": "handoff"
+    },
+    {
+      "id": "NU02",
+      "category": "구독",
+      "title": "가족 멤버 초대 제한과 초대 상태 미정",
+      "messages": [
+        {
+          "role": "customer",
+          "text": "가족 멤버는 최대 몇 명까지 초대할 수 있나요?",
+          "sentAt": null
+        },
+        {
+          "role": "customer",
+          "text": "어제 보낸 엄마 초대가 수락됐나요?",
+          "sentAt": null
+        },
+        {
+          "role": "agent",
+          "text": "최대 초대 인원은 4명입니다. 어제 보낸 초대의 수락 여부는 현재 확인할 수 없습니다.",
+          "sentAt": null
+        }
+      ],
+      "expected": {
+        "questions": [
+          {
+            "message": 0,
+            "topic": "최대|인원|몇 명",
+            "status": "answered",
+            "evidence": [
+              2
+            ]
+          },
+          {
+            "message": 1,
+            "topic": "수락",
+            "status": "review",
+            "evidence": [
+              2
+            ]
+          }
+        ],
+        "promises": []
+      }
+    },
+    {
+      "id": "WEB-REFUND",
+      "title": "환불 금액·결제수단·예정일",
+      "messages": [
+        {
+          "role": "customer",
+          "text": "환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?",
+          "sentAt": null
+        },
+        {
+          "role": "agent",
+          "text": "환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다.",
+          "sentAt": null
+        }
+      ],
+      "expected": {
+        "questions": [
+          {
+            "message": 0,
+            "topic": "금액",
+            "status": "answered",
+            "evidence": [
+              1
+            ]
+          },
+          {
+            "message": 0,
+            "topic": "결제|수단",
+            "status": "unanswered",
+            "evidence": []
+          },
+          {
+            "message": 0,
+            "topic": "예정|날짜|언제",
+            "status": "waiting",
+            "evidence": [
+              1
+            ]
+          }
+        ],
+        "promises": [
+          {
+            "message": 1,
+            "topic": "예정|안내|확인",
+            "state": "promised",
+            "dueAt": null,
+            "deadline": "11월 18일"
+          }
+        ]
+      }
+    },
+    {
+      "id": "WEB-EMAIL",
+      "title": "계정 복구 영어 문의",
+      "channel": "email",
+      "messages": [
+        {
+          "role": "customer",
+          "text": "What documents do I need to recover my account? How long will the review take? What is my case reference number?",
+          "sentAt": null
+        },
+        {
+          "role": "agent",
+          "text": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes.",
+          "sentAt": null
+        }
+      ],
+      "expected": {
+        "questions": [
+          {
+            "message": 0,
+            "topic": "서류|자료|문서",
+            "status": "answered",
+            "evidence": [
+              1
+            ]
+          },
+          {
+            "message": 0,
+            "topic": "기간|시간|얼마나|소요",
+            "status": "unanswered",
+            "evidence": []
+          },
+          {
+            "message": 0,
+            "topic": "번호",
+            "status": "unanswered",
+            "evidence": []
+          }
+        ],
+        "promises": []
+      }
+    },
+    {
+      "id": "EMAIL-REVIEW",
+      "title": "계정 복구 영어 문의",
+      "channel": "email",
+      "messages": [
+        {
+          "role": "customer",
+          "text": "What documents do I need to recover my account? How long will the review take? What is my case reference number?",
+          "sentAt": null
+        },
+        {
+          "role": "agent",
+          "text": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes. After we verify the transaction ID, we will review your recovery request.",
+          "sentAt": null
+        }
+      ],
+      "expected": {
+        "questions": [
+          {
+            "message": 0,
+            "topic": "서류|자료|문서",
+            "status": "answered",
+            "evidence": [
+              1
+            ]
+          },
+          {
+            "message": 0,
+            "topic": "기간|시간|얼마나|소요",
+            "status": "partial",
+            "evidence": [
+              1
+            ]
+          },
+          {
+            "message": 0,
+            "topic": "번호",
+            "status": "unanswered",
+            "evidence": []
+          }
+        ],
+        "promises": [
+          {
+            "message": 1,
+            "topic": "검토|심사|복구",
+            "state": "promised",
+            "dueAt": null,
+            "deadline": ""
+          }
+        ]
+      }
+    }
+  ],
+  "hashes": {
+    "before": {
+      "src/service.mjs": "beb75422355256e55dc2355dcebf5559ee1d949ac7cec14a553beff4c3ffb6a2",
+      "src/schema.mjs": "6076ecdb794744d3fd30522c729b3b15c22d7194b32f3cb0e23e17f91256f94d",
+      "src/prompts.mjs": "dcf829288dc8e94bd9d1561b0b5a397e243009f678575c06293544ed73fdc33b",
+      "src/analysis-focus.mjs": "64a46db823f73c5e4272d69dd6ce12936dbbf416ccde63ec784bdc2afd2aeacb",
+      "src/email-reply.mjs": "88bbd8a3a3ad5491dada07e097360a475b52f473306f24225ad21c751a46b52f",
+      "src/openai.mjs": "e33740fd56e8e9963e7206b474669422845fc93ce03a2ae7af90f537cf33d6d6"
+    },
+    "after": {
+      "src/service.mjs": "33df920570314f804f1d9b037438ea5ed14cd46a5444e5c96671127bf074692a",
+      "src/schema.mjs": "6076ecdb794744d3fd30522c729b3b15c22d7194b32f3cb0e23e17f91256f94d",
+      "src/prompts.mjs": "dcf829288dc8e94bd9d1561b0b5a397e243009f678575c06293544ed73fdc33b",
+      "src/analysis-focus.mjs": "4ad7493ffb24230307df248eecbc26885e2932970c35c88ef0bdb10b9a379795",
+      "src/email-reply.mjs": "88bbd8a3a3ad5491dada07e097360a475b52f473306f24225ad21c751a46b52f",
+      "src/openai.mjs": "e33740fd56e8e9963e7206b474669422845fc93ce03a2ae7af90f537cf33d6d6"
+    }
+  },
+  "results": [
+    {
+      "id": "S06",
+      "variant": "after",
+      "repeat": 1,
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 7654,
+          "request": {
+            "messages": [
+              {
+                "id": "c3051147-eb10-4e01-91dc-e502b6005786",
+                "role": "customer",
+                "text": "배송비는 얼마인가요? 발송됐나요?",
+                "sentAt": null
+              },
+              {
+                "id": "94596fbf-ae86-4e2d-9e0a-ec4104faad41",
+                "role": "agent",
+                "text": "배송비는 3,000원입니다. 발송 여부는 확인해서 안내하겠습니다.",
+                "sentAt": null
+              }
+            ],
+            "existingQuestions": [],
+            "existingPromises": []
+          },
+          "data": {
+            "summary": "고객이 배송비와 발송 여부를 문의했고, 상담원이 배송비는 3,000원이라고 답했고 발송 여부는 확인 후 안내하겠다고 답변했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "배송비는 얼마인가요?",
+                "source": {
+                  "messageId": "c3051147-eb10-4e01-91dc-e502b6005786",
+                  "quote": "배송비는 얼마인가요? 발송됐나요?"
+                },
+                "status": "answered",
+                "reason": "상담원이 '배송비는 3,000원입니다.'라고 명확히 안내했습니다.",
+                "evidence": [
+                  {
+                    "messageId": "94596fbf-ae86-4e2d-9e0a-ec4104faad41",
+                    "quote": "배송비는 3,000원입니다."
+                  }
+                ]
+              },
+              {
+                "id": "new-q-2",
+                "title": "발송됐나요?",
+                "source": {
+                  "messageId": "c3051147-eb10-4e01-91dc-e502b6005786",
+                  "quote": "배송비는 얼마인가요? 발송됐나요?"
+                },
+                "status": "waiting",
+                "reason": "상담원이 발송 여부를 '확인해서 안내하겠다'고 약속했으므로 확인 후 통보가 남아 있습니다.",
+                "evidence": [
+                  {
+                    "messageId": "94596fbf-ae86-4e2d-9e0a-ec4104faad41",
+                    "quote": "발송 여부는 확인해서 안내하겠습니다."
+                  }
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "발송 여부 확인 및 안내",
+                "questionIds": [
+                  "new-q-2"
+                ],
+                "evidence": {
+                  "messageId": "94596fbf-ae86-4e2d-9e0a-ec4104faad41",
+                  "quote": "발송 여부는 확인해서 안내하겠습니다."
+                },
+                "dueText": "",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 7653,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 7650,
+                "httpStatus": 200,
+                "bodyMs": 2,
+                "usage": {
+                  "input_tokens": 3120,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 2816
+                  },
+                  "output_tokens": 702,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 256
+                  },
+                  "total_tokens": 3822
+                },
+                "elapsedMs": 7653
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 3120,
+            "output_tokens": 702,
+            "total_tokens": 3822,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "record": {
+        "id": "d36265ad-6031-4b6a-85dd-b98c14cb5d8f",
+        "title": "명시적 정정과 발송 완료 통보",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-16T08:27:34.582Z",
+        "updatedAt": "2026-11-16T08:27:42.239Z",
+        "messages": [
+          {
+            "id": "c3051147-eb10-4e01-91dc-e502b6005786",
+            "role": "customer",
+            "text": "배송비는 얼마인가요? 발송됐나요?",
+            "sentAt": null
+          },
+          {
+            "id": "94596fbf-ae86-4e2d-9e0a-ec4104faad41",
+            "role": "agent",
+            "text": "배송비는 3,000원입니다. 발송 여부는 확인해서 안내하겠습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "dcab2502-1073-49d5-8bbc-94408a3964cf",
+            "title": "배송비는 얼마인가요?",
+            "source": {
+              "messageId": "c3051147-eb10-4e01-91dc-e502b6005786",
+              "quote": "배송비는 얼마인가요? 발송됐나요?"
+            },
+            "status": "answered",
+            "reason": "상담원이 '배송비는 3,000원입니다.'라고 명확히 안내했습니다.",
+            "evidence": [
+              {
+                "messageId": "94596fbf-ae86-4e2d-9e0a-ec4104faad41",
+                "quote": "배송비는 3,000원입니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "상담원이 '배송비는 3,000원입니다.'라고 명확히 안내했습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "ddfee11b-67b5-4b02-9dd6-64678cbc48a6",
+            "title": "발송됐나요?",
+            "source": {
+              "messageId": "c3051147-eb10-4e01-91dc-e502b6005786",
+              "quote": "배송비는 얼마인가요? 발송됐나요?"
+            },
+            "status": "waiting",
+            "reason": "상담원이 발송 여부를 '확인해서 안내하겠다'고 약속했으므로 확인 후 통보가 남아 있습니다.",
+            "evidence": [
+              {
+                "messageId": "94596fbf-ae86-4e2d-9e0a-ec4104faad41",
+                "quote": "발송 여부는 확인해서 안내하겠습니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "waiting",
+            "aiReason": "상담원이 발송 여부를 '확인해서 안내하겠다'고 약속했으므로 확인 후 통보가 남아 있습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "b94dd22a-0e93-4c09-80ff-0d3b6397d3e9",
+            "title": "발송 여부 확인 및 안내",
+            "questionIds": [
+              "ddfee11b-67b5-4b02-9dd6-64678cbc48a6"
+            ],
+            "evidence": {
+              "messageId": "94596fbf-ae86-4e2d-9e0a-ec4104faad41",
+              "quote": "발송 여부는 확인해서 안내하겠습니다."
+            },
+            "dueText": "",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "297ab845-cdea-48e4-8a58-d1c681c92e9d",
+            "at": "2026-11-16T08:27:42.239Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "2개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-16T08:27:42.238Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "381a1e11-e100-44ce-a20e-5321893e950b",
+            "at": "2026-11-16T08:27:34.582Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 배송비와 발송 여부를 문의했고, 상담원이 배송비는 3,000원이라고 답했고 발송 여부는 확인 후 안내하겠다고 답변했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3120,
+            "output_tokens": 702,
+            "total_tokens": 3822,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 256
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-16T08:27:42.238Z",
+          "comparison": {
+            "at": "2026-11-16T08:27:42.238Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "version": 2
+      },
+      "grade": {
+        "pass": true,
+        "issues": [],
+        "questions": [
+          {
+            "gold": {
+              "message": 0,
+              "topic": "배송비",
+              "status": "answered",
+              "evidence": [
+                1
+              ]
+            },
+            "actual": {
+              "id": "dcab2502-1073-49d5-8bbc-94408a3964cf",
+              "title": "배송비는 얼마인가요?",
+              "status": "answered",
+              "evidence": [
+                1
+              ]
+            },
+            "evidenceOK": true
+          },
+          {
+            "gold": {
+              "message": 0,
+              "topic": "발송",
+              "status": "waiting",
+              "evidence": [
+                1
+              ]
+            },
+            "actual": {
+              "id": "ddfee11b-67b5-4b02-9dd6-64678cbc48a6",
+              "title": "발송됐나요?",
+              "status": "waiting",
+              "evidence": [
+                1
+              ]
+            },
+            "evidenceOK": true
+          }
+        ],
+        "promises": [
+          {
+            "gold": {
+              "message": 1,
+              "topic": "발송|안내",
+              "state": "promised",
+              "dueAt": null,
+              "deadline": ""
+            },
+            "actual": {
+              "id": "b94dd22a-0e93-4c09-80ff-0d3b6397d3e9",
+              "title": "발송 여부 확인 및 안내",
+              "state": "promised",
+              "dueAt": null,
+              "dueText": "",
+              "confirmedAt": null
+            },
+            "ok": true
+          }
+        ],
+        "metrics": {
+          "expectedQuestions": 2,
+          "found": 2,
+          "correct": 2,
+          "falseAnswered": 0,
+          "expectedUnresolved": 1,
+          "evidenceCorrect": 2,
+          "expectedPromises": 1,
+          "correctPromises": 1,
+          "references": 5,
+          "grounded": 5
+        }
+      },
+      "reasonGrade": {
+        "pass": true,
+        "issues": [],
+        "checkedQuestions": 2,
+        "scopedChecks": 0
+      },
+      "passed": true,
+      "ms": 7657
+    },
+    {
+      "id": "R03",
+      "variant": "after",
+      "repeat": 1,
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 6329,
+          "request": {
+            "messages": [
+              {
+                "id": "bef9d2b6-07b5-47c9-9c7c-f6f21b5c0ae4",
+                "role": "customer",
+                "text": "환불 예정일이 언제인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "2568982d-074b-4d4c-a933-a241c44b1c12",
+                "role": "agent",
+                "text": "환불 예정일을 확인해 2026년 11월 16일까지 안내하겠습니다.",
+                "sentAt": null
+              }
+            ],
+            "existingQuestions": [],
+            "existingPromises": []
+          },
+          "data": {
+            "summary": "고객이 환불 예정일을 문의했고 상담원이 환불 예정일을 확인해 2026년 11월 16일까지 안내하겠다고 약속했습니다.",
+            "questions": [
+              {
+                "id": "bef9d2b6-07b5-47c9-9c7c-f6f21b5c0ae4",
+                "title": "환불 예정일이 언제인가요?",
+                "source": {
+                  "messageId": "bef9d2b6-07b5-47c9-9c7c-f6f21b5c0ae4",
+                  "quote": "환불 예정일이 언제인가요?"
+                },
+                "status": "waiting",
+                "reason": "업체가 환불 예정일을 확인해 2026년 11월 16일까지 안내하겠다고 명시적으로 약속했으므로 안내를 받을 때까지 대기입니다.",
+                "evidence": [
+                  {
+                    "messageId": "2568982d-074b-4d4c-a933-a241c44b1c12",
+                    "quote": "환불 예정일을 확인해 2026년 11월 16일까지 안내하겠습니다."
+                  }
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "환불 예정일 안내",
+                "questionIds": [
+                  "bef9d2b6-07b5-47c9-9c7c-f6f21b5c0ae4"
+                ],
+                "evidence": {
+                  "messageId": "2568982d-074b-4d4c-a933-a241c44b1c12",
+                  "quote": "환불 예정일을 확인해 2026년 11월 16일까지 안내하겠습니다."
+                },
+                "dueText": "2026년 11월 16일까지 안내하겠습니다.",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 6329,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 6051,
+                "httpStatus": 200,
+                "bodyMs": 261,
+                "usage": {
+                  "input_tokens": 3118,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 2816
+                  },
+                  "output_tokens": 510,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 192
+                  },
+                  "total_tokens": 3628
+                },
+                "elapsedMs": 6329
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 3118,
+            "output_tokens": 510,
+            "total_tokens": 3628,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "record": {
+        "id": "cb389bde-c57c-4d88-8209-07bcd4212fc7",
+        "title": "확정했던 안내 기한을 철회",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-16T08:27:34.585Z",
+        "updatedAt": "2026-11-16T08:27:40.916Z",
+        "messages": [
+          {
+            "id": "bef9d2b6-07b5-47c9-9c7c-f6f21b5c0ae4",
+            "role": "customer",
+            "text": "환불 예정일이 언제인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "2568982d-074b-4d4c-a933-a241c44b1c12",
+            "role": "agent",
+            "text": "환불 예정일을 확인해 2026년 11월 16일까지 안내하겠습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "02258c56-4e6d-4bde-8f93-e561566341ec",
+            "title": "환불 예정일이 언제인가요?",
+            "source": {
+              "messageId": "bef9d2b6-07b5-47c9-9c7c-f6f21b5c0ae4",
+              "quote": "환불 예정일이 언제인가요?"
+            },
+            "status": "waiting",
+            "reason": "업체가 환불 예정일을 확인해 2026년 11월 16일까지 안내하겠다고 명시적으로 약속했으므로 안내를 받을 때까지 대기입니다.",
+            "evidence": [
+              {
+                "messageId": "2568982d-074b-4d4c-a933-a241c44b1c12",
+                "quote": "환불 예정일을 확인해 2026년 11월 16일까지 안내하겠습니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "waiting",
+            "aiReason": "업체가 환불 예정일을 확인해 2026년 11월 16일까지 안내하겠다고 명시적으로 약속했으므로 안내를 받을 때까지 대기입니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "9f18bace-6704-4b05-8102-33915486fd6e",
+            "title": "환불 예정일 안내",
+            "questionIds": [
+              "02258c56-4e6d-4bde-8f93-e561566341ec"
+            ],
+            "evidence": {
+              "messageId": "2568982d-074b-4d4c-a933-a241c44b1c12",
+              "quote": "환불 예정일을 확인해 2026년 11월 16일까지 안내하겠습니다."
+            },
+            "dueText": "2026년 11월 16일까지 안내하겠습니다.",
+            "dueAt": "2026-11-16",
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "ffeeefe1-64ac-4470-8b7e-879212cd6196",
+            "at": "2026-11-16T08:27:40.916Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "1개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-16T08:27:40.916Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "5a0a2b9a-9043-453e-b79a-88727d6f385a",
+            "at": "2026-11-16T08:27:34.585Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 환불 예정일을 문의했고 상담원이 환불 예정일을 확인해 2026년 11월 16일까지 안내하겠다고 약속했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3118,
+            "output_tokens": 510,
+            "total_tokens": 3628,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-16T08:27:40.916Z",
+          "comparison": {
+            "at": "2026-11-16T08:27:40.916Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "version": 2
+      },
+      "grade": {
+        "pass": true,
+        "issues": [],
+        "questions": [
+          {
+            "gold": {
+              "message": 0,
+              "topic": "환불",
+              "status": "waiting",
+              "evidence": [
+                1
+              ]
+            },
+            "actual": {
+              "id": "02258c56-4e6d-4bde-8f93-e561566341ec",
+              "title": "환불 예정일이 언제인가요?",
+              "status": "waiting",
+              "evidence": [
+                1
+              ]
+            },
+            "evidenceOK": true
+          }
+        ],
+        "promises": [
+          {
+            "gold": {
+              "message": 1,
+              "topic": "안내|확인",
+              "state": "promised",
+              "dueAt": "2026-11-16",
+              "deadline": "2026년 11월 16일"
+            },
+            "actual": {
+              "id": "9f18bace-6704-4b05-8102-33915486fd6e",
+              "title": "환불 예정일 안내",
+              "state": "promised",
+              "dueAt": "2026-11-16",
+              "dueText": "2026년 11월 16일까지 안내하겠습니다.",
+              "confirmedAt": null
+            },
+            "ok": true
+          }
+        ],
+        "metrics": {
+          "expectedQuestions": 1,
+          "found": 1,
+          "correct": 1,
+          "falseAnswered": 0,
+          "expectedUnresolved": 1,
+          "evidenceCorrect": 1,
+          "expectedPromises": 1,
+          "correctPromises": 1,
+          "references": 3,
+          "grounded": 3
+        }
+      },
+      "reasonGrade": {
+        "pass": true,
+        "issues": [],
+        "checkedQuestions": 1,
+        "scopedChecks": 0
+      },
+      "passed": true,
+      "ms": 6332
+    },
+    {
+      "id": "NS03",
+      "variant": "after",
+      "repeat": 1,
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 5580,
+          "request": {
+            "messages": [
+              {
+                "id": "0f73f503-1fbb-41bd-8a06-fa4467ea497f",
+                "role": "customer",
+                "text": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "c0c97fa3-1bf7-4402-b593-b42bccf1f897",
+                "role": "agent",
+                "text": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다.",
+                "sentAt": "2026-11-20T15:40:00.000Z"
+              }
+            ],
+            "existingQuestions": [],
+            "existingPromises": []
+          },
+          "data": {
+            "summary": "고객이 배송 사진이 본인 집이 아니라고 하며 택배를 놓은 정확한 장소를 문의했고, 상담원이 사진 속 장소를 기사에게 확인해 '내일 알려 드리겠습니다'라고 답변했습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?",
+                "source": {
+                  "messageId": "0f73f503-1fbb-41bd-8a06-fa4467ea497f",
+                  "quote": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?"
+                },
+                "status": "waiting",
+                "reason": "업체(상담원)가 사진 속 장소를 기사에게 확인해 '내일 알려 드리겠습니다'라고 했으므로, 기사 확인 결과(정확한 장소)를 받아야 해소된다.",
+                "evidence": [
+                  {
+                    "messageId": "c0c97fa3-1bf7-4402-b593-b42bccf1f897",
+                    "quote": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다."
+                  }
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "사진 속 장소 확인 및 통보",
+                "questionIds": [
+                  "new-q-1"
+                ],
+                "evidence": {
+                  "messageId": "c0c97fa3-1bf7-4402-b593-b42bccf1f897",
+                  "quote": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다."
+                },
+                "dueText": "내일 알려 드리겠습니다.",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 5579,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 5578,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 3141,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 2816
+                  },
+                  "output_tokens": 510,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 192
+                  },
+                  "total_tokens": 3651
+                },
+                "elapsedMs": 5579
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 3141,
+            "output_tokens": 510,
+            "total_tokens": 3651,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "record": {
+        "id": "9c74ae75-a3ab-4ef1-8e89-8fa633a2bf04",
+        "title": "오배송 사진 확인 뒤 실제 장소 안내",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-16T08:27:40.917Z",
+        "updatedAt": "2026-11-16T08:27:46.498Z",
+        "messages": [
+          {
+            "id": "0f73f503-1fbb-41bd-8a06-fa4467ea497f",
+            "role": "customer",
+            "text": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "c0c97fa3-1bf7-4402-b593-b42bccf1f897",
+            "role": "agent",
+            "text": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다.",
+            "sentAt": "2026-11-20T15:40:00.000Z"
+          }
+        ],
+        "questions": [
+          {
+            "id": "86ae7178-5326-4e17-8b39-922e5431a1e9",
+            "title": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?",
+            "source": {
+              "messageId": "0f73f503-1fbb-41bd-8a06-fa4467ea497f",
+              "quote": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?"
+            },
+            "status": "waiting",
+            "reason": "업체(상담원)가 사진 속 장소를 기사에게 확인해 '내일 알려 드리겠습니다'라고 했으므로, 기사 확인 결과(정확한 장소)를 받아야 해소된다.",
+            "evidence": [
+              {
+                "messageId": "c0c97fa3-1bf7-4402-b593-b42bccf1f897",
+                "quote": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "waiting",
+            "aiReason": "업체(상담원)가 사진 속 장소를 기사에게 확인해 '내일 알려 드리겠습니다'라고 했으므로, 기사 확인 결과(정확한 장소)를 받아야 해소된다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "895299c1-a933-4f92-80b4-a3de2e04cacc",
+            "title": "사진 속 장소 확인 및 통보",
+            "questionIds": [
+              "86ae7178-5326-4e17-8b39-922e5431a1e9"
+            ],
+            "evidence": {
+              "messageId": "c0c97fa3-1bf7-4402-b593-b42bccf1f897",
+              "quote": "사진 속 장소를 기사님에게 확인해서 내일 알려 드리겠습니다."
+            },
+            "dueText": "내일 알려 드리겠습니다.",
+            "dueAt": "2026-11-22",
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "69bc5fda-b1a5-46a5-8727-403cff34d6ad",
+            "at": "2026-11-16T08:27:46.498Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "1개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-16T08:27:46.498Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "9365e0ce-52c6-46f5-bb92-f684fbf4b40f",
+            "at": "2026-11-16T08:27:40.917Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 배송 사진이 본인 집이 아니라고 하며 택배를 놓은 정확한 장소를 문의했고, 상담원이 사진 속 장소를 기사에게 확인해 '내일 알려 드리겠습니다'라고 답변했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3141,
+            "output_tokens": 510,
+            "total_tokens": 3651,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-16T08:27:46.498Z",
+          "comparison": {
+            "at": "2026-11-16T08:27:46.498Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "version": 2
+      },
+      "grade": {
+        "pass": true,
+        "issues": [],
+        "questions": [
+          {
+            "gold": {
+              "message": 0,
+              "topic": "장소|위치|택배",
+              "status": "waiting",
+              "evidence": [
+                1
+              ]
+            },
+            "actual": {
+              "id": "86ae7178-5326-4e17-8b39-922e5431a1e9",
+              "title": "배송 사진이 우리 집이 아닌데 제 택배를 놓은 정확한 장소가 어디인가요?",
+              "status": "waiting",
+              "evidence": [
+                1
+              ]
+            },
+            "evidenceOK": true
+          }
+        ],
+        "promises": [
+          {
+            "gold": {
+              "message": 1,
+              "topic": "장소|확인|안내",
+              "state": "promised",
+              "dueAt": "2026-11-22",
+              "deadline": "내일"
+            },
+            "actual": {
+              "id": "895299c1-a933-4f92-80b4-a3de2e04cacc",
+              "title": "사진 속 장소 확인 및 통보",
+              "state": "promised",
+              "dueAt": "2026-11-22",
+              "dueText": "내일 알려 드리겠습니다.",
+              "confirmedAt": null
+            },
+            "ok": true
+          }
+        ],
+        "metrics": {
+          "expectedQuestions": 1,
+          "found": 1,
+          "correct": 1,
+          "falseAnswered": 0,
+          "expectedUnresolved": 1,
+          "evidenceCorrect": 1,
+          "expectedPromises": 1,
+          "correctPromises": 1,
+          "references": 3,
+          "grounded": 3
+        }
+      },
+      "reasonGrade": {
+        "pass": true,
+        "issues": [],
+        "checkedQuestions": 1,
+        "scopedChecks": 0
+      },
+      "passed": true,
+      "ms": 5581
+    },
+    {
+      "id": "NU02",
+      "variant": "after",
+      "repeat": 1,
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 7407,
+          "request": {
+            "messages": [
+              {
+                "id": "f031acfb-5935-4fc8-97a8-6e0a6c181a3e",
+                "role": "customer",
+                "text": "가족 멤버는 최대 몇 명까지 초대할 수 있나요?",
+                "sentAt": null
+              },
+              {
+                "id": "2cbbab1d-5cd4-417a-8fa7-cef52c48a83a",
+                "role": "customer",
+                "text": "어제 보낸 엄마 초대가 수락됐나요?",
+                "sentAt": null
+              },
+              {
+                "id": "47591b08-8467-4261-b3f8-471797b962e8",
+                "role": "agent",
+                "text": "최대 초대 인원은 4명입니다. 어제 보낸 초대의 수락 여부는 현재 확인할 수 없습니다.",
+                "sentAt": null
+              }
+            ],
+            "existingQuestions": [],
+            "existingPromises": []
+          },
+          "data": {
+            "summary": "고객이 가족 멤버 초대 최대 인원과 어제 보낸 초대의 수락 여부를 물었고, 상담원은 최대 인원은 4명이라고 답했으나 어제 초대의 수락 여부는 확인할 수 없다고 안내했습니다.",
+            "questions": [
+              {
+                "id": "f031acfb-5935-4fc8-97a8-6e0a6c181a3e",
+                "title": "가족 멤버는 최대 몇 명까지 초대할 수 있나요?",
+                "source": {
+                  "messageId": "f031acfb-5935-4fc8-97a8-6e0a6c181a3e",
+                  "quote": "가족 멤버는 최대 몇 명까지 초대할 수 있나요?"
+                },
+                "status": "answered",
+                "reason": "업체가 '최대 초대 인원은 4명입니다.'라고 명확히 안내했습니다.",
+                "evidence": [
+                  {
+                    "messageId": "47591b08-8467-4261-b3f8-471797b962e8",
+                    "quote": "최대 초대 인원은 4명입니다."
+                  }
+                ]
+              },
+              {
+                "id": "2cbbab1d-5cd4-417a-8fa7-cef52c48a83a",
+                "title": "어제 보낸 엄마 초대가 수락됐나요?",
+                "source": {
+                  "messageId": "2cbbab1d-5cd4-417a-8fa7-cef52c48a83a",
+                  "quote": "어제 보낸 엄마 초대가 수락됐나요?"
+                },
+                "status": "review",
+                "reason": "업체가 '어제 보낸 초대의 수락 여부는 현재 확인할 수 없습니다.'라고 안내해 관련 정보가 확인 불가하다고 했습니다.",
+                "evidence": [
+                  {
+                    "messageId": "47591b08-8467-4261-b3f8-471797b962e8",
+                    "quote": "어제 보낸 초대의 수락 여부는 현재 확인할 수 없습니다."
+                  }
+                ]
+              }
+            ],
+            "promises": []
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 7406,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 7155,
+                "httpStatus": 200,
+                "bodyMs": 251,
+                "usage": {
+                  "input_tokens": 3170,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 699,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 384
+                  },
+                  "total_tokens": 3869
+                },
+                "elapsedMs": 7406
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 3170,
+            "output_tokens": 699,
+            "total_tokens": 3869,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 384
+            },
+            "unobserved_requests": 0
+          }
+        },
+        {
+          "name": "replytrack_boundary_review",
+          "effort": "medium",
+          "ms": 8065,
+          "request": {
+            "messages": [
+              {
+                "id": "f031acfb-5935-4fc8-97a8-6e0a6c181a3e",
+                "role": "customer",
+                "text": "가족 멤버는 최대 몇 명까지 초대할 수 있나요?",
+                "sentAt": null
+              },
+              {
+                "id": "2cbbab1d-5cd4-417a-8fa7-cef52c48a83a",
+                "role": "customer",
+                "text": "어제 보낸 엄마 초대가 수락됐나요?",
+                "sentAt": null
+              },
+              {
+                "id": "47591b08-8467-4261-b3f8-471797b962e8",
+                "role": "agent",
+                "text": "최대 초대 인원은 4명입니다. 어제 보낸 초대의 수락 여부는 현재 확인할 수 없습니다.",
+                "sentAt": null
+              }
+            ],
+            "questions": [
+              {
+                "id": "2cbbab1d-5cd4-417a-8fa7-cef52c48a83a",
+                "title": "어제 보낸 엄마 초대가 수락됐나요?",
+                "source": {
+                  "messageId": "2cbbab1d-5cd4-417a-8fa7-cef52c48a83a",
+                  "quote": "어제 보낸 엄마 초대가 수락됐나요?"
+                }
+              }
+            ],
+            "otherQuestions": [
+              {
+                "id": "f031acfb-5935-4fc8-97a8-6e0a6c181a3e",
+                "title": "가족 멤버는 최대 몇 명까지 초대할 수 있나요?",
+                "source": {
+                  "messageId": "f031acfb-5935-4fc8-97a8-6e0a6c181a3e",
+                  "quote": "가족 멤버는 최대 몇 명까지 초대할 수 있나요?"
+                }
+              }
+            ]
+          },
+          "data": {
+            "questions": [
+              {
+                "id": "2cbbab1d-5cd4-417a-8fa7-cef52c48a83a",
+                "status": "review",
+                "reason": "업체가 어제 보낸 엄마 초대의 수락 여부를 알 수 없다고 안내했습니다.",
+                "evidence": [
+                  {
+                    "messageId": "47591b08-8467-4261-b3f8-471797b962e8",
+                    "quote": "어제 보낸 초대의 수락 여부는 현재 확인할 수 없습니다."
+                  }
+                ]
+              }
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 8065,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 8063,
+                "httpStatus": 200,
+                "bodyMs": 2,
+                "usage": {
+                  "input_tokens": 2386,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 1153,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1024
+                  },
+                  "total_tokens": 3539
+                },
+                "elapsedMs": 8065
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 2386,
+            "output_tokens": 1153,
+            "total_tokens": 3539,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1024
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "record": {
+        "id": "b4211d45-f9ff-4c60-bdb5-91fd569b4193",
+        "title": "가족 멤버 초대 제한과 초대 상태 미정",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-16T08:27:42.240Z",
+        "updatedAt": "2026-11-16T08:27:57.714Z",
+        "messages": [
+          {
+            "id": "f031acfb-5935-4fc8-97a8-6e0a6c181a3e",
+            "role": "customer",
+            "text": "가족 멤버는 최대 몇 명까지 초대할 수 있나요?",
+            "sentAt": null
+          },
+          {
+            "id": "2cbbab1d-5cd4-417a-8fa7-cef52c48a83a",
+            "role": "customer",
+            "text": "어제 보낸 엄마 초대가 수락됐나요?",
+            "sentAt": null
+          },
+          {
+            "id": "47591b08-8467-4261-b3f8-471797b962e8",
+            "role": "agent",
+            "text": "최대 초대 인원은 4명입니다. 어제 보낸 초대의 수락 여부는 현재 확인할 수 없습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "28668348-4f42-414f-a9fb-f6fc966848cb",
+            "title": "가족 멤버는 최대 몇 명까지 초대할 수 있나요?",
+            "source": {
+              "messageId": "f031acfb-5935-4fc8-97a8-6e0a6c181a3e",
+              "quote": "가족 멤버는 최대 몇 명까지 초대할 수 있나요?"
+            },
+            "status": "answered",
+            "reason": "업체가 '최대 초대 인원은 4명입니다.'라고 명확히 안내했습니다.",
+            "evidence": [
+              {
+                "messageId": "47591b08-8467-4261-b3f8-471797b962e8",
+                "quote": "최대 초대 인원은 4명입니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "업체가 '최대 초대 인원은 4명입니다.'라고 명확히 안내했습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "8152f5b3-2abc-48a5-893e-1688eb31054b",
+            "title": "어제 보낸 엄마 초대가 수락됐나요?",
+            "source": {
+              "messageId": "2cbbab1d-5cd4-417a-8fa7-cef52c48a83a",
+              "quote": "어제 보낸 엄마 초대가 수락됐나요?"
+            },
+            "status": "review",
+            "reason": "업체가 어제 보낸 엄마 초대의 수락 여부를 알 수 없다고 안내했습니다.",
+            "evidence": [
+              {
+                "messageId": "47591b08-8467-4261-b3f8-471797b962e8",
+                "quote": "어제 보낸 초대의 수락 여부는 현재 확인할 수 없습니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "review",
+            "aiReason": "업체가 어제 보낸 엄마 초대의 수락 여부를 알 수 없다고 안내했습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "28540efc-f6f3-4497-a559-6f9977d8a048",
+            "at": "2026-11-16T08:27:57.714Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "2개 질문 · 0개 처리 약속",
+            "comparison": {
+              "at": "2026-11-16T08:27:57.714Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 3,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "66c11cc0-68ec-4bd2-9de8-c14d6323c766",
+            "at": "2026-11-16T08:27:42.240Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "3개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 가족 멤버 초대 최대 인원과 어제 보낸 초대의 수락 여부를 물었고, 상담원은 최대 인원은 4명이라고 답했으나 어제 초대의 수락 여부는 확인할 수 없다고 안내했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 5556,
+            "output_tokens": 1852,
+            "total_tokens": 7408,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1408
+            }
+          },
+          "attempts": 1,
+          "boundaryReview": {
+            "model": "gpt-5-mini-2025-08-07",
+            "questions": 1
+          },
+          "at": "2026-11-16T08:27:57.714Z",
+          "comparison": {
+            "at": "2026-11-16T08:27:57.714Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 3,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "version": 2
+      },
+      "grade": {
+        "pass": true,
+        "issues": [],
+        "questions": [
+          {
+            "gold": {
+              "message": 0,
+              "topic": "최대|인원|몇 명",
+              "status": "answered",
+              "evidence": [
+                2
+              ]
+            },
+            "actual": {
+              "id": "28668348-4f42-414f-a9fb-f6fc966848cb",
+              "title": "가족 멤버는 최대 몇 명까지 초대할 수 있나요?",
+              "status": "answered",
+              "evidence": [
+                2
+              ]
+            },
+            "evidenceOK": true
+          },
+          {
+            "gold": {
+              "message": 1,
+              "topic": "수락",
+              "status": "review",
+              "evidence": [
+                2
+              ]
+            },
+            "actual": {
+              "id": "8152f5b3-2abc-48a5-893e-1688eb31054b",
+              "title": "어제 보낸 엄마 초대가 수락됐나요?",
+              "status": "review",
+              "evidence": [
+                2
+              ]
+            },
+            "evidenceOK": true
+          }
+        ],
+        "promises": [],
+        "metrics": {
+          "expectedQuestions": 2,
+          "found": 2,
+          "correct": 2,
+          "falseAnswered": 0,
+          "expectedUnresolved": 1,
+          "evidenceCorrect": 2,
+          "expectedPromises": 0,
+          "correctPromises": 0,
+          "references": 4,
+          "grounded": 4
+        }
+      },
+      "reasonGrade": {
+        "pass": true,
+        "issues": [],
+        "checkedQuestions": 2,
+        "scopedChecks": 0
+      },
+      "passed": true,
+      "ms": 15475
+    },
+    {
+      "id": "WEB-REFUND",
+      "variant": "after",
+      "repeat": 1,
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "low",
+          "ms": 10986,
+          "request": {
+            "messages": [
+              {
+                "id": "446f1dad-ba71-4ac7-b9ab-52a5d495f08f",
+                "role": "customer",
+                "text": "환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?",
+                "sentAt": null
+              },
+              {
+                "id": "868594e5-0908-412e-83d4-ac34a8b6d280",
+                "role": "agent",
+                "text": "환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다.",
+                "sentAt": null
+              }
+            ],
+            "existingQuestions": [],
+            "existingPromises": []
+          },
+          "data": {
+            "summary": "고객이 환불 금액·수단·예정일을 문의했고, 업체가 환불 금액은 79,000원이라고 답변했으며 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠다고 약속했습니다. 환불 수단은 안내되지 않았습니다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "환불 금액은 얼마인가요?",
+                "source": {
+                  "messageId": "446f1dad-ba71-4ac7-b9ab-52a5d495f08f",
+                  "quote": "환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?"
+                },
+                "status": "answered",
+                "reason": "업체가 환불 금액을 79,000원으로 명시했으므로 답변 완료.",
+                "evidence": [
+                  {
+                    "messageId": "868594e5-0908-412e-83d4-ac34a8b6d280",
+                    "quote": "환불 금액은 79,000원입니다."
+                  }
+                ]
+              },
+              {
+                "id": "new-q-2",
+                "title": "어떤 결제수단으로 환불되나요?",
+                "source": {
+                  "messageId": "446f1dad-ba71-4ac7-b9ab-52a5d495f08f",
+                  "quote": "환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?"
+                },
+                "status": "unanswered",
+                "reason": "대응 기관이 환불 수단을 안내하지 않았으므로 추가 회신이 필요함.",
+                "evidence": []
+              },
+              {
+                "id": "new-q-3",
+                "title": "환불 예정일은 언제인가요?",
+                "source": {
+                  "messageId": "446f1dad-ba71-4ac7-b9ab-52a5d495f08f",
+                  "quote": "환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?"
+                },
+                "status": "waiting",
+                "reason": "업체가 담당 부서 확인 후 11월 18일까지 환불 예정일을 안내하겠다고 약속했으므로 회신 대기 상태임.",
+                "evidence": [
+                  {
+                    "messageId": "868594e5-0908-412e-83d4-ac34a8b6d280",
+                    "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+                  }
+                ]
+              }
+            ],
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "환불 예정일 안내",
+                "questionIds": [
+                  "new-q-3"
+                ],
+                "evidence": {
+                  "messageId": "868594e5-0908-412e-83d4-ac34a8b6d280",
+                  "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+                },
+                "dueText": "11월 18일까지",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 10986,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 10985,
+                "httpStatus": 200,
+                "bodyMs": 1,
+                "usage": {
+                  "input_tokens": 3149,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 3072
+                  },
+                  "output_tokens": 1210,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 640
+                  },
+                  "total_tokens": 4359
+                },
+                "elapsedMs": 10986
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 3149,
+            "output_tokens": 1210,
+            "total_tokens": 4359,
+            "input_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "record": {
+        "id": "03f250ca-d9c5-4483-8eed-41cb584920f1",
+        "title": "환불 금액·결제수단·예정일",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-16T08:27:46.499Z",
+        "updatedAt": "2026-11-16T08:27:57.487Z",
+        "messages": [
+          {
+            "id": "446f1dad-ba71-4ac7-b9ab-52a5d495f08f",
+            "role": "customer",
+            "text": "환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "868594e5-0908-412e-83d4-ac34a8b6d280",
+            "role": "agent",
+            "text": "환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "ac00c115-f53f-499a-8e78-fe04cfa6e894",
+            "title": "환불 금액은 얼마인가요?",
+            "source": {
+              "messageId": "446f1dad-ba71-4ac7-b9ab-52a5d495f08f",
+              "quote": "환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?"
+            },
+            "status": "answered",
+            "reason": "업체가 환불 금액을 79,000원으로 명시했으므로 답변 완료.",
+            "evidence": [
+              {
+                "messageId": "868594e5-0908-412e-83d4-ac34a8b6d280",
+                "quote": "환불 금액은 79,000원입니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "업체가 환불 금액을 79,000원으로 명시했으므로 답변 완료.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "39d013f5-de2e-4d05-a695-666dc94a7cab",
+            "title": "어떤 결제수단으로 환불되나요?",
+            "source": {
+              "messageId": "446f1dad-ba71-4ac7-b9ab-52a5d495f08f",
+              "quote": "환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "evidence": [],
+            "followUp": "",
+            "aiStatus": "unanswered",
+            "aiReason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "0c9f4d92-245b-495d-9a4d-ce0d72f2e06b",
+            "title": "환불 예정일은 언제인가요?",
+            "source": {
+              "messageId": "446f1dad-ba71-4ac7-b9ab-52a5d495f08f",
+              "quote": "환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?"
+            },
+            "status": "waiting",
+            "reason": "업체가 담당 부서 확인 후 11월 18일까지 환불 예정일을 안내하겠다고 약속했으므로 회신 대기 상태임.",
+            "evidence": [
+              {
+                "messageId": "868594e5-0908-412e-83d4-ac34a8b6d280",
+                "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "waiting",
+            "aiReason": "업체가 담당 부서 확인 후 11월 18일까지 환불 예정일을 안내하겠다고 약속했으므로 회신 대기 상태임.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "c72e9c08-1421-471d-885d-1b40ed1d39c1",
+            "title": "환불 예정일 안내",
+            "questionIds": [
+              "0c9f4d92-245b-495d-9a4d-ce0d72f2e06b"
+            ],
+            "evidence": {
+              "messageId": "868594e5-0908-412e-83d4-ac34a8b6d280",
+              "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+            },
+            "dueText": "11월 18일까지",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "869c1bb1-a1bf-4ec7-bf56-9f619f17300b",
+            "at": "2026-11-16T08:27:57.487Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-16T08:27:57.487Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "7da6437b-f819-49b6-8613-a581c13918d8",
+            "at": "2026-11-16T08:27:46.499Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 환불 금액·수단·예정일을 문의했고, 업체가 환불 금액은 79,000원이라고 답변했으며 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠다고 약속했습니다. 환불 수단은 안내되지 않았습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3149,
+            "output_tokens": 1210,
+            "total_tokens": 4359,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 640
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-16T08:27:57.487Z",
+          "comparison": {
+            "at": "2026-11-16T08:27:57.487Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "version": 2
+      },
+      "grade": {
+        "pass": true,
+        "issues": [],
+        "questions": [
+          {
+            "gold": {
+              "message": 0,
+              "topic": "금액",
+              "status": "answered",
+              "evidence": [
+                1
+              ]
+            },
+            "actual": {
+              "id": "ac00c115-f53f-499a-8e78-fe04cfa6e894",
+              "title": "환불 금액은 얼마인가요?",
+              "status": "answered",
+              "evidence": [
+                1
+              ]
+            },
+            "evidenceOK": true
+          },
+          {
+            "gold": {
+              "message": 0,
+              "topic": "결제|수단",
+              "status": "unanswered",
+              "evidence": []
+            },
+            "actual": {
+              "id": "39d013f5-de2e-4d05-a695-666dc94a7cab",
+              "title": "어떤 결제수단으로 환불되나요?",
+              "status": "unanswered",
+              "evidence": []
+            },
+            "evidenceOK": true
+          },
+          {
+            "gold": {
+              "message": 0,
+              "topic": "예정|날짜|언제",
+              "status": "waiting",
+              "evidence": [
+                1
+              ]
+            },
+            "actual": {
+              "id": "0c9f4d92-245b-495d-9a4d-ce0d72f2e06b",
+              "title": "환불 예정일은 언제인가요?",
+              "status": "waiting",
+              "evidence": [
+                1
+              ]
+            },
+            "evidenceOK": true
+          }
+        ],
+        "promises": [
+          {
+            "gold": {
+              "message": 1,
+              "topic": "예정|안내|확인",
+              "state": "promised",
+              "dueAt": null,
+              "deadline": "11월 18일"
+            },
+            "actual": {
+              "id": "c72e9c08-1421-471d-885d-1b40ed1d39c1",
+              "title": "환불 예정일 안내",
+              "state": "promised",
+              "dueAt": null,
+              "dueText": "11월 18일까지",
+              "confirmedAt": null
+            },
+            "ok": true
+          }
+        ],
+        "metrics": {
+          "expectedQuestions": 3,
+          "found": 3,
+          "correct": 3,
+          "falseAnswered": 0,
+          "expectedUnresolved": 2,
+          "evidenceCorrect": 3,
+          "expectedPromises": 1,
+          "correctPromises": 1,
+          "references": 6,
+          "grounded": 6
+        }
+      },
+      "reasonGrade": {
+        "pass": true,
+        "issues": [],
+        "checkedQuestions": 3,
+        "scopedChecks": 0
+      },
+      "passed": true,
+      "ms": 10988
+    },
+    {
+      "id": "WEB-EMAIL",
+      "variant": "after",
+      "repeat": 1,
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "medium",
+          "ms": 13997,
+          "request": {
+            "messages": [
+              {
+                "id": "5b781a45-b2f3-4fd3-9451-452ee72ef7a1",
+                "role": "customer",
+                "text": "What documents do I need to recover my account? How long will the review take? What is my case reference number?",
+                "sentAt": null
+              },
+              {
+                "id": "59c4409e-fb3a-47ea-8557-e28c0f8042a2",
+                "role": "agent",
+                "text": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes.",
+                "sentAt": null
+              }
+            ],
+            "existingQuestions": [],
+            "existingPromises": []
+          },
+          "data": {
+            "summary": "고객이 계정 복구에 필요한 서류, 심사 소요 기간, 사건 참조 번호를 문의했으며 상담원은 구매 영수증의 transaction ID 제출을 요청하고 비밀번호·인증코드 전송 금지를 안내함.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "계정 복구를 위해 어떤 서류가 필요합니까?",
+                "source": {
+                  "messageId": "5b781a45-b2f3-4fd3-9451-452ee72ef7a1",
+                  "quote": "What documents do I need to recover my account?"
+                },
+                "status": "answered",
+                "reason": "상담원이 구매 영수증의 transaction ID 제출을 요구하며 비밀번호·인증코드는 보내지 말라고 안내했으므로 제출 항목이 제시됨.",
+                "evidence": [
+                  {
+                    "messageId": "59c4409e-fb3a-47ea-8557-e28c0f8042a2",
+                    "quote": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes."
+                  }
+                ]
+              },
+              {
+                "id": "new-q-2",
+                "title": "심사는 얼마나 걸립니까?",
+                "source": {
+                  "messageId": "5b781a45-b2f3-4fd3-9451-452ee72ef7a1",
+                  "quote": "How long will the review take?"
+                },
+                "status": "unanswered",
+                "reason": "상담원이 심사 소요 기간을 안내하지 않아 기간이 제시되지 않음.",
+                "evidence": []
+              },
+              {
+                "id": "new-q-3",
+                "title": "내 사건 참조 번호는 무엇입니까?",
+                "source": {
+                  "messageId": "5b781a45-b2f3-4fd3-9451-452ee72ef7a1",
+                  "quote": "What is my case reference number?"
+                },
+                "status": "unanswered",
+                "reason": "상담원이 사건 참조 번호를 안내하지 않아 번호가 제시되지 않음.",
+                "evidence": []
+              }
+            ],
+            "promises": []
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 13997,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 13995,
+                "httpStatus": 200,
+                "bodyMs": 2,
+                "usage": {
+                  "input_tokens": 3637,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 2816
+                  },
+                  "output_tokens": 2154,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 1664
+                  },
+                  "total_tokens": 5791
+                },
+                "elapsedMs": 13997
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 3637,
+            "output_tokens": 2154,
+            "total_tokens": 5791,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1664
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "record": {
+        "id": "e5bf1d54-cb60-49e7-ad2d-743da69c969b",
+        "title": "계정 복구 영어 문의",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-16T08:27:57.488Z",
+        "updatedAt": "2026-11-16T08:28:11.488Z",
+        "messages": [
+          {
+            "id": "5b781a45-b2f3-4fd3-9451-452ee72ef7a1",
+            "role": "customer",
+            "text": "What documents do I need to recover my account? How long will the review take? What is my case reference number?",
+            "sentAt": null
+          },
+          {
+            "id": "59c4409e-fb3a-47ea-8557-e28c0f8042a2",
+            "role": "agent",
+            "text": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "aa726913-1c89-420a-929b-20cefcbf78d1",
+            "title": "계정 복구를 위해 어떤 서류가 필요합니까?",
+            "source": {
+              "messageId": "5b781a45-b2f3-4fd3-9451-452ee72ef7a1",
+              "quote": "What documents do I need to recover my account?"
+            },
+            "status": "answered",
+            "reason": "상담원이 구매 영수증의 transaction ID 제출을 요구하며 비밀번호·인증코드는 보내지 말라고 안내했으므로 제출 항목이 제시됨.",
+            "evidence": [
+              {
+                "messageId": "59c4409e-fb3a-47ea-8557-e28c0f8042a2",
+                "quote": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "상담원이 구매 영수증의 transaction ID 제출을 요구하며 비밀번호·인증코드는 보내지 말라고 안내했으므로 제출 항목이 제시됨.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "8552f800-a34f-4aea-99bf-dae1d0e0fec8",
+            "title": "심사는 얼마나 걸립니까?",
+            "source": {
+              "messageId": "5b781a45-b2f3-4fd3-9451-452ee72ef7a1",
+              "quote": "How long will the review take?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "evidence": [],
+            "followUp": "",
+            "aiStatus": "unanswered",
+            "aiReason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "b96ffa2b-c2f7-440d-a52b-51bd0cf4c3cd",
+            "title": "내 사건 참조 번호는 무엇입니까?",
+            "source": {
+              "messageId": "5b781a45-b2f3-4fd3-9451-452ee72ef7a1",
+              "quote": "What is my case reference number?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "evidence": [],
+            "followUp": "",
+            "aiStatus": "unanswered",
+            "aiReason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [],
+        "history": [
+          {
+            "id": "48d1e74e-3a79-462e-afe3-bf08ad94ebbe",
+            "at": "2026-11-16T08:28:11.488Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 0개 처리 약속",
+            "comparison": {
+              "at": "2026-11-16T08:28:11.488Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "bf9462c4-6717-4596-81ea-95a7e6d7662a",
+            "at": "2026-11-16T08:27:57.488Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 계정 복구에 필요한 서류, 심사 소요 기간, 사건 참조 번호를 문의했으며 상담원은 구매 영수증의 transaction ID 제출을 요청하고 비밀번호·인증코드 전송 금지를 안내함.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3637,
+            "output_tokens": 2154,
+            "total_tokens": 5791,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1664
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-16T08:28:11.488Z",
+          "comparison": {
+            "at": "2026-11-16T08:28:11.488Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "grade": {
+        "pass": true,
+        "issues": [],
+        "questions": [
+          {
+            "gold": {
+              "message": 0,
+              "topic": "서류|자료|문서",
+              "status": "answered",
+              "evidence": [
+                1
+              ]
+            },
+            "actual": {
+              "id": "aa726913-1c89-420a-929b-20cefcbf78d1",
+              "title": "계정 복구를 위해 어떤 서류가 필요합니까?",
+              "status": "answered",
+              "evidence": [
+                1
+              ]
+            },
+            "evidenceOK": true
+          },
+          {
+            "gold": {
+              "message": 0,
+              "topic": "기간|시간|얼마나|소요",
+              "status": "unanswered",
+              "evidence": []
+            },
+            "actual": {
+              "id": "8552f800-a34f-4aea-99bf-dae1d0e0fec8",
+              "title": "심사는 얼마나 걸립니까?",
+              "status": "unanswered",
+              "evidence": []
+            },
+            "evidenceOK": true
+          },
+          {
+            "gold": {
+              "message": 0,
+              "topic": "번호",
+              "status": "unanswered",
+              "evidence": []
+            },
+            "actual": {
+              "id": "b96ffa2b-c2f7-440d-a52b-51bd0cf4c3cd",
+              "title": "내 사건 참조 번호는 무엇입니까?",
+              "status": "unanswered",
+              "evidence": []
+            },
+            "evidenceOK": true
+          }
+        ],
+        "promises": [],
+        "metrics": {
+          "expectedQuestions": 3,
+          "found": 3,
+          "correct": 3,
+          "falseAnswered": 0,
+          "expectedUnresolved": 2,
+          "evidenceCorrect": 3,
+          "expectedPromises": 0,
+          "correctPromises": 0,
+          "references": 4,
+          "grounded": 4
+        }
+      },
+      "reasonGrade": {
+        "pass": true,
+        "issues": [],
+        "checkedQuestions": 3,
+        "scopedChecks": 0
+      },
+      "passed": true,
+      "ms": 14000
+    },
+    {
+      "id": "EMAIL-REVIEW",
+      "variant": "after",
+      "repeat": 1,
+      "calls": [
+        {
+          "name": "replytrack_analysis",
+          "effort": "medium",
+          "ms": 19799,
+          "request": {
+            "messages": [
+              {
+                "id": "df4ea153-d3b4-4609-9a2b-a1045fd83cf3",
+                "role": "customer",
+                "text": "What documents do I need to recover my account? How long will the review take? What is my case reference number?",
+                "sentAt": null
+              },
+              {
+                "id": "a2af7093-725c-45cc-989e-818d86adf607",
+                "role": "agent",
+                "text": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes. After we verify the transaction ID, we will review your recovery request.",
+                "sentAt": null
+              }
+            ],
+            "existingQuestions": [],
+            "existingPromises": []
+          },
+          "data": {
+            "summary": "고객이 계정 복구에 필요한 서류, 검토 소요 기간, 사건 참조 번호를 물었고, 상담원은 구매 영수증의 거래 ID 제출을 요청하며(비밀번호·인증코드 전송 금지) 거래 ID 확인 후 복구 요청을 검토하겠다고 안내했다.",
+            "questions": [
+              {
+                "id": "new-q-1",
+                "title": "계정 복구를 위해 어떤 서류가 필요합니까?",
+                "source": {
+                  "messageId": "df4ea153-d3b4-4609-9a2b-a1045fd83cf3",
+                  "quote": "What documents do I need to recover my account? How long will the review take? What is my case reference number?"
+                },
+                "status": "answered",
+                "reason": "업체가 구매 영수증의 거래 ID 제출을 구체적으로 안내했기 때문에 해당 제출 대상은 안내되었다.",
+                "evidence": [
+                  {
+                    "messageId": "a2af7093-725c-45cc-989e-818d86adf607",
+                    "quote": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes. After we verify the transaction ID, we will review your recovery request."
+                  }
+                ]
+              },
+              {
+                "id": "new-q-2",
+                "title": "검토는 얼마나 걸립니까?",
+                "source": {
+                  "messageId": "df4ea153-d3b4-4609-9a2b-a1045fd83cf3",
+                  "quote": "What documents do I need to recover my account? How long will the review take? What is my case reference number?"
+                },
+                "status": "partial",
+                "reason": "업체는 거래 ID 확인 후 검토하겠다고만 안내했으며 검토 소요 기간(시간·일 수)은 제시하지 않았다.",
+                "evidence": [
+                  {
+                    "messageId": "a2af7093-725c-45cc-989e-818d86adf607",
+                    "quote": "After we verify the transaction ID, we will review your recovery request."
+                  }
+                ]
+              },
+              {
+                "id": "new-q-3",
+                "title": "나의 사건 참조 번호는 무엇입니까?",
+                "source": {
+                  "messageId": "df4ea153-d3b4-4609-9a2b-a1045fd83cf3",
+                  "quote": "What documents do I need to recover my account? How long will the review take? What is my case reference number?"
+                },
+                "status": "unanswered",
+                "reason": "업체가 사건 참조 번호를 안내하지 않았고 관련 안내 약속도 하지 않았다.",
+                "evidence": []
+              }
+            ],
+            "promises": [
+              {
+                "id": "new-p-1",
+                "title": "거래 ID 확인 후 복구 요청을 검토하겠다는 약속",
+                "questionIds": [],
+                "evidence": {
+                  "messageId": "a2af7093-725c-45cc-989e-818d86adf607",
+                  "quote": "After we verify the transaction ID, we will review your recovery request."
+                },
+                "dueText": "",
+                "deadlineCleared": false,
+                "state": "promised"
+              }
+            ]
+          },
+          "model": "gpt-5-mini-2025-08-07",
+          "transport": {
+            "elapsedMs": 19799,
+            "hedged": false,
+            "hedgeSkipped": false,
+            "unobservedRequests": 0,
+            "attempts": [
+              {
+                "attempt": 1,
+                "startedMs": 0,
+                "state": "completed",
+                "headersMs": 19795,
+                "httpStatus": 200,
+                "bodyMs": 4,
+                "usage": {
+                  "input_tokens": 3651,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cache_write_tokens_details": {
+                      "ttl_12h_tokens": 0,
+                      "ttl_30m_tokens": 0
+                    },
+                    "cached_tokens": 2816
+                  },
+                  "output_tokens": 2966,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 2432
+                  },
+                  "total_tokens": 6617
+                },
+                "elapsedMs": 19799
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 3651,
+            "output_tokens": 2966,
+            "total_tokens": 6617,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 2432
+            },
+            "unobserved_requests": 0
+          }
+        }
+      ],
+      "record": {
+        "id": "89091ad0-ca50-4eb7-b2bf-29de7c004129",
+        "title": "계정 복구 영어 문의",
+        "company": "Synthetic Support",
+        "mode": "live",
+        "createdAt": "2026-11-16T08:27:57.715Z",
+        "updatedAt": "2026-11-16T08:28:17.516Z",
+        "messages": [
+          {
+            "id": "df4ea153-d3b4-4609-9a2b-a1045fd83cf3",
+            "role": "customer",
+            "text": "What documents do I need to recover my account? How long will the review take? What is my case reference number?",
+            "sentAt": null
+          },
+          {
+            "id": "a2af7093-725c-45cc-989e-818d86adf607",
+            "role": "agent",
+            "text": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes. After we verify the transaction ID, we will review your recovery request.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "5d1c0df6-ae5c-4290-bad6-768964eae159",
+            "title": "계정 복구를 위해 어떤 서류가 필요합니까?",
+            "source": {
+              "messageId": "df4ea153-d3b4-4609-9a2b-a1045fd83cf3",
+              "quote": "What documents do I need to recover my account? How long will the review take? What is my case reference number?"
+            },
+            "status": "answered",
+            "reason": "업체가 구매 영수증의 거래 ID 제출을 구체적으로 안내했기 때문에 해당 제출 대상은 안내되었다.",
+            "evidence": [
+              {
+                "messageId": "a2af7093-725c-45cc-989e-818d86adf607",
+                "quote": "Please provide the transaction ID from your purchase receipt. Do not send your password or verification codes. After we verify the transaction ID, we will review your recovery request."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "업체가 구매 영수증의 거래 ID 제출을 구체적으로 안내했기 때문에 해당 제출 대상은 안내되었다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "4b0bb863-fd62-4c75-8c47-36e28d0d8fc7",
+            "title": "검토는 얼마나 걸립니까?",
+            "source": {
+              "messageId": "df4ea153-d3b4-4609-9a2b-a1045fd83cf3",
+              "quote": "What documents do I need to recover my account? How long will the review take? What is my case reference number?"
+            },
+            "status": "partial",
+            "reason": "업체는 거래 ID 확인 후 검토하겠다고만 안내했으며 검토 소요 기간(시간·일 수)은 제시하지 않았다.",
+            "evidence": [
+              {
+                "messageId": "a2af7093-725c-45cc-989e-818d86adf607",
+                "quote": "After we verify the transaction ID, we will review your recovery request."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "partial",
+            "aiReason": "업체는 거래 ID 확인 후 검토하겠다고만 안내했으며 검토 소요 기간(시간·일 수)은 제시하지 않았다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "efcff1d3-ee4c-4a3f-b57f-8058daba90f4",
+            "title": "나의 사건 참조 번호는 무엇입니까?",
+            "source": {
+              "messageId": "df4ea153-d3b4-4609-9a2b-a1045fd83cf3",
+              "quote": "What documents do I need to recover my account? How long will the review take? What is my case reference number?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "evidence": [],
+            "followUp": "",
+            "aiStatus": "unanswered",
+            "aiReason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "f45d1f18-70a9-462b-8aed-649d599127ea",
+            "title": "거래 ID 확인 후 복구 요청을 검토하겠다는 약속",
+            "questionIds": [],
+            "evidence": {
+              "messageId": "a2af7093-725c-45cc-989e-818d86adf607",
+              "quote": "After we verify the transaction ID, we will review your recovery request."
+            },
+            "dueText": "",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "b1d21dfd-5ead-46fb-bc1a-17917f01a29a",
+            "at": "2026-11-16T08:28:17.516Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-16T08:28:17.516Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "1406cbc4-7afd-4928-80bd-84a7a824b478",
+            "at": "2026-11-16T08:27:57.715Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객이 계정 복구에 필요한 서류, 검토 소요 기간, 사건 참조 번호를 물었고, 상담원은 구매 영수증의 거래 ID 제출을 요청하며(비밀번호·인증코드 전송 금지) 거래 ID 확인 후 복구 요청을 검토하겠다고 안내했다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3651,
+            "output_tokens": 2966,
+            "total_tokens": 6617,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 2432
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-16T08:28:17.516Z",
+          "comparison": {
+            "at": "2026-11-16T08:28:17.516Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "channel": "email",
+        "version": 2
+      },
+      "grade": {
+        "pass": true,
+        "issues": [],
+        "questions": [
+          {
+            "gold": {
+              "message": 0,
+              "topic": "서류|자료|문서",
+              "status": "answered",
+              "evidence": [
+                1
+              ]
+            },
+            "actual": {
+              "id": "5d1c0df6-ae5c-4290-bad6-768964eae159",
+              "title": "계정 복구를 위해 어떤 서류가 필요합니까?",
+              "status": "answered",
+              "evidence": [
+                1
+              ]
+            },
+            "evidenceOK": true
+          },
+          {
+            "gold": {
+              "message": 0,
+              "topic": "기간|시간|얼마나|소요",
+              "status": "partial",
+              "evidence": [
+                1
+              ]
+            },
+            "actual": {
+              "id": "4b0bb863-fd62-4c75-8c47-36e28d0d8fc7",
+              "title": "검토는 얼마나 걸립니까?",
+              "status": "partial",
+              "evidence": [
+                1
+              ]
+            },
+            "evidenceOK": true
+          },
+          {
+            "gold": {
+              "message": 0,
+              "topic": "번호",
+              "status": "unanswered",
+              "evidence": []
+            },
+            "actual": {
+              "id": "efcff1d3-ee4c-4a3f-b57f-8058daba90f4",
+              "title": "나의 사건 참조 번호는 무엇입니까?",
+              "status": "unanswered",
+              "evidence": []
+            },
+            "evidenceOK": true
+          }
+        ],
+        "promises": [
+          {
+            "gold": {
+              "message": 1,
+              "topic": "검토|심사|복구",
+              "state": "promised",
+              "dueAt": null,
+              "deadline": ""
+            },
+            "actual": {
+              "id": "f45d1f18-70a9-462b-8aed-649d599127ea",
+              "title": "거래 ID 확인 후 복구 요청을 검토하겠다는 약속",
+              "state": "promised",
+              "dueAt": null,
+              "dueText": "",
+              "confirmedAt": null
+            },
+            "ok": true
+          }
+        ],
+        "metrics": {
+          "expectedQuestions": 3,
+          "found": 3,
+          "correct": 3,
+          "falseAnswered": 0,
+          "expectedUnresolved": 2,
+          "evidenceCorrect": 3,
+          "expectedPromises": 1,
+          "correctPromises": 1,
+          "references": 6,
+          "grounded": 6
+        }
+      },
+      "reasonGrade": {
+        "pass": true,
+        "issues": [],
+        "checkedQuestions": 3,
+        "scopedChecks": 0
+      },
+      "passed": true,
+      "ms": 19801
+    }
+  ],
+  "complete": true,
+  "candidatePassed": true
+}

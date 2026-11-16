@@ -1,7 +1,28 @@
-// Used only for established-question updates and semantic repairs.
-// The initial extraction and citation/shape repair keep the full analysis prompt.
+// Initial extraction shares the full decision rules but omits unused output.
+// Updates and semantic repairs can use focused instructions.
 import { analysisSchemaFor } from './schema.mjs';
 import { AppError } from './errors.mjs';
+import { INITIAL_ANALYSIS_PROMPT, INITIAL_EMAIL_ANALYSIS_PROMPT } from './prompts.mjs';
+
+// Keep the full extraction/decision/safety rules. A first analysis has no stored
+// promise identity or deadline to revise and drafts are generated separately.
+export function initialAnalysisPlan(record) {
+  const revision = /정정|철회|번복|변경|잘못|앞서|앞선|\b(correct\w*|incorrect|revis\w*|retract\w*|supersed\w*|previous\w*|chang\w*|disregard|instead)\b/i;
+  // Keep the baseline extraction/output for conditional email commitments.
+  const conditionalEmail = record.channel === 'email' && record.messages.some(m => m.role === 'agent'
+    && /조건|경우|예외|원칙|다만|하지만|면|\b(if|unless|only|except|provided|after|before|once|when|until|however)\b/i.test(m.text));
+  if (record.analysis || record.questions.length || record.promises.length
+    || conditionalEmail
+    || record.messages.length > 4 || record.messages.reduce((n,m)=>n+m.text.length,0) > 2000
+    || record.messages.some(m => !['customer','agent'].includes(m.role) || (m.role === 'agent' && revision.test(m.text)))) return null;
+  const schema = analysisSchemaFor(record.messages, record.channel);
+  delete schema.properties.questions.items.properties.followUp;
+  schema.properties.questions.items.required = schema.properties.questions.items.required.filter(k=>k!=='followUp');
+  if (record.channel === 'email') return { schema, prompt: INITIAL_EMAIL_ANALYSIS_PROMPT, initial: true };
+  delete schema.properties.promises.items.properties.deadlineCleared;
+  schema.properties.promises.items.required = schema.properties.promises.items.required.filter(k=>k!=='deadlineCleared');
+  return { schema, prompt: INITIAL_ANALYSIS_PROMPT, initial: true };
+}
 
 // Clearing a deadline requires some explicit revision evidence. This only asks
 // for review; it neither infers a new deadline nor edits the model's flag.

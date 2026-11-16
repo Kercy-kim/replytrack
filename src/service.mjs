@@ -12,7 +12,7 @@ import { readImage } from './ocr.mjs';
 import { OfficialFaq, officialGuide } from './official-guide.mjs';
 import { createEmailDemo, emailDemoExplanation } from './email-demo.mjs';
 import { replyAnalysisPlan, splitEmailEvidence, receiptFulfillsDifferentAction } from './email-reply.mjs';
-import { FOCUSED_ANALYSIS_PROMPT, PROMISE_REVIEW_PROMPT, semanticReviewPlan, unsupportedDeadlineClear } from './analysis-focus.mjs';
+import { FOCUSED_ANALYSIS_PROMPT, PROMISE_REVIEW_PROMPT, initialAnalysisPlan, semanticReviewPlan, unsupportedDeadlineClear } from './analysis-focus.mjs';
 import { EMAIL_TRANSCRIPT_PROMPT, EMAIL_ANALYSIS_PROMPT, EMAIL_ACTIONS_PROMPT, EMAIL_EXPLANATION_PROMPT, EMAIL_EXPLANATION_REVIEW_PROMPT, emailReviewSchema, emailExplanationSchema, validateEmailExplanation, validateEmailTranscript, draftLanguagePrompt } from './email.mjs';
 
 // Derived reasoning and suggested follow-ups are not independent source facts.
@@ -44,7 +44,10 @@ export function analysisReasoningEffort(record) {
 const futureAnswer = /(?:안내|알려|답변|회신)[^.!?\n]{0,24}(?:겠|드릴|예정)|\b(?:will|shall|going to)\b[^.!?\n]{0,80}\b(?:update|inform|reply|tell|let you know)\b/i;
 export function fastInitialAnalysis(record) {
   const complex = /정정|철회|번복|변경|잘못|앞서|앞선|면|경우|조건|원칙|예외|다만|하지만|취소|\b(if|unless|only|except|provided|after|before|once|when|until|instead|correct\w*|incorrect|revis\w*|retract\w*|supersed\w*|chang(?:e|ed)|disregard|previous\w*|however)\b/i;
-  return record.channel !== 'email' && !record.analysis && !record.questions?.length && record.messages.length <= 4 && record.messages.reduce((n, m) => n + m.text.length, 0) <= 2000 && record.messages.some(m => m.role === 'agent' && futureAnswer.test(m.text)) && !record.messages.some(m => m.role === 'agent' && complex.test(m.text));
+  // Compound questions can cite the same reply for both a concrete answer and
+  // a future notice. Keep normal medium reasoning instead of low plus review.
+  const questionMarkers = record.messages.filter(m => m.role === 'customer').reduce((n, m) => n + (m.text.match(/[?？]+/g)?.length || 0), 0);
+  return record.channel !== 'email' && !record.analysis && !record.questions?.length && questionMarkers <= 1 && record.messages.length <= 4 && record.messages.filter(m => m.role === 'agent').length === 1 && record.messages.reduce((n, m) => n + m.text.length, 0) <= 2000 && record.messages.some(m => m.role === 'agent' && futureAnswer.test(m.text)) && !record.messages.some(m => m.role === 'agent' && complex.test(m.text));
 }
 export function futureAnswerNeedsReview(data, record) {
   const latestAgent = record.messages.findLast(m => m.role === 'agent')?.id;
@@ -236,7 +239,7 @@ export class ReplyTrack {
       if (c.mode === 'demo') result = { data: demoAnalysis(c), model: '준비된 예제 · AI 호출 없음', usage: null };
       else {
         const data = analysisContext(c);
-        const replyPlan = replyAnalysisPlan(c);
+        const replyPlan = replyAnalysisPlan(c) ?? initialAnalysisPlan(c);
         let revision = {}, semanticRepair = false, repairPlan = null;
         for (let attempt = 0; attempt < 2; attempt++) {
           if (attempt) this.getVersion(id, version);
@@ -250,7 +253,7 @@ export class ReplyTrack {
           const outputScope = !schema.properties.questions || schema.properties.questions.items.properties.followUp ? '' : '\n이번 출력에는 followUp이 없습니다. 재문의 문장은 별도 생성·검토하므로 생성하지 말고 상태·이유·근거·약속 판단에 집중하세요.';
           const effort = attempt ? 'medium' : plan?.effort ?? (fastInitialAnalysis(c) ? 'low' : analysisReasoningEffort(c));
           const prompt = plan?.prompt ?? (plan?.focused || (attempt && semanticRepair) ? FOCUSED_ANALYSIS_PROMPT : ANALYSIS_PROMPT);
-          const request = { name: 'replytrack_analysis', schema, instructions: prompt + (c.channel === 'email' && !plan?.prompt ? `\n${EMAIL_ANALYSIS_PROMPT}` : '') + (plan?.instructions || '') + outputScope, reasoningEffort: effort, data: { ...data, ...revision, ...plan?.input } };
+          const request = { name: 'replytrack_analysis', schema, instructions: prompt + (c.channel === 'email' && (!plan?.prompt || plan?.initial) ? `\n${EMAIL_ANALYSIS_PROMPT}` : '') + (plan?.instructions || '') + outputScope, reasoningEffort: effort, data: { ...data, ...revision, ...plan?.input } };
           if (!attempt && plan?.parallel) {
             const scoped = properties => ({ type: 'object', properties, required: Object.keys(properties), additionalProperties: false });
             const controller = new AbortController();
@@ -276,7 +279,7 @@ export class ReplyTrack {
           }
           checkpoint(context, 'validation');
           let restoreError;
-          if (plan) { try { result = { ...result, data: plan.restore(result.data) }; } catch (error) { restoreError = error.message; } }
+          if (plan?.restore) { try { result = { ...result, data: plan.restore(result.data) }; } catch (error) { restoreError = error.message; } }
           if (c.channel === 'email' && !restoreError) result = { ...result, data: splitEmailEvidence(result.data, c.messages) };
           const validationErrors = restoreError ? [restoreError] : analysisValidationErrors(result.data, c.messages);
           if (!restoreError && c.channel === 'email') result.data.questions.forEach((q, i) => {
