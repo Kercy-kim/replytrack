@@ -15,6 +15,20 @@ const idle=()=>page.waitForFunction(()=>!document.querySelector('.busy-bar'));
 const fits=()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth);
 try {
   await page.goto(`${base}/?case=${demo.id}`);await page.locator('.question-card').first().waitFor();
+  // A shortcut from the bottom of a long inquiry must land on the reply form.
+  await page.locator('[data-action=draft-tab]').focus(); await page.keyboard.press('Enter');
+  assert.equal(await page.evaluate(()=>document.activeElement.id),'panel-drafts');
+  const draftTop=await page.locator('#panel-drafts').evaluate(el=>el.getBoundingClientRect().top);
+  await page.screenshot({path:`${dir}/reply-shortcut-390.png`});
+  const draftBottom=await page.locator('#panel-drafts').evaluate(el=>el.getBoundingClientRect().bottom);
+  assert(draftTop>=0&&(draftTop<150||draftBottom<=844),`Reply form must be visible; a short form may stop at the document bottom: ${draftTop}, ${draftBottom}`);
+  await page.locator('[data-action=tab][data-value=questions]').click();
+  await page.locator('.action-suggestions > summary').click();
+  const shortcut=page.locator('[data-action=action-followup]').first(),selected=await shortcut.getAttribute('data-id');
+  await shortcut.focus(); await page.keyboard.press('Enter');
+  assert.equal(await page.evaluate(()=>document.activeElement.id),'panel-drafts');
+  assert.deepEqual(await page.locator('[name=draft-question]:checked').evaluateAll(es=>es.map(e=>e.value)),[selected]);
+  await page.locator('[data-action=tab][data-value=questions]').click();
   // Same message can support several questions. Return to the exact clicked button.
   const quote=page.locator('.question-card .quote').nth(1),text=await quote.innerText();await quote.focus();await page.keyboard.press('Enter');
   assert.match(await page.evaluate(()=>document.activeElement.id),/^message-/);

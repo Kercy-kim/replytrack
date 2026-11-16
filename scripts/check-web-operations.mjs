@@ -36,7 +36,7 @@ try {
   const modal = page.locator('#modal');
   const clickCancel = async () => { await (await modal.isVisible() ? modal : page.locator('#app')).locator('[data-action="cancel-operation"]').click(); await idle(); };
   await page.goto(origin);
-  await page.locator('.connection').filter({ hasText: 'API 키 등록 · 점검 전' }).waitFor();
+  await page.locator('.connection').filter({ hasText: '첫 분석 시 연결 확인' }).waitFor();
   await page.locator('.avatar').click();
   ai.hold('replytrack_connection');
   await page.locator('#settings-form button[type=submit]').click();
@@ -47,11 +47,12 @@ try {
   await clickCancel(); assert.equal(app.service.config().connection.state, 'unchecked');
   assert.equal(await page.locator('#api-model').inputValue(), 'gpt-5-mini'); ai.release();
   await page.locator('#settings-form button[type=submit]').click(); await idle();
-  assert.match(await page.locator('.connection-result').innerText(), /점검 통과/);
+  assert.match(await page.locator('.connection-result').innerText(), /AI 연결됨/);
   results.push('Actual preflight lifecycle, elapsed time, cancellation and verified-versus-configured distinction');
   await modal.locator('[data-action="close-modal"]').first().click();
 
   await page.locator('.sidebar [data-action="new"]').click();
+  assert.equal(await page.locator('.onboarding-connection').count(), 0, 'Verified connection should not repeat setup in registration');
   const source = `${fixtureText}\n연락처 010-1234-5678\n주소: 서울특별시 강남구 테헤란로 123, 101동 202호`;
   await page.locator('#import-form [name=title]').fill('개인정보 가림과 취소 검증');
   await page.locator('#import-form [name=text]').fill(source);
@@ -62,7 +63,7 @@ try {
   assert.equal(ai.calls.length, beforeRead);
   ai.hold('replytrack_transcript');
   await page.locator('#privacy-form button[type=submit]').click();
-  await modal.locator('[data-progress]').filter({ hasText: '대화와 발화자 정리 중' }).waitFor();
+  await modal.locator('[data-progress]').filter({ hasText: '보낸 사람과 답변 정리 중' }).waitFor();
   await clickCancel(); assert.equal(await page.locator('#privacy-form [name=text]').inputValue(), masked);
   assert.equal(app.store.list().length, 0); ai.release();
   await page.locator('#privacy-form button[type=submit]').click(); await idle();
