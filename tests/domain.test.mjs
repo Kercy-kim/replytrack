@@ -209,6 +209,7 @@ test('AI result arriving after manual edits is rejected', async () => {
   try {
     let c=createDemo(); c.mode='live'; c=store.create(c);
     const analysis=service.analyze(c.id,c.version);
+    await new Promise(resolve => setImmediate(resolve)); // Wait for the asynchronous repository read before the provider response.
     service.question(c.id,c.questions[0].id,{version:c.version,status:'review'});
     resolveAI({data:demoAnalysis(c),model:'test'});
     await assert.rejects(analysis,{code:'VERSION_CONFLICT'});

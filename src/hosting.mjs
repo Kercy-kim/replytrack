@@ -32,7 +32,7 @@ export function createRequestGuard(config) {
     assert(req.headers['sec-fetch-site'] !== 'cross-site' || navigation, '다른 사이트에서 보낸 요청을 허용하지 않습니다.', 403);
     const path = new URL(req.url, origin).pathname;
     // The health check contains no account, model, or conversation information.
-    if (config.publicOrigin && !(req.method === 'GET' && path === '/api/health')) {
+    if (config.publicOrigin && !config.sessionAuth && !(req.method === 'GET' && path === '/api/health')) {
       if (!timingSafeEqual(digest(req.headers.authorization || ''), expected)) {
         res.setHeader('WWW-Authenticate', 'Basic realm="ReplyTrack", charset="UTF-8"');
         res.writeHead(401, { 'Content-Type': 'text/plain; charset=utf-8' });

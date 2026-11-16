@@ -57,6 +57,7 @@ function toast(text) { $('#toast').textContent = text; $('#toast').classList.add
 async function api(path, method = 'GET', data) {
   const res = await fetch(path, { method, signal: AbortSignal.timeout(30000), ...(data ? { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) } : {}) });
   const result = await res.json();
+  if (res.status === 401 && result.code === 'LOGIN_REQUIRED') location.assign('/login');
   if (!res.ok) { const e = new Error(result.error || '요청에 실패했습니다.'); e.status = res.status; e.code = result.code; throw e; }
   return result;
 }
@@ -98,7 +99,7 @@ async function runOperation(kind, input = {}, caseId) {
   render(); renderProgress();
   try {
     const result = await operation.run(kind, input, caseId);
-    if (operation.cancelRequested) toast('취소 요청 전에 작업이 완료되어 결과를 반영했어요.');
+    if (operation.cancelRequested) toast('저장 단계에 들어간 작업이 완료되어 결과를 반영했어요.');
     return result;
   }
   finally { state.config = await api('/api/config').catch(() => state.config); }
@@ -191,7 +192,7 @@ function render() {
       <nav class="case-list" aria-label="문의 목록">${state.cases.length ? state.cases.filter(item => !item.archivedAt || item.id === c?.id).map(item => `<button class="case-item ${c?.id === item.id ? 'active' : ''}" data-action="open" data-id="${item.id}" ${blocked('open') ? 'disabled' : ''}>${icon('chat')}<span><strong>${esc(item.title)}</strong><small>${esc(item.company)}${item.mode === 'demo' ? ' · 가상 기록' : ''}</small></span>${item.pendingAnalysis ? '<b aria-label="대화 정리 필요">…</b>' : item.unanswered ? `<b aria-label="남은 질문 ${item.unanswered}개">${item.unanswered}</b>` : '<span class="subtle" aria-label="답변과 실제 해결은 별도로 확인">—</span>'}</button>`).join('') : '<p class="sidebar-empty">문의를 추가하면<br>이곳에 기록이 쌓여요.</p>'}</nav>
     </aside>
     <main id="main" class="main">
-      <header class="topbar"><div>내 문의 <span>/</span> <strong>${c ? '문의 기록' : state.cases.length ? '내 문의함' : '시작하기'}</strong></div><span class="topbar-note">문의 내용과 진행 상황을 한곳에</span><button class="avatar" data-action="settings" aria-label="AI 연결 설정">R</button></header>
+      <header class="topbar"><div>내 문의 <span>/</span> <strong>${c ? '문의 기록' : state.cases.length ? '내 문의함' : '시작하기'}</strong></div><span class="topbar-note">문의 내용과 진행 상황을 한곳에</span>${state.auth?.enabled ? `<button class="btn secondary compact account-button" data-action="account" aria-label="내 계정 ${esc(state.auth.user?.username)}">${esc(state.auth.user?.username)}</button>` : '<button class="avatar" data-action="settings" aria-label="AI 연결 설정">R</button>'}</header>
       ${state.busy ? `<div class="busy-bar" role="status">${esc(state.busy)}</div>` : ''}<section class="operation-panel" data-progress hidden aria-label="작업 진행 상황"></section>
       ${state.error ? `<div class="error-banner" role="alert">${esc(state.error)}<button data-action="dismiss-error" aria-label="오류 안내 닫기">${icon('close')}</button></div>` : ''}
       ${c ? detail(c) : landing()}
@@ -325,6 +326,7 @@ function connectionLabel() {
   return state.config.connection?.state === 'ready' ? 'AI 연결됨' : state.config.connection?.state === 'failed' ? 'AI 연결 확인 필요' : state.config.configured ? '첫 분석 시 연결 확인' : 'AI 연결 설정';
 }
 function showSettings() {
+  if (state.config.managed) { toast('AI 연결은 관리자가 설정해요. 연결되지 않으면 관리자에게 알려 주세요.'); return; }
   captureOnboarding();
   settingsReturn = $('#modal').open && !!$('#modal').querySelector('#import-form, #privacy-form, #review-form');
   showModal('AI 연결 설정', `<p class="modal-intro">키는 서버 메모리에만 보관돼요. 짧은 실제 요청으로 키·모델·응답 형식을 확인하며 소량의 API 비용이 발생해요.</p><p class="connection-result" role="status">${connectionLabel()}${state.config.connection?.checkedAt ? ` · ${date(state.config.connection.checkedAt)}` : ''}</p><form id="settings-form"><label class="field">OpenAI API 키<input id="api-key" type="password" autocomplete="off" placeholder="${state.config.configured ? '등록됨 · 변경할 때만 입력' : 'sk-…'}" ${state.config.configured ? '' : 'required'}></label><label class="field">모델<input id="api-model" value="${esc(state.config.model)}" required></label><div class="form-note">상담 자료 없이 연결만 점검해요. 실제 분석 전에도 점검하며, 통과 결과는 10분간 사용해요. 키는 기록이나 내보내기에 포함하지 않아요.</div><div class="modal-actions"><button class="btn secondary" type="button" data-action="close-modal">닫기</button><button class="btn primary" type="submit">저장하고 연결 점검</button></div></form>`);
@@ -355,6 +357,7 @@ function resumeOnboarding() {
   else showNew();
 }
 function onboardingConnection() {
+  if (state.auth?.enabled) return state.config.configured ? '' : '<p class="form-note">AI 연결을 준비 중이에요. 관리자에게 알려 주세요.</p>';
   if (state.config.connection?.state === 'ready') return '';
   return `<div class="onboarding-connection"><span>${state.config.configured ? '첫 분석 때 연결 상태를 확인해요.' : '문의 분석을 위해 AI 연결을 설정해 주세요. 입력한 내용은 유지돼요.'}</span><button type="button" class="btn secondary compact" data-action="settings">AI 연결 설정</button></div>`;
 }
@@ -362,7 +365,7 @@ function showNew() {
   state.onboarding ||= newOnboarding();
   const data = state.onboarding;
   data.stage = 'import';
-  showModal(data.targetCaseId ? '새 이메일 이어 붙이기' : '어떤 상담을 이어갈까요?', `<p class="modal-intro">대화를 가져온 뒤, 발화자와 내용을 확인하고 분석해요. 이 탭을 열어 둔 동안 입력을 유지해요.</p>${onboardingConnection()}<form id="import-form"><label class="field">문의 유형<select name="channel" ${data.targetCaseId ? 'disabled' : ''}><option value="chat" ${data.channel !== 'email' ? 'selected' : ''}>일반 상담</option><option value="email" ${data.channel === 'email' ? 'selected' : ''}>이메일 문의</option></select></label>${data.channel === 'email' ? `<p class="form-note">내 문의와 받은 답변을 헤더와 함께 붙여넣거나 캡처해 주세요. 이전 답장 인용은 중복을 정리한 뒤 직접 확인해요. 영어 원문은 그대로 보존해요.</p><label class="field">내 발신 이메일 주소 (선택)<input name="myAddress" type="email" value="${esc(data.myAddress || '')}" maxlength="254" placeholder="발신자 구분에만 사용해요"></label>` : ''}<div class="form-grid"><label class="field">문의 제목<input name="title" value="${esc(data.title)}" ${data.targetCaseId ? 'readonly' : ''} placeholder="예: 불량 이어폰 환불 문의" maxlength="100" required></label><label class="field">문의처<input name="company" value="${esc(data.company)}" ${data.targetCaseId ? 'readonly' : ''} placeholder="예: 모노샵 고객센터" maxlength="60"></label></div><label class="field">${data.channel === 'email' ? '이메일 본문' : '상담 내용'}<textarea name="text" rows="8" maxlength="30000" placeholder="${data.channel === 'email' ? 'From: me@example.com&#10;What documents do you need to recover my account?&#10;&#10;From: support@example.com&#10;Please provide the transaction ID from your receipt.' : '나: 환불 금액과 처리 기간이 궁금합니다.&#10;고객센터: 금액은 확인 후 안내하겠습니다.'}">${esc(data.text)}</textarea></label><details class="capture-options" ${data.file ? 'open' : ''}><summary>캡처로 가져오기 (선택)</summary><label class="field">캡처 언어<select name="ocrLanguage"><option value="kor+eng" ${(data.ocrLanguage || (data.channel === 'email' ? 'eng' : 'kor+eng')) === 'kor+eng' ? 'selected' : ''}>한국어 · 영어 혼합</option><option value="eng" ${(data.ocrLanguage || (data.channel === 'email' ? 'eng' : 'kor+eng')) === 'eng' ? 'selected' : ''}>영어</option></select></label><label class="upload-zone">${icon('file')}<span><strong>${data.channel === 'email' ? '이메일 캡처로 가져오기' : '대화 캡처로 가져오기'}</strong><small>PNG · JPG · WebP / 최대 4MB / 1장</small></span><input name="image" type="file" accept="image/png,image/jpeg,image/webp"></label>${data.file ? `<p class="selected-capture">선택한 캡처: ${esc(data.file.name)} <button type="button" class="btn text compact" data-action="remove-capture">선택 해제</button></p>` : ''}</details><p class="form-note">전화번호·주소를 기본으로 가려요. 캡처는 기기에서 글자를 읽으며 원본 이미지는 외부 AI로 보내거나 저장하지 않아요. 다음 화면에서 가림 결과를 확인해 주세요.</p><div class="modal-actions"><button type="button" class="btn secondary" data-action="manual">직접 나누어 입력</button><button class="btn primary" type="submit">${icon('spark')}개인정보 가리고 확인</button></div></form>`, true);
+  showModal(data.targetCaseId ? '새 이메일 이어 붙이기' : '어떤 상담을 이어갈까요?', `<p class="modal-intro">대화를 가져온 뒤, 발화자와 내용을 확인하고 분석해요. 이 탭을 열어 둔 동안 입력을 유지해요.</p>${onboardingConnection()}<form id="import-form"><label class="field">문의 유형<select name="channel" ${data.targetCaseId ? 'disabled' : ''}><option value="chat" ${data.channel !== 'email' ? 'selected' : ''}>일반 상담</option><option value="email" ${data.channel === 'email' ? 'selected' : ''}>이메일 문의</option></select></label>${data.channel === 'email' ? `<p class="form-note">내 문의와 받은 답변을 헤더와 함께 붙여넣거나 캡처해 주세요. 이전 답장 인용은 중복을 정리한 뒤 직접 확인해요. 영어 원문은 그대로 보존해요.</p><label class="field">내 발신 이메일 주소 (선택)<input name="myAddress" type="email" value="${esc(data.myAddress || '')}" maxlength="254" placeholder="발신자 구분에만 사용해요"></label>` : ''}<div class="form-grid"><label class="field">문의 제목<input name="title" value="${esc(data.title)}" ${data.targetCaseId ? 'readonly' : ''} placeholder="예: 불량 이어폰 환불 문의" maxlength="100" required></label><label class="field">문의처<input name="company" value="${esc(data.company)}" ${data.targetCaseId ? 'readonly' : ''} placeholder="예: 모노샵 고객센터" maxlength="60"></label></div><label class="field">${data.channel === 'email' ? '이메일 본문' : '상담 내용'}<textarea name="text" rows="8" maxlength="30000" placeholder="${data.channel === 'email' ? 'From: me@example.com&#10;What documents do you need to recover my account?&#10;&#10;From: support@example.com&#10;Please provide the transaction ID from your receipt.' : '나: 환불 금액과 처리 기간이 궁금합니다.&#10;고객센터: 금액은 확인 후 안내하겠습니다.'}">${esc(data.text)}</textarea></label><details class="capture-options" ${data.file ? 'open' : ''}><summary>캡처로 가져오기 (선택)</summary><label class="field">캡처 언어<select name="ocrLanguage"><option value="kor+eng" ${(data.ocrLanguage || (data.channel === 'email' ? 'eng' : 'kor+eng')) === 'kor+eng' ? 'selected' : ''}>한국어 · 영어 혼합</option><option value="eng" ${(data.ocrLanguage || (data.channel === 'email' ? 'eng' : 'kor+eng')) === 'eng' ? 'selected' : ''}>영어</option></select></label><label class="upload-zone">${icon('file')}<span><strong>${data.channel === 'email' ? '이메일 캡처로 가져오기' : '대화 캡처로 가져오기'}</strong><small>PNG · JPG · WebP / 최대 4MB / 1장</small></span><input name="image" type="file" accept="image/png,image/jpeg,image/webp"></label>${data.file ? `<p class="selected-capture">선택한 캡처: ${esc(data.file.name)} <button type="button" class="btn text compact" data-action="remove-capture">선택 해제</button></p>` : ''}</details><p class="form-note">전화번호·주소를 기본으로 가려요. 캡처는 서버에서 글자를 읽으며 원본 이미지는 외부 AI로 보내거나 저장하지 않아요. 다음 화면에서 가림 결과를 확인해 주세요.</p><div class="modal-actions"><button type="button" class="btn secondary" data-action="manual">직접 나누어 입력</button><button class="btn primary" type="submit">${icon('spark')}개인정보 가리고 확인</button></div></form>`, true);
 }
 function readNewMetadata() {
   const form = $('#import-form');
@@ -491,9 +494,30 @@ document.addEventListener('click', async event => {
   if (action === 'reset-search') { state.query = ''; state.caseFilter = 'active'; render(); }
   if (action === 'case-settings') showCaseSettings();
   if (['archive','restore'].includes(action)) await work('상담 목록을 정리하고 있어요', async () => { await updateCase('','PATCH',{archived:action === 'archive'}); $('#modal').close(); toast(action === 'archive' ? '보관함으로 이동했어요. 언제든 복원할 수 있어요.' : '진행 목록으로 복원했어요.'); });
-  if (action === 'save-draft') await work('편집한 초안을 저장하고 있어요', async () => { await updateCase(`drafts/${target.dataset.kind}`,'PATCH',{body:state.draftEdits[target.dataset.kind]}); toast('편집 내용을 이 기기에 저장했어요.'); });
+  if (action === 'save-draft') await work('편집한 초안을 저장하고 있어요', async () => { await updateCase(`drafts/${target.dataset.kind}`,'PATCH',{body:state.draftEdits[target.dataset.kind]}); toast('편집 내용을 저장했어요.'); });
   if (action === 'new') resumeOnboarding();
   if (action === 'settings') showSettings();
+  if (action === 'account') { captureOnboarding(); state.auth = await api('/api/auth/me'); showAccount(); }
+  if (action === 'invite') {
+    target.disabled = true;
+    try {
+      const result = await api('/api/admin/invites', 'POST', {});
+      $('#invite-result').innerHTML = `<label class="field">한 사람에게 전달할 초대 코드<textarea readonly rows="2">${esc(result.code)}</textarea></label>${button('copy-invite','초대 코드 복사','secondary compact')}<p class="form-note">이 화면에서만 확인할 수 있어요. 14일 안에 한 번만 사용할 수 있습니다.</p>`;
+      $('#invite-result textarea').select();
+    } catch (e) { toast(e.message); }
+    finally { target.disabled = false; }
+  }
+  if (action === 'logout') {
+    if (!await guardEdits()) return;
+    if (hasOnboardingInput(state.onboarding) && !confirm('작성 중인 입력은 저장되지 않았어요. 로그아웃할까요?')) return;
+    try { await api('/api/auth/logout', 'POST', {}); state.onboarding = null; state.draftEdits = {}; location.replace('/login'); }
+    catch (e) { toast(e.message); }
+  }
+  if (action === 'copy-invite') {
+    const area = $('#invite-result textarea');
+    try { await navigator.clipboard.writeText(area.value); toast('초대 코드를 복사했어요.'); }
+    catch { area.select(); toast('선택한 초대 코드를 직접 복사해 주세요.'); }
+  }
   if (action === 'close-modal') { captureOnboarding(); if (guardResolve) resolveGuard(false); else if (settingsReturn) { settingsReturn = false; resumeOnboarding(); } else $('#modal').close(); }
   if (action === 'dismiss-error') { state.error = ''; render(); }
   if (action === 'open') await viewWork('상담 기록을 불러오고 있어요', () => loadCase(target.dataset.id));
@@ -532,7 +556,7 @@ document.addEventListener('click', async event => {
     catch { area.focus(); area.select(); toast('복사 권한이 없어요. 선택된 내용을 Ctrl+C로 복사해 주세요.'); }
   }
   if (action === 'export') downloadRecord();
-  if (action === 'delete') showModal('상담 기록을 삭제할까요?', `<p class="modal-intro">‘${esc(state.current.title)}’의 원문과 분석 기록이 이 기기에서 삭제돼요. 삭제 후에는 되돌릴 수 없어요.</p><div class="modal-actions"><button class="btn secondary" data-action="close-modal">취소</button><button class="btn danger" data-action="delete-yes">상담 삭제</button></div>`);
+  if (action === 'delete') showModal('상담 기록을 삭제할까요?', `<p class="modal-intro">‘${esc(state.current.title)}’의 원문과 분석 기록이 삭제돼요. 삭제 후에는 되돌릴 수 없어요.</p><div class="modal-actions"><button class="btn secondary" data-action="close-modal">취소</button><button class="btn danger" data-action="delete-yes">상담 삭제</button></div>`);
   if (action === 'delete-yes') await work('상담 기록을 삭제하고 있어요', async () => { await api(`/api/cases/${state.current.id}`, 'DELETE', {version:state.current.version}); state.current=null; state.draftEdits={}; window.history.replaceState(null,'','/'); localStorage.removeItem('replytrack:last-case'); await refreshList(); $('#modal').close(); });
   if (action === 'manual') { readNewMetadata(); if (!state.onboarding.messages.length) state.onboarding.messages = manualMessages(state.onboarding.text); showReview(); }
   if (action === 'onboarding-import') { captureOnboarding(); showNew(); }
@@ -605,7 +629,7 @@ document.addEventListener('submit', async event => {
   if (form.id === 'import-form') {
     readNewMetadata(); const text = state.onboarding.text.trim(), file = state.onboarding.file;
     if (state.onboarding.prepared) { showPrivacyPreview(state.onboarding.prepared); return; }
-    await work('기기에서 대화를 읽고 개인정보를 가리고 있어요', async () => {
+    await work('대화를 읽고 개인정보를 가리고 있어요', async () => {
       if (!text && !file) throw new Error('상담 텍스트나 캡처를 입력해 주세요.');
       if (file && file.size > 4 * 1024 * 1024) throw new Error('4MB 이하 캡처를 선택해 주세요.');
       const image = file ? await new Promise((resolve,reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror=reject; reader.readAsDataURL(file); }) : undefined;
@@ -662,6 +686,8 @@ $('#modal').addEventListener('close', () => {
 async function init() {
   render();
   try {
+    state.auth = await api('/api/auth/me');
+    if (state.auth.enabled && !state.auth.user) { location.replace('/login'); return; }
     [state.config, state.cases] = await Promise.all([api('/api/config'),api('/api/cases')]);
     const last = new URLSearchParams(location.search).get('case');
     if (last && state.cases.some(c => c.id === last)) setCase(await api(`/api/cases/${last}`));
@@ -669,3 +695,8 @@ async function init() {
   render();
 }
 init();
+
+function showAccount() {
+  const { user, usage } = state.auth;
+  showModal('내 계정', `<p class="modal-intro"><strong>${esc(user.username)}</strong><br>문의 기록은 이 계정에서만 확인할 수 있어요.</p><p class="account-caption">오늘 AI 작업 ${usage.used} / ${usage.limit}회 · 매일 자정 초기화</p><p class="form-note">분석·초안·공식 안내 등 AI 작업을 시작할 때 집계해요. 취소하거나 실패한 요청도 포함됩니다.</p><div class="account-actions">${user.role === 'admin' ? button('invite', '참여자 초대 코드 만들기', 'secondary') + button('settings', 'AI 연결 설정', 'secondary') : ''}${button('logout', '로그아웃', 'secondary')}</div><div id="invite-result" class="invite-result"></div><div class="modal-actions">${button('close-modal','닫기','primary')}</div>`);
+}

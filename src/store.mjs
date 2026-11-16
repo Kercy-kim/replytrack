@@ -17,24 +17,7 @@ export class CaseStore {
       );`);
   }
   list() {
-    return this.db.prepare('SELECT document FROM cases ORDER BY updated_at DESC').all().map(row => {
-      const c = JSON.parse(row.document);
-      return {
-        id: c.id, title: c.title, company: c.company, mode: c.mode,
-        channel: c.channel || 'chat',
-        preview: (c.messages.find(m => m.role === 'customer')?.text || '').slice(0, 180),
-        overview: inquiryOverview(c),
-        updatedAt: c.updatedAt, createdAt: c.createdAt, version: c.version,
-        questions: c.questions.length,
-        unanswered: c.questions.filter(q => q.status !== 'answered').length,
-        promises: c.promises.filter(p => !p.confirmedAt).length,
-        pendingAnalysis: c.analyzedMessageCount < c.messages.length,
-        customerActions: (c.nextActions?.items || []).filter(a => !a.completedAt && ['requested', 'review'].includes(a.state)).length,
-        actionsNeedRefresh: c.messages.some(m => m.role === 'agent') && !actionsFresh(c),
-        archivedAt: c.archivedAt || null,
-        deadlines: summarizeDeadlines(c.promises),
-      };
-    });
+    return this.db.prepare('SELECT document FROM cases ORDER BY updated_at DESC').all().map(row => summarizeCase(JSON.parse(row.document)));
   }
   get(id) {
     const row = this.db.prepare('SELECT document FROM cases WHERE id = ?').get(id);
@@ -59,4 +42,22 @@ export class CaseStore {
     if (!result.changes) throw new AppError(409, '상담 기록이 변경됐습니다. 새로고침 후 다시 시도해 주세요.', 'VERSION_CONFLICT');
   }
   close() { this.db.close(); }
+}
+
+export function summarizeCase(c) {
+  return {
+    id: c.id, title: c.title, company: c.company, mode: c.mode,
+    channel: c.channel || 'chat',
+    preview: (c.messages.find(m => m.role === 'customer')?.text || '').slice(0, 180),
+    overview: inquiryOverview(c),
+    updatedAt: c.updatedAt, createdAt: c.createdAt, version: c.version,
+    questions: c.questions.length,
+    unanswered: c.questions.filter(q => q.status !== 'answered').length,
+    promises: c.promises.filter(p => !p.confirmedAt).length,
+    pendingAnalysis: c.analyzedMessageCount < c.messages.length,
+    customerActions: (c.nextActions?.items || []).filter(a => !a.completedAt && ['requested', 'review'].includes(a.state)).length,
+    actionsNeedRefresh: c.messages.some(m => m.role === 'agent') && !actionsFresh(c),
+    archivedAt: c.archivedAt || null,
+    deadlines: summarizeDeadlines(c.promises),
+  };
 }

@@ -26,7 +26,7 @@ export async function readImage(image, context = {}) {
       else if (message.error) finish(new AppError(422, '캡처에서 글자를 읽지 못했어요. 텍스트로 붙여넣거나 다른 캡처를 선택해 주세요.', 'OCR_FAILED'));
       else finish(null, message.text);
     });
-    worker.on('error', () => finish(new AppError(422, '로컬 캡처 인식을 실행하지 못했어요. npm ci 실행 후 다시 시도하거나 텍스트를 붙여넣어 주세요.', 'OCR_FAILED')));
+    worker.on('error', () => finish(new AppError(422, '캡처 인식을 실행하지 못했어요. 잠시 후 다시 시도하거나 본문을 붙여넣어 주세요.', 'OCR_FAILED')));
     worker.on('exit', () => { if (!settled) finish(new AppError(422, '캡처 인식이 중단됐어요. 입력은 유지됩니다.', 'OCR_FAILED')); });
   });
 }

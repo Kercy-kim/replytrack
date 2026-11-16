@@ -82,6 +82,11 @@ export class ReplyTrack {
     this.configRevision = 0; this.connection = { state: 'unchecked', checkedAt: null };
   }
   config() { return { configured: this.ai.configured, model: this.ai.model, connection: { ...this.connection } }; }
+  commit(record, version, context) {
+    checkpoint(context);
+    const save = () => this.store.save(record, version);
+    return context.commit ? context.commit(save) : save();
+  }
   guide(input, context = {}) { return officialGuide(this, input, context); }
   configure(input) { this.ai.configure(input); this.configRevision++; this.connection = { state: 'unchecked', checkedAt: null }; return this.config(); }
   async preflight(context = {}) {
@@ -117,9 +122,16 @@ export class ReplyTrack {
     }
   }
   getVersion(id, version) {
+    const check = c => {
+      assert(Number.isInteger(version) && c.version === version, '상담이 변경됐습니다. 최신 기록을 다시 불러와 주세요.', 409);
+      return c;
+    };
     const c = this.store.get(id);
-    assert(Number.isInteger(version) && c.version === version, '상담이 변경됐습니다. 최신 기록을 다시 불러와 주세요.', 409);
-    return c;
+    return c?.then ? c.then(check) : check(c);
+  }
+  withRecord(id, version, fn) {
+    const c = this.getVersion(id, version);
+    return c?.then ? c.then(fn) : fn(c);
   }
   async withAI(task) {
     assert(this.activeAI < 2, '다른 AI 요청을 처리 중입니다. 잠시 후 다시 시도해 주세요.', 429);
@@ -136,7 +148,7 @@ export class ReplyTrack {
   demo(input = {}) { return this.store.create(input.scenario === 'email' ? createEmailDemo() : input.scenario === 'refund' ? createRefundDemo() : createDemo()); }
   async actions(id, version, context = {}) {
     checkpoint(context);
-    const c = this.getVersion(id, version);
+    const c = await this.getVersion(id, version);
     const data = { messages: c.messages, existingItems: (c.nextActions?.items || []).map(({ id, title, source, condition, dueText, state, update }) => ({ id, title, source, condition, dueText, state, update })) };
     let result, checked;
     if (c.mode === 'demo') result = { data: demoActions(c), model: '준비된 예제 · AI 호출 없음' };
@@ -144,100 +156,106 @@ export class ReplyTrack {
       result = await this.ask({ name: 'replytrack_actions', schema: actionsSchemaFor(c), instructions: ACTIONS_PROMPT + (c.channel === 'email' ? `\n${EMAIL_ACTIONS_PROMPT}` : ''), reasoningEffort: 'medium', data }, context, 'actions');
       checkpoint(context, 'validation');
       validateActions(result.data, c);
-      this.getVersion(id, version);
+      await this.getVersion(id, version);
       checked = await this.ask({ name: 'replytrack_actions_review', schema: actionsReviewSchema, instructions: ACTIONS_REVIEW_PROMPT + (c.channel === 'email' ? `\n${EMAIL_ACTIONS_PROMPT}` : ''), reasoningEffort: 'medium', data: { ...data, items: result.data.items } }, context, 'actions_review');
       if (!reviewPassed(checked.data,actionChecks)) throw new AppError(502, '업체 요청에 누락되거나 원문과 맞지 않는 부분이 있어 저장하지 않았어요. 원문을 확인하고 다시 시도해 주세요. 이전 할 일은 유지됩니다.', 'ACTIONS_REVIEW');
     }
     checkpoint(context, 'saving');
     applyActions(c, result.data, { model: result.model, usage: analysisUsage([result, checked].filter(Boolean)), reviewed: !!checked });
-    return this.store.save(c, version);
+    return await this.commit(c, version, context);
   }
   completeAction(id, actionId, input) {
-    const c = this.getVersion(id, input.version);
-    assert(actionsFresh(c), '새 대화가 있어요. 업체 요청을 먼저 다시 확인해 주세요.', 409);
-    const item = c.nextActions.items.find(a => a.id === actionId);
-    assert(item, '할 일을 찾을 수 없습니다.', 404);
-    assert(typeof input.completed === 'boolean', '수행 여부를 확인해 주세요.');
-    assert(!input.completed || ['requested', 'reported_done'].includes(item.state), '철회되거나 다시 확인이 필요한 요청은 완료로 바꿀 수 없어요.');
-    item.completedAt = input.completed ? new Date().toISOString() : null;
-    history(c, 'action_confirmation', input.completed ? '요청받은 행동을 직접 수행했다고 표시했어요' : '할 일 수행 표시를 취소했어요', item.title);
-    return this.store.save(c, input.version);
+    return this.withRecord(id, input.version, c => {
+      assert(actionsFresh(c), '새 대화가 있어요. 업체 요청을 먼저 다시 확인해 주세요.', 409);
+      const item = c.nextActions.items.find(a => a.id === actionId);
+      assert(item, '할 일을 찾을 수 없습니다.', 404);
+      assert(typeof input.completed === 'boolean', '수행 여부를 확인해 주세요.');
+      assert(!input.completed || ['requested', 'reported_done'].includes(item.state), '철회되거나 다시 확인이 필요한 요청은 완료로 바꿀 수 없어요.');
+      item.completedAt = input.completed ? new Date().toISOString() : null;
+      history(c, 'action_confirmation', input.completed ? '요청받은 행동을 직접 수행했다고 표시했어요' : '할 일 수행 표시를 취소했어요', item.title);
+      return this.store.save(c, input.version);
+    });
   }
   metadata(id, input) {
-    const c = this.getVersion(id, input.version);
-    assert(['title', 'company', 'archived'].some(key => input[key] !== undefined), '수정할 내용을 입력해 주세요.');
-    if (input.title !== undefined) c.title = maskPrivate(cleanText(input.title, 100, '상담 제목'));
-    if (input.company !== undefined) {
-      assert(typeof input.company === 'string' && input.company.length <= 60, '업체명은 60자까지 입력할 수 있습니다.');
-      c.company = maskPrivate(input.company.trim()) || '고객센터';
-    }
-    if (input.archived !== undefined) {
-      assert(typeof input.archived === 'boolean', '보관 여부를 확인해 주세요.');
-      c.archivedAt = input.archived ? (c.archivedAt || new Date().toISOString()) : null;
-    }
-    history(c, 'metadata', input.archived === true ? '상담을 보관했어요' : input.archived === false ? '상담을 진행 목록으로 복원했어요' : '상담 정보를 수정했어요');
-    return this.store.save(c, input.version);
+    return this.withRecord(id, input.version, c => {
+      assert(['title', 'company', 'archived'].some(key => input[key] !== undefined), '수정할 내용을 입력해 주세요.');
+      if (input.title !== undefined) c.title = maskPrivate(cleanText(input.title, 100, '상담 제목'));
+      if (input.company !== undefined) {
+        assert(typeof input.company === 'string' && input.company.length <= 60, '업체명은 60자까지 입력할 수 있습니다.');
+        c.company = maskPrivate(input.company.trim()) || '고객센터';
+      }
+      if (input.archived !== undefined) {
+        assert(typeof input.archived === 'boolean', '보관 여부를 확인해 주세요.');
+        c.archivedAt = input.archived ? (c.archivedAt || new Date().toISOString()) : null;
+      }
+      history(c, 'metadata', input.archived === true ? '상담을 보관했어요' : input.archived === false ? '상담을 진행 목록으로 복원했어요' : '상담 정보를 수정했어요');
+      return this.store.save(c, input.version);
+    });
   }
   saveDraft(id, kind, input) {
-    const c = this.getVersion(id, input.version);
-    assert(['followup', 'handoff'].includes(kind) && c.drafts[kind], '먼저 초안을 생성해 주세요.', 404);
-    assert(typeof input.body === 'string' && input.body.trim() && input.body.length <= 8000, '초안은 1~8,000자로 입력해 주세요.');
-    // Preserve generated text and its evidence; user edits are not AI-verified facts.
-    c.drafts[kind].editedBody = input.body;
-    c.drafts[kind].editedAt = new Date().toISOString();
-    history(c, 'draft', kind === 'followup' ? '편집한 재문의 초안을 저장했어요' : '편집한 인계 요약을 저장했어요');
-    return this.store.save(c, input.version);
+    return this.withRecord(id, input.version, c => {
+      assert(['followup', 'handoff'].includes(kind) && c.drafts[kind], '먼저 초안을 생성해 주세요.', 404);
+      assert(typeof input.body === 'string' && input.body.trim() && input.body.length <= 8000, '초안은 1~8,000자로 입력해 주세요.');
+      // Preserve generated text and its evidence; user edits are not AI-verified facts.
+      c.drafts[kind].editedBody = input.body;
+      c.drafts[kind].editedAt = new Date().toISOString();
+      history(c, 'draft', kind === 'followup' ? '편집한 재문의 초안을 저장했어요' : '편집한 인계 요약을 저장했어요');
+      return this.store.save(c, input.version);
+    });
   }
   advance(id, version) {
-    const c = this.getVersion(id, version);
-    assert(c.mode === 'demo', '예제 상담에서만 사용할 수 있습니다.');
-    assert(c.demoStep < (c.demoScenario === 'email' ? 1 : 2), '모든 예제 답변을 추가했습니다.');
-    return this.store.save(advanceDemo(c), version);
+    return this.withRecord(id, version, c => {
+      assert(c.mode === 'demo', '예제 상담에서만 사용할 수 있습니다.');
+      assert(c.demoStep < (c.demoScenario === 'email' ? 1 : 2), '모든 예제 답변을 추가했습니다.');
+      return this.store.save(advanceDemo(c), version);
+    });
   }
   append(id, input) {
-    const c = this.getVersion(id, input.version);
-    assert(c.mode !== 'demo', '예제에서는 준비된 답변 추가 버튼을 사용해 주세요. 직접 입력하려면 새 상담을 만드세요.');
-    const m = message(input);
-    assert(c.messages.length < 60 && c.messages.reduce((n, m) => n + m.text.length, 0) + m.text.length <= 40000, '상담은 60개 메시지, 총 40,000자까지 지원합니다.');
-    m.text = maskPrivate({ existing: c.messages.map(m => m.text), text: m.text }).text;
-    c.messages.push(m); // Keep prior drafts until a new analysis actually commits.
-    history(c, 'message', m.role === 'agent' ? '고객센터의 새 답변을 저장했어요' : '내 추가 질문을 저장했어요', '분석 전에도 원문은 보존됩니다.');
-    return this.store.save(c, input.version);
+    return this.withRecord(id, input.version, c => {
+      assert(c.mode !== 'demo', '예제에서는 준비된 답변 추가 버튼을 사용해 주세요. 직접 입력하려면 새 상담을 만드세요.');
+      const m = message(input);
+      assert(c.messages.length < 60 && c.messages.reduce((n, m) => n + m.text.length, 0) + m.text.length <= 40000, '상담은 60개 메시지, 총 40,000자까지 지원합니다.');
+      m.text = maskPrivate({ existing: c.messages.map(m => m.text), text: m.text }).text;
+      c.messages.push(m); // Keep prior drafts until a new analysis actually commits.
+      history(c, 'message', m.role === 'agent' ? '고객센터의 새 답변을 저장했어요' : '내 추가 질문을 저장했어요', '분석 전에도 원문은 보존됩니다.');
+      return this.store.save(c, input.version);
+    });
   }
   appendEmail(id, input) {
-    const c = this.getVersion(id, input.version);
-    assert(c.mode !== 'demo' && c.channel === 'email', '이메일 상담에서 사용할 수 있어요.');
-    assert(Array.isArray(input.messages) && input.messages.length > 0 && input.messages.length <= 60, '추가할 이메일을 확인해 주세요.');
-    const added = input.messages.map(message);
-    assert(c.messages.length + added.length <= 60 && [...c.messages, ...added].reduce((n, m) => n + m.text.length, 0) <= 40000, '상담은 60개 메시지, 총 40,000자까지 지원합니다.');
-    const masked = maskPrivate({ existing: c.messages.map(m => m.text), added: added.map(m => m.text) });
-    added.forEach((m, i) => { m.text = masked.added[i]; });
-    c.messages.push(...added);
-    history(c, 'message', '새 이메일을 저장했어요', `${added.length}개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다.`);
-    return this.store.save(c, input.version);
+    return this.withRecord(id, input.version, c => {
+      assert(c.mode !== 'demo' && c.channel === 'email', '이메일 상담에서 사용할 수 있어요.');
+      assert(Array.isArray(input.messages) && input.messages.length > 0 && input.messages.length <= 60, '추가할 이메일을 확인해 주세요.');
+      const added = input.messages.map(message);
+      assert(c.messages.length + added.length <= 60 && [...c.messages, ...added].reduce((n, m) => n + m.text.length, 0) <= 40000, '상담은 60개 메시지, 총 40,000자까지 지원합니다.');
+      const masked = maskPrivate({ existing: c.messages.map(m => m.text), added: added.map(m => m.text) });
+      added.forEach((m, i) => { m.text = masked.added[i]; });
+      c.messages.push(...added);
+      history(c, 'message', '새 이메일을 저장했어요', `${added.length}개 메시지 · 이전 분석과 설명은 재확인 전까지 보존됩니다.`);
+      return this.store.save(c, input.version);
+    });
   }
   async explainEmail(id, version, context = {}) {
-    const c = this.getVersion(id, version);
+    const c = await this.getVersion(id, version);
     assert(c.channel === 'email' && c.messages.some(m => m.role === 'agent'), '설명할 고객센터 이메일 답변이 필요해요.');
-    if (c.mode === 'demo' && c.demoScenario === 'email') { checkpoint(context); c.emailExplanation = emailDemoExplanation(c); return this.store.save(c, version); }
+    if (c.mode === 'demo' && c.demoScenario === 'email') { checkpoint(context); c.emailExplanation = emailDemoExplanation(c); return await this.commit(c, version, context); }
     const messages = c.messages.filter(m => m.role === 'agent');
     const result = await this.ask({ name: 'replytrack_email_explanation', schema: emailExplanationSchema(messages), instructions: EMAIL_EXPLANATION_PROMPT, reasoningEffort: 'medium', data: { messages } }, context, 'email_explanation');
     checkpoint(context, 'validation');
     validateEmailExplanation(result.data, messages);
-    this.getVersion(id, version);
+    await this.getVersion(id, version);
     const reviewed = await this.ask({ name: 'replytrack_email_review', schema: emailReviewSchema, instructions: EMAIL_EXPLANATION_REVIEW_PROMPT, reasoningEffort: 'medium', data: { messages, explanation: result.data } }, context, 'email_review');
     if (reviewed.data?.valid !== true) throw new AppError(502, '한국어 설명에 원문과 다른 의미나 누락이 있어 저장하지 않았어요. 다시 시도해 주세요. 이전 설명은 유지됩니다.', 'EMAIL_REVIEW');
     checkpoint(context, 'saving');
     c.emailExplanation = { ...result.data, messageCount: c.messages.length, at: new Date().toISOString(), model: result.model, usage: analysisUsage([result, reviewed]) };
     history(c, 'email_explanation', '이메일 답변의 한국어 설명을 확인했어요');
-    return this.store.save(c, version);
+    return await this.commit(c, version, context);
   }
   async analyze(id, version, context = {}) {
     checkpoint(context);
     assert(!this.busy.has(id), '이 상담을 분석 중입니다. 잠시 기다려 주세요.', 409);
     this.busy.add(id);
     try {
-      const c = this.getVersion(id, version);
+      const c = await this.getVersion(id, version);
       let result, attempts = 0, boundaryReview = null, completionReview = null;
       const results = [];
       if (c.mode === 'demo') result = { data: demoAnalysis(c), model: '준비된 예제 · AI 호출 없음', usage: null };
@@ -246,7 +264,7 @@ export class ReplyTrack {
         const replyPlan = replyAnalysisPlan(c) ?? initialAnalysisPlan(c);
         let revision = {}, semanticRepair = false, repairPlan = null;
         for (let attempt = 0; attempt < 2; attempt++) {
-          if (attempt) this.getVersion(id, version);
+          if (attempt) await this.getVersion(id, version);
           // Keep complex histories, semantic reviews and evidence repair at medium.
           const plan = attempt === 0 ? replyPlan : repairPlan;
           const schema = plan?.schema ?? analysisSchemaFor(c.messages, c.channel);
@@ -308,7 +326,7 @@ export class ReplyTrack {
         // A lexical cue only requests a semantic review; it never creates a promise.
         const completionCue = /완료|마쳤|해제했|처리했|접수했|수신했|\b(completed|processed|disabled|received|restored|cancelled|canceled)\b/i;
         if (!result.data.promises.length && c.messages.some(m => m.role === 'agent' && completionCue.test(m.text))) {
-          this.getVersion(id, version);
+          await this.getVersion(id, version);
           const checked = await this.ask({ name: 'replytrack_completion_review', schema: completionReviewSchemaFor(c.messages, result.data.questions), instructions: COMPLETION_REVIEW_PROMPT, reasoningEffort: 'medium',
             data: { messages: c.messages, questions: result.data.questions.map(({ id, title, source }) => ({ id, title, source })), existingPromises: data.existingPromises } }, context, 'completion_review');
           results.push(checked);
@@ -321,7 +339,7 @@ export class ReplyTrack {
         }
         const uncertain = result.data.questions.filter(q => q.status === 'review' && q.evidence.length);
         if (uncertain.length) {
-          this.getVersion(id, version);
+          await this.getVersion(id, version);
           const checked = await this.ask({ name: 'replytrack_boundary_review', schema: boundaryReviewSchemaFor(uncertain.map(q => q.id), c.messages), instructions: BOUNDARY_REVIEW_PROMPT, reasoningEffort: 'medium',
             data: { messages: c.messages, questions: uncertain.map(({ id, title, source }) => ({ id, title, source })), otherQuestions: result.data.questions.filter(q => !uncertain.includes(q)).map(({ id, title, source }) => ({ id, title, source })) } }, context, 'boundary_review');
           results.push(checked);
@@ -336,34 +354,38 @@ export class ReplyTrack {
       }
       checkpoint(context, 'saving');
       applyAnalysis(c, result.data, { model: result.model, usage: analysisUsage(results), attempts, ...(boundaryReview ? { boundaryReview } : {}), ...(completionReview ? { completionReview } : {}) });
-      return this.store.save(c, version);
+      return await this.commit(c, version, context);
     } finally { this.busy.delete(id); }
   }
   question(id, questionId, input) {
-    const c = this.getVersion(id, input.version), q = c.questions.find(q => q.id === questionId);
-    assert(q, '질문을 찾을 수 없습니다.', 404);
-    if (input.title !== undefined) q.title = q.manualTitle = cleanText(input.title, 200, '질문 제목');
-    if (input.status !== undefined) {
-      assert(statuses.includes(input.status), '상태를 확인해 주세요.');
-      q.status = q.manualStatus = input.status; q.reason = '사용자가 직접 지정한 상태입니다.';
-    }
-    if (input.applyAI === true) { q.status = q.aiStatus; q.reason = q.aiReason; q.manualStatus = null; }
-    c.drafts = {};
-    history(c, 'correction', '질문 확인표를 직접 수정했어요', q.title);
-    return this.store.save(c, input.version);
+    return this.withRecord(id, input.version, c => {
+      const q = c.questions.find(q => q.id === questionId);
+      assert(q, '질문을 찾을 수 없습니다.', 404);
+      if (input.title !== undefined) q.title = q.manualTitle = cleanText(input.title, 200, '질문 제목');
+      if (input.status !== undefined) {
+        assert(statuses.includes(input.status), '상태를 확인해 주세요.');
+        q.status = q.manualStatus = input.status; q.reason = '사용자가 직접 지정한 상태입니다.';
+      }
+      if (input.applyAI === true) { q.status = q.aiStatus; q.reason = q.aiReason; q.manualStatus = null; }
+      c.drafts = {};
+      history(c, 'correction', '질문 확인표를 직접 수정했어요', q.title);
+      return this.store.save(c, input.version);
+    });
   }
   promise(id, promiseId, input) {
-    const c = this.getVersion(id, input.version), p = c.promises.find(p => p.id === promiseId);
-    assert(p, '처리 약속을 찾을 수 없습니다.', 404);
-    assert(typeof input.confirmed === 'boolean', '확인 여부를 선택해 주세요.');
-    p.confirmedAt = input.confirmed ? new Date().toISOString() : null;
-    c.drafts = {};
-    history(c, 'confirmation', input.confirmed ? '실제 처리 결과를 직접 확인했어요' : '처리 결과 확인을 취소했어요', p.title);
-    return this.store.save(c, input.version);
+    return this.withRecord(id, input.version, c => {
+      const p = c.promises.find(p => p.id === promiseId);
+      assert(p, '처리 약속을 찾을 수 없습니다.', 404);
+      assert(typeof input.confirmed === 'boolean', '확인 여부를 선택해 주세요.');
+      p.confirmedAt = input.confirmed ? new Date().toISOString() : null;
+      c.drafts = {};
+      history(c, 'confirmation', input.confirmed ? '실제 처리 결과를 직접 확인했어요' : '처리 결과 확인을 취소했어요', p.title);
+      return this.store.save(c, input.version);
+    });
   }
   async draft(id, input, context = {}) {
     checkpoint(context);
-    const c = this.getVersion(id, input.version);
+    const c = await this.getVersion(id, input.version);
     assert(c.analyzedMessageCount === c.messages.length && c.questions.length, '새 답변을 먼저 분석해 주세요.');
     assert(input.kind === 'followup', '현재는 남은 질문의 재문의 초안만 작성할 수 있어요.');
     const language = input.language ?? (c.channel === 'email' && input.kind === 'followup' ? 'en' : 'ko');
@@ -407,7 +429,7 @@ export class ReplyTrack {
     checkpoint(context, 'saving');
     c.drafts.followup = { ...draft, questionIds: selected.map(q => q.id), language, at: new Date().toISOString(), model, ...(review ? { review } : {}) };
     history(c, 'draft', '남은 질문으로 재문의 초안을 만들었어요');
-    return this.store.save(c, input.version);
+    return await this.commit(c, input.version, context);
   }
   async prepare(input, context = {}) {
     checkpoint(context, 'masking');
@@ -430,7 +452,7 @@ export class ReplyTrack {
   async extract(input, context = {}) {
     const prepared = await this.prepare(input, context);
     const email = input.channel === 'email';
-    const existing = input.caseId ? this.getVersion(input.caseId, input.version).messages : [];
+    const existing = input.caseId ? (await this.getVersion(input.caseId, input.version)).messages : [];
     const myAddress = email && typeof input.myAddress === 'string' ? cleanText(input.myAddress, 254, '내 발신 이메일 주소') : '';
     const r = await this.ask({ name: 'replytrack_transcript', schema: transcriptSchema, instructions: TRANSCRIPT_PROMPT + (email ? `\n${EMAIL_TRANSCRIPT_PROMPT}` : ''), data: { text: prepared.text, ...(email ? { myAddress, existingMessages: existing } : {}) } }, context, 'reading');
     const data = r.data;

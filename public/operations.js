@@ -1,9 +1,10 @@
 export const stages = {
+  queued: '앞선 작업을 기다리는 중',
   completion_review: '처리 완료 통보 누락 확인 중',
   email_explanation: '이메일 답변을 한국어로 설명 중', email_review: '번역의 조건·누락·기한 검토 중',
   guide_intent: '원하는 일 파악 중', guide_search: 'SSG 공식 FAQ 검색 중', guide_writing: '내 상황에 맞는 안내 작성 중', guide_review: '공식 근거·조건·예외 대조 중', guide_repair: '검토에서 발견한 안내 오류 수정 중',
   actions: '업체가 요청한 할 일 읽는 중', actions_review: '할 일의 조건·누락·이후 안내 검토 중',
-  starting: '작업 접수 중', connection: 'AI 연결 확인 중', ocr: '캡처에서 글자 읽기 준비 중', ocr_reading: '기기에서 캡처 글자 읽는 중',
+  starting: '작업 접수 중', connection: 'AI 연결 확인 중', ocr: '캡처에서 글자 읽기 준비 중', ocr_reading: '캡처의 글자를 읽는 중',
   masking: '전화번호·주소 가리는 중', reading: '보낸 사람과 답변 정리 중', analysis: '질문·답변·약속 분석 중',
   analysis_repair: '원문에 맞춰 분석 수정 중', validation: '원문 근거 검증 중', boundary_review: '불명확한 질문 상태 검토 중',
   draft: '초안 작성 중', draft_review: '초안 의미·누락 검토 중', draft_repair: '검토 결과로 초안 수정 중', saving: '검증된 결과 저장 중',
@@ -46,7 +47,7 @@ export class WebOperation {
       }
       this.acknowledged = true; this.update(job);
       if (this.cancelRequested) await this.cancel();
-      const deadline = performance.now() + 360000;
+      const deadline = performance.now() + 960000;
       while (this.snapshot.state === 'running') {
         await new Promise(resolve => setTimeout(resolve, this.pollMs));
         if (this.snapshot.state !== 'running') break;
