@@ -189,9 +189,6 @@ function render() {
       ${button('home', '내 문의함', 'secondary wide workspace-home', 'file')}
       <div class="nav-heading"><span>저장한 문의</span><span>${state.cases.filter(item => !item.archivedAt || item.id === c?.id).length.toString().padStart(2, '0')}</span></div>
       <nav class="case-list" aria-label="문의 목록">${state.cases.length ? state.cases.filter(item => !item.archivedAt || item.id === c?.id).map(item => `<button class="case-item ${c?.id === item.id ? 'active' : ''}" data-action="open" data-id="${item.id}" ${blocked('open') ? 'disabled' : ''}>${icon('chat')}<span><strong>${esc(item.title)}</strong><small>${esc(item.company)}${item.mode === 'demo' ? ' · 가상 기록' : ''}</small></span>${item.pendingAnalysis ? '<b aria-label="대화 정리 필요">…</b>' : item.unanswered ? `<b aria-label="남은 질문 ${item.unanswered}개">${item.unanswered}</b>` : '<span class="subtle" aria-label="답변과 실제 해결은 별도로 확인">—</span>'}</button>`).join('') : '<p class="sidebar-empty">문의를 추가하면<br>이곳에 기록이 쌓여요.</p>'}</nav>
-      <div class="sidebar-bottom">
-      <button class="connection" data-action="settings"><span class="connection-dot ${state.config.connection?.state === 'ready' ? 'connected' : ''}"></span><span>${connectionLabel()}<small>${state.config.configured ? '연결 상태 및 설정' : '문의 분석을 위해 연결해 주세요'}</small></span>${icon('settings')}</button>
-      <div class="local-note">문의 기록은 이 기기에 저장돼요</div></div>
     </aside>
     <main id="main" class="main">
       <header class="topbar"><div>내 문의 <span>/</span> <strong>${c ? '문의 기록' : state.cases.length ? '내 문의함' : '시작하기'}</strong></div><span class="topbar-note">문의 내용과 진행 상황을 한곳에</span><button class="avatar" data-action="settings" aria-label="AI 연결 설정">R</button></header>
