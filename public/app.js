@@ -698,5 +698,5 @@ init();
 
 function showAccount() {
   const { user, usage } = state.auth;
-  showModal('내 계정', `<p class="modal-intro"><strong>${esc(user.username)}</strong><br>문의 기록은 이 계정에서만 확인할 수 있어요.</p><p class="account-caption">오늘 AI 작업 ${usage.used} / ${usage.limit}회 · 매일 자정 초기화</p><p class="form-note">분석·초안·공식 안내 등 AI 작업을 시작할 때 집계해요. 취소하거나 실패한 요청도 포함됩니다.</p><div class="account-actions">${user.role === 'admin' ? button('invite', '참여자 초대 코드 만들기', 'secondary') + button('settings', 'AI 연결 설정', 'secondary') : ''}${button('logout', '로그아웃', 'secondary')}</div><div id="invite-result" class="invite-result"></div><div class="modal-actions">${button('close-modal','닫기','primary')}</div>`);
+  showModal('내 계정', `<p class="modal-intro"><strong>${esc(user.username)}</strong><br>문의 기록은 이 계정에서만 확인할 수 있어요.</p><p class="account-caption">오늘 AI 작업 ${usage.used}회</p><p class="form-note">분석·초안·공식 안내 등 AI 작업을 시작할 때 집계해요. 취소하거나 실패한 요청도 포함됩니다.</p><div class="account-actions">${user.role === 'admin' ? button('invite', '참여자 초대 코드 만들기', 'secondary') + button('settings', 'AI 연결 설정', 'secondary') : ''}${button('logout', '로그아웃', 'secondary')}</div><div id="invite-result" class="invite-result"></div><div class="modal-actions">${button('close-modal','닫기','primary')}</div>`);
 }

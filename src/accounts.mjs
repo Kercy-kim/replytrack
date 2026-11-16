@@ -31,10 +31,10 @@ export function readSession(req) {
   return value && /^[A-Za-z0-9_-]{43}$/.test(value) ? value : null;
 }
 
-// All identity, invite, session and quota state is in PostgreSQL, not a browser ID.
+// Identity, invite, session and usage state is in PostgreSQL, not a browser ID.
 export class Accounts {
-  constructor(pool, { participants = 10, dailyLimit = 30 } = {}) {
-    this.pool = pool; this.participants = participants; this.dailyLimit = dailyLimit;
+  constructor(pool, { participants = 10 } = {}) {
+    this.pool = pool; this.participants = participants;
   }
   async transaction(fn) {
     const client = await this.pool.connect();
@@ -128,15 +128,13 @@ export class Accounts {
   }
   async usage(user) {
     const { rows } = await this.pool.query("SELECT count FROM rt_usage WHERE user_id=$1 AND day=(now() AT TIME ZONE 'Asia/Seoul')::date", [user.id]);
-    return { used: rows[0]?.count || 0, limit: user.role === 'admin' ? 100 : this.dailyLimit };
+    return { used: rows[0]?.count || 0 };
   }
-  async reserve(user, operationId) {
+  async recordOperation(user, operationId) {
     await this.transaction(async client => {
       await client.query('SELECT id FROM rt_users WHERE id=$1 FOR UPDATE', [user.id]);
       const previous = await client.query('SELECT user_id FROM rt_reservations WHERE operation_id=$1', [operationId]);
       assert(!previous.rows.length, '이미 접수한 요청입니다.', 409);
-      const { rows } = await client.query("SELECT count FROM rt_usage WHERE user_id=$1 AND day=(now() AT TIME ZONE 'Asia/Seoul')::date", [user.id]);
-      assert((rows[0]?.count || 0) < (user.role === 'admin' ? 100 : this.dailyLimit), '오늘의 AI 작업 한도에 도달했어요. 저장된 기록은 계속 볼 수 있습니다.', 429);
       await client.query('INSERT INTO rt_reservations(operation_id,user_id) VALUES($1,$2)', [operationId, user.id]);
       await client.query("INSERT INTO rt_usage(user_id,day,count) VALUES($1,(now() AT TIME ZONE 'Asia/Seoul')::date,1) ON CONFLICT(user_id,day) DO UPDATE SET count=rt_usage.count+1", [user.id]);
       await client.query("DELETE FROM rt_reservations WHERE created_at<now()-interval '2 days'");

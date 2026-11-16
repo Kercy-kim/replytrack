@@ -8,11 +8,11 @@ import { OfficialContext } from '../src/official-context.mjs';
 import { newCase } from '../src/domain.mjs';
 
 test('web API isolates 10 users, all case writes and job polling; blocks CSRF and participant configuration', async () => {
-  const database=await testDatabase(); let active=0,peak=0,calls=0,pair=[];
+  const database=await testDatabase(); let active=0,peak=0,calls=0,pair=[],pairMode=true;
   const ai={configured:true,model:'test',structured:async()=>{
     calls++;active++;peak=Math.max(peak,active);
     // Hold pairs until both provider calls arrive, independent of DB latency.
-    await new Promise((resolve,reject)=>{
+    if(pairMode) await new Promise((resolve,reject)=>{
       const timer=setTimeout(()=>reject(Error('Concurrent job did not start')),10000);
       pair.push(()=>{clearTimeout(timer);resolve();});
       if(pair.length===2) { const ready=pair;pair=[];setTimeout(()=>ready.forEach(r=>r()),30); }
@@ -58,7 +58,7 @@ test('web API isolates 10 users, all case writes and job polling; blocks CSRF an
     await Promise.all([...app.operations.jobs.values()].map(j=>j.done));
     assert.equal(calls,10); assert.equal(peak,2);
     for(let i=0;i<10;i++) { const result=await request(`/api/operations/${jobs[i].body.id}`,'GET',null,users[i].cookie);assert.equal(result.body.state,'completed');assert.equal((await request('/api/auth/me','GET',null,users[i].cookie)).body.usage.used,1); }
-    // Unsupported official guidance is omitted without using a quota unit.
+    // Unsupported official guidance is omitted without inflating usage.
     assert.equal((await request(`/api/cases/${id}/official-context`,'POST',{},a.cookie)).body.state,'omitted');
     assert.equal((await request('/api/auth/me','GET',null,a.cookie)).body.usage.used,1);
     const guideRecords=await Promise.all(users.slice(7).map(u=>{
@@ -77,6 +77,14 @@ test('web API isolates 10 users, all case writes and job polling; blocks CSRF an
       }
     }
     guideReleases.forEach(r=>r());await Promise.all([...official.entries.values()].map(e=>e.done));
+    pairMode=false;
+    for(const [u,previous] of [[a,30],[admin,100]]) {
+      await database.pool.query("INSERT INTO rt_usage(user_id,day,count) VALUES($1,(now() AT TIME ZONE 'Asia/Seoul')::date,$2) ON CONFLICT(user_id,day) DO UPDATE SET count=$2",[u.body.user.id,previous]);
+      const beyond=await request('/api/operations','POST',{id:randomUUID(),kind:'preflight'},u.cookie);
+      assert.equal(beyond.status,202);await app.operations.jobs.get(beyond.body.id).done;
+      assert.equal((await request(`/api/operations/${beyond.body.id}`,'GET',null,u.cookie)).body.state,'completed');
+      assert.deepEqual((await request('/api/auth/me','GET',null,u.cookie)).body.usage,{used:previous+1});
+    }
     await request('/api/auth/logout','POST',{},a.cookie); assert.equal((await request('/api/cases','GET',null,a.cookie)).status,401);
     const again=await request('/api/auth/login','POST',{username:'webuser0',password:'Participant-test-1234'}); assert.equal((await request('/api/cases','GET',null,again.cookie)).body[0].id,id);
   } finally { guideReleases.forEach(r=>r());app.operations.close(); await new Promise(r=>app.server.close(r)); await database.close(); }
