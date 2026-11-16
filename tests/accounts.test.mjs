@@ -6,16 +6,16 @@ import { Accounts, digest, sessionCookie } from '../src/accounts.mjs';
 import { newCase } from '../src/domain.mjs';
 import { Operations } from '../src/operation.mjs';
 
-test('PostgreSQL accounts: single-use invites, 10 participants, password/session hashes, restart and logout', async () => {
+test('PostgreSQL accounts: open signup, atomic 10 participant cap, password/session hashes, restart and logout', async () => {
   const db = await testDatabase();
   try {
     const admin = await db.accounts.login({username:'replytrack',password:'Local-test-admin-12345'});
-    const codes = await Promise.all(Array.from({length:10}, () => db.accounts.invite(admin.user)));
-    await assert.rejects(db.accounts.invite(admin.user),{status:409});
-    const registered = await Promise.all(codes.map(({code},i) => db.accounts.register({username:`person${i}`,password:'Participant-test-1234',invite:code})));
+    const attempts = await Promise.allSettled(Array.from({length:12},(_,i) => db.accounts.register({username:`person${i}`,password:'Participant-test-1234',role:'admin'})));
+    const registered = attempts.filter(r=>r.status==='fulfilled').map(r=>r.value);
+    assert.equal(attempts.filter(r=>r.status==='rejected').length,2);
+    assert(attempts.filter(r=>r.status==='rejected').every(r=>r.reason.status===409));
     assert.equal(new Set(registered.map(r=>r.user.id)).size,10);
-    await assert.rejects(db.accounts.register({username:'reuse',password:'Participant-test-1234',invite:codes[0].code}),{status:400});
-    await assert.rejects(db.accounts.invite(registered[0].user),{status:403});
+    assert(registered.every(r=>r.user.role==='participant'));
     const stored = await db.pool.query('SELECT password_hash FROM rt_users');
     assert(stored.rows.every(r=>!r.password_hash.includes('test-1234')));
     assert.equal(new Set(stored.rows.map(r=>r.password_hash)).size,11);
@@ -31,11 +31,40 @@ test('PostgreSQL accounts: single-use invites, 10 participants, password/session
   } finally { await db.close(); }
 });
 
+test('open signup rejects invalid credentials and concurrent duplicate names without escalating roles', async () => {
+  const db=await testDatabase();
+  try {
+    for(const input of [{username:'replytrack',password:'Participant-test-1234'}, {username:'../bad',password:'Participant-test-1234'}, {username:'valid',password:'short'}]) await assert.rejects(db.accounts.register(input));
+    const attempts=await Promise.allSettled([' Same_Name ','same_name'].map(username=>db.accounts.register({username,password:'Participant-test-1234',role:'admin',id:'forged-owner'})));
+    assert.equal(attempts.filter(r=>r.status==='fulfilled').length,1);
+    assert.equal(attempts.find(r=>r.status==='rejected').reason.status,409);
+    const {user,token}=attempts.find(r=>r.status==='fulfilled').value;
+    assert.equal(user.username,'same_name'); assert.equal(user.role,'participant'); assert.notEqual(user.id,'forged-owner');
+    assert.equal((await db.accounts.authenticate(token)).id,user.id);
+    assert.equal((await db.accounts.login({username:'same_name',password:'Participant-test-1234'})).user.id,user.id);
+    assert.deepEqual(await db.accounts.usage(user),{used:0});
+    assert.equal(Number((await db.pool.query("SELECT count(*) AS n FROM rt_users WHERE role='admin'")).rows[0].n),1);
+  } finally { await db.close(); }
+});
+
+test('open signup keeps registration throttling and cannot alter an existing password', async () => {
+  const db=await testDatabase();
+  try {
+    await db.accounts.register({username:'existing',password:'Participant-test-1234'});
+    await assert.rejects(db.accounts.register({username:'existing',password:'Different-test-1234'}),{status:409});
+    await assert.rejects(db.accounts.login({username:'existing',password:'Different-test-1234'}),{status:401});
+    assert.equal((await db.accounts.login({username:'existing',password:'Participant-test-1234'})).user.username,'existing');
+    await db.pool.query("UPDATE rt_auth_limits SET count=30 WHERE bucket='registration'");
+    await assert.rejects(db.accounts.register({username:'too_fast',password:'Participant-test-1234'}),{status:429});
+    assert.equal(Number((await db.pool.query("SELECT count(*) AS n FROM rt_users WHERE username='too_fast'")).rows[0].n),0);
+  } finally { await db.close(); }
+});
+
 test('PostgreSQL ownership, atomic version updates and usage records remain isolated without daily caps', async () => {
   const db = await testDatabase();
   try {
     const admin = (await db.accounts.login({username:'replytrack',password:'Local-test-admin-12345'})).user;
-    const users = await Promise.all(['alpha','beta'].map(async username => db.accounts.register({username,password:'Participant-test-1234',invite:(await db.accounts.invite(admin)).code})));
+    const users = await Promise.all(['alpha','beta'].map(username => db.accounts.register({username,password:'Participant-test-1234'})));
     const [a,b] = users.map(u=>db.forUser(u.user.id));
     const c = await a.create(newCase({title:'비공개 환불 문의',company:'시험몰',messages:[{role:'customer',text:'환불은 언제인가요?'}]}));
     assert.equal((await a.list()).length,1); assert.equal((await b.list()).length,0);

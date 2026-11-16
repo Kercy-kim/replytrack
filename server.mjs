@@ -99,7 +99,6 @@ export function createApp({ store, ai, ocr, faq, official, database, hosting = h
         res.setHeader('Set-Cookie', sessionCookie('', !!hosting.publicOrigin, true));
         return json({ ok: true });
       }
-      if (database && method === 'POST' && path === '/api/admin/invites') { adminOnly(); return json(await database.accounts.invite(user), 201); }
       if (method === 'GET' && path === '/api/config') return json({ ...currentService.config(), managed: !!database && user?.role !== 'admin' });
       if (method === 'PUT' && path === '/api/config') {
         adminOnly(); const config = service.configure(body);

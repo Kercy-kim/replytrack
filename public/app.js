@@ -498,25 +498,11 @@ document.addEventListener('click', async event => {
   if (action === 'new') resumeOnboarding();
   if (action === 'settings') showSettings();
   if (action === 'account') { captureOnboarding(); state.auth = await api('/api/auth/me'); showAccount(); }
-  if (action === 'invite') {
-    target.disabled = true;
-    try {
-      const result = await api('/api/admin/invites', 'POST', {});
-      $('#invite-result').innerHTML = `<label class="field">한 사람에게 전달할 초대 코드<textarea readonly rows="2">${esc(result.code)}</textarea></label>${button('copy-invite','초대 코드 복사','secondary compact')}<p class="form-note">이 화면에서만 확인할 수 있어요. 14일 안에 한 번만 사용할 수 있습니다.</p>`;
-      $('#invite-result textarea').select();
-    } catch (e) { toast(e.message); }
-    finally { target.disabled = false; }
-  }
   if (action === 'logout') {
     if (!await guardEdits()) return;
     if (hasOnboardingInput(state.onboarding) && !confirm('작성 중인 입력은 저장되지 않았어요. 로그아웃할까요?')) return;
     try { await api('/api/auth/logout', 'POST', {}); state.onboarding = null; state.draftEdits = {}; location.replace('/login'); }
     catch (e) { toast(e.message); }
-  }
-  if (action === 'copy-invite') {
-    const area = $('#invite-result textarea');
-    try { await navigator.clipboard.writeText(area.value); toast('초대 코드를 복사했어요.'); }
-    catch { area.select(); toast('선택한 초대 코드를 직접 복사해 주세요.'); }
   }
   if (action === 'close-modal') { captureOnboarding(); if (guardResolve) resolveGuard(false); else if (settingsReturn) { settingsReturn = false; resumeOnboarding(); } else $('#modal').close(); }
   if (action === 'dismiss-error') { state.error = ''; render(); }
@@ -698,5 +684,5 @@ init();
 
 function showAccount() {
   const { user, usage } = state.auth;
-  showModal('내 계정', `<p class="modal-intro"><strong>${esc(user.username)}</strong><br>문의 기록은 이 계정에서만 확인할 수 있어요.</p><p class="account-caption">오늘 AI 작업 ${usage.used}회</p><p class="form-note">분석·초안·공식 안내 등 AI 작업을 시작할 때 집계해요. 취소하거나 실패한 요청도 포함됩니다.</p><div class="account-actions">${user.role === 'admin' ? button('invite', '참여자 초대 코드 만들기', 'secondary') + button('settings', 'AI 연결 설정', 'secondary') : ''}${button('logout', '로그아웃', 'secondary')}</div><div id="invite-result" class="invite-result"></div><div class="modal-actions">${button('close-modal','닫기','primary')}</div>`);
+  showModal('내 계정', `<p class="modal-intro"><strong>${esc(user.username)}</strong><br>문의 기록은 이 계정에서만 확인할 수 있어요.</p><p class="account-caption">오늘 AI 작업 ${usage.used}회</p><p class="form-note">분석·초안·공식 안내 등 AI 작업을 시작할 때 집계해요. 취소하거나 실패한 요청도 포함됩니다.</p><div class="account-actions">${user.role === 'admin' ? button('settings', 'AI 연결 설정', 'secondary') : ''}${button('logout', '로그아웃', 'secondary')}</div><div class="modal-actions">${button('close-modal','닫기','primary')}</div>`);
 }
