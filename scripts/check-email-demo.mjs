@@ -15,9 +15,11 @@ const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
 const errors = []; page.on('pageerror', e => errors.push(e.message));
 const idle = () => page.waitForFunction(() => !document.querySelector('.busy-bar'));
 try {
-  await page.goto(`http://127.0.0.1:${app.server.address().port}`);
-  await page.locator('.sidebar-extras > summary').click();
-  await page.locator('[data-action=email-demo]').click(); await idle();
+  const base = `http://127.0.0.1:${app.server.address().port}`;
+  const seeded = await page.request.post(base + '/api/demo', { data: { scenario: 'email' } });
+  assert(seeded.ok());
+  await page.goto(`${base}/?case=${(await seeded.json()).id}`); await idle();
+  await page.locator('.demo-focus').waitFor();
   const started = performance.now();
   for (let step = 0; step < 4; step++) {
     assert.match(await page.locator('.demo-focus-disclosure').innerText(), /준비된 결과 · AI API 호출 없음/);

@@ -29,15 +29,22 @@ try {
   }
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({ path: `${dir}/home-mobile.png`, fullPage: true });
-  const extras = page.locator('.sidebar-extras');
-  assert.equal(await extras.evaluate(el => el.open), false);
-  await extras.locator('summary').focus(); await page.keyboard.press('Enter');
-  assert(await page.locator('[data-action=email-demo]').isVisible());
+  assert.equal(await page.locator('[data-action=demo], [data-action=email-demo], .sidebar-extras').count(), 0);
+  assert.doesNotMatch(await page.locator('body').innerText(), /예제|체험|시연/);
   assert.equal(await page.locator('[data-action=guide]').count(), 0);
-  assert(await page.locator('a[href="/presentation"]').isVisible());
-  await page.locator('.sidebar [data-action=demo]').click(); await idle();
-  assert(await extras.evaluate(el => el.open), 'Menu state survives rerender');
-  await extras.locator('summary').click();
+  assert.equal(await page.locator('a[href="/presentation"]').count(), 0);
+  await page.locator('.welcome-actions [data-action=new]').click();
+  await page.locator('#modal[open]').waitFor();
+  await page.locator('#modal [data-action=close-modal]').last().click();
+  assert.equal(app.store.list().length, 0, 'Opening registration must not create a prepared record');
+  await page.setViewportSize({width:1280,height:800});
+  await page.screenshot({path:`${dir}/home-desktop.png`,fullPage:true});
+  const base = `http://127.0.0.1:${app.server.address().port}`;
+  const seeded = await page.request.post(base + '/api/demo', {data:{scenario:'refund'}});
+  assert(seeded.ok());
+  await page.goto(`${base}/?case=${(await seeded.json()).id}`); await idle();
+  await page.locator('.case-heading').waitFor();
+  assert.match(await page.locator('.demo-banner').innerText(), /가상 기록.*실제 AI 분석 결과가 아니에요/s);
   assert.equal(await page.locator('.heading-actions [data-action=delete]').count(), 0);
   assert.equal(await page.locator('.action-suggestions').evaluate(el => el.open), false);
   await page.locator('.action-suggestions > summary').click();
@@ -102,6 +109,6 @@ try {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.screenshot({ path: `${dir}/input-desktop.png`, fullPage: true });
   assert.equal(calls, 0); assert.deepEqual(errors, []);
-  await writeFile(`${dir}/result.json`, JSON.stringify({ passed: true, widths, errors, paidApiCalls: calls, checks: ['compact navigation', 'keyboard disclosure', 'preserved disclosure state', 'readable questions and source', 'mobile view semantics', 'follow-up edits preserved; handoff generation removed', 'delete cancel', 'answered follow-up hidden', 'email input retained'] }, null, 2));
-  console.log('UI refinement passed: 5 viewport widths, keyboard menus, preserved edits, optional tools, deletion cancel and answered-case actions.');
+  await writeFile(`${dir}/result.json`, JSON.stringify({ passed: true, widths, errors, paidApiCalls: calls, checks: ['service-first navigation without demo or presentation entry', 'registration opens without creating a prepared record', 'legacy synthetic records clearly disclosed', 'preserved disclosure state', 'readable questions and source', 'mobile view semantics', 'follow-up edits preserved; handoff generation removed', 'delete cancel', 'answered follow-up hidden', 'email input retained'] }, null, 2));
+  console.log('UI refinement passed: 5 viewport widths, service-first registration, legacy record disclosure, preserved edits and deletion cancel.');
 } finally { await browser.close(); await new Promise(r => app.server.close(r)); app.store.close(); }
