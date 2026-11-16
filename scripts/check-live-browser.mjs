@@ -26,7 +26,7 @@ class MeasuredOpenAI extends OpenAIClient {
     const started = Date.now();
     try {
       const result = await super.structured(args);
-      report.calls.push({ name: args.name, reasoningEffort: args.reasoningEffort || 'low', model: result.model, elapsedMs: Date.now() - started, tokens: result.usage?.total_tokens || 0, usage: result.usage, transport: result.transport });
+      report.calls.push({ name: args.name, reasoningEffort: args.reasoningEffort || 'low', model: result.model, elapsedMs: Date.now() - started, tokens: result.usage?.total_tokens || 0, usage: result.usage, transport: result.transport, request: args.data, data: result.data });
       console.log(`${args.name}: ${Date.now() - started} ms`);
       await save(); return result;
     } catch (error) {

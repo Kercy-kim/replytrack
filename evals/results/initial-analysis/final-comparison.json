@@ -1,0 +1,135 @@
+{
+  "at": "2026-11-16T09:10:19.319Z",
+  "source": "paired-final.json",
+  "scope": "All 3 repeats for all 3 retained optimization families. Conditional email optimization was reverted after failures and is excluded from performance claims, not counted as passing. Only the conditional-email eligibility guard differs from paired-final code; hashed removal check passed. All original raw failures remain preserved.",
+  "included": [
+    "WEB-REFUND",
+    "WEB-EMAIL",
+    "T04"
+  ],
+  "excluded": {
+    "id": "EMAIL-REVIEW",
+    "reason": "Original main prompt, schema and reasoning retained in final code. Final actual API/web rechecked separately."
+  },
+  "sourceAudit": {
+    "onlyConditionalEmailGuardAdded": true,
+    "hashes": {
+      "src/service.mjs": "41649b593765b3bd2c35d35fcea605d77151e44a42eb1f6ce3ba2a1013201f6a",
+      "src/schema.mjs": "30ec698321be5cc4c5f569a929f9bc2d620438717744d65f74696f2ee6fe94e8",
+      "src/prompts.mjs": "aeea41418566ba3fbdc29ec34e50bf02b9a90c6e16413dd82dbcfa38e8ac73ac",
+      "src/analysis-focus.mjs": "5132d638b6810a518a6e3cd663ddfdcacae88e5b1c18f9af630bfeb672f9ed1b",
+      "src/email-reply.mjs": "88bbd8a3a3ad5491dada07e097360a475b52f473306f24225ad21c751a46b52f",
+      "src/openai.mjs": "e33740fd56e8e9963e7206b474669422845fc93ce03a2ae7af90f537cf33d6d6"
+    }
+  },
+  "totals": {
+    "before": {
+      "n": 9,
+      "passed": 8,
+      "meanMs": 19247.444444444445,
+      "medianMs": 14949,
+      "maxMs": 33140,
+      "calls": 12,
+      "inputTokens": 54772,
+      "outputTokens": 16607,
+      "unobservedRequests": 0
+    },
+    "after": {
+      "n": 9,
+      "passed": 9,
+      "meanMs": 16211.111111111111,
+      "medianMs": 16414,
+      "maxMs": 19609,
+      "calls": 9,
+      "inputTokens": 43071,
+      "outputTokens": 16268,
+      "unobservedRequests": 0
+    }
+  },
+  "cases": {
+    "WEB-REFUND": {
+      "before": {
+        "n": 3,
+        "passed": 3,
+        "meanMs": 11431,
+        "medianMs": 11589,
+        "maxMs": 11954,
+        "calls": 3,
+        "inputTokens": 14445,
+        "outputTokens": 2966,
+        "unobservedRequests": 0
+      },
+      "after": {
+        "n": 3,
+        "passed": 3,
+        "meanMs": 17738.333333333332,
+        "medianMs": 17814,
+        "maxMs": 18987,
+        "calls": 3,
+        "inputTokens": 13662,
+        "outputTokens": 6809,
+        "unobservedRequests": 0
+      }
+    },
+    "WEB-EMAIL": {
+      "before": {
+        "n": 3,
+        "passed": 3,
+        "meanMs": 16342.333333333334,
+        "medianMs": 14949,
+        "maxMs": 20321,
+        "calls": 3,
+        "inputTokens": 15816,
+        "outputTokens": 5134,
+        "unobservedRequests": 0
+      },
+      "after": {
+        "n": 3,
+        "passed": 3,
+        "meanMs": 15746.666666666666,
+        "medianMs": 16349,
+        "maxMs": 19609,
+        "calls": 3,
+        "inputTokens": 15741,
+        "outputTokens": 5005,
+        "unobservedRequests": 0
+      }
+    },
+    "T04": {
+      "before": {
+        "n": 3,
+        "passed": 2,
+        "meanMs": 29969,
+        "medianMs": 30544,
+        "maxMs": 33140,
+        "calls": 6,
+        "inputTokens": 24511,
+        "outputTokens": 8507,
+        "unobservedRequests": 0
+      },
+      "after": {
+        "n": 3,
+        "passed": 3,
+        "meanMs": 15148.333333333334,
+        "medianMs": 14466,
+        "maxMs": 16868,
+        "calls": 3,
+        "inputTokens": 13668,
+        "outputTokens": 4454,
+        "unobservedRequests": 0
+      }
+    }
+  },
+  "bothPassedPairs": {
+    "before": {
+      "n": 8,
+      "meanMs": 17510.875,
+      "maxMs": 30544
+    },
+    "after": {
+      "n": 8,
+      "meanMs": 16473.625,
+      "maxMs": 19609
+    }
+  }
+}

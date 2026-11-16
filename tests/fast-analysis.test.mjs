@@ -8,6 +8,7 @@ import { FOCUSED_ANALYSIS_PROMPT } from '../src/analysis-focus.mjs';
 test('fast initial routing excludes email, corrections, conditional and long histories', () => {
   const base = { messages: timingCases[0].messages, questions: [], analysis: null };
   assert.equal(fastInitialAnalysis(base), true);
+  assert.equal(fastInitialAnalysis({ ...base, messages: timingCases[3].messages }), false);
   assert.equal(fastInitialAnalysis({ ...base, messages: [...base.messages, { role: 'agent', text: 'The delivery date has changed. We will inform you tomorrow.' }] }), false);
   for (const extra of [{ channel: 'email' }, { analysis: {} }, { questions: [{}] }, { messages: [...base.messages, ...base.messages, ...base.messages] }, { messages: [...base.messages, { role: 'agent', text: '정정합니다.' }] }, { messages: [...base.messages, { role: 'agent', text: '승인되면 가능합니다.' }] }, { messages: [...base.messages, { role: 'agent', text: '긴 설명'.repeat(700) }] }]) assert.equal(fastInitialAnalysis({ ...base, ...extra }), false);
 });

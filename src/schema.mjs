@@ -28,7 +28,7 @@ export function analysisSchemaFor(messages, channel) {
   const reference = role => object({ messageId: { type: 'string', ...(ids(role).length ? { enum: ids(role) } : {}) }, quote: text });
   const question = schema.properties.questions.items.properties;
   // Follow-up drafts are generated and reviewed separately from selected questions.
-  // Keep initial email output identical to the baseline; compact replies remove it.
+  // Email plans can also omit it when a separate draft flow is available.
   if (channel !== 'email') {
     delete question.followUp;
     schema.properties.questions.items.required = schema.properties.questions.items.required.filter(k => k !== 'followUp');

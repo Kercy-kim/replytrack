@@ -1,0 +1,1756 @@
+{
+  "at": "2026-11-16T09:02:39.516Z",
+  "analysisEffort": "product",
+  "coreOnly": true,
+  "passed": true,
+  "cases": [
+    {
+      "name": "refund",
+      "steps": [
+        {
+          "label": "register-and-analyze",
+          "elapsedMs": 23382
+        },
+        {
+          "label": "append-and-compare",
+          "elapsedMs": 8829
+        },
+        {
+          "label": "followup-edit-save-copy-reload",
+          "elapsedMs": 11895
+        }
+      ],
+      "passed": true,
+      "initialExtractedRoles": [
+        "customer",
+        "agent"
+      ],
+      "initial": {
+        "id": "b0926940-cd8e-4d09-ba0e-b83b9501c8ed",
+        "title": "가상 환불 문의 — 실제 API 웹 검증",
+        "company": "가상 테스트 상점",
+        "mode": "live",
+        "createdAt": "2026-11-16T09:02:46.487Z",
+        "updatedAt": "2026-11-16T09:03:03.079Z",
+        "messages": [
+          {
+            "id": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+            "role": "customer",
+            "text": "반품한 이어폰의 환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+            "role": "agent",
+            "text": "환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "94e0acf6-a810-424e-b419-ea56f530131b",
+            "title": "반품한 이어폰의 환불 금액",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "반품한 이어폰의 환불 금액은 얼마인가요?"
+            },
+            "status": "answered",
+            "reason": "환불 금액은 79,000원이라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 금액은 79,000원입니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "환불 금액은 79,000원이라고 안내받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "1865e44b-d6d7-4b68-9e47-b3ca2c9b39e2",
+            "title": "환불 결제수단",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "어떤 결제수단으로 환불되나요?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "evidence": [],
+            "followUp": "",
+            "aiStatus": "unanswered",
+            "aiReason": "이 질문에 대한 관련 안내가 아직 없어 답을 확인할 수 없습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "6d1a1489-0823-464c-90e4-d6d159ad2211",
+            "title": "환불 예정일",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "환불 예정일은 언제인가요?"
+            },
+            "status": "waiting",
+            "reason": "환불 예정일을 확인해 11월 18일까지 안내하겠다는 약속을 받았습니다.",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "waiting",
+            "aiReason": "환불 예정일을 확인해 11월 18일까지 안내하겠다는 약속을 받았습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "fbd69c3f-45bf-4f28-b5ec-fb630a929ccb",
+            "title": "환불 예정일 안내",
+            "questionIds": [
+              "6d1a1489-0823-464c-90e4-d6d159ad2211"
+            ],
+            "evidence": {
+              "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+              "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+            },
+            "dueText": "11월 18일까지",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "5b430f2b-bbe6-414d-8556-a03bf30c28d1",
+            "at": "2026-11-16T09:03:03.079Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-16T09:03:03.078Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "c0cb8611-fa79-4952-9957-9b00236cd3cf",
+            "at": "2026-11-16T09:02:46.487Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "환불 금액은 79,000원이라고 안내받았고, 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠다는 약속을 받았습니다. 환불 결제수단에 대한 안내는 없었습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 2,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 4560,
+            "output_tokens": 2136,
+            "total_tokens": 6696,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 1728
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-16T09:03:03.078Z",
+          "comparison": {
+            "at": "2026-11-16T09:03:03.078Z",
+            "kind": "initial",
+            "fromMessageCount": 0,
+            "toMessageCount": 2,
+            "messageIds": [],
+            "questions": [],
+            "promises": []
+          }
+        },
+        "version": 2
+      },
+      "overviews": [
+        {
+          "stage": "initial",
+          "expected": {
+            "followups": 1,
+            "waitingAnswers": 1,
+            "waitingPromises": 1,
+            "confirmations": 0,
+            "requests": null
+          },
+          "cards": [
+            "1개 · 답변이 부족하거나 확인이 필요해요",
+            "답변 대기 질문 1개 · 처리 약속 1개",
+            "업체 요청은 별도로 확인할 수 있어요"
+          ]
+        },
+        {
+          "stage": "updated",
+          "expected": {
+            "followups": 0,
+            "waitingAnswers": 1,
+            "waitingPromises": 1,
+            "confirmations": 0,
+            "requests": null
+          },
+          "cards": [
+            "추가로 확인할 질문 없음",
+            "답변 대기 질문 1개 · 처리 약속 1개",
+            "업체 요청은 별도로 확인할 수 있어요"
+          ]
+        }
+      ],
+      "updated": {
+        "id": "b0926940-cd8e-4d09-ba0e-b83b9501c8ed",
+        "title": "가상 환불 문의 — 실제 API 웹 검증",
+        "company": "가상 테스트 상점",
+        "mode": "live",
+        "createdAt": "2026-11-16T09:02:46.487Z",
+        "updatedAt": "2026-11-16T09:03:11.794Z",
+        "messages": [
+          {
+            "id": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+            "role": "customer",
+            "text": "반품한 이어폰의 환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+            "role": "agent",
+            "text": "환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          },
+          {
+            "id": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+            "role": "agent",
+            "text": "환불은 원래 결제하신 카드로 진행됩니다. 환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "94e0acf6-a810-424e-b419-ea56f530131b",
+            "title": "반품한 이어폰의 환불 금액",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "반품한 이어폰의 환불 금액은 얼마인가요?"
+            },
+            "status": "answered",
+            "reason": "업체가 \"환불 금액은 79,000원입니다.\"라고 안내했습니다.",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 금액은 79,000원입니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "업체가 \"환불 금액은 79,000원입니다.\"라고 안내했습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "1865e44b-d6d7-4b68-9e47-b3ca2c9b39e2",
+            "title": "환불 결제수단",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "어떤 결제수단으로 환불되나요?"
+            },
+            "status": "answered",
+            "reason": "업체가 \"환불은 원래 결제하신 카드로 진행됩니다.\"라고 안내했습니다.",
+            "evidence": [
+              {
+                "messageId": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+                "quote": "환불은 원래 결제하신 카드로 진행됩니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "업체가 \"환불은 원래 결제하신 카드로 진행됩니다.\"라고 안내했습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "6d1a1489-0823-464c-90e4-d6d159ad2211",
+            "title": "환불 예정일",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "환불 예정일은 언제인가요?"
+            },
+            "status": "waiting",
+            "reason": "업체가 환불 예정일을 담당 부서 확인 후 11월 18일까지 안내하겠다고 약속했으므로 안내를 기다리고 있습니다.",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+              },
+              {
+                "messageId": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+                "quote": "환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "waiting",
+            "aiReason": "업체가 환불 예정일을 담당 부서 확인 후 11월 18일까지 안내하겠다고 약속했으므로 안내를 기다리고 있습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "fbd69c3f-45bf-4f28-b5ec-fb630a929ccb",
+            "title": "환불 예정일 안내",
+            "questionIds": [
+              "6d1a1489-0823-464c-90e4-d6d159ad2211"
+            ],
+            "evidence": {
+              "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+              "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+            },
+            "dueText": "11월 18일까지",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "06499a38-c679-4112-bc80-113fc61816df",
+            "at": "2026-11-16T09:03:11.794Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "환불 결제수단: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-16T09:03:11.794Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "f3f90e0c-6742-4c55-9aeb-70bf66a92057"
+              ],
+              "questions": [
+                {
+                  "id": "1865e44b-d6d7-4b68-9e47-b3ca2c9b39e2",
+                  "title": "환불 결제수단",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "f3f90e0c-6742-4c55-9aeb-70bf66a92057"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "e8fdbb4d-dd2a-4c6a-b4fd-ce43cc4049a5",
+            "at": "2026-11-16T09:03:03.427Z",
+            "type": "message",
+            "label": "고객센터의 새 답변을 저장했어요",
+            "details": "분석 전에도 원문은 보존됩니다."
+          },
+          {
+            "id": "5b430f2b-bbe6-414d-8556-a03bf30c28d1",
+            "at": "2026-11-16T09:03:03.079Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-16T09:03:03.078Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "c0cb8611-fa79-4952-9957-9b00236cd3cf",
+            "at": "2026-11-16T09:02:46.487Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객은 반품한 이어폰의 환불 금액·환불 결제수단·환불 예정일을 문의했고, 상담원은 환불 금액을 79,000원으로 안내하고 환불은 원래 결제하신 카드로 진행된다고 안내했으며, 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠다고 약속했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {},
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3522,
+            "output_tokens": 943,
+            "total_tokens": 4465,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 384
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-16T09:03:11.794Z",
+          "comparison": {
+            "at": "2026-11-16T09:03:11.794Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "f3f90e0c-6742-4c55-9aeb-70bf66a92057"
+            ],
+            "questions": [
+              {
+                "id": "1865e44b-d6d7-4b68-9e47-b3ca2c9b39e2",
+                "title": "환불 결제수단",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "f3f90e0c-6742-4c55-9aeb-70bf66a92057"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "version": 4
+      },
+      "generated": {
+        "id": "b0926940-cd8e-4d09-ba0e-b83b9501c8ed",
+        "title": "가상 환불 문의 — 실제 API 웹 검증",
+        "company": "가상 테스트 상점",
+        "mode": "live",
+        "createdAt": "2026-11-16T09:02:46.487Z",
+        "updatedAt": "2026-11-16T09:03:23.762Z",
+        "messages": [
+          {
+            "id": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+            "role": "customer",
+            "text": "반품한 이어폰의 환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+            "role": "agent",
+            "text": "환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          },
+          {
+            "id": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+            "role": "agent",
+            "text": "환불은 원래 결제하신 카드로 진행됩니다. 환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "94e0acf6-a810-424e-b419-ea56f530131b",
+            "title": "반품한 이어폰의 환불 금액",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "반품한 이어폰의 환불 금액은 얼마인가요?"
+            },
+            "status": "answered",
+            "reason": "업체가 \"환불 금액은 79,000원입니다.\"라고 안내했습니다.",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 금액은 79,000원입니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "업체가 \"환불 금액은 79,000원입니다.\"라고 안내했습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "1865e44b-d6d7-4b68-9e47-b3ca2c9b39e2",
+            "title": "환불 결제수단",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "어떤 결제수단으로 환불되나요?"
+            },
+            "status": "answered",
+            "reason": "업체가 \"환불은 원래 결제하신 카드로 진행됩니다.\"라고 안내했습니다.",
+            "evidence": [
+              {
+                "messageId": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+                "quote": "환불은 원래 결제하신 카드로 진행됩니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "업체가 \"환불은 원래 결제하신 카드로 진행됩니다.\"라고 안내했습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "6d1a1489-0823-464c-90e4-d6d159ad2211",
+            "title": "환불 예정일",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "환불 예정일은 언제인가요?"
+            },
+            "status": "waiting",
+            "reason": "업체가 환불 예정일을 담당 부서 확인 후 11월 18일까지 안내하겠다고 약속했으므로 안내를 기다리고 있습니다.",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+              },
+              {
+                "messageId": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+                "quote": "환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "waiting",
+            "aiReason": "업체가 환불 예정일을 담당 부서 확인 후 11월 18일까지 안내하겠다고 약속했으므로 안내를 기다리고 있습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "fbd69c3f-45bf-4f28-b5ec-fb630a929ccb",
+            "title": "환불 예정일 안내",
+            "questionIds": [
+              "6d1a1489-0823-464c-90e4-d6d159ad2211"
+            ],
+            "evidence": {
+              "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+              "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+            },
+            "dueText": "11월 18일까지",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "c25a15c0-f910-4d5b-aa10-e6e096339feb",
+            "at": "2026-11-16T09:03:23.762Z",
+            "type": "draft",
+            "label": "남은 질문으로 재문의 초안을 만들었어요",
+            "details": ""
+          },
+          {
+            "id": "06499a38-c679-4112-bc80-113fc61816df",
+            "at": "2026-11-16T09:03:11.794Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "환불 결제수단: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-16T09:03:11.794Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "f3f90e0c-6742-4c55-9aeb-70bf66a92057"
+              ],
+              "questions": [
+                {
+                  "id": "1865e44b-d6d7-4b68-9e47-b3ca2c9b39e2",
+                  "title": "환불 결제수단",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "f3f90e0c-6742-4c55-9aeb-70bf66a92057"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "e8fdbb4d-dd2a-4c6a-b4fd-ce43cc4049a5",
+            "at": "2026-11-16T09:03:03.427Z",
+            "type": "message",
+            "label": "고객센터의 새 답변을 저장했어요",
+            "details": "분석 전에도 원문은 보존됩니다."
+          },
+          {
+            "id": "5b430f2b-bbe6-414d-8556-a03bf30c28d1",
+            "at": "2026-11-16T09:03:03.079Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-16T09:03:03.078Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "c0cb8611-fa79-4952-9957-9b00236cd3cf",
+            "at": "2026-11-16T09:02:46.487Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객은 반품한 이어폰의 환불 금액·환불 결제수단·환불 예정일을 문의했고, 상담원은 환불 금액을 79,000원으로 안내하고 환불은 원래 결제하신 카드로 진행된다고 안내했으며, 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠다고 약속했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {
+          "followup": {
+            "body": "환불 예정일을 알려주시겠습니까?",
+            "sourceMessageIds": [
+              "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+              "f3f90e0c-6742-4c55-9aeb-70bf66a92057"
+            ],
+            "questionIds": [
+              "6d1a1489-0823-464c-90e4-d6d159ad2211"
+            ],
+            "language": "ko",
+            "at": "2026-11-16T09:03:23.762Z",
+            "model": "gpt-5-mini-2025-08-07",
+            "review": {
+              "model": "gpt-5-mini-2025-08-07",
+              "attempts": 1
+            }
+          }
+        },
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3522,
+            "output_tokens": 943,
+            "total_tokens": 4465,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 384
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-16T09:03:11.794Z",
+          "comparison": {
+            "at": "2026-11-16T09:03:11.794Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "f3f90e0c-6742-4c55-9aeb-70bf66a92057"
+            ],
+            "questions": [
+              {
+                "id": "1865e44b-d6d7-4b68-9e47-b3ca2c9b39e2",
+                "title": "환불 결제수단",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "f3f90e0c-6742-4c55-9aeb-70bf66a92057"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "version": 5
+      },
+      "final": {
+        "id": "b0926940-cd8e-4d09-ba0e-b83b9501c8ed",
+        "title": "가상 환불 문의 — 실제 API 웹 검증",
+        "company": "가상 테스트 상점",
+        "mode": "live",
+        "createdAt": "2026-11-16T09:02:46.487Z",
+        "updatedAt": "2026-11-16T09:03:23.860Z",
+        "messages": [
+          {
+            "id": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+            "role": "customer",
+            "text": "반품한 이어폰의 환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+            "role": "agent",
+            "text": "환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          },
+          {
+            "id": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+            "role": "agent",
+            "text": "환불은 원래 결제하신 카드로 진행됩니다. 환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          }
+        ],
+        "questions": [
+          {
+            "id": "94e0acf6-a810-424e-b419-ea56f530131b",
+            "title": "반품한 이어폰의 환불 금액",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "반품한 이어폰의 환불 금액은 얼마인가요?"
+            },
+            "status": "answered",
+            "reason": "업체가 \"환불 금액은 79,000원입니다.\"라고 안내했습니다.",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 금액은 79,000원입니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "업체가 \"환불 금액은 79,000원입니다.\"라고 안내했습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "1865e44b-d6d7-4b68-9e47-b3ca2c9b39e2",
+            "title": "환불 결제수단",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "어떤 결제수단으로 환불되나요?"
+            },
+            "status": "answered",
+            "reason": "업체가 \"환불은 원래 결제하신 카드로 진행됩니다.\"라고 안내했습니다.",
+            "evidence": [
+              {
+                "messageId": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+                "quote": "환불은 원래 결제하신 카드로 진행됩니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "answered",
+            "aiReason": "업체가 \"환불은 원래 결제하신 카드로 진행됩니다.\"라고 안내했습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          },
+          {
+            "id": "6d1a1489-0823-464c-90e4-d6d159ad2211",
+            "title": "환불 예정일",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "환불 예정일은 언제인가요?"
+            },
+            "status": "waiting",
+            "reason": "업체가 환불 예정일을 담당 부서 확인 후 11월 18일까지 안내하겠다고 약속했으므로 안내를 기다리고 있습니다.",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+              },
+              {
+                "messageId": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+                "quote": "환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다."
+              }
+            ],
+            "followUp": "",
+            "aiStatus": "waiting",
+            "aiReason": "업체가 환불 예정일을 담당 부서 확인 후 11월 18일까지 안내하겠다고 약속했으므로 안내를 기다리고 있습니다.",
+            "manualStatus": null,
+            "manualTitle": null
+          }
+        ],
+        "promises": [
+          {
+            "id": "fbd69c3f-45bf-4f28-b5ec-fb630a929ccb",
+            "title": "환불 예정일 안내",
+            "questionIds": [
+              "6d1a1489-0823-464c-90e4-d6d159ad2211"
+            ],
+            "evidence": {
+              "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+              "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+            },
+            "dueText": "11월 18일까지",
+            "dueAt": null,
+            "state": "promised",
+            "confirmedAt": null
+          }
+        ],
+        "history": [
+          {
+            "id": "84e77d48-4714-4902-b34a-f58d4fa9b657",
+            "at": "2026-11-16T09:03:23.860Z",
+            "type": "draft",
+            "label": "편집한 재문의 초안을 저장했어요",
+            "details": ""
+          },
+          {
+            "id": "c25a15c0-f910-4d5b-aa10-e6e096339feb",
+            "at": "2026-11-16T09:03:23.762Z",
+            "type": "draft",
+            "label": "남은 질문으로 재문의 초안을 만들었어요",
+            "details": ""
+          },
+          {
+            "id": "06499a38-c679-4112-bc80-113fc61816df",
+            "at": "2026-11-16T09:03:11.794Z",
+            "type": "analysis",
+            "label": "새 답변을 확인표에 반영했어요",
+            "details": "환불 결제수단: 미답변 → 답변 받음",
+            "comparison": {
+              "at": "2026-11-16T09:03:11.794Z",
+              "kind": "reply",
+              "fromMessageCount": 2,
+              "toMessageCount": 3,
+              "messageIds": [
+                "f3f90e0c-6742-4c55-9aeb-70bf66a92057"
+              ],
+              "questions": [
+                {
+                  "id": "1865e44b-d6d7-4b68-9e47-b3ca2c9b39e2",
+                  "title": "환불 결제수단",
+                  "before": {
+                    "status": "unanswered",
+                    "aiStatus": "unanswered",
+                    "manualStatus": null
+                  },
+                  "after": {
+                    "status": "answered",
+                    "aiStatus": "answered",
+                    "manualStatus": null
+                  },
+                  "evidenceMessageIds": [
+                    "f3f90e0c-6742-4c55-9aeb-70bf66a92057"
+                  ]
+                }
+              ],
+              "promises": []
+            }
+          },
+          {
+            "id": "e8fdbb4d-dd2a-4c6a-b4fd-ce43cc4049a5",
+            "at": "2026-11-16T09:03:03.427Z",
+            "type": "message",
+            "label": "고객센터의 새 답변을 저장했어요",
+            "details": "분석 전에도 원문은 보존됩니다."
+          },
+          {
+            "id": "5b430f2b-bbe6-414d-8556-a03bf30c28d1",
+            "at": "2026-11-16T09:03:03.079Z",
+            "type": "analysis",
+            "label": "질문별 확인표가 준비됐어요",
+            "details": "3개 질문 · 1개 처리 약속",
+            "comparison": {
+              "at": "2026-11-16T09:03:03.078Z",
+              "kind": "initial",
+              "fromMessageCount": 0,
+              "toMessageCount": 2,
+              "messageIds": [],
+              "questions": [],
+              "promises": []
+            }
+          },
+          {
+            "id": "c0cb8611-fa79-4952-9957-9b00236cd3cf",
+            "at": "2026-11-16T09:02:46.487Z",
+            "type": "created",
+            "label": "상담 기록을 만들었어요",
+            "details": "2개 메시지 등록"
+          }
+        ],
+        "summary": "고객은 반품한 이어폰의 환불 금액·환불 결제수단·환불 예정일을 문의했고, 상담원은 환불 금액을 79,000원으로 안내하고 환불은 원래 결제하신 카드로 진행된다고 안내했으며, 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠다고 약속했습니다.",
+        "warnings": [],
+        "analyzedMessageCount": 3,
+        "drafts": {
+          "followup": {
+            "body": "환불 예정일을 알려주시겠습니까?",
+            "sourceMessageIds": [
+              "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+              "f3f90e0c-6742-4c55-9aeb-70bf66a92057"
+            ],
+            "questionIds": [
+              "6d1a1489-0823-464c-90e4-d6d159ad2211"
+            ],
+            "language": "ko",
+            "at": "2026-11-16T09:03:23.762Z",
+            "model": "gpt-5-mini-2025-08-07",
+            "review": {
+              "model": "gpt-5-mini-2025-08-07",
+              "attempts": 1
+            },
+            "editedBody": "환불 예정일을 알려주시겠습니까?\n확인 부탁드립니다.",
+            "editedAt": "2026-11-16T09:03:23.860Z"
+          }
+        },
+        "analysis": {
+          "model": "gpt-5-mini-2025-08-07",
+          "usage": {
+            "input_tokens": 3522,
+            "output_tokens": 943,
+            "total_tokens": 4465,
+            "unobserved_requests": 0,
+            "input_tokens_details": {
+              "cached_tokens": 2816
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 384
+            }
+          },
+          "attempts": 1,
+          "at": "2026-11-16T09:03:11.794Z",
+          "comparison": {
+            "at": "2026-11-16T09:03:11.794Z",
+            "kind": "reply",
+            "fromMessageCount": 2,
+            "toMessageCount": 3,
+            "messageIds": [
+              "f3f90e0c-6742-4c55-9aeb-70bf66a92057"
+            ],
+            "questions": [
+              {
+                "id": "1865e44b-d6d7-4b68-9e47-b3ca2c9b39e2",
+                "title": "환불 결제수단",
+                "before": {
+                  "status": "unanswered",
+                  "aiStatus": "unanswered",
+                  "manualStatus": null
+                },
+                "after": {
+                  "status": "answered",
+                  "aiStatus": "answered",
+                  "manualStatus": null
+                },
+                "evidenceMessageIds": [
+                  "f3f90e0c-6742-4c55-9aeb-70bf66a92057"
+                ]
+              }
+            ],
+            "promises": []
+          }
+        },
+        "version": 6
+      }
+    }
+  ],
+  "calls": [
+    {
+      "name": "replytrack_connection",
+      "reasoningEffort": "low",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 2097,
+      "tokens": 180,
+      "usage": {
+        "input_tokens": 117,
+        "output_tokens": 63,
+        "total_tokens": 180,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 2095,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 2091,
+            "httpStatus": 200,
+            "bodyMs": 4,
+            "usage": {
+              "input_tokens": 117,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 0
+              },
+              "output_tokens": 63,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 180
+            },
+            "elapsedMs": 2095
+          }
+        ]
+      },
+      "request": {
+        "check": true
+      },
+      "data": {
+        "ok": true
+      }
+    },
+    {
+      "name": "replytrack_transcript",
+      "reasoningEffort": "low",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 3020,
+      "tokens": 686,
+      "usage": {
+        "input_tokens": 449,
+        "output_tokens": 237,
+        "total_tokens": 686,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 64
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 3019,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 3015,
+            "httpStatus": 200,
+            "bodyMs": 4,
+            "usage": {
+              "input_tokens": 449,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 0
+              },
+              "output_tokens": 237,
+              "output_tokens_details": {
+                "reasoning_tokens": 64
+              },
+              "total_tokens": 686
+            },
+            "elapsedMs": 3019
+          }
+        ]
+      },
+      "request": {
+        "text": "나: 반품한 이어폰의 환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?\n고객센터: 환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+      },
+      "data": {
+        "messages": [
+          {
+            "role": "customer",
+            "text": "반품한 이어폰의 환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?",
+            "sentAt": null
+          },
+          {
+            "role": "agent",
+            "text": "환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "name": "replytrack_analysis",
+      "reasoningEffort": "medium",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 16575,
+      "tokens": 6696,
+      "usage": {
+        "input_tokens": 4560,
+        "output_tokens": 2136,
+        "total_tokens": 6696,
+        "input_tokens_details": {
+          "cached_tokens": 3840
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 1728
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 16574,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 16553,
+            "httpStatus": 200,
+            "bodyMs": 21,
+            "usage": {
+              "input_tokens": 4560,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 3840
+              },
+              "output_tokens": 2136,
+              "output_tokens_details": {
+                "reasoning_tokens": 1728
+              },
+              "total_tokens": 6696
+            },
+            "elapsedMs": 16574
+          }
+        ]
+      },
+      "request": {
+        "messages": [
+          {
+            "id": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+            "role": "customer",
+            "text": "반품한 이어폰의 환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+            "role": "agent",
+            "text": "환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          }
+        ],
+        "existingQuestions": [],
+        "existingPromises": []
+      },
+      "data": {
+        "summary": "환불 금액은 79,000원이라고 안내받았고, 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠다는 약속을 받았습니다. 환불 결제수단에 대한 안내는 없었습니다.",
+        "questions": [
+          {
+            "id": "new-q-1",
+            "title": "반품한 이어폰의 환불 금액",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "반품한 이어폰의 환불 금액은 얼마인가요?"
+            },
+            "status": "answered",
+            "reason": "환불 금액은 79,000원이라고 안내받았습니다.",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 금액은 79,000원입니다."
+              }
+            ]
+          },
+          {
+            "id": "new-q-2",
+            "title": "환불 결제수단",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "어떤 결제수단으로 환불되나요?"
+            },
+            "status": "unanswered",
+            "reason": "이 질문에 대한 관련 안내가 아직 없습니다.",
+            "evidence": []
+          },
+          {
+            "id": "new-q-3",
+            "title": "환불 예정일",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "환불 예정일은 언제인가요?"
+            },
+            "status": "waiting",
+            "reason": "환불 예정일을 확인해 11월 18일까지 안내하겠다는 약속을 받았습니다.",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+              }
+            ]
+          }
+        ],
+        "promises": [
+          {
+            "id": "new-p-1",
+            "title": "환불 예정일 안내",
+            "questionIds": [
+              "new-q-3"
+            ],
+            "evidence": {
+              "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+              "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+            },
+            "dueText": "11월 18일까지",
+            "state": "promised"
+          }
+        ]
+      }
+    },
+    {
+      "name": "replytrack_analysis",
+      "reasoningEffort": "low",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 8352,
+      "tokens": 4465,
+      "usage": {
+        "input_tokens": 3522,
+        "output_tokens": 943,
+        "total_tokens": 4465,
+        "input_tokens_details": {
+          "cached_tokens": 2816
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 384
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 8351,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 8262,
+            "httpStatus": 200,
+            "bodyMs": 89,
+            "usage": {
+              "input_tokens": 3522,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 2816
+              },
+              "output_tokens": 943,
+              "output_tokens_details": {
+                "reasoning_tokens": 384
+              },
+              "total_tokens": 4465
+            },
+            "elapsedMs": 8351
+          }
+        ]
+      },
+      "request": {
+        "messages": [
+          {
+            "id": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+            "role": "customer",
+            "text": "반품한 이어폰의 환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?",
+            "sentAt": null
+          },
+          {
+            "id": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+            "role": "agent",
+            "text": "환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          },
+          {
+            "id": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+            "role": "agent",
+            "text": "환불은 원래 결제하신 카드로 진행됩니다. 환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다.",
+            "sentAt": null
+          }
+        ],
+        "existingQuestions": [
+          {
+            "id": "94e0acf6-a810-424e-b419-ea56f530131b",
+            "title": "반품한 이어폰의 환불 금액",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "반품한 이어폰의 환불 금액은 얼마인가요?"
+            },
+            "status": "answered",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 금액은 79,000원입니다."
+              }
+            ]
+          },
+          {
+            "id": "1865e44b-d6d7-4b68-9e47-b3ca2c9b39e2",
+            "title": "환불 결제수단",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "어떤 결제수단으로 환불되나요?"
+            },
+            "status": "unanswered",
+            "evidence": []
+          },
+          {
+            "id": "6d1a1489-0823-464c-90e4-d6d159ad2211",
+            "title": "환불 예정일",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "환불 예정일은 언제인가요?"
+            },
+            "status": "waiting",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+              }
+            ]
+          }
+        ],
+        "existingPromises": [
+          {
+            "id": "fbd69c3f-45bf-4f28-b5ec-fb630a929ccb",
+            "title": "환불 예정일 안내",
+            "questionIds": [
+              "6d1a1489-0823-464c-90e4-d6d159ad2211"
+            ],
+            "evidence": {
+              "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+              "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+            },
+            "dueText": "11월 18일까지",
+            "state": "promised"
+          }
+        ]
+      },
+      "data": {
+        "summary": "고객은 반품한 이어폰의 환불 금액·환불 결제수단·환불 예정일을 문의했고, 상담원은 환불 금액을 79,000원으로 안내하고 환불은 원래 결제하신 카드로 진행된다고 안내했으며, 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠다고 약속했습니다.",
+        "questions": [
+          {
+            "id": "94e0acf6-a810-424e-b419-ea56f530131b",
+            "status": "answered",
+            "reason": "업체가 \"환불 금액은 79,000원입니다.\"라고 안내했습니다.",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 금액은 79,000원입니다."
+              }
+            ]
+          },
+          {
+            "id": "1865e44b-d6d7-4b68-9e47-b3ca2c9b39e2",
+            "status": "answered",
+            "reason": "업체가 \"환불은 원래 결제하신 카드로 진행됩니다.\"라고 안내했습니다.",
+            "evidence": [
+              {
+                "messageId": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+                "quote": "환불은 원래 결제하신 카드로 진행됩니다."
+              }
+            ]
+          },
+          {
+            "id": "6d1a1489-0823-464c-90e4-d6d159ad2211",
+            "status": "waiting",
+            "reason": "업체가 환불 예정일을 담당 부서 확인 후 11월 18일까지 안내하겠다고 약속했으므로 안내를 기다리고 있습니다.",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+              },
+              {
+                "messageId": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+                "quote": "환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다."
+              }
+            ]
+          }
+        ],
+        "promises": [
+          {
+            "id": "fbd69c3f-45bf-4f28-b5ec-fb630a929ccb",
+            "title": "환불 예정일 안내",
+            "questionIds": [
+              "6d1a1489-0823-464c-90e4-d6d159ad2211"
+            ],
+            "evidence": {
+              "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+              "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+            },
+            "dueText": "11월 18일까지",
+            "deadlineCleared": false,
+            "state": "promised"
+          }
+        ]
+      }
+    },
+    {
+      "name": "replytrack_draft",
+      "reasoningEffort": "low",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 4936,
+      "tokens": 3139,
+      "usage": {
+        "input_tokens": 2798,
+        "output_tokens": 341,
+        "total_tokens": 3139,
+        "input_tokens_details": {
+          "cached_tokens": 1792
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 256
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 4936,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 4932,
+            "httpStatus": 200,
+            "bodyMs": 4,
+            "usage": {
+              "input_tokens": 2798,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 1792
+              },
+              "output_tokens": 341,
+              "output_tokens_details": {
+                "reasoning_tokens": 256
+              },
+              "total_tokens": 3139
+            },
+            "elapsedMs": 4936
+          }
+        ]
+      },
+      "request": {
+        "kind": "followup",
+        "messages": [
+          {
+            "id": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+            "role": "customer",
+            "text": "반품한 이어폰의 환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?"
+          },
+          {
+            "id": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+            "role": "agent",
+            "text": "환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+          },
+          {
+            "id": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+            "role": "agent",
+            "text": "환불은 원래 결제하신 카드로 진행됩니다. 환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다."
+          }
+        ],
+        "promises": [
+          {
+            "id": "fbd69c3f-45bf-4f28-b5ec-fb630a929ccb",
+            "title": "환불 예정일 안내",
+            "questionIds": [
+              "6d1a1489-0823-464c-90e4-d6d159ad2211"
+            ],
+            "evidence": {
+              "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+              "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+            },
+            "dueText": "11월 18일까지",
+            "state": "promised"
+          }
+        ],
+        "answeredQuestions": [
+          {
+            "id": "94e0acf6-a810-424e-b419-ea56f530131b",
+            "topicHint": "반품한 이어폰의 환불 금액",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "반품한 이어폰의 환불 금액은 얼마인가요?"
+            },
+            "status": "answered",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 금액은 79,000원입니다."
+              }
+            ]
+          },
+          {
+            "id": "1865e44b-d6d7-4b68-9e47-b3ca2c9b39e2",
+            "topicHint": "환불 결제수단",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "어떤 결제수단으로 환불되나요?"
+            },
+            "status": "answered",
+            "evidence": [
+              {
+                "messageId": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+                "quote": "환불은 원래 결제하신 카드로 진행됩니다."
+              }
+            ]
+          }
+        ],
+        "questions": [
+          {
+            "id": "6d1a1489-0823-464c-90e4-d6d159ad2211",
+            "topicHint": "환불 예정일",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "환불 예정일은 언제인가요?"
+            },
+            "status": "waiting",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+              },
+              {
+                "messageId": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+                "quote": "환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다."
+              }
+            ]
+          }
+        ]
+      },
+      "data": {
+        "body": "환불 예정일을 알려주시겠습니까?",
+        "sourceMessageIds": [
+          "3358f854-39f5-4440-86ef-536edc2bc7d9",
+          "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+          "f3f90e0c-6742-4c55-9aeb-70bf66a92057"
+        ]
+      }
+    },
+    {
+      "name": "replytrack_draft_review",
+      "reasoningEffort": "medium",
+      "model": "gpt-5-mini-2025-08-07",
+      "elapsedMs": 6581,
+      "tokens": 5903,
+      "usage": {
+        "input_tokens": 5259,
+        "output_tokens": 644,
+        "total_tokens": 5903,
+        "input_tokens_details": {
+          "cached_tokens": 4864
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 576
+        },
+        "unobserved_requests": 0
+      },
+      "transport": {
+        "elapsedMs": 6581,
+        "hedged": false,
+        "hedgeSkipped": false,
+        "unobservedRequests": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedMs": 0,
+            "state": "completed",
+            "headersMs": 6576,
+            "httpStatus": 200,
+            "bodyMs": 5,
+            "usage": {
+              "input_tokens": 5259,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cache_write_tokens_details": {
+                  "ttl_12h_tokens": 0,
+                  "ttl_30m_tokens": 0
+                },
+                "cached_tokens": 4864
+              },
+              "output_tokens": 644,
+              "output_tokens_details": {
+                "reasoning_tokens": 576
+              },
+              "total_tokens": 5903
+            },
+            "elapsedMs": 6581
+          }
+        ]
+      },
+      "request": {
+        "kind": "followup",
+        "messages": [
+          {
+            "id": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+            "role": "customer",
+            "text": "반품한 이어폰의 환불 금액은 얼마인가요? 어떤 결제수단으로 환불되나요? 환불 예정일은 언제인가요?"
+          },
+          {
+            "id": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+            "role": "agent",
+            "text": "환불 금액은 79,000원입니다. 환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+          },
+          {
+            "id": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+            "role": "agent",
+            "text": "환불은 원래 결제하신 카드로 진행됩니다. 환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다."
+          }
+        ],
+        "promises": [
+          {
+            "id": "fbd69c3f-45bf-4f28-b5ec-fb630a929ccb",
+            "title": "환불 예정일 안내",
+            "questionIds": [
+              "6d1a1489-0823-464c-90e4-d6d159ad2211"
+            ],
+            "evidence": {
+              "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+              "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+            },
+            "dueText": "11월 18일까지",
+            "state": "promised"
+          }
+        ],
+        "answeredQuestions": [
+          {
+            "id": "94e0acf6-a810-424e-b419-ea56f530131b",
+            "topicHint": "반품한 이어폰의 환불 금액",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "반품한 이어폰의 환불 금액은 얼마인가요?"
+            },
+            "status": "answered",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 금액은 79,000원입니다."
+              }
+            ]
+          },
+          {
+            "id": "1865e44b-d6d7-4b68-9e47-b3ca2c9b39e2",
+            "topicHint": "환불 결제수단",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "어떤 결제수단으로 환불되나요?"
+            },
+            "status": "answered",
+            "evidence": [
+              {
+                "messageId": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+                "quote": "환불은 원래 결제하신 카드로 진행됩니다."
+              }
+            ]
+          }
+        ],
+        "questions": [
+          {
+            "id": "6d1a1489-0823-464c-90e4-d6d159ad2211",
+            "topicHint": "환불 예정일",
+            "source": {
+              "messageId": "3358f854-39f5-4440-86ef-536edc2bc7d9",
+              "quote": "환불 예정일은 언제인가요?"
+            },
+            "status": "waiting",
+            "evidence": [
+              {
+                "messageId": "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+                "quote": "환불 예정일은 담당 부서 확인 후 11월 18일까지 안내하겠습니다."
+              },
+              {
+                "messageId": "f3f90e0c-6742-4c55-9aeb-70bf66a92057",
+                "quote": "환불 예정일은 아직 확인 중이며 11월 18일까지 안내하겠습니다."
+              }
+            ]
+          }
+        ],
+        "draft": {
+          "body": "환불 예정일을 알려주시겠습니까?",
+          "sourceMessageIds": [
+            "3358f854-39f5-4440-86ef-536edc2bc7d9",
+            "a2f86e54-d183-421c-8d1e-30fc2c5ebc0a",
+            "f3f90e0c-6742-4c55-9aeb-70bf66a92057"
+          ]
+        }
+      },
+      "data": {
+        "checks": {
+          "consumerVoice": true,
+          "selectedQuestionsCovered": true,
+          "sourceFactsOnly": true,
+          "noExtraRequests": true,
+          "noAnsweredRequests": true
+        },
+        "feedback": "",
+        "valid": true
+      }
+    }
+  ],
+  "browserErrors": [],
+  "hashes": {
+    "src/service.mjs": "41649b593765b3bd2c35d35fcea605d77151e44a42eb1f6ce3ba2a1013201f6a",
+    "src/email-reply.mjs": "88bbd8a3a3ad5491dada07e097360a475b52f473306f24225ad21c751a46b52f",
+    "src/email.mjs": "4e1d0a1882fa2f4ec05c34957062461b33592dbda02ef227aba663a8b9a85ac4",
+    "src/analysis-focus.mjs": "7a3044ec8ddc45c3bdeda93a1b108cbc14b760abec7dc97f37269719fe605ed5",
+    "src/official-context.mjs": "f037b480c398315236f87f03d319a87f5507124dc0dc418caa96b09602f8fbcc",
+    "src/prompts.mjs": "aeea41418566ba3fbdc29ec34e50bf02b9a90c6e16413dd82dbcfa38e8ac73ac",
+    "src/schema.mjs": "30ec698321be5cc4c5f569a929f9bc2d620438717744d65f74696f2ee6fe94e8",
+    "src/openai.mjs": "e33740fd56e8e9963e7206b474669422845fc93ce03a2ae7af90f537cf33d6d6",
+    "src/ai-race.mjs": "4cae88270203093c2d5ba8e4ce9b6c9c5dc91eff38d224c54b14f9f4bd44e977",
+    "src/store.mjs": "4f6aba7799e1b176069b24a9bf16dab74f82936fe3e1347eda241485d25a1f15",
+    "public/app.js": "d190d85fa5cf1db18b3454799b994e1a5755392fe04020308dc7ff94f443382a",
+    "public/inquiry-overview.js": "3245c20e8ef40b52c63314a85945508cfa52272a6a6bd936629e02a33bd694d6",
+    "public/workspace.js": "46868f7747a882201343f6085401c483e87753176798f27443213e73f95a71d7",
+    "public/styles.css": "6abfbc46be491221b7b41e5a5c84bfda00eb3efe541ee99b845b0a66112a2e9b",
+    "scripts/check-live-browser.mjs": "c5a81f8a98ccfdcf7cc727f1cc75c3afd14e314722740048db241294c1d200cd"
+  },
+  "existingEmailPromise": false,
+  "totalTokens": 21069
+}
