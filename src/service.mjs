@@ -7,6 +7,7 @@ import { actionsFresh } from '../public/next-actions.js';
 import { analysisSchemaFor, transcriptSchema, draftSchemaFor, draftReviewSchema, boundaryReviewSchemaFor, completionReviewSchemaFor } from './schema.mjs';
 import { ANALYSIS_PROMPT, TRANSCRIPT_PROMPT, DRAFT_PROMPT, DRAFT_REVIEW_PROMPT, BOUNDARY_REVIEW_PROMPT, COMPLETION_REVIEW_PROMPT } from './prompts.mjs';
 import { checkpoint } from './operation.mjs';
+import { prepareFirstInquiry, confirmFirstSent } from './first-inquiry.mjs';
 import { maskPrivate, privacyEnvelope } from './privacy.mjs';
 import { readImage } from './ocr.mjs';
 import { OfficialFaq, officialGuide } from './official-guide.mjs';
@@ -88,6 +89,8 @@ export class ReplyTrack {
     return context.commit ? context.commit(save) : save();
   }
   guide(input, context = {}) { return officialGuide(this, input, context); }
+  firstInquiry(input, context = {}) { return prepareFirstInquiry(this,input,context); }
+  firstSent(id,input) { return confirmFirstSent(this,id,input); }
   configure(input) { this.ai.configure(input); this.configRevision++; this.connection = { state: 'unchecked', checkedAt: null }; return this.config(); }
   async preflight(context = {}) {
     const revision = this.configRevision;
@@ -182,6 +185,7 @@ export class ReplyTrack {
       if (input.title !== undefined) c.title = maskPrivate(cleanText(input.title, 100, '상담 제목'));
       if (input.company !== undefined) {
         assert(typeof input.company === 'string' && input.company.length <= 60, '업체명은 60자까지 입력할 수 있습니다.');
+        assert(c.firstInquiry?.state!=='preparing'||input.company.trim()===c.company,'문의처 변경은 조건을 더해 다시 준비하기에서 진행해 주세요.');
         c.company = maskPrivate(input.company.trim()) || '고객센터';
       }
       if (input.archived !== undefined) {
@@ -194,12 +198,13 @@ export class ReplyTrack {
   }
   saveDraft(id, kind, input) {
     return this.withRecord(id, input.version, c => {
-      assert(['followup', 'handoff'].includes(kind) && c.drafts[kind], '먼저 초안을 생성해 주세요.', 404);
+      assert(['followup', 'handoff','first'].includes(kind) && c.drafts[kind], '먼저 초안을 생성해 주세요.', 404);
       assert(typeof input.body === 'string' && input.body.trim() && input.body.length <= 8000, '초안은 1~8,000자로 입력해 주세요.');
       // Preserve generated text and its evidence; user edits are not AI-verified facts.
-      c.drafts[kind].editedBody = input.body;
+      if(kind==='first') assert(c.firstInquiry?.state==='preparing' && input.body.length<=6000,'첫 문의 초안은 6,000자 이내로 입력해 주세요.');
+      c.drafts[kind].editedBody = kind==='first' ? maskPrivate({text:input.body}).text : input.body;
       c.drafts[kind].editedAt = new Date().toISOString();
-      history(c, 'draft', kind === 'followup' ? '편집한 재문의 초안을 저장했어요' : '편집한 인계 요약을 저장했어요');
+      history(c, 'draft', kind === 'first' ? '편집한 첫 문의 초안을 저장했어요' : kind === 'followup' ? '편집한 재문의 초안을 저장했어요' : '편집한 인계 요약을 저장했어요');
       return this.store.save(c, input.version);
     });
   }
@@ -212,6 +217,7 @@ export class ReplyTrack {
   }
   append(id, input) {
     return this.withRecord(id, input.version, c => {
+      assert(c.firstInquiry?.state!=='preparing','먼저 실제로 보낸 첫 문의를 기록해 주세요.',409);
       assert(c.mode !== 'demo', '예제에서는 준비된 답변 추가 버튼을 사용해 주세요. 직접 입력하려면 새 상담을 만드세요.');
       const m = message(input);
       assert(c.messages.length < 60 && c.messages.reduce((n, m) => n + m.text.length, 0) + m.text.length <= 40000, '상담은 60개 메시지, 총 40,000자까지 지원합니다.');
@@ -223,6 +229,7 @@ export class ReplyTrack {
   }
   appendEmail(id, input) {
     return this.withRecord(id, input.version, c => {
+      assert(c.firstInquiry?.state!=='preparing','먼저 실제로 보낸 첫 문의를 기록해 주세요.',409);
       assert(c.mode !== 'demo' && c.channel === 'email', '이메일 상담에서 사용할 수 있어요.');
       assert(Array.isArray(input.messages) && input.messages.length > 0 && input.messages.length <= 60, '추가할 이메일을 확인해 주세요.');
       const added = input.messages.map(message);
@@ -256,6 +263,7 @@ export class ReplyTrack {
     this.busy.add(id);
     try {
       const c = await this.getVersion(id, version);
+      assert(c.firstInquiry?.state!=='preparing','먼저 실제로 보낸 첫 문의를 기록해 주세요.',409);
       let result, attempts = 0, boundaryReview = null, completionReview = null;
       const results = [];
       if (c.mode === 'demo') result = { data: demoAnalysis(c), model: '준비된 예제 · AI 호출 없음', usage: null };

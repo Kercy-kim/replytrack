@@ -31,6 +31,7 @@ staticFiles.set('/next-actions.js', ['next-actions.js', 'text/javascript']);
 staticFiles.set('/inquiry-overview.js', ['inquiry-overview.js', 'text/javascript']);
 staticFiles.set('/official-context.js', ['official-context.js', 'text/javascript']);
 staticFiles.set('/draft-scope.js', ['draft-scope.js', 'text/javascript']);
+staticFiles.set('/first-inquiry.js', ['first-inquiry.js', 'text/javascript']);
 staticFiles.set('/login', ['login.html', 'text/html']);
 staticFiles.set('/login.js', ['login.js', 'text/javascript']);
 staticFiles.set('/login.css', ['login.css', 'text/css']);
@@ -119,7 +120,7 @@ export function createApp({ store, ai, ocr, faq, official, database, hosting = h
       }
       if (method === 'POST' && path === '/api/operations') {
         const { id, kind, caseId, input = {} } = body;
-        assert(['preflight', 'prepare', 'extract', 'analyze', 'draft', 'actions', 'email-explanation'].includes(kind), '작업 종류를 확인해 주세요.');
+        assert(['preflight', 'prepare', 'extract', 'analyze', 'draft', 'actions', 'email-explanation','first-inquiry'].includes(kind), '작업 종류를 확인해 주세요.');
         assert(input && typeof input === 'object' && !Array.isArray(input), '작업 입력을 확인해 주세요.');
         if (kind === 'draft') assert(input.kind === 'followup', '현재는 남은 질문의 재문의 초안만 작성할 수 있어요.');
         // Do optimistic-version validation before spending any provider tokens.
@@ -134,6 +135,7 @@ export function createApp({ store, ai, ocr, faq, official, database, hosting = h
           if (record?.mode !== 'demo') await currentService.ensureConnection(context);
           checkpoint(context);
           if (kind === 'extract') return currentService.extract(input, context);
+          if (kind === 'first-inquiry') return currentService.firstInquiry(input, context);
           if (kind === 'analyze') return currentService.analyze(caseId, input.version, context);
           if (kind === 'actions') return currentService.actions(caseId, input.version, context);
           if (kind === 'email-explanation') return currentService.explainEmail(caseId, input.version, context);
@@ -167,7 +169,7 @@ export function createApp({ store, ai, ocr, faq, official, database, hosting = h
         }
         return json(method === 'POST' ? officialContext.start(c) : officialContext.entries.get(officialKey(c))?.result ?? { key: officialKey(c), state: 'omitted' });
       }
-      const match = path.match(/^\/api\/cases\/([\w-]+)(?:\/(analyze|messages|email-messages|questions|promises|drafts|actions|demo-next)(?:\/([\w-]+))?)?$/);
+      const match = path.match(/^\/api\/cases\/([\w-]+)(?:\/(analyze|messages|email-messages|questions|promises|drafts|actions|demo-next|first-sent)(?:\/([\w-]+))?)?$/);
       if (match) {
         const [, id, action, item] = match;
         if (!action && method === 'GET') return json(await currentStore.get(id));
@@ -175,6 +177,7 @@ export function createApp({ store, ai, ocr, faq, official, database, hosting = h
         if (!action && method === 'DELETE') { await currentService.getVersion(id, body.version); await currentStore.delete(id, body.version); return json({ deleted: true }); }
         if (action === 'analyze' && method === 'POST') { assert(!database, '진행 상태가 있는 작업 요청을 사용해 주세요.', 400); return json(await currentService.analyze(id, body.version)); }
         if (action === 'messages' && method === 'POST') return json(await currentService.append(id, body));
+        if (action === 'first-sent' && method === 'POST') return json(await currentService.firstSent(id, body));
         if (action === 'email-messages' && method === 'POST') return json(await currentService.appendEmail(id, body));
         if (action === 'demo-next' && method === 'POST') { adminOnly(); return json(await currentService.advance(id, body.version)); }
         if (action === 'questions' && item && method === 'PATCH') return json(await currentService.question(id, item, body));
