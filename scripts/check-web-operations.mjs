@@ -36,8 +36,8 @@ try {
   const modal = page.locator('#modal');
   const clickCancel = async () => { await (await modal.isVisible() ? modal : page.locator('#app')).locator('[data-action="cancel-operation"]').click(); await idle(); };
   await page.goto(origin);
-  await page.locator('.connection').filter({ hasText: '첫 분석 시 연결 확인' }).waitFor();
   await page.locator('.avatar').click();
+  await page.locator('.connection-result').filter({ hasText: '첫 분석 시 연결 확인' }).waitFor();
   ai.hold('replytrack_connection');
   await page.locator('#settings-form button[type=submit]').click();
   await modal.locator('[data-progress]').filter({ hasText: 'AI 연결 확인 중' }).waitFor();

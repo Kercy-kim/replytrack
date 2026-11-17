@@ -580,7 +580,7 @@ document.addEventListener('change', event => {
     $('#modal-error').textContent = '';
   }
   if (event.target.id === 'case-sort') { state.sort = event.target.value; $('#workspace-results').innerHTML = caseResults(); }
-  if (event.target.name === 'channel') { readNewMetadata(); state.onboarding.prepared = null; state.onboarding.messages = []; state.onboarding.ocrLanguage = state.onboarding.channel === 'email' ? 'eng' : 'kor+eng'; showNew(); }
+  if (event.target.matches('#import-form [name=channel]')) { readNewMetadata(); state.onboarding.prepared = null; state.onboarding.messages = []; state.onboarding.ocrLanguage = state.onboarding.channel === 'email' ? 'eng' : 'kor+eng'; showNew(); }
   if (event.target.id === 'reply-language') {
     state.replyLanguages[state.current.id] = event.target.value;
     if ($('#draft-scope')) $('#draft-scope').innerHTML = draftScopeHtml(state.current);

@@ -20,6 +20,18 @@ const widths = [320, 390, 768, 1280, 1440];
 try {
   await page.goto(`http://127.0.0.1:${app.server.address().port}`);
   await page.locator('.welcome').waitFor();
+  await page.locator('.welcome-actions [data-action=first-inquiry]').click();
+  const firstForm = page.locator('#first-inquiry-form');
+  await firstForm.locator('[name=company]').fill('Netflix');
+  await firstForm.locator('[name=goal]').fill('구독 해지 후 청구된 요금의 환불을 문의하고 싶어요.');
+  await firstForm.locator('[name=channel]').selectOption('email');
+  await firstForm.locator('[name=language]').selectOption('en');
+  assert.equal(await firstForm.locator('[name=company]').inputValue(), 'Netflix');
+  assert.equal(await firstForm.locator('[name=channel]').inputValue(), 'email');
+  assert.equal(await firstForm.locator('[name=language]').inputValue(), 'en');
+  assert.equal(await page.locator('#import-form').count(), 0, 'First inquiry channel must not open the existing conversation form');
+  assert.deepEqual(errors, [], 'Changing the first inquiry channel must not access absent onboarding state');
+  await page.locator('#modal [data-action=close-modal]').first().click();
   for (const width of widths) {
     await page.setViewportSize({ width, height: 844 }); await fits();
     if (width <= 390) {
@@ -35,7 +47,16 @@ try {
   assert.equal(await page.locator('a[href="/presentation"]').count(), 0);
   await page.locator('.welcome-actions [data-action=new]').click();
   await page.locator('#modal[open]').waitFor();
+  await page.locator('#import-form [name=text]').fill('아직 등록하지 않은 기존 문의 내용');
   await page.locator('#modal [data-action=close-modal]').last().click();
+  await page.locator('.welcome-actions [data-action=first-inquiry]').click();
+  await firstForm.locator('[name=channel]').selectOption('chat');
+  assert.equal(await firstForm.locator('[name=company]').inputValue(), 'Netflix');
+  assert.equal(await page.locator('#import-form').count(), 0, 'Retained onboarding must not replace first inquiry when its channel changes');
+  await page.locator('#modal [data-action=close-modal]').first().click();
+  await page.locator('.welcome-actions [data-action=new]').click();
+  assert.equal(await page.locator('#import-form [name=text]').inputValue(), '아직 등록하지 않은 기존 문의 내용');
+  await page.locator('#modal [data-action=close-modal]').first().click();
   assert.equal(app.store.list().length, 0, 'Opening registration must not create a prepared record');
   await page.setViewportSize({width:1280,height:800});
   await page.screenshot({path:`${dir}/home-desktop.png`,fullPage:true});
