@@ -1,6 +1,6 @@
 # Impeccable — Codex 프로젝트 로컬 설치
 
-설치일: 2026-11-14 (Asia/Seoul). 대상 저장소: `Kercy-kim/tripsketch-ai`.
+설치일: 2026-11-14 (Asia/Seoul). 대상 저장소: `Kercy-kim/replytrack`.
 스킬 버전: **4.9.0**. 자체 실행 엔진: **0.1.23**.
 
 ## 설치 방식과 보존 범위

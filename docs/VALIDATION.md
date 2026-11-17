@@ -66,7 +66,7 @@
 
 ## 웹 상담 관리 개선 검증 (2026-11-14)
 
-브랜치 `feat/web-workspace-polish`, 작업 [#2](https://github.com/Kercy-kim/tripsketch-ai/issues/2). 새 AI 호출 없이 기존 예제·메모리 DB와 임시 DB만 사용했습니다.
+브랜치 `feat/web-workspace-polish`, 작업 [#2](https://github.com/Kercy-kim/replytrack/issues/2). 새 AI 호출 없이 기존 예제·메모리 DB와 임시 DB만 사용했습니다.
 
 - `node scripts/check.mjs`: JavaScript 23개 파일 문법 검사 통과.
 - `node --test`: 기존 Chrome 확장 검증을 포함한 21개 테스트 통과. 한국 날짜 경계·기한 분류·검색·보관 필터, 편집 초안의 DB 재개방 후 유지, 동시 저장 충돌과 입력 제한, 보관·복원 시 질문·약속·원문 유지, 새 HTTP API를 확인했습니다.

@@ -16,6 +16,10 @@
 
 ## Render 설정
 
+GitHub 저장소는 [Kercy-kim/replytrack](https://github.com/Kercy-kim/replytrack), 배포 브랜치는 `main`입니다. Render의 **Settings → Build → Source**에 같은 저장소 주소를 사용합니다.
+
+현재 서비스는 공개 Git 저장소 URL로 연결되어 있으며 GitHub 푸시만으로 자동 배포되지 않습니다. 배포가 필요한 변경을 `main`에 푸시한 뒤 **Manual Deploy → Deploy latest commit**을 실행하고, 배포 상세의 커밋과 **Deploy succeeded | Live** 상태를 확인합니다.
+
 웹 서비스는 기존 `replytrack`, Node, Singapore, Free를 유지한다. Build `npm ci --omit=dev`, Start `npm start`, Health `/api/health`. DB도 Singapore, PostgreSQL, Free, 1GB로 만든다. 기존 수동 서비스가 있으므로 Blueprint를 중복 생성하지 않는다.
 
 | 환경변수 | 값 |

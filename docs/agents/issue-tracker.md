@@ -1,17 +1,17 @@
 # Issue tracker: GitHub
 
-Issues and specs for this project live in https://github.com/Kercy-kim/tripsketch-ai/issues.
+Issues and specs for this project live in https://github.com/Kercy-kim/replytrack/issues.
 
-Repository: `Kercy-kim/tripsketch-ai`.
-Git remote: `https://github.com/Kercy-kim/tripsketch-ai.git`.
+Repository: `Kercy-kim/replytrack`.
+Git remote: `https://github.com/Kercy-kim/replytrack.git`.
 
 ## Access
 
-Use the connected GitHub tools when they support the operation. Pass `Kercy-kim/tripsketch-ai` as the repository explicitly.
+Use the connected GitHub tools when they support the operation. Pass `Kercy-kim/replytrack` as the repository explicitly.
 
-The GitHub CLI (`gh`) is installed and authenticated as `Kercy-kim` in the setup environment. Use it for operations the connected GitHub tools do not support. Include `--repo Kercy-kim/tripsketch-ai` on issue commands.
+The GitHub CLI (`gh`) is installed and authenticated as `Kercy-kim` in the setup environment. Use it for operations the connected GitHub tools do not support. Include `--repo Kercy-kim/replytrack` on issue commands.
 
-Before the first issue write in a session, verify the target repository through the connected GitHub repository tool or `gh repo view Kercy-kim/tripsketch-ai --json nameWithOwner`. If the configured repository and `origin` disagree, resolve that discrepancy with the user.
+Before the first issue write in a session, verify the target repository through the connected GitHub repository tool or `gh repo view Kercy-kim/replytrack --json nameWithOwner`. If the configured repository and `origin` disagree, resolve that discrepancy with the user.
 
 ## Conventions
 
@@ -37,7 +37,7 @@ GitHub shares one number space across issues and pull requests; resolve the reso
 
 ## When a skill says "publish to the issue tracker"
 
-Create a GitHub issue in `Kercy-kim/tripsketch-ai`.
+Create a GitHub issue in `Kercy-kim/replytrack`.
 
 ## When a skill says "fetch the relevant ticket"
 

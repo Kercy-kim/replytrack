@@ -2,7 +2,7 @@
 
 <!-- impeccable:product-schema 1 -->
 
-2026-11-15 기준. 사용자가 확인한 제품 정의와 현재 구현을 기록한다. 저장소 이름은 `tripsketch-ai`이며, 제품명은 **ReplyTrack**이다. [README.md](README.md)의 기획·실행 안내, [GLOSSARY.md](GLOSSARY.md)의 용어, [ADR 0001](docs/adr/0001-local-mvp.md)의 로컬 MVP 결정을 따른다. 계획과 구현 상태가 다르면 현재 기능은 아래의 코드 근거로 판단한다.
+2026-11-15 기준. 사용자가 확인한 제품 정의와 현재 구현을 기록한다. 저장소 이름은 `replytrack`이며, 제품명은 **ReplyTrack**이다. [README.md](README.md)의 기획·실행 안내, [GLOSSARY.md](GLOSSARY.md)의 용어, [ADR 0001](docs/adr/0001-local-mvp.md)의 로컬 MVP 결정을 따른다. 계획과 구현 상태가 다르면 현재 기능은 아래의 코드 근거로 판단한다.
 
 ## Platform
 
