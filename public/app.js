@@ -498,8 +498,15 @@ document.addEventListener('click', async event => {
   if (action === 'new') resumeOnboarding();
   if (action === 'settings') showSettings();
   if (action === 'account') { captureOnboarding(); state.auth = await api('/api/auth/me'); showAccount(); }
+  if (action === 'join') {
+    if (!await guardEdits()) return;
+    captureOnboarding();
+    if (hasOnboardingInput(state.onboarding) && !confirm('작성 중인 입력은 저장되지 않았어요. 계정 연결 화면으로 이동할까요?')) return;
+    state.onboarding = null; state.draftEdits = {}; location.assign('/login?register=1');
+  }
   if (action === 'logout') {
     if (!await guardEdits()) return;
+    if (state.auth.user?.role === 'guest' && !confirm('비회원 이용을 종료하면 이 문의 기록이 삭제돼요. 종료할까요?')) return;
     if (hasOnboardingInput(state.onboarding) && !confirm('작성 중인 입력은 저장되지 않았어요. 로그아웃할까요?')) return;
     try { await api('/api/auth/logout', 'POST', {}); state.onboarding = null; state.draftEdits = {}; location.replace('/login'); }
     catch (e) { toast(e.message); }
@@ -684,5 +691,10 @@ init();
 
 function showAccount() {
   const { user, usage } = state.auth;
+  if (user.role === 'guest') {
+    const until = new Date(user.expiresAt).toLocaleString('ko-KR', { timeZone:'Asia/Seoul', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    showModal('비회원으로 이용 중', `<p class="modal-intro">문의는 이 브라우저에서 <strong>${esc(until)}까지</strong> 이어 볼 수 있어요. 쿠키를 지우거나 이용을 종료하면 다시 찾을 수 없어요.</p><p class="form-note">회원가입하거나 로그인하면 지금 저장한 문의를 계정으로 이어서 보관해요.</p><div class="account-actions">${button('join','계정에 기록 보관하기','primary')}${button('logout','기록 삭제하고 종료','secondary')}</div><div class="modal-actions">${button('close-modal','닫기','secondary')}</div>`);
+    return;
+  }
   showModal('내 계정', `<p class="modal-intro"><strong>${esc(user.username)}</strong><br>문의 기록은 이 계정에서만 확인할 수 있어요.</p><p class="account-caption">오늘 AI 작업 ${usage.used}회</p><p class="form-note">분석·초안·공식 안내 등 AI 작업을 시작할 때 집계해요. 취소하거나 실패한 요청도 포함됩니다.</p><div class="account-actions">${user.role === 'admin' ? button('settings', 'AI 연결 설정', 'secondary') : ''}${button('logout', '로그아웃', 'secondary')}</div><div class="modal-actions">${button('close-modal','닫기','primary')}</div>`);
 }
