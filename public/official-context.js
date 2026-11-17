@@ -16,7 +16,7 @@ export function createOfficialLoader({ api, current, display }) {
     (async () => {
       try {
         let result = await api(`/api/cases/${c.id}/official-context`, 'POST', {});
-        const deadline = Date.now() + 65000;
+        const deadline = Date.now() + 95000;
         while (result.state === 'loading' && matches() && Date.now() < deadline) {
           await new Promise(resolve => setTimeout(resolve, 1500));
           result = await api(`/api/cases/${c.id}/official-context`);

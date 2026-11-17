@@ -10,6 +10,7 @@ export class OpenAIClient {
     this.hedgeAfterMs = hedgeAfterMs; this.activeHedges = 0;
   }
   get configured() { return Boolean(this.apiKey); }
+  get supportsWebSearch() { return true; }
   configure({ apiKey, model }) {
     if (apiKey !== undefined) {
       if (typeof apiKey !== 'string' || !/^sk-[A-Za-z0-9_-]{20,}$/.test(apiKey.trim())) throw new AppError(400, 'API 키 형식을 확인해 주세요.');
@@ -20,7 +21,7 @@ export class OpenAIClient {
     if (apiKey !== undefined) this.apiKey = apiKey.trim();
     if (model !== undefined) this.model = model;
   }
-  async structured({ name, schema, instructions, data, image, reasoningEffort = 'low', signal, maxOutputTokens = 6500 }) {
+  async structured({ name, schema, instructions, data, image, reasoningEffort = 'low', signal, maxOutputTokens = 6500, webSearch = false }) {
     checkpoint({ signal });
     if (!this.configured) throw new AppError(503, 'AI 연결 설정에서 OpenAI API 키를 등록해 주세요. 예제 상담은 키 없이 체험할 수 있습니다.', 'API_KEY_REQUIRED');
     if (image) throw new AppError(400, '캡처는 로컬에서 읽고 개인정보를 가린 텍스트로만 AI에 전달할 수 있습니다.', 'RAW_IMAGE_BLOCKED');
@@ -34,6 +35,12 @@ export class OpenAIClient {
       max_output_tokens: maxOutputTokens,
     };
     if (/^gpt-5/.test(this.model)) payload.reasoning = { effort: reasoningEffort };
+    if (webSearch) {
+      payload.tools = [{ type: 'web_search', search_context_size: 'low' }];
+      payload.tool_choice = 'required';
+      payload.max_tool_calls = 3;
+      payload.include = ['web_search_call.action.sources'];
+    }
     const timeout = AbortSignal.timeout(this.timeoutMs);
     const requestSignal = signal ? AbortSignal.any([signal, timeout]) : timeout;
     const headers = { Authorization: `Bearer ${this.apiKey}`, 'Content-Type': 'application/json' };
@@ -72,7 +79,17 @@ export class OpenAIClient {
       if (parts.some(p => p.type === 'refusal')) throw new AppError(422, '이 자료에 대한 AI 분석이 거절됐습니다. 입력 내용을 확인해 주세요.', 'AI_REFUSAL');
       const output = parts.filter(p => p.type === 'output_text').map(p => p.text).join('');
       // Restore only this call's aliases locally for exact-quote checks on legacy records.
-      try { return { data: privacy.decode(wire.decode(JSON.parse(output))), model: response.model ?? payload.model }; }
+      try {
+        const result = { data: privacy.decode(wire.decode(JSON.parse(output))), model: response.model ?? payload.model };
+        if (webSearch) {
+          result.searched = (response.output ?? []).some(p => p.type === 'web_search_call' && p.status === 'completed');
+          result.sourceUrls = [...new Set([
+            ...parts.flatMap(p => (p.annotations ?? []).filter(a => a.type === 'url_citation').map(a => a.url)),
+            ...(response.output ?? []).filter(p => p.type === 'web_search_call').flatMap(p => (p.action?.sources ?? []).map(s => s.url)),
+          ].filter(u => typeof u === 'string'))];
+        }
+        return result;
+      }
       catch { throw new AppError(502, 'AI가 올바른 분석 형식을 반환하지 않았습니다. 다시 시도해 주세요.', 'AI_FORMAT'); }
     };
     try {
