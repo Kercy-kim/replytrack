@@ -10,6 +10,7 @@ function renderMode(){
     ? (registration?'가입하면 비회원으로 저장한 문의도 이 계정에 보관해요.':'로그인하면 비회원 문의도 기존 계정에 함께 보관해요.')
     : (registration?'아이디와 비밀번호만 만들면 바로 사용할 수 있어요.':'가입 없이 시작하거나, 로그인해서 저장한 문의를 이어가세요.');
   document.querySelector('#auth-submit').textContent=registration?'계정 만들고 시작하기':'로그인';
+  document.querySelector('#account-heading').textContent=registration?'계정 정보 입력':'계정으로 이어서 이용하기';
   document.querySelector('#auth-submit').classList.toggle('primary',registration);
   document.querySelector('#auth-submit').classList.toggle('secondary',!registration);
   guestButton.classList.toggle('primary',!registration);guestButton.classList.toggle('secondary',registration);
@@ -28,8 +29,9 @@ async function submit(kind,data){
   active.textContent=kind==='guest'?'문의 공간을 준비하고 있어요…':'연결하고 있어요…';
   try{
     const res=await fetch(`/api/auth/${kind}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data),signal:AbortSignal.timeout(30000)});
-    const result=await res.json();if(!res.ok)throw Error(result.error||'시작하지 못했어요. 다시 시도해 주세요.');form.reset();location.replace('/');
-  }catch(e){error.textContent=e.name==='TimeoutError'?'연결이 지연되고 있어요. 잠시 뒤 다시 시도해 주세요.':e.message;}
+    const result=await res.json().catch(()=>null);
+    if(!res.ok||!result?.user)throw Error(result?.error||'서버에 연결하지 못했어요. 잠시 뒤 다시 눌러 주세요.');form.reset();location.replace('/');
+  }catch(e){error.textContent=e.name==='TimeoutError'?'연결이 지연되고 있어요. 잠시 뒤 다시 시도해 주세요.':e instanceof TypeError?'인터넷 연결을 확인한 뒤 다시 눌러 주세요.':e.message;}
   finally{busy=false;document.querySelectorAll('button').forEach(b=>b.disabled=false);renderMode();}
 }
 guestButton.addEventListener('click',()=>submit('guest',{}));
