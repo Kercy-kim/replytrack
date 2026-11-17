@@ -45,6 +45,7 @@ export function createApp({ store, ai, ocr, faq, official, database, hosting = h
   const users = new Map();
   const userContext = user => {
     if (!users.has(user.id)) {
+      if (users.size >= 100) users.delete(users.keys().next().value);
       const store = database.forUser(user.id);
       users.set(user.id, { store, service: new ReplyTrack(store, client, { ocr, faq }) });
     }
@@ -53,6 +54,8 @@ export function createApp({ store, ai, ocr, faq, official, database, hosting = h
   const officialContext = official ?? new OfficialContext({ ai: client, ...(faq ? { faq } : {}) });
   const officialStarts = new Map();
   let officialAdmission = Promise.resolve();
+  const guestCleanup = database ? setInterval(() => database.accounts.purgeExpiredGuests().catch(() => console.error('Guest cleanup deferred.')), 60 * 60 * 1000) : null;
+  guestCleanup?.unref();
   const server = createServer(async (req, res) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Referrer-Policy', 'no-referrer');
@@ -68,7 +71,7 @@ export function createApp({ store, ai, ocr, faq, official, database, hosting = h
       const sessionToken = database ? readSession(req) : null;
       const user = database ? await database.accounts.authenticate(sessionToken) : null;
       if (method === 'GET' && path === '/api/auth/me') return json({ enabled: !!database, user, ...(user ? { usage: await database.accounts.usage(user) } : {}) });
-      const loginRequest = ['POST'].includes(method) && ['/api/auth/login', '/api/auth/register'].includes(path);
+      const loginRequest = method === 'POST' && ['/api/auth/login', '/api/auth/register', '/api/auth/guest'].includes(path);
       if (database && !user && !loginRequest && !publicAssets.has(path)) {
         if (!path.startsWith('/api/') && method === 'GET') { res.writeHead(303, { Location: '/login' }); return res.end(); }
         throw new AppError(401, '로그인이 필요합니다.', 'LOGIN_REQUIRED');
@@ -89,13 +92,22 @@ export function createApp({ store, ai, ocr, faq, official, database, hosting = h
         assert(body && typeof body === 'object' && !Array.isArray(body), '요청 형식을 확인해 주세요.');
       }
       if (database && loginRequest) {
-        const result = path.endsWith('/login') ? await database.accounts.login(body) : await database.accounts.register(body);
+        if (path.endsWith('/guest') && user) return json({ user });
+        const guest = user?.role === 'guest' ? { id:user.id, token:sessionToken } : undefined;
+        if (guest) assert(![...operations.jobs.values()].some(j => j.owner === user.id && (j.state === 'running' || j.committing)), '진행 중인 작업이 있어요. 완료한 뒤 계정을 연결해 주세요.', 409);
+        const result = path.endsWith('/guest') ? await database.accounts.startGuest()
+          : path.endsWith('/login') ? await database.accounts.login(body, guest) : await database.accounts.register(body, guest);
         await database.accounts.logout(sessionToken);
+        if (guest) users.delete(user.id);
         res.setHeader('Set-Cookie', sessionCookie(result.token, !!hosting.publicOrigin));
         return json({ user: result.user }, path.endsWith('/register') ? 201 : 200);
       }
       if (database && method === 'POST' && path === '/api/auth/logout') {
-        operations.cancelOwner(owner); await database.accounts.logout(sessionToken);
+        operations.cancelOwner(owner);
+        if (user?.role === 'guest') {
+          await Promise.all([...operations.jobs.values()].filter(j => j.owner === owner && j.committing).map(j => j.done));
+          await database.accounts.endGuest({ id:user.id, token:sessionToken }); users.delete(user.id);
+        } else await database.accounts.logout(sessionToken);
         res.setHeader('Set-Cookie', sessionCookie('', !!hosting.publicOrigin, true));
         return json({ ok: true });
       }
@@ -186,7 +198,7 @@ export function createApp({ store, ai, ocr, faq, official, database, hosting = h
     }
   });
   server.requestTimeout = 120000;
-  server.on('close', () => { operations.close(); officialContext.close(); });
+  server.on('close', () => { clearInterval(guestCleanup); operations.close(); officialContext.close(); });
   return { server, service, store: db, ai: client, operations, database };
 }
 

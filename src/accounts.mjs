@@ -5,7 +5,8 @@ import { assert } from './errors.mjs';
 const scrypt = promisify(scryptCallback);
 export const digest = value => createHash('sha256').update(value).digest('hex');
 export const secret = () => randomBytes(32).toString('base64url');
-export const publicUser = u => ({ id: u.id, username: u.username, role: u.role });
+export const publicUser = u => ({ id: u.id, username: u.role === 'guest' ? '비회원' : u.username, role: u.role,
+  ...(u.role === 'guest' ? { expiresAt: u.guest_expires_at } : {}) });
 export function credentials(input) {
   const username = typeof input.username === 'string' ? input.username.trim().toLowerCase() : '';
   assert(/^[a-z0-9][a-z0-9_-]{2,23}$/.test(username), '아이디는 영문 소문자·숫자·밑줄·하이픈 3~24자로 입력해 주세요.');
@@ -58,23 +59,36 @@ export class Accounts {
     this.dummyHash = await hashPassword(secret());
     await this.transaction(async client => {
       await client.query('SELECT id FROM rt_control WHERE id=1 FOR UPDATE');
+      await client.query('ALTER TABLE rt_users ADD COLUMN IF NOT EXISTS guest_expires_at timestamptz');
+      await client.query('ALTER TABLE rt_users DROP CONSTRAINT IF EXISTS rt_users_role_check');
+      await client.query("ALTER TABLE rt_users ADD CONSTRAINT rt_users_role_check CHECK(role IN ('admin','participant','guest'))");
       const found = await client.query("SELECT id FROM rt_users WHERE role='admin'");
       if (!found.rows.length) await client.query('INSERT INTO rt_users(id,username,password_hash,role) VALUES($1,$2,$3,$4)', [randomUUID(), 'replytrack', await hashPassword(adminPassword), 'admin']);
     });
+    await this.purgeExpiredGuests();
   }
-  async limit(bucket, max) {
+  async limit(bucket, max, message = '로그인 시도가 많아요. 10분 뒤 다시 시도해 주세요.') {
     const result = await this.pool.query(`INSERT INTO rt_auth_limits(bucket,count,expires_at) VALUES($1,1,now()+interval '10 minutes')
       ON CONFLICT(bucket) DO UPDATE SET count=CASE WHEN rt_auth_limits.expires_at<now() THEN 1 ELSE rt_auth_limits.count+1 END,
       expires_at=CASE WHEN rt_auth_limits.expires_at<now() THEN now()+interval '10 minutes' ELSE rt_auth_limits.expires_at END RETURNING count`, [bucket]);
-    assert(result.rows[0].count <= max, '로그인 시도가 많아요. 10분 뒤 다시 시도해 주세요.', 429);
+    assert(result.rows[0].count <= max, message, 429);
   }
-  async login(input) {
+  async login(input, guest) {
     await this.limit('global', 100);
     const { username, password } = credentials(input);
     await this.limit(`login:${username}`, 10);
-    const { rows } = await this.pool.query('SELECT * FROM rt_users WHERE username=$1', [username]);
+    const { rows } = await this.pool.query("SELECT * FROM rt_users WHERE username=$1 AND role<>'guest'", [username]);
     const ok = await checkPassword(password, rows[0]?.password_hash || this.dummyHash);
     assert(ok && rows[0], '아이디 또는 비밀번호를 확인해 주세요.', 401);
+    if (guest) await this.transaction(async client => {
+      const source = await this.lockGuest(client, guest);
+      await client.query('SELECT id FROM rt_users WHERE id=$1 FOR UPDATE', [rows[0].id]);
+      const count = await client.query('SELECT count(*) AS total FROM rt_cases WHERE owner_id=$1 OR owner_id=$2', [source.id, rows[0].id]);
+      assert(Number(count.rows[0].total) <= 30, '문의가 합쳐서 30개를 넘어요. 비회원 문의를 정리한 뒤 로그인해 주세요.', 409);
+      await client.query('UPDATE rt_cases SET owner_id=$1 WHERE owner_id=$2', [rows[0].id, source.id]);
+      await client.query('INSERT INTO rt_usage(user_id,day,count) SELECT $1,day,count FROM rt_usage WHERE user_id=$2 ON CONFLICT(user_id,day) DO UPDATE SET count=rt_usage.count+EXCLUDED.count', [rows[0].id, source.id]);
+      await this.deleteGuest(client, source.id);
+    });
     await this.pool.query('DELETE FROM rt_auth_limits WHERE bucket=$1 OR expires_at<now()', [`login:${username}`]);
     return this.newSession(rows[0]);
   }
@@ -82,17 +96,17 @@ export class Accounts {
     const token = secret();
     await this.transaction(async client => {
       await client.query('DELETE FROM rt_sessions WHERE expires_at<now()');
-      await client.query('INSERT INTO rt_sessions(token_hash,user_id,expires_at) VALUES($1,$2,now()+interval \'7 days\')', [digest(token), user.id]);
+      await client.query('INSERT INTO rt_sessions(token_hash,user_id,expires_at) VALUES($1,$2,COALESCE($3::timestamptz,now()+interval \'7 days\'))', [digest(token), user.id, user.guest_expires_at || null]);
     });
     return { user: publicUser(user), token };
   }
   async authenticate(token) {
     if (!token) return null;
-    const { rows } = await this.pool.query('SELECT u.id,u.username,u.role FROM rt_sessions s JOIN rt_users u ON u.id=s.user_id WHERE s.token_hash=$1 AND s.expires_at>now()', [digest(token)]);
-    return rows[0] || null;
+    const { rows } = await this.pool.query("SELECT u.id,u.username,u.role,u.guest_expires_at FROM rt_sessions s JOIN rt_users u ON u.id=s.user_id WHERE s.token_hash=$1 AND s.expires_at>now() AND (u.role<>'guest' OR u.guest_expires_at>now())", [digest(token)]);
+    return rows[0] ? publicUser(rows[0]) : null;
   }
   async logout(token) { if (token) await this.pool.query('DELETE FROM rt_sessions WHERE token_hash=$1', [digest(token)]); }
-  async register(input) {
+  async register(input, guest) {
     await this.limit('global', 100);
     await this.limit('registration', 30);
     const { username, password } = credentials(input);
@@ -105,10 +119,39 @@ export class Accounts {
       const count = await client.query("SELECT count(*) AS total FROM rt_users WHERE role='participant'");
       assert(Number(count.rows[0].total) < this.participants, '현재 가입 가능한 인원이 모두 등록됐어요. 기존 계정이 있다면 로그인해 주세요.', 409);
       const u = { id: randomUUID(), username, role: 'participant' };
-      await client.query('INSERT INTO rt_users(id,username,password_hash,role) VALUES($1,$2,$3,$4)', [u.id, username, passwordHash, u.role]);
+      if (guest) {
+        const source = await this.lockGuest(client, guest); u.id = source.id;
+        await client.query("UPDATE rt_users SET username=$1,password_hash=$2,role='participant',guest_expires_at=NULL WHERE id=$3", [username,passwordHash,u.id]);
+        await client.query('DELETE FROM rt_sessions WHERE user_id=$1', [u.id]);
+      } else await client.query('INSERT INTO rt_users(id,username,password_hash,role) VALUES($1,$2,$3,$4)', [u.id, username, passwordHash, u.role]);
       return u;
     });
     return this.newSession(user);
+  }
+  async startGuest() {
+    await this.limit('guest-start', 100, '현재 접속 요청이 많아요. 10분 뒤 다시 시도해 주세요.');
+    await this.purgeExpiredGuests();
+    const id = randomUUID();
+    const { rows } = await this.pool.query("INSERT INTO rt_users(id,username,password_hash,role,guest_expires_at) VALUES($1,$2,$3,'guest',now()+interval '7 days') RETURNING *", [id, `guest-${id}`, this.dummyHash]);
+    return this.newSession(rows[0]);
+  }
+  async lockGuest(client, guest) {
+    const { rows } = await client.query("SELECT u.id FROM rt_users u JOIN rt_sessions s ON s.user_id=u.id WHERE u.id=$1 AND u.role='guest' AND u.guest_expires_at>now() AND s.token_hash=$2 AND s.expires_at>now() FOR UPDATE OF u", [guest.id, digest(guest.token)]);
+    assert(rows.length, '비회원 이용 상태가 바뀌었어요. 새로고침 후 다시 시도해 주세요.', 409);
+    return rows[0];
+  }
+  async deleteGuest(client, id) {
+    for (const [table,column] of [['rt_cases','owner_id'],['rt_usage','user_id'],['rt_reservations','user_id']]) await client.query(`DELETE FROM ${table} WHERE ${column}=$1`, [id]);
+    await client.query("DELETE FROM rt_users WHERE id=$1 AND role='guest'", [id]);
+  }
+  async endGuest(guest) {
+    await this.transaction(async client => { const u = await this.lockGuest(client, guest); await this.deleteGuest(client, u.id); });
+  }
+  async purgeExpiredGuests() {
+    await this.transaction(async client => {
+      const { rows } = await client.query("SELECT id FROM rt_users WHERE role='guest' AND guest_expires_at<=now() FOR UPDATE SKIP LOCKED");
+      for (const u of rows) await this.deleteGuest(client, u.id);
+    });
   }
   async usage(user) {
     const { rows } = await this.pool.query("SELECT count FROM rt_usage WHERE user_id=$1 AND day=(now() AT TIME ZONE 'Asia/Seoul')::date", [user.id]);
