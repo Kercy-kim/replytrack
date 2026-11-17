@@ -7,6 +7,7 @@ export function inquiryOverview(c) {
   const questions = fresh ? c.questions : [];
   const promises = fresh ? c.promises.filter(p => !p.confirmedAt) : [];
   return {
+    ...(c.firstInquiry?.state==='preparing'?{preparing:true}:{}),
     fresh,
     requestsFresh,
     followups: questions.filter(q => ['unanswered', 'partial', 'review'].includes(q.status)).length,
@@ -18,10 +19,11 @@ export function inquiryOverview(c) {
   };
 }
 
-export const needsAttention = o => !!o && !!(o.followups || o.confirmations || o.requests);
+export const needsAttention = o => !!o && !!(o.preparing || o.followups || o.confirmations || o.requests);
 export const isWaiting = o => !!o && !!(o.waitingAnswers || o.waitingPromises);
 
 export function inquiryLabel(o) {
+  if(o?.preparing) return '첫 문의 준비 중';
   if (!o?.fresh) return '대화 정리 필요';
   if (needsAttention(o)) return '내가 확인할 항목 있음';
   if (isWaiting(o)) return '업체 답변·처리 대기';

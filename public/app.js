@@ -7,6 +7,7 @@ import { newOnboarding, hasOnboardingInput, manualMessages } from './onboarding.
 import { renderActionPlan, actionsMarkdown } from './next-actions.js';
 import { createOfficialLoader, officialPanel } from './official-context.js';
 import { draftScope } from './draft-scope.js';
+import { firstInquiryForm, firstInquiryPanel, firstGuide, firstInquiryMarkdown } from './first-inquiry.js';
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const names = { unanswered: '미답변', partial: '부분 답변', waiting: '답변 대기', answered: '답변 받음', review: '확인 필요' };
@@ -48,7 +49,7 @@ function guardEdits(invalidates = false, kind) {
   return new Promise(resolve => { guardResolve = resolve; });
 }
 function resolveGuard(allowed) { const resolve = guardResolve; guardResolve = null; $('#modal').close(); resolve?.(allowed); }
-window.addEventListener('beforeunload', event => { if (dirtyKinds().length || state.operation || hasOnboardingInput(state.onboarding)) { event.preventDefault(); event.returnValue = ''; } });
+window.addEventListener('beforeunload', event => { if (dirtyKinds().length || state.operation || state.firstInput?.goal || hasOnboardingInput(state.onboarding)) { event.preventDefault(); event.returnValue = ''; } });
 window.addEventListener('pagehide', () => {
   if (state.operation?.snapshot.state === 'running') fetch(`/api/operations/${state.operation.id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: '{}', keepalive: true }).catch(() => {});
 });
@@ -187,6 +188,7 @@ function render() {
       <a href="/" class="brand" data-action="home" aria-label="ReplyTrack 홈"><img src="/favicon.svg" width="35" height="35" alt=""><span>ReplyTrack<span class="brand-dot">.</span></span></a>
       <div class="workspace-label">문의 내용과 진행 상황을 한곳에</div>
       ${button('new', '문의 추가', 'primary wide', 'plus')}
+      ${button('first-inquiry','처음 문의하기','secondary wide first-start','edit')}
       ${button('home', '내 문의함', 'secondary wide workspace-home', 'file')}
       <div class="nav-heading"><span>저장한 문의</span><span>${state.cases.filter(item => !item.archivedAt || item.id === c?.id).length.toString().padStart(2, '0')}</span></div>
       <nav class="case-list" aria-label="문의 목록">${state.cases.length ? state.cases.filter(item => !item.archivedAt || item.id === c?.id).map(item => `<button class="case-item ${c?.id === item.id ? 'active' : ''}" data-action="open" data-id="${item.id}" ${blocked('open') ? 'disabled' : ''}>${icon('chat')}<span><strong>${esc(item.title)}</strong><small>${esc(item.company)}${item.mode === 'demo' ? ' · 가상 기록' : ''}</small></span>${item.pendingAnalysis ? '<b aria-label="대화 정리 필요">…</b>' : item.unanswered ? `<b aria-label="남은 질문 ${item.unanswered}개">${item.unanswered}</b>` : '<span class="subtle" aria-label="답변과 실제 해결은 별도로 확인">—</span>'}</button>`).join('') : '<p class="sidebar-empty">문의를 추가하면<br>이곳에 기록이 쌓여요.</p>'}</nav>
@@ -204,7 +206,7 @@ function render() {
 }
 function landing() {
   if (state.cases.length) return dashboard();
-  return `<section class="welcome"><div class="welcome-copy"><h1>문의한 내용부터,<br><span>남은 일까지 한곳에.</span></h1><p>쇼핑부터 이메일·계정 복구 문의까지.<br>남은 질문과 해야 할 일을 정리하고,<br>새 답변에서 달라진 내용을 확인하세요.</p><div class="welcome-actions">${button('new', '내 문의 정리하기', 'primary', 'plus')}</div><div class="welcome-footnote">텍스트 붙여넣기 · 대화 캡처 · 질문별 원문 근거</div></div>
+  return `<section class="welcome"><div class="welcome-copy"><h1>문의한 내용부터,<br><span>남은 일까지 한곳에.</span></h1><p>쇼핑부터 이메일·계정 복구 문의까지.<br>남은 질문과 해야 할 일을 정리하고,<br>새 답변에서 달라진 내용을 확인하세요.</p><div class="welcome-actions">${button('first-inquiry','처음 문의하기','primary','edit')}${button('new', '받은 답변 정리하기', 'secondary', 'plus')}</div><div class="welcome-footnote">텍스트 붙여넣기 · 대화 캡처 · 질문별 원문 근거</div></div>
     <div class="welcome-visual" aria-label="질문과 답변 상태 예시"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="sample-message">${icon('chat')}<p>“환불 금액, 처리 기간, 반품 배송비가 궁금해요.”</p></div><div class="sample-card"><div class="sample-card-head"><span class="tiny-logo">${icon('spark')}</span><strong>세 가지 질문, 놓치지 않도록</strong><span class="sample-tag">예시</span></div><div class="sample-row"><span>01</span><strong>환불 금액 안내</strong>${badge('waiting')}</div><div class="sample-row"><span>02</span><strong>환불 소요 기간</strong>${badge('answered')}</div><div class="sample-row"><span>03</span><strong>반품 배송비</strong>${badge('unanswered')}</div><div class="sample-bottom">${icon('link')}모든 판단은 원문으로 연결돼요</div></div><div class="sample-follow">${icon('arrow')}남은 질문만 담아, 다음 문의로.</div></div></section>
     <section class="benefits"><article><h2>대화는 한곳에</h2><p>메신저, 이메일, 고객센터 채팅.<br>흩어진 상담을 붙여넣어 주세요.</p></article><article><h2>빠진 답변은 선명하게</h2><p>질문별 답변 상태와 실제 처리 약속을<br>원문 근거와 함께 확인해요.</p></article><article><h2>다음 문의는 간결하게</h2><p>아직 필요한 질문만 담은 초안으로<br>같은 설명을 반복하지 않아요.</p></article></section>`;
 }
@@ -216,10 +218,11 @@ function dashboard() {
 }
 function caseResults() {
   const cases = filterCases(state.cases, {query:state.query, filter:state.caseFilter, sort:state.sort});
-  return `<p class="result-count" role="status">${state.query ? `“${esc(state.query)}” 검색 결과` : caseFilters.find(([id]) => id === state.caseFilter)[1]} ${cases.length}건</p>${cases.length ? `<div class="workspace-list">${cases.map(c => `<article class="workspace-row"><div class="workspace-case"><p>${esc(c.company)} · ${c.channel === 'email' ? '이메일 문의' : '대화 문의'}${c.mode === 'demo' ? ' · 가상 기록' : ''}</p><h2><button data-action="open" data-id="${c.id}">${esc(c.title)}${icon('arrow')}</button></h2>${c.preview ? `<p class="inquiry-preview">${esc(c.preview)}${c.preview.length === 180 ? '…' : ''}</p>` : ''}<div class="case-counts">${c.overview?.fresh ? `<span>남은 질문 <strong>${c.unanswered}</strong></span><span>직접 확인 전 약속 <strong>${c.promises}</strong></span>` : '<span>새 대화는 아직 정리 전이에요</span>'}<time>수정 ${date(c.updatedAt)}</time></div></div><div class="case-next">${nextAction(c)}</div></article>`).join('')}</div>` : `<div class="empty-panel"><h2>${state.query ? '검색 결과가 없어요' : state.caseFilter === 'archived' ? '보관한 상담이 없어요' : '이 조건에 해당하는 상담이 없어요'}</h2><p>${state.query ? '제목, 문의처 또는 문의 내용의 다른 단어로 찾아보세요.' : '다른 필터에서 상담을 확인할 수 있어요.'}</p>${button('reset-search','전체 문의 보기','secondary compact')}</div>`}`;
+  return `<p class="result-count" role="status">${state.query ? `“${esc(state.query)}” 검색 결과` : caseFilters.find(([id]) => id === state.caseFilter)[1]} ${cases.length}건</p>${cases.length ? `<div class="workspace-list">${cases.map(c => `<article class="workspace-row"><div class="workspace-case"><p>${esc(c.company)} · ${c.channel === 'email' ? '이메일 문의' : '대화 문의'}${c.mode === 'demo' ? ' · 가상 기록' : ''}</p><h2><button data-action="open" data-id="${c.id}">${esc(c.title)}${icon('arrow')}</button></h2>${c.preview ? `<p class="inquiry-preview">${esc(c.preview)}${c.preview.length === 180 ? '…' : ''}</p>` : ''}<div class="case-counts">${c.overview?.fresh ? `<span>남은 질문 <strong>${c.unanswered}</strong></span><span>직접 확인 전 약속 <strong>${c.promises}</strong></span>` : `<span>${c.overview?.preparing?'첫 문의 초안을 준비했어요':'새 대화는 아직 정리 전이에요'}</span>`}<time>수정 ${date(c.updatedAt)}</time></div></div><div class="case-next">${nextAction(c)}</div></article>`).join('')}</div>` : `<div class="empty-panel"><h2>${state.query ? '검색 결과가 없어요' : state.caseFilter === 'archived' ? '보관한 상담이 없어요' : '이 조건에 해당하는 상담이 없어요'}</h2><p>${state.query ? '제목, 문의처 또는 문의 내용의 다른 단어로 찾아보세요.' : '다른 필터에서 상담을 확인할 수 있어요.'}</p>${button('reset-search','전체 문의 보기','secondary compact')}</div>`}`;
 }
 function nextAction(c) {
   if (c.archivedAt) return '<span class="deadline-chip">보관한 문의</span><small>보관은 실제 해결 완료와 구분해요</small>';
+  if(c.overview?.preparing) return '<span class="deadline-chip">첫 문의 준비 중</span><small>초안을 확인하고 실제로 보낸 내용을 기록하세요</small>';
   const o = c.overview, d = c.deadlines;
   if (!o?.fresh) return '<span class="deadline-chip today">대화 정리 필요</span><small>저장한 원문을 질문과 약속에 반영해요</small>';
   if (d.overdue) return `<span class="deadline-chip overdue">기한 지남 ${d.overdue}건</span><small>${esc(d.nextDueAt)}까지 · 실제 처리 확인 필요</small>`;
@@ -266,6 +269,7 @@ function comparisonPanel(c) {
     ${comparisonContents(comparison)}</section>`;
 }
 function detail(c) {
+  if(c.firstInquiry?.state==='preparing') return firstInquiryPanel(c,{esc,button,date,edits:state.draftEdits,busy:!!state.busy,dirty:dirtyKinds().includes('first'),status:draftStatus('first')});
   if (c.demoScenario === 'email' && state.emailDemoFocus[c.id] !== null) return renderEmailDemo(c, state.emailDemoFocus[c.id] ?? 0, { esc, button, badge, comparisonPanel });
   const pending = c.analyzedMessageCount < c.messages.length;
   return `<section class="case-heading"><div><h1>${esc(c.title)}</h1><div class="case-company">${esc(c.company)}${c.mode === 'demo' ? ' · 가상 기록' : ''}</div><p>${pending && c.analysis ? '이전 정리 · ' : ''}${esc(c.summary || '문의 내용을 저장했어요. 질문을 분석하면 진행 상황을 정리해 드려요.')}</p></div><div class="heading-actions">${c.mode === 'live' ? button('append', '새 답변 추가', 'primary compact append-primary', 'plus') : ''}${button('case-settings', '문의 관리', 'secondary compact', 'settings')}${button('export', '내려받기', 'secondary compact', 'download')}</div></section>
@@ -274,6 +278,7 @@ function detail(c) {
     ${pending ? `<div class="pending-banner"><span>새 메시지가 저장됐어요. 분석하면 질문과 약속에 반영돼요.</span>${button('analyze', c.questions.length ? '새 답변 분석' : '질문 분석하기', 'primary compact', 'spark')}</div>` : ''}
     ${inquiryOverviewPanel(c, { esc, button })}
     ${comparisonPanel(c)}${emailExplanationPanel(c, { esc, button, date })}
+    ${c.firstInquiry?.state==='sent'?`<details class="first-saved-guide" data-disclosure="first-guide-${esc(c.id)}"><summary>처음 문의할 때 확인한 공식 안내</summary><p>준비 당시 자료예요. 현재 상황과 공식 원문을 다시 확인해 주세요.</p>${firstGuide(c.firstInquiry,esc,date)}</details>`:''}
     <div id="official-context">${officialPanel(officialResult, esc)}</div>
     <div class="mobile-switch" role="group" aria-label="보기 선택"><button data-action="mobile" data-value="source" aria-pressed="${state.mobile === 'source'}" class="${state.mobile === 'source' ? 'active' : ''}">상담 원문</button><button data-action="mobile" data-value="analysis" aria-pressed="${state.mobile === 'analysis'}" class="${state.mobile === 'analysis' ? 'active' : ''}">질문 확인표</button></div>
     <div class="workspace mobile-${state.mobile}"><section class="source-panel panel"><div class="panel-header"><div>${icon('chat')}<h2>상담 원문</h2><span class="count">${c.messages.length}</span></div><span class="subtle">${c.mode === 'demo' ? '가상 상담' : '검토한 텍스트'}</span></div><div class="source-messages">${c.messages.map(m => `<article class="message ${m.role}" id="message-${m.id}"><div class="message-meta"><span class="speaker-avatar">${m.role === 'customer' ? '나' : 'CS'}</span><strong>${m.role === 'customer' ? '나' : esc(c.company)}</strong><time>${date(m.sentAt)}</time></div><div class="message-text">${esc(m.text)}</div>${state.sourceReturn?.caseId === c.id && state.sourceReturn.messageId === m.id ? button('source-return', '확인하던 내용으로 돌아가기', 'secondary compact source-return') : ''}</article>`).join('')}</div><div class="source-bottom"><span>${icon('link')}근거를 누르면 해당 원문으로 이동해요</span>${c.mode === 'live' ? button('append', '새 답변 / 질문 추가', 'secondary wide', 'plus') : ''}</div></section>
@@ -437,7 +442,7 @@ async function updateCase(path, method, data) {
     : await api(`/api/cases/${c.id}${path ? `/${path}` : ''}`, method, input);
   views.remember(result);
   if (state.current?.id === c.id) {
-    if (['analyze','demo-next'].includes(path) || /^(questions|promises)\//.test(path)) state.draftEdits = {};
+    if (['analyze','demo-next','first-sent'].includes(path) || /^(questions|promises)\//.test(path)) state.draftEdits = {};
     if (path === 'drafts' && method === 'POST') delete state.draftEdits[data.kind];
     if (path.startsWith('drafts/') && method === 'PATCH') delete state.draftEdits[path.split('/')[1]];
     setCase(result);
@@ -464,7 +469,7 @@ function returnFromSource() {
 }
 function downloadRecord() {
   const c = state.current;
-  const text = `# ${c.title}\n\n${c.company} · ${c.mode === 'demo' ? '가상 기록' : '실제 AI 분석'}\n\n${c.summary}\n\n## 질문 확인표\n\n${c.questions.map(q => `- ${q.title}: ${names[q.status]}\n  - ${q.reason}\n${q.evidence.map(e => `  - 근거: ${e.quote}`).join('\n')}`).join('\n')}\n\n## 처리 약속\n\n${c.promises.map(p => `- ${p.title}: ${p.confirmedAt ? '사용자 확인 완료' : p.state === 'reported' ? '업체 처리 안내 / 직접 확인 전' : '처리 약속 / 직접 확인 전'} · ${p.dueAt || '기한 미정'}\n  - ${p.evidence.quote}`).join('\n')}\n\n${actionsMarkdown(c)}\n## 상담 원문\n\n${c.messages.map(m => `### ${m.role === 'customer' ? '나' : c.company} · ${date(m.sentAt)}\n\n${m.text}`).join('\n\n')}\n\n${Object.keys({ ...c.drafts, ...state.draftEdits }).map(kind => `## ${kind === 'followup' ? '재문의 초안' : '인계 요약'}\n\n${state.draftEdits[kind] ?? savedDraft(c.drafts[kind])}`).join('\n\n')}`;
+  const text = `# ${c.title}\n\n${c.company} · ${c.mode === 'demo' ? '가상 기록' : '실제 AI 분석'}\n\n${c.summary}\n\n## 질문 확인표\n\n${c.questions.map(q => `- ${q.title}: ${names[q.status]}\n  - ${q.reason}\n${q.evidence.map(e => `  - 근거: ${e.quote}`).join('\n')}`).join('\n')}\n\n## 처리 약속\n\n${c.promises.map(p => `- ${p.title}: ${p.confirmedAt ? '사용자 확인 완료' : p.state === 'reported' ? '업체 처리 안내 / 직접 확인 전' : '처리 약속 / 직접 확인 전'} · ${p.dueAt || '기한 미정'}\n  - ${p.evidence.quote}`).join('\n')}\n\n${firstInquiryMarkdown(c)}${actionsMarkdown(c)}\n## 상담 원문\n\n${c.messages.map(m => `### ${m.role === 'customer' ? '나' : c.company} · ${date(m.sentAt)}\n\n${m.text}`).join('\n\n')}\n\n${Object.keys({ ...c.drafts, ...state.draftEdits }).map(kind => `## ${kind === 'first' ? '아직 보내지 않은 첫 문의 초안' : kind === 'followup' ? '재문의 초안' : '인계 요약'}\n\n${state.draftEdits[kind] ?? savedDraft(c.drafts[kind])}`).join('\n\n')}`;
   const url = URL.createObjectURL(new Blob([text], { type: 'text/markdown;charset=utf-8' }));
   const a = document.createElement('a'); a.href = url; a.download = `ReplyTrack-${c.title.replace(/[<>:"/\\|?*]/g,'_')}.md`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
@@ -477,7 +482,7 @@ document.addEventListener('click', async event => {
   if (['home', 'open', 'tab', 'draft-tab', 'mobile', 'source', 'source-return', 'inquiry-section'].includes(action)) viewRevision++;
   if (action === 'guard-cancel') return resolveGuard(false);
   if (action === 'guard-continue') return resolveGuard(true);
-  const navigating = ['home','new','demo','email-demo'].includes(action) || (action === 'open' && target.dataset.id !== state.current?.id);
+  const navigating = ['home','new','demo','email-demo','first-inquiry','first-refine'].includes(action) || (action === 'open' && target.dataset.id !== state.current?.id);
   const invalidating = ['demo-next','email-demo-reply','analyze','append','edit-question','apply-ai','confirm-promise','generate-draft'].includes(action);
   if ((navigating || invalidating) && !await guardEdits(invalidating, action === 'generate-draft' ? target.dataset.kind : undefined)) return;
   if (['home', 'tab', 'draft-tab', 'mobile', 'inquiry-section'].includes(action)) state.sourceReturn = null;
@@ -496,6 +501,16 @@ document.addEventListener('click', async event => {
   if (['archive','restore'].includes(action)) await work('상담 목록을 정리하고 있어요', async () => { await updateCase('','PATCH',{archived:action === 'archive'}); $('#modal').close(); toast(action === 'archive' ? '보관함으로 이동했어요. 언제든 복원할 수 있어요.' : '진행 목록으로 복원했어요.'); });
   if (action === 'save-draft') await work('편집한 초안을 저장하고 있어요', async () => { await updateCase(`drafts/${target.dataset.kind}`,'PATCH',{body:state.draftEdits[target.dataset.kind]}); toast('편집 내용을 저장했어요.'); });
   if (action === 'new') resumeOnboarding();
+  if(action==='first-inquiry'||action==='first-refine') {
+    if(action==='first-refine') {
+      if(state.firstInput?.caseId!==state.current.id) state.firstInput={company:state.current.company,goal:state.current.firstInquiry.goal,channel:state.current.channel||'chat',language:state.current.firstInquiry.language,caseId:state.current.id};
+      state.firstInput.version=state.current.version;
+    }
+    else if(state.firstInput?.caseId) state.firstInput=null;
+    state.firstInput ||= {company:'',goal:'',channel:'chat',language:'ko'};
+    showModal('처음 문의하기',firstInquiryForm(state.firstInput,esc),true);
+  }
+  if(action==='first-sent') showModal('실제로 보낸 내용을 확인해 주세요',`<p class="modal-intro">아래 내용을 고객센터에 보낸 뒤 기록해 주세요. 아직 보내지 않았다면 초안을 복사해 공식 경로에서 먼저 문의하세요.</p><form id="first-sent-form"><label class="field">실제로 보낸 문의<textarea name="body" rows="9" maxlength="6000" required>${esc(state.draftEdits.first??savedDraft(state.current.drafts.first))}</textarea></label><label class="field">보낸 시각 (선택)<input name="sentAt" type="datetime-local"></label><label class="first-confirm"><input type="checkbox" required>이 내용을 실제로 보냈습니다.</label><div class="modal-actions"><button type="button" class="btn secondary" data-action="close-modal">아직 보내기 전</button><button class="btn primary" type="submit">기록하고 답변 관리 시작</button></div></form>`,true);
   if (action === 'settings') showSettings();
   if (action === 'account') { captureOnboarding(); state.auth = await api('/api/auth/me'); showAccount(); }
   if (action === 'join') {
@@ -592,6 +607,7 @@ document.addEventListener('keydown', event => {
   $(`#tab-${state.tab}`).focus();
 });
 document.addEventListener('input', event => {
+  if(event.target.closest('#first-inquiry-form')) Object.assign(state.firstInput,Object.fromEntries(new FormData($('#first-inquiry-form'))));
   if (event.target.closest('#import-form, #privacy-form, #review-form')) captureOnboarding();
   if (event.target.id === 'case-search') { state.query = event.target.value; $('#workspace-results').innerHTML = caseResults(); }
   const kind = event.target.dataset.draft;
@@ -605,6 +621,18 @@ document.addEventListener('input', event => {
 document.addEventListener('submit', async event => {
   event.preventDefault(); const form = event.target;
   if (state.busy) return;
+  if(form.id==='first-inquiry-form') {
+    Object.assign(state.firstInput,Object.fromEntries(new FormData(form)));
+    const input={...state.firstInput};
+    await work('공식 경로와 첫 문의를 준비하고 있어요',async()=>{
+      const result=await runOperation('first-inquiry',input,input.caseId);
+      views.remember(result);if(!input.caseId||state.current?.id===input.caseId){state.draftEdits={};setCase(result);}state.firstInput=null;await refreshList();$('#modal').close();
+    });
+  }
+  if(form.id==='first-sent-form') {
+    const body=form.elements.body.value,sentAt=form.elements.sentAt.value?new Date(form.elements.sentAt.value).toISOString():null;
+    await work('보낸 문의를 저장하고 질문을 정리하고 있어요',async()=>{await updateCase('first-sent','POST',{body,sentAt});$('#modal').close();await updateCase('analyze','POST',{});});
+  }
   if (form.id === 'case-settings-form') {
     const data = {title:form.elements.title.value,company:form.elements.company.value};
     await work('상담 정보를 저장하고 있어요',async () => { await updateCase('','PATCH',data); $('#modal').close(); toast('상담 정보를 수정했어요.'); });

@@ -48,7 +48,7 @@ export function summarizeCase(c) {
   return {
     id: c.id, title: c.title, company: c.company, mode: c.mode,
     channel: c.channel || 'chat',
-    preview: (c.messages.find(m => m.role === 'customer')?.text || '').slice(0, 180),
+    preview: (c.messages.find(m => m.role === 'customer')?.text || c.firstInquiry?.goal || '').slice(0, 180),
     overview: inquiryOverview(c),
     updatedAt: c.updatedAt, createdAt: c.createdAt, version: c.version,
     questions: c.questions.length,

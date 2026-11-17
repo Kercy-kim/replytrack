@@ -1,4 +1,5 @@
 export const stages = {
+  first_search: '공식 문의 경로와 준비 자료 확인 중', first_writing: '첫 문의 안내와 초안 작성 중', first_review: '공식 근거와 초안 내용 검토 중',
   queued: '앞선 작업을 기다리는 중',
   completion_review: '처리 완료 통보 누락 확인 중',
   email_explanation: '이메일 답변을 한국어로 설명 중', email_review: '번역의 조건·누락·기한 검토 중',
