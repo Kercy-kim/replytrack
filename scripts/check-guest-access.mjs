@@ -20,6 +20,11 @@ const idle=()=>page.waitForFunction(()=>!document.querySelector('.busy-bar'));
 try{
   await page.goto(base);await page.locator('#guest-start').waitFor();
   await page.screenshot({path:`${dir}/entry-desktop.png`,fullPage:true});
+  // An upstream HTML error must give a readable retry message, not a JSON exception.
+  await page.route('**/api/auth/guest',route=>route.fulfill({status:503,contentType:'text/html',body:'Unavailable'}),{times:1});
+  await page.locator('#guest-start').click();
+  await page.waitForFunction(()=>document.querySelector('#auth-error').textContent.includes('다시 눌러'));
+  assert.equal(await page.locator('#guest-start').isEnabled(),true);
   await other.goto(base);await other.locator('#guest-start').waitFor();
   assert(await other.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   await other.screenshot({path:`${dir}/entry-mobile.png`,fullPage:true});
@@ -31,6 +36,11 @@ try{
   await page.locator('#import-form [name=title]').fill('비회원 계정 복구 문의');
   await page.locator('#import-form [name=text]').fill(emailThread(emailCases[0]));
   await page.locator('#import-form button[type=submit]').click();await idle();
+  await page.route('**/api/operations',route=>route.fulfill({status:429,contentType:'application/json',body:JSON.stringify({error:'다른 작업을 처리 중입니다. 잠시 후 다시 시도해 주세요.'})}),{times:1});
+  const preserved=await page.locator('#privacy-form textarea').inputValue();
+  await page.locator('#privacy-form button[type=submit]').click();await idle();
+  assert.match(await page.locator('#modal-error').innerText(),/잠시 후 다시/);
+  assert.equal(await page.locator('#privacy-form textarea').inputValue(),preserved);
   await page.locator('#privacy-form button[type=submit]').click();await idle();
   await page.locator('#review-form button[type=submit]').click();await idle();
   await page.locator('[data-action=tab][data-value=drafts]').click();

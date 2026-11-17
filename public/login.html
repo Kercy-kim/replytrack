@@ -7,9 +7,10 @@
   <button class="btn primary wide" type="button" id="guest-start" aria-describedby="guest-help">가입 없이 시작하기</button>
   <p class="guest-help" id="guest-help">비회원 기록은 이 브라우저에서 7일간 이어 볼 수 있어요. 쿠키를 지우면 다시 찾을 수 없어요.</p>
   <p class="auth-error" id="auth-error" role="alert"></p>
-  <form id="auth-form">
-    <label class="field">아이디<input name="username" autocomplete="username" autocapitalize="none" spellcheck="false" pattern="[a-z0-9][a-z0-9_-]{2,23}" minlength="3" maxlength="24" required><small>영문 소문자·숫자·밑줄·하이픈 3~24자</small></label>
-    <label class="field">비밀번호<input name="password" type="password" autocomplete="current-password" minlength="12" maxlength="128" required><small>12자 이상 입력해 주세요.</small></label>
+  <h2 class="auth-section-title" id="account-heading">계정으로 이어서 이용하기</h2>
+  <form id="auth-form" aria-labelledby="account-heading">
+    <label class="field">아이디<input name="username" autocomplete="username" autocapitalize="none" spellcheck="false" pattern="[a-z0-9][a-z0-9_-]{2,23}" minlength="3" maxlength="24" aria-describedby="username-help" required><small id="username-help">영문 소문자·숫자·밑줄·하이픈 3~24자</small></label>
+    <label class="field">비밀번호<input name="password" type="password" autocomplete="current-password" minlength="12" maxlength="128" aria-describedby="password-help" required><small id="password-help">12자 이상 입력해 주세요.</small></label>
     <label class="field" id="confirm-field" hidden>비밀번호 확인<input name="confirm" type="password" autocomplete="new-password" maxlength="128"></label>
     <button class="btn secondary wide" type="submit" id="auth-submit">로그인</button>
   </form>
