@@ -105,6 +105,7 @@ async function runOperation(kind, input = {}, caseId) {
   }
   finally { state.config = await api('/api/config').catch(() => state.config); }
 }
+const firstInquiryProgress = '문의를 생성하는 중입니다';
 function renderProgress() {
   const operation = state.operation;
   document.querySelectorAll('[data-progress]').forEach(panel => {
@@ -115,8 +116,9 @@ function renderProgress() {
     if (panel.dataset.signature !== signature) {
       const restoreCancelFocus = panel.contains(document.activeElement) && document.activeElement.dataset.action === 'cancel-operation';
       panel.dataset.signature = signature;
-      const label = operation.cancelling ? '서버에서 취소 확인 중' : stages[job.stage] || '작업 처리 중';
-      panel.innerHTML = `<div class="operation-head"><span class="spinner" aria-hidden="true"></span><strong role="status">${esc(label)}</strong><span class="operation-time" data-elapsed aria-live="off"></span></div><p class="operation-note">${state.task ? `<strong>${esc(state.task.title)}</strong> · 생성 중에도 상담 조회와 초안 복사를 할 수 있어요.<br>` : ''}취소해도 입력과 이전 분석·초안은 유지돼요. 이미 전송된 AI 요청은 비용이 발생할 수 있어요.</p>${job.events.length ? `<ol class="operation-stages" aria-label="실제 처리 단계">${job.events.map((event, i) => `<li ${i === job.events.length - 1 ? 'aria-current="step"' : ''}>${esc(stages[event.stage] || event.stage).replace(/ 중$/, '')}</li>`).join('')}</ol>` : ''}<div class="operation-bottom">${state.task && state.current?.id !== state.task.caseId ? button('open','작업 중인 상담 보기','secondary compact','',`data-id="${state.task.caseId}"`) : ''}<small>${esc(operation.warning || '완료율을 추정하지 않고 실제 처리 단계를 표시해요.')}</small><button type="button" class="btn secondary compact" data-action="cancel-operation" ${operation.cancelling || job.state !== 'running' ? 'disabled' : ''}>${operation.cancelling ? '취소 확인 중…' : '작업 취소'}</button></div>`;
+      const preparingInquiry = state.busy === firstInquiryProgress;
+      const label = operation.cancelling ? '서버에서 취소 확인 중' : preparingInquiry ? firstInquiryProgress : stages[job.stage] || '작업 처리 중';
+      panel.innerHTML = `<div class="operation-head"><span class="spinner" aria-hidden="true"></span><strong role="status">${esc(label)}</strong><span class="operation-time" data-elapsed aria-live="off"></span></div><p class="operation-note">${state.task ? `<strong>${esc(state.task.title)}</strong> · 생성 중에도 상담 조회와 초안 복사를 할 수 있어요.<br>` : ''}취소해도 입력과 이전 분석·초안은 유지돼요. 이미 전송된 AI 요청은 비용이 발생할 수 있어요.</p>${!preparingInquiry && job.events.length ? `<ol class="operation-stages" aria-label="실제 처리 단계">${job.events.map((event, i) => `<li ${i === job.events.length - 1 ? 'aria-current="step"' : ''}>${esc(stages[event.stage] || event.stage).replace(/ 중$/, '')}</li>`).join('')}</ol>` : ''}<div class="operation-bottom">${state.task && state.current?.id !== state.task.caseId ? button('open','작업 중인 상담 보기','secondary compact','',`data-id="${state.task.caseId}"`) : ''}<small>${esc(operation.warning || (preparingInquiry ? '' : '완료율을 추정하지 않고 실제 처리 단계를 표시해요.'))}</small><button type="button" class="btn secondary compact" data-action="cancel-operation" ${operation.cancelling || job.state !== 'running' ? 'disabled' : ''}>${operation.cancelling ? '취소 확인 중…' : '작업 취소'}</button></div>`;
       if (restoreCancelFocus) panel.querySelector('[data-action="cancel-operation"]').focus({ preventScroll: true });
     }
     panel.querySelector('[data-elapsed]').textContent = `경과 ${elapsedLabel(operation.elapsedMs)}`;
@@ -624,7 +626,7 @@ document.addEventListener('submit', async event => {
   if(form.id==='first-inquiry-form') {
     Object.assign(state.firstInput,Object.fromEntries(new FormData(form)));
     const input={...state.firstInput};
-    await work('공식 경로와 첫 문의를 준비하고 있어요',async()=>{
+    await work(firstInquiryProgress,async()=>{
       const result=await runOperation('first-inquiry',input,input.caseId);
       views.remember(result);if(!input.caseId||state.current?.id===input.caseId){state.draftEdits={};setCase(result);}state.firstInput=null;await refreshList();$('#modal').close();
     });
