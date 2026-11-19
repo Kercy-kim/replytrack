@@ -106,6 +106,7 @@ async function runOperation(kind, input = {}, caseId) {
   finally { state.config = await api('/api/config').catch(() => state.config); }
 }
 const firstInquiryProgress = '문의를 생성하는 중입니다';
+const replyProgress = '답변을 정리하는 중입니다';
 function renderProgress() {
   const operation = state.operation;
   document.querySelectorAll('[data-progress]').forEach(panel => {
@@ -116,9 +117,9 @@ function renderProgress() {
     if (panel.dataset.signature !== signature) {
       const restoreCancelFocus = panel.contains(document.activeElement) && document.activeElement.dataset.action === 'cancel-operation';
       panel.dataset.signature = signature;
-      const preparingInquiry = state.busy === firstInquiryProgress;
-      const label = operation.cancelling ? '서버에서 취소 확인 중' : preparingInquiry ? firstInquiryProgress : stages[job.stage] || '작업 처리 중';
-      panel.innerHTML = `<div class="operation-head"><span class="spinner" aria-hidden="true"></span><strong role="status">${esc(label)}</strong><span class="operation-time" data-elapsed aria-live="off"></span></div><p class="operation-note">${state.task ? `<strong>${esc(state.task.title)}</strong> · 생성 중에도 상담 조회와 초안 복사를 할 수 있어요.<br>` : ''}취소해도 입력과 이전 분석·초안은 유지돼요. 이미 전송된 AI 요청은 비용이 발생할 수 있어요.</p>${!preparingInquiry && job.events.length ? `<ol class="operation-stages" aria-label="실제 처리 단계">${job.events.map((event, i) => `<li ${i === job.events.length - 1 ? 'aria-current="step"' : ''}>${esc(stages[event.stage] || event.stage).replace(/ 중$/, '')}</li>`).join('')}</ol>` : ''}<div class="operation-bottom">${state.task && state.current?.id !== state.task.caseId ? button('open','작업 중인 상담 보기','secondary compact','',`data-id="${state.task.caseId}"`) : ''}<small>${esc(operation.warning || (preparingInquiry ? '' : '완료율을 추정하지 않고 실제 처리 단계를 표시해요.'))}</small><button type="button" class="btn secondary compact" data-action="cancel-operation" ${operation.cancelling || job.state !== 'running' ? 'disabled' : ''}>${operation.cancelling ? '취소 확인 중…' : '작업 취소'}</button></div>`;
+      const simpleProgress = state.busy === firstInquiryProgress || state.busy === replyProgress;
+      const label = operation.cancelling ? '서버에서 취소 확인 중' : simpleProgress ? state.busy : stages[job.stage] || '작업 처리 중';
+      panel.innerHTML = `<div class="operation-head"><span class="spinner" aria-hidden="true"></span><strong role="status">${esc(label)}</strong><span class="operation-time" data-elapsed aria-live="off"></span></div><p class="operation-note">${state.task ? `<strong>${esc(state.task.title)}</strong> · 생성 중에도 상담 조회와 초안 복사를 할 수 있어요.<br>` : ''}취소해도 입력과 이전 분석·초안은 유지돼요. 이미 전송된 AI 요청은 비용이 발생할 수 있어요.</p>${!simpleProgress && job.events.length ? `<ol class="operation-stages" aria-label="실제 처리 단계">${job.events.map((event, i) => `<li ${i === job.events.length - 1 ? 'aria-current="step"' : ''}>${esc(stages[event.stage] || event.stage).replace(/ 중$/, '')}</li>`).join('')}</ol>` : ''}<div class="operation-bottom">${state.task && state.current?.id !== state.task.caseId ? button('open','작업 중인 상담 보기','secondary compact','',`data-id="${state.task.caseId}"`) : ''}<small>${esc(operation.warning || (simpleProgress ? '' : '완료율을 추정하지 않고 실제 처리 단계를 표시해요.'))}</small><button type="button" class="btn secondary compact" data-action="cancel-operation" ${operation.cancelling || job.state !== 'running' ? 'disabled' : ''}>${operation.cancelling ? '취소 확인 중…' : '작업 취소'}</button></div>`;
       if (restoreCancelFocus) panel.querySelector('[data-action="cancel-operation"]').focus({ preventScroll: true });
     }
     panel.querySelector('[data-elapsed]').textContent = `경과 ${elapsedLabel(operation.elapsedMs)}`;
@@ -544,7 +545,7 @@ document.addEventListener('click', async event => {
   }
   if (action === 'action-complete-yes') await work('수행한 할 일을 기록하고 있어요', async () => { await updateCase(`actions/${target.dataset.id}`,'PATCH',{completed:true}); $('#modal').close(); toast('수행한 행동을 기록했어요. 환불·교환 상태는 그대로예요.'); });
   if (action === 'demo-next') await work('준비된 답변을 반영하고 있어요', async () => { await updateCase('demo-next', 'POST', {}); state.tab = 'questions'; toast('질문과 처리 약속이 갱신됐어요.'); });
-  if (action === 'analyze') await work('AI가 질문과 답변 근거를 대조하고 있어요', () => updateCase('analyze','POST',{}));
+  if (action === 'analyze') await work(replyProgress, () => updateCase('analyze','POST',{}));
   if (action === 'tab') { state.tab = target.dataset.value; render(); }
   if (action === 'draft-tab') openDraftPanel();
   if (action === 'mobile') { state.mobile = target.dataset.value; render(); }
@@ -665,7 +666,7 @@ document.addEventListener('submit', async event => {
     if (!state.config.configured) { showSettings(); return; }
     const text = form.elements.text.value;
     if (state.onboarding.messages.length && state.onboarding.reviewText === text) { showReview(); return; }
-    await work('연결을 확인하고 AI가 대화를 정리하고 있어요', async () => {
+    await work(replyProgress, async () => {
       const d = state.onboarding;
       const result = await runOperation('extract', {text, channel:d.channel, ...(d.myAddress ? {myAddress:d.myAddress} : {}), ...(d.targetCaseId ? {caseId:d.targetCaseId,version:d.targetVersion} : {})});
       Object.assign(state.onboarding, result, { reviewText: text }); showReview();
@@ -683,7 +684,7 @@ document.addEventListener('submit', async event => {
     if (!state.config.configured) { showSettings(); return; }
     const title = form.elements.title.value, company = form.elements.company.value;
     const messages = [...form.querySelectorAll('.review-row')].map(row => ({ role:row.querySelector('[name=role]').value,text:row.querySelector('textarea').value,sentAt:row.querySelector('[name=sentAt]').value ? new Date(row.querySelector('[name=sentAt]').value).toISOString() : null }));
-    await work('상담을 저장하고 AI가 질문을 분석하고 있어요', async () => {
+    await work(replyProgress, async () => {
       if (messages.some(m => m.role === 'unknown')) throw new Error('모든 메시지의 보낸 사람을 확인해 주세요.');
       const d = state.onboarding;
       if (d.targetCaseId) setCase(await api(`/api/cases/${d.targetCaseId}/email-messages`,'POST',{messages,version:d.targetVersion}));
@@ -694,7 +695,7 @@ document.addEventListener('submit', async event => {
   if (form.id === 'append-form') {
     const body = {role:form.elements.role.value,text:form.elements.text.value,sentAt:form.elements.sentAt.value ? new Date(form.elements.sentAt.value).toISOString() : null};
     const revision = viewRevision, caseId = state.current.id;
-    await work('새 대화를 저장하고 기존 질문에 연결하고 있어요', async () => { await updateCase('messages','POST',body); $('#modal').close(); await updateCase('analyze','POST',{}); if (viewRevision === revision && state.current?.id === caseId) state.tab='questions'; });
+    await work(replyProgress, async () => { await updateCase('messages','POST',body); $('#modal').close(); await updateCase('analyze','POST',{}); if (viewRevision === revision && state.current?.id === caseId) state.tab='questions'; });
   }
   if (form.id === 'edit-form') {
     const body = {title:form.elements.title.value,status:form.elements.status.value};

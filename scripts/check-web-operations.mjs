@@ -63,7 +63,7 @@ try {
   assert.equal(ai.calls.length, beforeRead);
   ai.hold('replytrack_transcript');
   await page.locator('#privacy-form button[type=submit]').click();
-  await modal.locator('[data-progress]').filter({ hasText: '보낸 사람과 답변 정리 중' }).waitFor();
+  await modal.locator('[data-progress]').filter({ hasText: '답변을 정리하는 중입니다' }).waitFor();
   await clickCancel(); assert.equal(await page.locator('#privacy-form [name=text]').inputValue(), masked);
   assert.equal(app.store.list().length, 0); ai.release();
   await page.locator('#privacy-form button[type=submit]').click(); await idle();
@@ -71,7 +71,7 @@ try {
   assert(transcriptCalls.every(c => !JSON.stringify(c.data).includes('010-1234')));
   ai.hold('replytrack_analysis');
   await page.locator('#review-form button[type=submit]').click();
-  await page.locator('#app [data-progress]').filter({ hasText: '질문·답변·약속 분석 중' }).waitFor();
+  await page.locator('#app [data-progress]').filter({ hasText: '답변을 정리하는 중입니다' }).waitFor();
   await clickCancel(); ai.release();
   assert.equal(app.store.list().length, 1);
   let record = app.store.get(app.store.list()[0].id);
@@ -103,7 +103,7 @@ try {
   await page.locator('#append-form [name=text]').fill('전화번호 010-8765-4321로 배송 관련 안내를 드리겠습니다.');
   ai.hold('replytrack_analysis');
   await page.locator('#append-form button[type=submit]').click();
-  await page.locator('#app [data-progress]').filter({ hasText: '질문·답변·약속 분석 중' }).waitFor();
+  await page.locator('#app [data-progress]').filter({ hasText: '답변을 정리하는 중입니다' }).waitFor();
   await clickCancel(); ai.release();
   const appended = app.store.get(record.id);
   assert.equal(appended.messages.length, prior.messages.length + 1);
