@@ -51,6 +51,21 @@ try {
   results.push('Actual preflight lifecycle, elapsed time, cancellation and verified-versus-configured distinction');
   await modal.locator('[data-action="close-modal"]').first().click();
 
+  const goal = '구독 해지 방법을 문의하고 싶어요.';
+  await page.locator('.sidebar [data-action="first-inquiry"]').click();
+  const firstForm = page.locator('#first-inquiry-form');
+  await firstForm.locator('[name=company]').fill('가상 서비스');
+  await firstForm.locator('[name=goal]').fill(goal);
+  ai.hold('replytrack_first_inquiry');
+  await firstForm.locator('button[type=submit]').click();
+  await modal.getByRole('status').filter({ hasText: /^문의를 생성하는 중입니다$/ }).waitFor();
+  assert.equal(await modal.locator('.operation-stages').count(), 0);
+  await clickCancel(); ai.release();
+  assert.equal(await firstForm.locator('[name=goal]').inputValue(), goal);
+  assert.equal(app.store.list().length, 0);
+  results.push('First inquiry shows simple progress; cancellation preserves input without saving a record');
+  await modal.locator('[data-action="close-modal"]').first().click();
+
   await page.locator('.sidebar [data-action="new"]').click();
   assert.equal(await page.locator('.onboarding-connection').count(), 0, 'Verified connection should not repeat setup in registration');
   const source = `${fixtureText}\n연락처 010-1234-5678\n주소: 서울특별시 강남구 테헤란로 123, 101동 202호`;
@@ -64,6 +79,7 @@ try {
   ai.hold('replytrack_transcript');
   await page.locator('#privacy-form button[type=submit]').click();
   await modal.locator('[data-progress]').filter({ hasText: '답변을 정리하는 중입니다' }).waitFor();
+  assert.equal(await modal.locator('.operation-stages').count(), 0);
   await clickCancel(); assert.equal(await page.locator('#privacy-form [name=text]').inputValue(), masked);
   assert.equal(app.store.list().length, 0); ai.release();
   await page.locator('#privacy-form button[type=submit]').click(); await idle();
